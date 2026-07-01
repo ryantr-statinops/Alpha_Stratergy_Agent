@@ -15,11 +15,14 @@ ALPHA_BOT/
 ├── data/                   # Tài liệu về dữ liệu đầu vào (Close, High, Low, Volume, ...)
 ├── feature/                # Danh mục chỉ báo kỹ thuật (EMA, RSI, BBands, Hikkake, ...)
 ├── operations/             # Danh mục toán tử xử lý chuỗi thời gian (crossed_above, fillna, ...)
-├── template_example/       # Các chiến lược mẫu chạy được trên XNOQuant
+├── template_example/       # Framework chuẩn + strategy mẫu chạy được trên XNOQuant
+│   └── strategy_framework.md   # **Master specification** — đọc đầu tiên
 ├── idea/                   # Nơi lưu trữ các ý tưởng nghiên cứu (.md)
 │   ├── planning_alpha/     # Kế hoạch phát triển Alpha theo từng chủ đề
-│   └── hypothesis/         # Giả thuyết kiểm thử và ý tưởng thử nghiệm
+│   ├── hypothesis/         # Giả thuyết kiểm thử, tiêu chí chấm điểm, design guidelines
+│   └── stage_overview/     # Ghi lại tiến độ và lịch sử phiên làm việc
 ├── output/                 # Mã nguồn chiến lược hoàn chỉnh (.py)
+│   └── index.csv           # (Kế hoạch) Master manifest tra cứu strategy
 └── README.md               # Tài liệu hướng dẫn dành cho AI Agent
 ```
 
@@ -79,17 +82,19 @@ EMA(source)
 
 Đây là framework chuẩn của XNOQuant.
 
+**File quan trọng nhất:** [`template_example/strategy_framework.md`](template_example/strategy_framework.md) — định nghĩa toàn bộ cấu trúc, quy ước, guardrails mà AI Agent phải tuân thủ khi sinh strategy.
+
 Mọi chiến lược được sinh ra phải:
 
-- Kế thừa từ lớp `CustomStrategy`
+- Kế thừa từ lớp `CustomStrategy(SimpleAlgorithm)`
 - Sử dụng cấu trúc giống các file mẫu
 - Định nghĩa logic bên trong:
 
 ```python
-def __logic__(self):
+def __algorithm__(self):
 ```
 
-Hoặc tuân thủ hoàn toàn cấu trúc của các file mẫu trong thư mục này.
+Tham khảo thêm các file mẫu `.py` trong thư mục này.
 
 ---
 
@@ -122,6 +127,13 @@ idea/planning_alpha/
 ```
 
 #### Hypothesis Loop
+
+Sử dụng framework kiểm thử tại [`idea/hypothesis/hypothesis_framework.md`](idea/hypothesis/hypothesis_framework.md) — tài liệu này định nghĩa:
+
+- **Acceptance Criteria:** Sharpe ≥ 1.2, CAGR ≥ 25%, PF ≥ 1.7, Calmar ≥ 0.9
+- **Multi-Stage Validation:** Train 70% → Test 30% (bắt buộc)
+- **Hard Rules:** Risk, drawdown, signal validation
+- **Scorecard:** Chấm điểm, kết luận PASS/REJECT
 
 AI cần thực hiện vòng lặp nghiên cứu:
 
@@ -173,11 +185,11 @@ Sau khi được phê duyệt:
 - Chỉ sử dụng:
   - các hàm trong `feature/`
   - các hàm trong `operations/`
-- Tuân thủ tuyệt đối cấu trúc trong:
-
-```text
-template_example/
-```
+- Tuân thủ tuyệt đối cấu trúc trong [`template_example/strategy_framework.md`](template_example/strategy_framework.md):
+  - Class `CustomStrategy(SimpleAlgorithm)`, method `__algorithm__`
+  - Exit → Long → Short order
+  - Không `import pandas`, không `SeriesT`, không biến `open`
+- Dùng compliance checklist ở cuối `strategy_framework.md` để self-verify trước khi output.
 
 Không tự ý thay đổi framework.
 
@@ -211,7 +223,9 @@ AI Agent **không được phép**:
 
 AI Agent **luôn phải**:
 
-1. Kiểm tra tính tương thích với `CustomStrategy`.
-2. Chỉ sử dụng các API chính thức của XNOQuant.
-3. Tuân thủ cú pháp của `feature/`, `operations/` và `template_example/`.
-4. Đảm bảo mã nguồn có thể chạy trực tiếp trên nền tảng.
+1. Đọc `template_example/strategy_framework.md` trước khi code.
+2. Kiểm tra tính tương thích với `CustomStrategy`.
+3. Chỉ sử dụng các API chính thức của XNOQuant.
+4. Tuân thủ cú pháp của `feature/`, `operations/` và `template_example/`.
+5. Tham chiếu acceptance criteria trong `idea/hypothesis/hypothesis_framework.md` khi thiết kế logic.
+6. Đảm bảo mã nguồn có thể chạy trực tiếp trên nền tảng.
