@@ -22,8 +22,8 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 01-0021,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0021_MomCascF8M14S20_5min.py,MomCascF8M14S20_5min,Cascade: ROC(8)>ROC(14)>ROC(20) — 5min
 01-0022,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0022_MomCascF4M8S14_5min.py,MomCascF4M8S14_5min,Cascade: ROC(4)>ROC(8)>ROC(14) — 5min
 01-0023,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0023_MomCascF14M20S40_5min.py,MomCascF14M20S40_5min,Cascade: ROC(14)>ROC(20)>ROC(40) — 5min
-01-0024,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0024_MomCascF8M14S14_5min.py,MomCascF8M14S14_5min,Cascade: ROC(8)>ROC(14)>ROC(14) — 5min
-01-0025,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0025_MomCascF14M20S20_5min.py,MomCascF14M20S20_5min,Cascade: ROC(14)>ROC(20)>ROC(20) — 5min
+01-0024,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0024_MomCascF7M14S20_5min.py,MomCascF7M14S20_5min,Cascade: ROC(7)>ROC(14)>ROC(20) — 5min
+01-0025,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0025_MomCascF14M20S28_5min.py,MomCascF14M20S28_5min,Cascade: ROC(14)>ROC(20)>ROC(28) — 5min
 01-0026,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0026_MomCascF3M4S8_5min.py,MomCascF3M4S8_5min,Cascade: ROC(3)>ROC(4)>ROC(8) — 5min
 01-0027,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0027_MomCMOStd_5min.py,MomCMOStd_5min,CMO: CMO(7) — 5min
 01-0028,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0028_MomCMOFast_5min.py,MomCMOFast_5min,CMO: CMO(8) — 5min
@@ -55,8 +55,8 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 01-0054,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0054_MomCascF13M26S34_15min.py,MomCascF13M26S34_15min,Cascade: ROC(13)>ROC(26)>ROC(34) — 15min
 01-0055,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0055_MomCascF6M13S26_15min.py,MomCascF6M13S26_15min,Cascade: ROC(6)>ROC(13)>ROC(26) — 15min
 01-0056,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0056_MomCascF26M34S68_15min.py,MomCascF26M34S68_15min,Cascade: ROC(26)>ROC(34)>ROC(68) — 15min
-01-0057,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0057_MomCascF13M26S26_15min.py,MomCascF13M26S26_15min,Cascade: ROC(13)>ROC(26)>ROC(26) — 15min
-01-0058,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0058_MomCascF26M34S34_15min.py,MomCascF26M34S34_15min,Cascade: ROC(26)>ROC(34)>ROC(34) — 15min
+01-0057,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0057_MomCascF13M26S34_15min.py,MomCascF13M26S34_15min,Cascade: ROC(13)>ROC(26)>ROC(34) — 15min
+01-0058,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0058_MomCascF26M34S47_15min.py,MomCascF26M34S47_15min,Cascade: ROC(26)>ROC(34)>ROC(47) — 15min
 01-0059,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0059_MomCascF4M6S13_15min.py,MomCascF4M6S13_15min,Cascade: ROC(4)>ROC(6)>ROC(13) — 15min
 01-0060,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0060_MomCMOStd_15min.py,MomCMOStd_15min,CMO: CMO(10) — 15min
 01-0061,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0061_MomCMOFast_15min.py,MomCMOFast_15min,CMO: CMO(13) — 15min
@@ -88,8 +88,8 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 01-0087,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0087_MomCascF20M40S50_30min.py,MomCascF20M40S50_30min,Cascade: ROC(20)>ROC(40)>ROC(50) — 30min
 01-0088,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0088_MomCascF10M20S40_30min.py,MomCascF10M20S40_30min,Cascade: ROC(10)>ROC(20)>ROC(40) — 30min
 01-0089,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0089_MomCascF40M50S100_30min.py,MomCascF40M50S100_30min,Cascade: ROC(40)>ROC(50)>ROC(100) — 30min
-01-0090,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0090_MomCascF20M40S40_30min.py,MomCascF20M40S40_30min,Cascade: ROC(20)>ROC(40)>ROC(40) — 30min
-01-0091,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0091_MomCascF40M50S50_30min.py,MomCascF40M50S50_30min,Cascade: ROC(40)>ROC(50)>ROC(50) — 30min
+01-0090,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0090_MomCascF20M40S50_30min.py,MomCascF20M40S50_30min,Cascade: ROC(20)>ROC(40)>ROC(50) — 30min
+01-0091,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0091_MomCascF40M50S70_30min.py,MomCascF40M50S70_30min,Cascade: ROC(40)>ROC(50)>ROC(70) — 30min
 01-0092,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0092_MomCascF6M10S20_30min.py,MomCascF6M10S20_30min,Cascade: ROC(6)>ROC(10)>ROC(20) — 30min
 01-0093,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0093_MomCMOStd_30min.py,MomCMOStd_30min,CMO: CMO(14) — 30min
 01-0094,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0094_MomCMOFast_30min.py,MomCMOFast_30min,CMO: CMO(20) — 30min
@@ -121,8 +121,8 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 01-0120,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0120_MomCascF30M60S100_60min.py,MomCascF30M60S100_60min,Cascade: ROC(30)>ROC(60)>ROC(100) — 60min
 01-0121,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0121_MomCascF15M30S60_60min.py,MomCascF15M30S60_60min,Cascade: ROC(15)>ROC(30)>ROC(60) — 60min
 01-0122,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0122_MomCascF60M100S200_60min.py,MomCascF60M100S200_60min,Cascade: ROC(60)>ROC(100)>ROC(200) — 60min
-01-0123,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0123_MomCascF30M60S60_60min.py,MomCascF30M60S60_60min,Cascade: ROC(30)>ROC(60)>ROC(60) — 60min
-01-0124,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0124_MomCascF60M100S100_60min.py,MomCascF60M100S100_60min,Cascade: ROC(60)>ROC(100)>ROC(100) — 60min
+01-0123,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0123_MomCascF30M60S100_60min.py,MomCascF30M60S100_60min,Cascade: ROC(30)>ROC(60)>ROC(100) — 60min
+01-0124,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0124_MomCascF60M100S130_60min.py,MomCascF60M100S130_60min,Cascade: ROC(60)>ROC(100)>ROC(130) — 60min
 01-0125,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0125_MomCascF10M15S30_60min.py,MomCascF10M15S30_60min,Cascade: ROC(10)>ROC(15)>ROC(30) — 60min
 01-0126,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0126_MomCMOStd_60min.py,MomCMOStd_60min,CMO: CMO(21) — 60min
 01-0127,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0127_MomCMOFast_60min.py,MomCMOFast_60min,CMO: CMO(30) — 60min

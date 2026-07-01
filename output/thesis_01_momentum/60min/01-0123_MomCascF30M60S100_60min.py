@@ -1,14 +1,14 @@
 
 """
-name:    MomCascF60M100S100_60min
-summary: Cascade: ROC(60)>ROC(100)>ROC(100) — 60min
+name:    MomCascF30M60S100_60min
+summary: Cascade: ROC(30)>ROC(60)>ROC(100) — 60min
 thesis:  momentum | 60min
 idea:    Momentum acceleration
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    fast_window = 60
-    mid_window = 100
+    fast_window = 30
+    mid_window = 60
     slow_window = 100
 
     def __algorithm__(self):
