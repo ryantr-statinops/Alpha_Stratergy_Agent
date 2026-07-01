@@ -1,15 +1,15 @@
 
 """
-name:    MomCascF20M40S40_30min
-summary: Cascade: ROC(20)>ROC(40)>ROC(40) — 30min
-thesis:  momentum | 30min
+name:    MomCascF7M14S20_5min
+summary: Cascade: ROC(7)>ROC(14)>ROC(20) — 5min
+thesis:  momentum | 5min
 idea:    Momentum acceleration
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    fast_window = 20
-    mid_window = 40
-    slow_window = 40
+    fast_window = 7
+    mid_window = 14
+    slow_window = 20
 
     def __algorithm__(self):
         close = self.data.pv_close

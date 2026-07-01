@@ -927,8 +927,8 @@ def var_momentum_vn30(w, _tf_label):
 def var_momentum_cascade(w, _tf_label):
     """Cascade with different acceleration layers: 6 variants"""
     pairs = [(w['fast'], w['mid'], w['slow']), (max(3, w['fast']//2), w['fast'], w['mid']),
-             (w['mid'], w['slow'], w['slow']*2), (w['fast'], w['mid'], w['mid']),
-             (w['mid'], w['slow'], w['slow']), (max(3, w['fast']//3), max(3, w['fast']//2), w['fast'])]
+             (w['mid'], w['slow'], w['slow']*2), (max(3, w['mid']//2), w['mid'], w['slow']),
+             (w['mid'], w['slow'], w['slow'] + w['fast']), (max(3, w['fast']//3), max(3, w['fast']//2), w['fast'])]
     for f, m, s in pairs:
         tag = f"F{f}M{m}S{s}"
         yield tag, f"ROC({f})>ROC({m})>ROC({s})", "Momentum acceleration", \
