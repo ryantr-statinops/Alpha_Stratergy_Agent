@@ -12,11 +12,17 @@ class CustomStrategy(SimpleAlgorithm):
     rsi_window = 21
     adx_window = 21
 
+    return_window = 14
+    return_threshold = 0.0005
+    position_close_after_n_candles = 6
+
     def __algorithm__(self):
         close = self.data.pv_close
         volume = self.data.pv_volume
         high = self.data.pv_high
         low = self.data.pv_low
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
 
         price_z = self.feat.rolling_zscore(close, window=self.z_window)
         vol_z = self.feat.rolling_zscore(volume, window=self.z_window)
@@ -27,13 +33,21 @@ class CustomStrategy(SimpleAlgorithm):
         mom_z = self.feat.rolling_zscore(momentum, window=self.z_window)
 
         composite = price_z + mom_z + vol_z
-        trend_ok = adx > 20
         rsi_ok = (rsi > 30) & (rsi < 70)
+        score_ok_long = (composite > self.z_threshold)
+        score_ok_short = (composite < -self.z_threshold)
 
-        long_setup = (composite > self.z_threshold) & trend_ok & rsi_ok
-        short_setup = (composite < -self.z_threshold) & trend_ok & rsi_ok
-        exit_setup = (abs(composite) < 0.5) | (adx < 15)
+        core_long = score_ok_long & rsi_ok
+        core_short = score_ok_short & rsi_ok
+
+        strong_long = core_long & (adx > 22) & (vol_z > 0) & (return_roll > 0)
+        weak_long = core_long & (adx > 18) & (return_roll > 0)
+        strong_short = core_short & (adx > 22) & (vol_z < 0) & (return_roll < 0)
+        weak_short = core_short & (adx > 18) & (return_roll < 0)
+        exit_setup = ((abs(composite) < 0.5) | (adx < 15)) | (abs(return_roll) < self.return_threshold)
 
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(weak_long, position=0.5)
+        self.set_positions(strong_long, position=1)
+        self.set_positions(weak_short, position=-0.5)
+        self.set_positions(strong_short, position=-1)

@@ -9,16 +9,22 @@ class CustomStrategy(SimpleAlgorithm):
 
     cci_window = 40
 
+    return_window = 8
+    return_threshold = 0.0003
+    position_close_after_n_candles = 12
+
     def __algorithm__(self):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
 
         cci = self.feat.cci(high, low, close, timeperiod=self.cci_window)
 
-        long_setup = cci < -100
-        short_setup = cci > 100
-        exit_setup = self.op.crossed_above(cci, 0) | self.op.crossed_below(cci, 0)
+        long_setup = (cci < -100) & (return_roll > 0)
+        short_setup = (cci > 100) & (return_roll < 0)
+        exit_setup = (self.op.crossed_above(cci, 0) | self.op.crossed_below(cci, 0)) | (abs(return_roll) < self.return_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

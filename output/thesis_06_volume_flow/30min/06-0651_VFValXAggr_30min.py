@@ -10,9 +10,15 @@ class CustomStrategy(SimpleAlgorithm):
     val_window = 26
     value_mult = 2.5
 
+    return_window = 8
+    return_threshold = 0.0003
+    position_close_after_n_candles = 12
+
     def __algorithm__(self):
         close = self.data.pv_close
         matched_val = self.data.fut_matched_value_vn30f1m_1d
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
 
         val_sma = self.feat.sma(matched_val, timeperiod=self.val_window)
         val_q80 = self.feat.rolling_quantile(matched_val, self.val_window, 0.80)
@@ -20,9 +26,9 @@ class CustomStrategy(SimpleAlgorithm):
 
         flow = (matched_val > val_q80) & (matched_val > val_sma * self.value_mult)
 
-        long_setup = flow & (close > close_sma)
-        short_setup = flow & (close < close_sma)
-        exit_setup = (matched_val < val_sma) | self.op.crossed_below(close, close_sma)
+        long_setup = (flow & (close > close_sma)) & (return_roll > 0)
+        short_setup = (flow & (close < close_sma)) & (return_roll < 0)
+        exit_setup = ((matched_val < val_sma) | self.op.crossed_below(close, close_sma)) | (abs(return_roll) < self.return_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)
