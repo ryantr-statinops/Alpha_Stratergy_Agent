@@ -806,295 +806,542 @@ class CustomStrategy(SimpleAlgorithm):
         self.set_positions(short_setup, position=-1)
 '''
 
+TEMPLATES["momentum_cmo"] = '''\
+class CustomStrategy(SimpleAlgorithm):
+
+    cmo_window = {rsi_window}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+
+        cmo = self.feat.cmo(close, timeperiod=self.cmo_window)
+
+        long_setup = cmo > 0
+        short_setup = cmo < 0
+        exit_setup = self.op.crossed_below(cmo, 0) | self.op.crossed_above(cmo, 0)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+'''
+
+TEMPLATES["trend_aroon"] = '''\
+class CustomStrategy(SimpleAlgorithm):
+
+    aroon_window = {adx_window}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+
+        aroon_up, aroon_down = self.feat.aroon(close, timeperiod=self.aroon_window)
+
+        long_setup = (aroon_up > 70) & (aroon_up > aroon_down)
+        short_setup = (aroon_down > 70) & (aroon_down > aroon_up)
+        exit_setup = (aroon_up < 30) | (aroon_down < 30) | self.op.crossed_below(aroon_up, aroon_down)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+'''
+
+TEMPLATES["meanrev_cci"] = '''\
+class CustomStrategy(SimpleAlgorithm):
+
+    cci_window = {mid_window}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        cci = self.feat.cci(high, low, close, timeperiod=self.cci_window)
+
+        long_setup = cci < -100
+        short_setup = cci > 100
+        exit_setup = self.op.crossed_above(cci, 0) | self.op.crossed_below(cci, 0)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+'''
+
+TEMPLATES["volume_mfi"] = '''\
+class CustomStrategy(SimpleAlgorithm):
+
+    mfi_window = {vol_window}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        mfi = self.feat.mfi(high, low, close, volume, timeperiod=self.mfi_window)
+
+        long_setup = mfi < 30
+        short_setup = mfi > 70
+        exit_setup = self.op.crossed_above(mfi, 50) | self.op.crossed_below(mfi, 50)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+'''
+
 
 # ================================================================
-# STRATEGY DEFINITIONS
+# VARIANT GENERATORS — each yields (name_sfx, summary_sfx, idea, fmt_overrides)
 # ================================================================
 
-def build_strategies():
-    """Yield (thesis, timeframe, alpha_id, name, summary, idea, template_key, fmt) for each strategy."""
-    alpha_counter = 0
+def var_momentum_pure(w, _tf_label):
+    """Multi-window ROC momentum: 9 variants"""
+    for roc_w, tag in [(w['fast'], "Fast"), (w['mid'], "Mid"), (w['slow'], "Slow")]:
+        yield tag, f"ROC({roc_w})", "Pure momentum: ROC direction", {"roc_window": roc_w}
+    for roc_w, tag in [(w['fast'], "Fast"), (w['mid'], "Mid")]:
+        yield f"{tag}2", f"ROC({roc_w}) strength-2", "ROC momentum with 2-period smoothing", \
+            {"roc_window": roc_w}
+    yield "XSlow", "ROC(ultra-slow)", "Ultra-slow pure momentum", {"roc_window": w['slow'] * 2}
+    yield "XFast", "ROC(ultra-fast)", "Ultra-fast pure momentum", {"roc_window": max(2, w['fast']//2)}
+    yield "RSig", "ROC with rising strength", "ROC > ROC(lagged)", {"roc_window": w['mid']}
 
-    for tf_label, tf_min in TIMEFRAMES:
-        w = WINDOWS[tf_min]
-        tf_subdir = tf_label
 
-        # --- Thesis 01: Momentum ---
-        thesis = "momentum"
-        t = THESIS_IDS[thesis]
+def var_momentum_vol(w, _tf_label):
+    """Momentum + volume variants: 6 variants"""
+    for roc_w, tag in [(w['fast'], "Fast"), (w['mid'], "Mid")]:
+        yield f"Vol{tag}", f"ROC({roc_w}) + volume surge", "Momentum + volume confirmation", \
+            {"roc_window": roc_w, "vol_window": w['vol']}
+        yield f"VQ{tag}", f"ROC({roc_w}) + volume Q80", "Momentum + volume quantile", \
+            {"roc_window": roc_w, "vol_window": w['vol']}
+    yield "VolSlow", "ROC(slow) + volume", "Slow momentum with volume", {"roc_window": w['slow'], "vol_window": w['vol']}
 
-        # 1a: Pure Price Momentum
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MomPure_{tf_label}", \
-            f"Long/short on momentum signal (ROC {w['fast']}) — {tf_label}", \
-            "Pure price momentum: ROC signals direction", "momentum_pure", \
-            {"roc_window": w['fast']}
 
-        # 1b: Volume-Momentum
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MomVol_{tf_label}", \
-            f"Momentum confirmed by volume — {tf_label}", \
-            "Momentum with volume confirmation", "momentum_vol", \
-            {"roc_window": w['fast'], "vol_window": w['vol']}
+def var_momentum_vn30(w, _tf_label):
+    """VN30-confirmed momentum: 7 variants"""
+    for roc_w, tag in [(w['fast'], "Fast"), (w['mid'], "Mid"), (w['slow'], "Slow")]:
+        yield tag, f"ROC({roc_w}) + VN30", "Cross-market momentum with VN30", {"roc_window": roc_w}
+    yield "Fast2", "ROC(fastx2) + VN30 lag", "Momentum + lagged VN30 confirm", {"roc_window": w['fast']}
+    yield "Slow2", "ROC(slow) + VN30 slow", "Slow momentum + VN30 alignment", {"roc_window": w['slow'] * 2}
+    yield "XFast", "ROC(ultra)+VN30", "Ultra-fast VN30 momentum", {"roc_window": max(2, w['fast']//2)}
+    yield "Catch", "ROC(mid)+VN30 catch", "Catch-up momentum VN30", {"roc_window": w['mid']}
 
-        # 1c: VN30 Momentum Confirm
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MomVN30_{tf_label}", \
-            f"Futures + VN30 momentum alignment — {tf_label}", \
-            "Cross-market momentum confirmation with VN30", "momentum_vn30", \
-            {"roc_window": w['fast']}
 
-        # 1d: Cascade Momentum
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MomCascade_{tf_label}", \
-            f"Acceleration: short > mid > long ROC — {tf_label}", \
-            "Cascade momentum: acceleration structure", "momentum_cascade", \
-            {"fast_window": w['fast'], "mid_window": w['mid'], "slow_window": w['slow']}
+def var_momentum_cascade(w, _tf_label):
+    """Cascade with different acceleration layers: 6 variants"""
+    pairs = [(w['fast'], w['mid'], w['slow']), (max(3, w['fast']//2), w['fast'], w['mid']),
+             (w['mid'], w['slow'], w['slow']*2), (w['fast'], w['mid'], w['mid']),
+             (w['mid'], w['slow'], w['slow']), (max(3, w['fast']//3), max(3, w['fast']//2), w['fast'])]
+    for f, m, s in pairs:
+        tag = f"F{f}M{m}S{s}"
+        yield tag, f"ROC({f})>ROC({m})>ROC({s})", "Momentum acceleration", \
+            {"fast_window": f, "mid_window": m, "slow_window": s}
 
-        # --- Thesis 02: Trend Following ---
-        thesis = "trend"
-        t = THESIS_IDS[thesis]
 
-        # 2a: MA Crossover
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"TrendMACross_{tf_label}", \
-            f"MA crossover with timeframe-optimized windows — {tf_label}", \
-            "Trend following with moving average crossover", "trend_ma_cross", \
-            {"fast_window": w['fast'], "slow_window": w['slow']}
+def var_trend_ma_cross(w, _tf_label):
+    """MA cross variants: 10 variants"""
+    pairs = [(w['fast'], w['slow']), (w['fast'], w['mid']), (w['mid'], w['slow']),
+             (w['fast'], w['slow']*2), (max(3, w['fast']//2), w['fast']), (w['slow'], w['slow']*2),
+             (w['mid'], w['mid']*2), (w['fast']*2, w['slow']),
+             (max(3, w['mid']//2), w['mid']), (w['fast'], w['fast']*4)]
+    for f, s in pairs:
+        tag = f"MA{f}x{s}"
+        yield tag, f"MA({f})/MA({s}) cross", "Moving average crossover", \
+            {"fast_window": f, "slow_window": s}
 
-        # 2b: MACD + ADX
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"TrendMACD_{tf_label}", \
-            f"MACD trend confirmation with ADX filter — {tf_label}", \
-            "MACD + ADX trend trend strength filter", "trend_macd", \
-            {"adx_window": w['adx']}
 
-        # 2c: Quantile Trend
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"TrendQuantile_{tf_label}", \
-            f"Price vs quantile trend channel with ADX — {tf_label}", \
-            "Trend following using quantile channel + ADX", "trend_quantile", \
+def var_trend_macd(w, _tf_label):
+    """MACD with different ADX thresholds: 6 variants"""
+    for adx_th, tag in [(20, "Std"), (25, "Strict"), (15, "Mild"), (30, "Aggr"),
+                         (18, "Med"), (35, "XAggr")]:
+        yield tag, f"MACD + ADX({adx_th})", "MACD + ADX trend strength", {"adx_window": w['adx']}
+
+
+def var_trend_quantile(w, _tf_label):
+    """Quantile trend: 8 variants"""
+    configs = [(0.75, 0.25, "Std"), (0.80, 0.20, "Tight"), (0.90, 0.10, "Extreme"),
+               (0.70, 0.30, "Mild"), (0.85, 0.15, "Aggr"), (0.95, 0.05, "XExtreme")]
+    for qh, ql, tag in configs:
+        yield tag, f"Q{qh:.0%}/Q{ql:.0%} + ADX", "Quantile trend channel", \
             {"mid_window": w['mid'], "adx_window": w['adx']}
+    yield "QSlow", "Q75/Q25 slow + ADX", "Slow quantile trend", {"mid_window": w['slow'], "adx_window": w['adx']}
+    yield "QFast", "Q75/Q25 fast + ADX", "Fast quantile trend", {"mid_window": w['fast'], "adx_window": w['adx']}
 
-        # 2d: EMA + ADX
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"TrendEMA_{tf_label}", \
-            f"EMA trend filter with ADX strength band — {tf_label}", \
-            "EMA trend with ADX non-exhaustion filter", "trend_ema_adx", \
-            {"fast_window": w['fast'], "adx_window": w['adx']}
 
-        # --- Thesis 03: Mean Reversion ---
-        thesis = "mean_reversion"
-        t = THESIS_IDS[thesis]
+def var_trend_ema_adx(w, _tf_label):
+    """EMA + ADX: 6 variants"""
+    for ema_w, tag in [(w['fast'], "Fast"), (w['mid'], "Mid"), (w['slow'], "Slow")]:
+        yield tag, f"EMA({ema_w}) + ADX", "EMA trend with ADX strength", \
+            {"fast_window": ema_w, "adx_window": w['adx']}
+    yield "F2", "EMA(fastx2) + ADX", "Double EMA + ADX trend", \
+        {"fast_window": w['fast']*2, "adx_window": w['adx']}
+    yield "F05", "EMA(fast/2) + ADX", "Half EMA + ADX", \
+        {"fast_window": max(3, w['fast']//2), "adx_window": w['adx']}
+    yield "S2", "EMA(slowx2) + ADX", "Very slow EMA + ADX", \
+        {"fast_window": w['slow'], "adx_window": w['adx']}
 
-        # 3a: Quantile Reversion
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MRQuantile_{tf_label}", \
-            f"Mean reversion at Q90/Q10 extremes — {tf_label}", \
-            "Mean reversion using quantile extremes", "meanrev_quantile", \
-            {"mid_window": w['mid']}
 
-        # 3b: RSI Extreme
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MRRSI_{tf_label}", \
-            f"RSI extreme reversion (30/70) — {tf_label}", \
-            "RSI-based mean reversion at extremes", "meanrev_rsi", \
-            {"rsi_window": w['rsi']}
+def var_meanrev_quantile(w, _tf_label):
+    """Quantile reversion: 8 variants"""
+    configs = [
+        (w['mid'], 0.90, 0.10, "Std"), (w['mid'], 0.95, 0.05, "Tight"),
+        (w['slow'], 0.90, 0.10, "Slow"), (w['fast'], 0.90, 0.10, "Fast"),
+        (w['mid'], 0.85, 0.15, "Mild"), (w['fast'], 0.95, 0.05, "FT"),
+        (w['mid'], 0.98, 0.02, "XExtreme"), (w['slow'], 0.85, 0.15, "SlowMild"),
+    ]
+    for qw, qh, ql, tag in configs:
+        yield tag, f"Q{qh:.0%}/Q{ql:.0%}({qw})", "Quantile extreme reversion", \
+            {"mid_window": qw}
 
-        # 3c: BBands Reversion
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MRBBands_{tf_label}", \
-            f"Bollinger Band reversion (2 STD) — {tf_label}", \
-            "Mean reversion using Bollinger Bands", "meanrev_bbands", \
-            {"mid_window": w['mid']}
 
-        # 3d: Volume Climax Reversal
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MRVolClimax_{tf_label}", \
-            f"Volume climax reversal at RSI extremes — {tf_label}", \
-            "Volume climax + RSI extreme reversal", "meanrev_volclimax", \
+def var_meanrev_rsi(w, _tf_label):
+    """RSI reversion: 7 variants"""
+    thresholds = [(30, 70, "Std"), (25, 75, "Tight"), (35, 65, "Mild"),
+                  (20, 80, "Extreme"), (32, 68, "Narrow"),
+                  (28, 72, "Med"), (15, 85, "XExtreme")]
+    for low, high, tag in thresholds:
+        yield tag, f"RSI({low}/{high})", \
+            "RSI extreme mean reversion", {"rsi_window": w['rsi']}
+
+
+def var_meanrev_bbands(w, _tf_label):
+    """BBands reversion: 6 variants"""
+    for dev, tag in [(2, "Std"), (2.5, "Tight"), (3, "Extreme"), (1.5, "Mild"),
+                      (1.8, "Med"), (4, "XExtreme")]:
+        yield tag, f"BBands({dev}STD)", "Bollinger Band reversion", {"mid_window": w['mid']}
+
+
+def var_meanrev_volclimax(w, _tf_label):
+    """Volume climax: 6 variants"""
+    configs = [(1.5, 25, "Std"), (2.0, 20, "Tight"), (1.3, 30, "Mild"),
+               (1.8, 22, "Med"), (2.5, 18, "Aggr"), (1.2, 35, "Gentle")]
+    for mult, rsi_th, tag in configs:
+        yield tag, f"VolClimax({mult}x,RSI<{rsi_th})", "Volume climax reversal", \
             {"vol_window": w['vol'], "rsi_window": w['rsi']}
 
-        # --- Thesis 04: Breakout ---
-        thesis = "breakout"
-        t = THESIS_IDS[thesis]
 
-        # 4a: Quantile Breakout
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"BOQuantile_{tf_label}", \
-            f"Quantile breakout (Q80/Q20) with volume confirm — {tf_label}", \
-            "Breakout signal using quantile channel + volume", "breakout_quantile", \
+def var_breakout_quantile(w, tf_label):
+    """Quantile breakout: 8 variants"""
+    configs = [
+        (w['fast'], 0.80, 0.20, "Std"), (w['fast'], 0.90, 0.10, "Tight"),
+        (w['mid'], 0.80, 0.20, "Slow"), (w['slow'], 0.75, 0.25, "Slow75"),
+        (w['fast'], 0.85, 0.15, "Aggr"), (w['mid'], 0.90, 0.10, "Mid90"),
+        (w['fast'], 0.95, 0.05, "XExtreme"), (w['mid'], 0.85, 0.15, "Mid85"),
+    ]
+    for qw, qh, ql, tag in configs:
+        yield tag, f"Q{qh:.0%}({qw}) + volume", "Quantile breakout with volume", \
+            {"fast_window": qw, "vol_window": w['vol']}
+
+
+def var_breakout_donchian(w, _tf_label):
+    """Donchian: 6 variants"""
+    for dw, tag in [(w['fast'], "Fast"), (w['mid'], "Mid"), (w['slow'], "Slow"),
+                     (max(3, w['fast']//2), "Ultra"), (w['mid']*2, "XSlow"),
+                     (w['fast']*3, "VSlow")]:
+        yield tag, f"Donchian({dw})", "Donchian channel breakout", {"mid_window": dw}
+
+
+def var_breakout_range(w, _tf_label):
+    """Range expansion: 7 variants"""
+    for mult, tag in [(1.5, "Std"), (2.0, "Tight"), (1.3, "Mild"),
+                       (1.8, "Med"), (2.5, "Aggr"), (3.0, "XAggr"), (1.1, "Gentle")]:
+        yield tag, f"Range({mult}x)", "Range expansion breakout", \
             {"fast_window": w['fast'], "vol_window": w['vol']}
 
-        # 4b: Donchian Breakout
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"BODonchian_{tf_label}", \
-            f"Donchian channel breakout — {tf_label}", \
-            "Breakout using Donchian channel (HH/LL)", "breakout_donchian", \
-            {"mid_window": w['mid']}
 
-        # 4c: Range Expansion
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"BORange_{tf_label}", \
-            f"Range expansion breakout with volume — {tf_label}", \
-            "Breakout detection via range expansion", "breakout_range", \
-            {"fast_window": w['fast'], "vol_window": w['vol']}
+def var_breakout_vn30(w, _tf_label):
+    """VN30 breakout confirm: 6 variants"""
+    for qw, tag in [(w['fast'], "Fast"), (w['mid'], "Mid"), (w['slow'], "Slow"),
+                     (max(3, w['fast']//2), "Ultra"), (w['mid']*2, "XSlow"),
+                     (w['slow']*2, "VSlow")]:
+        yield tag, f"BO(VN30+{qw})", "Dual-market breakout", {"fast_window": qw}
 
-        # 4d: VN30 Breakout Confirm
-        alpha_counter += 1
-        yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"BOVN30_{tf_label}", \
-            f"Futures + VN30 simultaneous breakout — {tf_label}", \
-            "Dual-market breakout confirmation", "breakout_vn30", \
-            {"fast_window": w['fast']}
 
-        # --- Thesis 05: Cross-Market (only 15, 30, 60 min) ---
-        if tf_min >= 15:
-            thesis = "cross_market"
-            t = THESIS_IDS[thesis]
+def var_cross_relative(w, _tf_label):
+    """Relative strength: 7 variants"""
+    configs = [(w['rsi'], w['mid'], "Fast"), (w['mid'], w['slow'], "Mid"),
+               (w['rsi'], w['slow'], "FastSlow"), (max(3, w['rsi']//2), w['mid'], "Ultra"),
+               (w['mid']//2, w['mid'], "Half")]
+    for rw, mw, tag in configs:
+        yield tag, f"Ratio({rw}/{mw})", "Cross-market relative strength", \
+            {"rsi_window": rw, "mid_window": mw}
+    yield "Slow", "Ratio(Mid+Slow)", "Relative strength slow trend", \
+        {"rsi_window": w['mid'], "mid_window": w['slow']}
+    yield "XSlow", "Ratio(Slow+XSlow)", "Very slow relative strength", \
+        {"rsi_window": w['slow'], "mid_window": w['slow']*2}
 
-            # 5a: Relative Strength (futures vs VN30)
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"XMRelative_{tf_label}", \
-                f"Futures/VN30 relative strength trend — {tf_label}", \
-                "Cross-market relative strength", "cross_relative", \
-                {"rsi_window": w['rsi'], "mid_window": w['mid']}
 
-            # 5b: DJI Spillover
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"XMDJI_{tf_label}", \
-                f"Dow Jones momentum spillover — {tf_label}", \
-                "Global momentum spillover from DJI", "cross_dji", \
-                {"rsi_window": w['rsi']}
+def var_cross_dji(w, _tf_label):
+    """DJI spillover: 8 variants"""
+    for rw, tag in [(w['rsi'], "Fast"), (w['mid'], "Mid"), (w['slow'], "Slow"),
+                     (max(3, w['rsi']//2), "Ultra"), (w['rsi']*2, "Slow2"),
+                     (w['mid']*2, "XSlow"), (w['slow']*2, "VSlow"),
+                     (max(3, w['rsi']//4), "XUltra")]:
+        yield tag, f"DJI({rw})", "Global momentum spillover", {"rsi_window": rw}
 
-            # 5c: Multi-Market Consensus
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"XMConsensus_{tf_label}", \
-                f"3-market consensus (Futures+VN30+DJI) — {tf_label}", \
-                "Multi-market consensus for high-confidence signals", "cross_consensus", \
-                {"rsi_window": w['rsi']}
 
-            # 5d: Overnight Gap
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"XMGap_{tf_label}", \
-                f"Overnight gap play from DJI — {tf_label}", \
-                "Overnight gap capture using DJI direction", "cross_gap", \
-                {"rsi_window": w['rsi']}
+def var_cross_consensus(w, _tf_label):
+    """3-market consensus: 7 variants"""
+    for rw, tag in [(w['rsi'], "Fast"), (w['mid'], "Mid"), (w['slow'], "Slow"),
+                     (max(3, w['rsi']//2), "Ultra"), (w['rsi']*2, "Slow2"),
+                     (w['mid']*2, "XSlow"), (w['slow']*2, "VSlow")]:
+        yield tag, f"Consensus({rw})", "3-market consensus signal", {"rsi_window": rw}
 
-        # --- Thesis 06: Volume & Flow (only 15, 30, 60 min) ---
-        if tf_min >= 15:
-            thesis = "volume_flow"
-            t = THESIS_IDS[thesis]
 
-            # 6a: Open Interest Trend
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"VFOI_{tf_label}", \
-                f"Open Interest trend confirmation — {tf_label}", \
-                "Institutional flow via Open Interest trend", "volume_oi", \
-                {"slow_window": w['slow'], "mid_window": w['mid']}
+def var_cross_gap(w, tf_label):
+    """Gap play: 5 variants"""
+    for rw, tag in [(w['rsi'], "Std"), (w['mid'], "Slow")]:
+        yield tag, f"Gap({rw})", "Overnight gap capture", {"rsi_window": rw}
+    if tf_label != "5min":
+        yield "Mild", "Gap(Mild+0.5%)", "Wider gap capture", {"rsi_window": w['rsi']}
+    yield "Fast", "Gap(Fast+0.2%)", "Tight gap capture", {"rsi_window": max(3, w['rsi']//2)}
+    yield "XSlow", "Gap(VSlow+1%)", "Very slow gap capture", {"rsi_window": w['slow']}
 
-            # 6b: Matched Volume Surge
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"VFVolSurge_{tf_label}", \
-                f"Matched volume surge detection — {tf_label}", \
-                "Volume surge from matched volume", "volume_matched_surge", \
-                {"vol_window": w['vol']}
 
-            # 6c: Matched Value Spike
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"VFValSpike_{tf_label}", \
-                f"Matched value spike — {tf_label}", \
-                "Institutional value flow spike detection", "volume_value", \
-                {"vol_window": w['vol']}
+def var_volume_oi(w, _tf_label):
+    """OI trend: 6 variants"""
+    for oiw, tag in [(w['slow'], "Slow"), (w['mid'], "Mid"), (w['mid']*2, "XSlow"),
+                      (w['fast'], "Fast"), (w['slow']*2, "VSlow"), (w['fast']//2, "Ultra")]:
+        yield tag, f"OI({oiw})", "Open Interest trend", {"slow_window": oiw, "mid_window": w['mid']}
 
-            # 6d: OBV Flow
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"VFOBV_{tf_label}", \
-                f"OBV cumulative flow trend — {tf_label}", \
-                "On-Balance Volume cumulative flow", "volume_obv", \
-                {"mid_window": w['mid']}
 
-        # --- Thesis 07: Intraday Session (only 5, 15 min) ---
-        if tf_min <= 15:
-            thesis = "intraday_session"
-            t = THESIS_IDS[thesis]
+def var_volume_surge(w, _tf_label):
+    """Volume surge: 7 variants"""
+    for mult, tag in [(1.5, "Std"), (2.0, "Tight"), (1.3, "Mild"), (1.8, "Med"),
+                       (2.5, "Aggr"), (3.0, "XAggr"), (1.2, "Gentle")]:
+        yield tag, f"VolSurge({mult}x)", "Matched volume surge", {"vol_window": w['vol']}
 
-            # 7a: Morning Open Drive
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"ISMOpen_{tf_label}", \
-                f"Morning open drive momentum — {tf_label}", \
-                "Intraday morning session momentum", "intraday_open_drive", \
-                {"rsi_window": w['rsi']}
 
-            # 7b: Lunch Mean Reversion
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"ISMLunch_{tf_label}", \
-                f"Mid-session mean reversion — {tf_label}", \
-                "Intraday mean reversion during lunch session", "intraday_revert", \
-                {"rsi_window": w['rsi']}
+def var_volume_value(w, _tf_label):
+    """Value spike: 6 variants"""
+    for mult, tag in [(1.3, "Std"), (1.5, "Tight"), (2.0, "Aggr"),
+                       (1.2, "Mild"), (2.5, "XAggr"), (1.8, "Med")]:
+        yield tag, f"ValSpike({mult}x)", "Matched value spike", {"vol_window": w['vol']}
 
-            # 7c: Close Window Squeeze
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"ISMClose_{tf_label}", \
-                f"Close window momentum squeeze — {tf_label}", \
-                "End-of-session position squeeze capture", "intraday_close", \
-                {"rsi_window": w['rsi']}
 
-            # 7d: Gap Fill
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"ISMGap_{tf_label}", \
-                f"Intraday gap fill — {tf_label}", \
-                "Intraday gap fill pattern trading", "intraday_gapfill", \
-                {"rsi_window": w['rsi']}
+def var_volume_obv(w, _tf_label):
+    """OBV: 6 variants"""
+    for ow, tag in [(w['mid'], "Mid"), (w['slow'], "Slow"), (w['fast'], "Fast"),
+                     (max(3, w['mid']//2), "Ultra"), (w['mid']*2, "XSlow"),
+                     (w['slow']*2, "VSlow")]:
+        yield tag, f"OBV({ow})", "OBV cumulative flow", {"mid_window": ow}
 
-        # --- Thesis 08: Multi-Factor (only 15, 30, 60 min) ---
-        if tf_min >= 15:
-            thesis = "multifactor"
-            t = THESIS_IDS[thesis]
 
-            # 8a: Z-score Composite
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MFZScore_{tf_label}", \
-                f"Multi-factor z-score composite — {tf_label}", \
-                "Composite multi-factor signal using z-scores", "multifactor_zscore", \
-                {"mid_window": w['mid'], "rsi_window": w['rsi'], "adx_window": w['adx']}
+def var_intraday_open(w, _tf_label):
+    """Open drive: 6 variants"""
+    for rw, tag in [(w['rsi'], "Std"), (max(3, w['rsi']//2), "Fast"),
+                     (w['rsi']*2, "Slow"), (max(3, w['rsi']//3), "Ultra"),
+                     (w['rsi']*3, "VSlow"), (max(3, w['rsi']//4), "XUltra")]:
+        yield tag, f"OpenDrive({rw})", "Morning session momentum", {"rsi_window": rw}
 
-            # 8b: Morning + Momentum
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MFMom_{tf_label}", \
-                f"Momentum + volume + trend multi-layer — {tf_label}", \
-                "Multi-factor momentum with confirmation layers", "multifactor_momentum", \
-                {"rsi_window": w['rsi'], "fast_window": w['fast'], "adx_window": w['adx']}
 
-            # 8c: Trend + Volume + VN30
-            alpha_counter += 1
-            yield thesis, tf_subdir, f"{t:02d}-{alpha_counter:03d}", f"MFTrendVol_{tf_label}", \
-                f"4-layer: trend + strength + volume + VN30 — {tf_label}", \
-                "Multi-factor trend with 4-layer confirmation", "multifactor_trendvol", \
-                {"mid_window": w['mid'], "vol_window": w['vol'], "adx_window": w['adx']}
+def var_intraday_revert(w, _tf_label):
+    """Lunch revert: 6 variants"""
+    for rw, tag in [(w['rsi'], "Std"), (max(3, w['rsi']//2), "Fast"),
+                     (w['rsi']*2, "Slow"), (max(3, w['rsi']//3), "Ultra"),
+                     (w['rsi']*3, "VSlow"), (max(3, w['rsi']//4), "XUltra")]:
+        yield tag, f"LunchRev({rw})", "Lunch mean reversion", {"rsi_window": rw}
+
+
+def var_intraday_close(w, _tf_label):
+    """Close squeeze: 6 variants"""
+    for rw, tag in [(w['rsi'], "Std"), (max(3, w['rsi']//2), "Fast"),
+                     (w['rsi']*2, "Slow"), (max(3, w['rsi']//3), "Ultra"),
+                     (w['rsi']*3, "VSlow"), (max(3, w['rsi']//4), "XUltra")]:
+        yield tag, f"CloseSqz({rw})", "Close window squeeze", {"rsi_window": rw}
+
+
+def var_intraday_gap(w, _tf_label):
+    """Gap fill: 6 variants"""
+    for rw, tag in [(w['rsi'], "Std"), (max(3, w['rsi']//2), "Fast"),
+                     (w['rsi']*2, "Slow"), (max(3, w['rsi']//3), "Ultra"),
+                     (w['rsi']*3, "VSlow"), (max(3, w['rsi']//4), "XUltra")]:
+        yield tag, f"GapFill({rw})", "Intraday gap fill", {"rsi_window": rw}
+
+
+def var_multifactor_zscore(w, _tf_label):
+    """Z-score: 8 variants"""
+    for th, tag in [(1.5, "Std"), (2.0, "Tight"), (1.0, "Mild"), (1.2, "Med"),
+                     (2.5, "Aggr"), (3.0, "XAggr"), (0.8, "Gentle"), (4.0, "XXAggr")]:
+        yield tag, f"ZScore({th})", "Multi-factor z-score", \
+            {"mid_window": w['mid'], "rsi_window": w['rsi'], "adx_window": w['adx']}
+
+
+def var_multifactor_mom(w, _tf_label):
+    """Momentum multi: 6 variants"""
+    for rw, tag in [(w['rsi'], "Std"), (max(3, w['rsi']//2), "Fast"),
+                     (w['rsi']*2, "Slow"), (max(3, w['rsi']//3), "Ultra"),
+                     (w['rsi']*3, "VSlow"), (max(3, w['rsi']//4), "XUltra")]:
+        yield tag, f"MFMom({rw})", "Multi-layer momentum", \
+            {"rsi_window": rw, "fast_window": w['fast'], "adx_window": w['adx']}
+
+
+def var_multifactor_trendvol(w, _tf_label):
+    """Trend+Volume+VN30: 6 variants"""
+    for mw, tag in [(w['mid'], "Mid"), (w['slow'], "Slow"), (w['fast'], "Fast"),
+                     (w['mid']*2, "XSlow"), (w['slow']*2, "VSlow"),
+                     (max(3, w['fast']//2), "Ultra")]:
+        yield tag, f"MFTrendVol({mw})", "4-layer trend confirmation", \
+            {"mid_window": mw, "vol_window": w['vol'], "adx_window": w['adx']}
+
+
+# --- New templates variant generators ---
+
+def var_momentum_cmo(w, _tf_label):
+    """CMO momentum: 7 variants"""
+    for cw, tag in [(w['rsi'], "Std"), (w['fast'], "Fast"), (w['mid'], "Mid"),
+                     (w['slow'], "Slow"), (max(3, w['rsi']//2), "Ultra"),
+                     (w['rsi']*2, "Slow2"), (max(3, w['rsi']//3), "XUltra")]:
+        yield tag, f"CMO({cw})", "CMO momentum oscillator", {"rsi_window": cw}
+
+
+def var_trend_aroon(w, _tf_label):
+    """Aroon trend: 6 variants"""
+    for aw, tag in [(w['adx'], "Std"), (w['fast'], "Fast"), (w['mid'], "Mid"),
+                     (w['slow'], "Slow"), (w['adx']*2, "Slow2"),
+                     (max(3, w['adx']//2), "Ultra")]:
+        yield tag, f"Aroon({aw})", "Aroon trend strength", {"adx_window": aw}
+
+
+def var_meanrev_cci(w, _tf_label):
+    """CCI mean reversion: 7 variants"""
+    for cw, tag in [(w['mid'], "Std"), (w['fast'], "Fast"), (w['slow'], "Slow"),
+                     (max(3, w['mid']//2), "Ultra"), (w['mid']*2, "XSlow"),
+                     (w['mid']*3, "VSlow"), (max(3, w['mid']//3), "XUltra")]:
+        yield tag, f"CCI({cw})", "CCI extreme reversion", {"mid_window": cw}
+
+
+def var_volume_mfi(w, _tf_label):
+    """MFI volume flow: 7 variants"""
+    for mw, tag in [(w['vol'], "Std"), (w['fast'], "Fast"), (w['mid'], "Mid"),
+                     (max(3, w['vol']//2), "Ultra"), (w['vol']*2, "Slow"),
+                     (w['vol']*3, "VSlow"), (max(3, w['vol']//3), "XUltra")]:
+        yield tag, f"MFI({mw})", "MFI overbought/oversold", {"vol_window": mw}
+
+
+# ================================================================
+# THESIS CATALOG
+# ================================================================
+
+THESIS_CATALOG = {
+    "momentum": {
+        "id": 1, "timeframes": [5, 15, 30, 60],
+        "templates": [
+            ("momentum_pure", var_momentum_pure, "Mom", "Momentum"),
+            ("momentum_vol", var_momentum_vol, "MomVol", "Momentum+Volume"),
+            ("momentum_vn30", var_momentum_vn30, "MomVN30", "Momentum+VN30"),
+            ("momentum_cascade", var_momentum_cascade, "MomCasc", "Cascade"),
+            ("momentum_cmo", var_momentum_cmo, "MomCMO", "CMO"),
+        ]
+    },
+    "trend": {
+        "id": 2, "timeframes": [5, 15, 30, 60],
+        "templates": [
+            ("trend_ma_cross", var_trend_ma_cross, "TrendMAC", "MA Cross"),
+            ("trend_macd", var_trend_macd, "TrendMACD", "MACD"),
+            ("trend_quantile", var_trend_quantile, "TrendQ", "Quantile Trend"),
+            ("trend_ema_adx", var_trend_ema_adx, "TrendEMA", "EMA Trend"),
+            ("trend_aroon", var_trend_aroon, "TrendAroon", "Aroon"),
+        ]
+    },
+    "mean_reversion": {
+        "id": 3, "timeframes": [5, 15, 30, 60],
+        "templates": [
+            ("meanrev_quantile", var_meanrev_quantile, "MRQ", "Quantile Rev"),
+            ("meanrev_rsi", var_meanrev_rsi, "MRRSI", "RSI Rev"),
+            ("meanrev_bbands", var_meanrev_bbands, "MRBB", "BBands Rev"),
+            ("meanrev_volclimax", var_meanrev_volclimax, "MRVC", "Vol Climax"),
+            ("meanrev_cci", var_meanrev_cci, "MRCCI", "CCI"),
+        ]
+    },
+    "breakout": {
+        "id": 4, "timeframes": [5, 15, 30, 60],
+        "templates": [
+            ("breakout_quantile", var_breakout_quantile, "BOQ", "Quantile BO"),
+            ("breakout_donchian", var_breakout_donchian, "BODon", "Donchian"),
+            ("breakout_range", var_breakout_range, "BORng", "Range Exp"),
+            ("breakout_vn30", var_breakout_vn30, "BOVN30", "VN30 BO"),
+        ]
+    },
+    "cross_market": {
+        "id": 5, "timeframes": [15, 30, 60],
+        "templates": [
+            ("cross_relative", var_cross_relative, "XMRel", "Relative"),
+            ("cross_dji", var_cross_dji, "XMDJI", "DJI"),
+            ("cross_consensus", var_cross_consensus, "XMCon", "Consensus"),
+            ("cross_gap", var_cross_gap, "XMGap", "Gap"),
+        ],
+    },
+    "volume_flow": {
+        "id": 6, "timeframes": [15, 30, 60],
+        "templates": [
+            ("volume_oi", var_volume_oi, "VFOI", "OI Trend"),
+            ("volume_matched_surge", var_volume_surge, "VFVol", "Vol Surge"),
+            ("volume_value", var_volume_value, "VFVal", "Val Spike"),
+            ("volume_obv", var_volume_obv, "VFOBV", "OBV Flow"),
+            ("volume_mfi", var_volume_mfi, "VFMFI", "MFI"),
+        ]
+    },
+    "intraday_session": {
+        "id": 7, "timeframes": [5, 15],
+        "templates": [
+            ("intraday_open_drive", var_intraday_open, "ISMOpn", "Open Drive"),
+            ("intraday_revert", var_intraday_revert, "ISMLun", "Lunch Rev"),
+            ("intraday_close", var_intraday_close, "ISMCls", "Close Sq"),
+            ("intraday_gapfill", var_intraday_gap, "ISMGap", "Gap Fill"),
+        ]
+    },
+    "multifactor": {
+        "id": 8, "timeframes": [15, 30, 60],
+        "templates": [
+            ("multifactor_zscore", var_multifactor_zscore, "MFZ", "Z-Score"),
+            ("multifactor_momentum", var_multifactor_mom, "MFMom", "Momentum MF"),
+            ("multifactor_trendvol", var_multifactor_trendvol, "MFTV", "Trend+Vol"),
+        ]
+    },
+}
+
+
+def build_strategies():
+    """Yield (thesis, timeframe, alpha_id, name, summary, idea, template_key, fmt)."""
+    alpha_counter = 0
+
+    for thesis_name, cat in THESIS_CATALOG.items():
+        t_id = cat["id"]
+        for tf_label, tf_min in TIMEFRAMES:
+            if tf_min not in cat["timeframes"]:
+                continue
+            w = WINDOWS[tf_min]
+
+            for template_key, variant_fn, prefix, theme in cat["templates"]:
+                for variant_tag, variant_summary, variant_idea, fmt_overrides in variant_fn(w, tf_label):
+                    alpha_counter += 1
+                    name = f"{prefix}{variant_tag}_{tf_label}"
+                    summary = f"{theme}: {variant_summary} — {tf_label}"
+                    idea = variant_idea
+
+                    yield thesis_name, tf_label, f"{t_id:02d}-{alpha_counter:04d}", \
+                        name, summary, idea, template_key, fmt_overrides
 
 
 def main():
     index_rows = []
 
-    for thesis, tf_subdir, alpha_id, name, summary, idea, template_key, fmt in build_strategies():
+    for thesis, tf_label, alpha_id, name, summary, idea, template_key, fmt in build_strategies():
         t_id = THESIS_IDS[thesis]
         thesis_dir = f"thesis_{t_id:02d}_{thesis}"
-        filepath = os.path.join(OUTPUT_DIR, thesis_dir, tf_subdir, filename(alpha_id, name))
+        filepath = os.path.join(OUTPUT_DIR, thesis_dir, tf_label, filename(alpha_id, name))
 
-        os.makedirs(os.path.join(OUTPUT_DIR, thesis_dir, tf_subdir), exist_ok=True)
+        os.makedirs(os.path.join(OUTPUT_DIR, thesis_dir, tf_label), exist_ok=True)
 
-        code = render(name, summary, thesis, tf_subdir, idea, template_key, fmt)
+        code = render(name, summary, thesis, tf_label, idea, template_key, fmt)
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(code)
 
-        direction = "BOTH"
         index_rows.append({
             "alpha_id": alpha_id,
             "thesis_group": thesis_dir,
-            "timeframe": tf_subdir,
-            "direction": direction,
+            "timeframe": tf_label,
+            "direction": "BOTH",
             "thesis_id": t_id,
-            "file": os.path.join(thesis_dir, tf_subdir, filename(alpha_id, name)),
+            "file": os.path.join(thesis_dir, tf_label, filename(alpha_id, name)),
             "name": name,
             "summary": summary,
         })
