@@ -13,9 +13,15 @@ class CustomStrategy(SimpleAlgorithm):
     rsi_low = 22
     rsi_high = 78
 
+    return_window = 3
+    return_threshold = 0.0001
+    position_close_after_n_candles = 72
+
     def __algorithm__(self):
         close = self.data.pv_close
         volume = self.data.pv_volume
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
 
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
         rsi = self.feat.rsi(close, timeperiod=self.rsi_window)
@@ -24,9 +30,9 @@ class CustomStrategy(SimpleAlgorithm):
         downside_climax = vol_spike & (rsi < self.rsi_low)
         upside_climax = vol_spike & (rsi > self.rsi_high)
 
-        long_setup = downside_climax
-        short_setup = upside_climax
-        exit_setup = self.op.crossed_above(rsi, 50) | self.op.crossed_below(rsi, 50)
+        long_setup = (downside_climax) & (return_roll > 0)
+        short_setup = (upside_climax) & (return_roll < 0)
+        exit_setup = (self.op.crossed_above(rsi, 50) | self.op.crossed_below(rsi, 50)) | (abs(return_roll) < self.return_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

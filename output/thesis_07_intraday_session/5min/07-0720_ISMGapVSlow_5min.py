@@ -9,9 +9,17 @@ class CustomStrategy(SimpleAlgorithm):
 
     rsi_window = 21
 
+    return_window = 3
+    return_threshold = 0.0001
+    position_close_after_n_candles = 72
+    position_open_ranges = ['02:00-04:30', '06:00-07:45']
+    position_close_ranges = ['04:20-04:30', '07:30-07:45']
+
     def __algorithm__(self):
         close = self.data.pv_close
         open_price = self.data.pv_open
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
 
         rsi = self.feat.rsi(close, timeperiod=self.rsi_window)
         gap = (open_price / close - 1) * 100
@@ -21,9 +29,9 @@ class CustomStrategy(SimpleAlgorithm):
         filling_down = gap_up & (close < open_price) & (rsi < 60)
         filling_up = gap_down & (close > open_price) & (rsi > 40)
 
-        long_setup = filling_up
-        short_setup = filling_down
-        exit_setup = self.op.crossed_above(abs(gap), 0.1)
+        long_setup = (filling_up) & (return_roll > 0)
+        short_setup = (filling_down) & (return_roll < 0)
+        exit_setup = (self.op.crossed_above(abs(gap), 0.1)) | (abs(return_roll) < self.return_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

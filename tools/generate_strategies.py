@@ -11,6 +11,8 @@ BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTPUT_DIR = os.path.join(BASE, "output")
 INDEX_FILE = os.path.join(OUTPUT_DIR, "index.csv")
 
+import re
+
 TIMEFRAMES = [
     ("5min", 5),
     ("15min", 15),
@@ -25,6 +27,17 @@ WINDOWS = {
     30: {"fast": 20, "mid": 40, "slow": 50, "rsi": 14, "adx": 14, "vol": 26},
     60: {"fast": 30, "mid": 60, "slow": 100, "rsi": 21, "adx": 21, "vol": 34},
 }
+
+# return_roll windows by timeframe (for momentum confirmation filter)
+RETURN_WINDOWS = {5: 3, 15: 5, 30: 8, 60: 14}
+RETURN_THRESH = {5: 0.0001, 15: 0.0002, 30: 0.0003, 60: 0.0005}
+
+# Max candles to hold a position before forced close
+SESSION_CANDLES = {5: 72, 15: 24, 30: 12, 60: 6}
+
+# Session time ranges for intraday_session thesis (UTC)
+OPEN_RANGES = ["02:00-04:30", "06:00-07:45"]
+CLOSE_RANGES = ["04:20-04:30", "07:30-07:45"]
 
 THESIS_IDS = {
     "momentum": 1, "trend": 2, "mean_reversion": 3, "breakout": 4,
@@ -43,13 +56,95 @@ idea:    {idea}
 TEMPLATES = {}
 
 
+def inject_filters(code, fmt, thesis):
+    """Post-process rendered strategy: inject return_roll filter + session management."""
+    if "return_window" not in fmt:
+        return code
+
+    rw = fmt["return_window"]
+    rt = fmt["return_threshold"]
+    sc = fmt["session_candles"]
+
+    # Guarantee all required fmt keys exist for templates that use them
+    for key in ("open_ranges", "close_ranges"):
+        if key not in fmt:
+            fmt[key] = ""
+
+    # 1. Add class attributes
+    extra = (
+        f"    return_window = {rw}\n"
+        f"    return_threshold = {rt}\n"
+        f"    position_close_after_n_candles = {sc}\n"
+    )
+    if thesis == "intraday_session":
+        extra += (
+            f"    position_open_ranges = {OPEN_RANGES}\n"
+            f"    position_close_ranges = {CLOSE_RANGES}\n"
+        )
+    code = code.replace(
+        "    def __algorithm__(self):",
+        extra + "\n    def __algorithm__(self):"
+    )
+
+    # 2. Inject return_roll computation after the last data variable assignment
+    lines = code.split("\n")
+    last_data = -1
+    for i in range(len(lines) - 1, -1, -1):
+        s = lines[i].strip()
+        if "self.data." in s and not s.startswith("#"):
+            last_data = i
+            break
+
+    if last_data >= 0:
+        ret_block = [
+            "        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)",
+            "        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)",
+        ]
+        for j, line in enumerate(ret_block):
+            lines.insert(last_data + 1 + j, line)
+
+    # 3. Modify long_setup / short_setup / exit_setup inside __algorithm__
+    algo_start = -1
+    for i, line in enumerate(lines):
+        if line.strip() == "def __algorithm__(self):":
+            algo_start = i
+            break
+
+    if algo_start >= 0:
+        for i in range(algo_start + 1, len(lines)):
+            s = lines[i].strip()
+            indent = " " * (len(lines[i]) - len(s))
+
+            if (
+                not s
+                or s.startswith("#")
+                or s.startswith("def ")
+                or not indent
+            ):
+                continue
+
+            if s.startswith("long_setup = "):
+                expr = s[len("long_setup = "):]
+                lines[i] = indent + f"long_setup = ({expr}) & (return_roll > 0)"
+            elif s.startswith("short_setup = "):
+                expr = s[len("short_setup = "):]
+                lines[i] = indent + f"short_setup = ({expr}) & (return_roll < 0)"
+            elif s.startswith("exit_setup = "):
+                expr = s[len("exit_setup = "):]
+                lines[i] = indent + f"exit_setup = ({expr}) | (abs(return_roll) < self.return_threshold)"
+
+    return "\n".join(lines)
+
+
 def render(name, summary, thesis, timeframe, idea, template_key, fmt):
     header = DOCSTRING.format(
         name=name, summary=summary, thesis=thesis,
         timeframe=timeframe, idea=idea
     )
     body = TEMPLATES[template_key].format(**fmt)
-    return header + body
+    code = header + body
+    code = inject_filters(code, fmt, thesis)
+    return code
 
 
 def filename(alpha_id, name):
@@ -231,7 +326,6 @@ TEMPLATES["trend_macd"] = '''\
 class CustomStrategy(SimpleAlgorithm):
 
     adx_window = {adx_window}
-    adx_threshold = {adx_threshold}
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -243,13 +337,20 @@ class CustomStrategy(SimpleAlgorithm):
         )
         adx = self.feat.adx(high, low, close, timeperiod=self.adx_window)
 
-        long_setup = (macd_line > signal_line) & (adx > self.adx_threshold)
-        short_setup = (macd_line < signal_line) & (adx > self.adx_threshold)
+        trend_long = macd_line > signal_line
+        trend_short = macd_line < signal_line
+
+        strong_long = trend_long & (adx > 25) & (return_roll > 0)
+        weak_long = trend_long & (adx > 18) & (return_roll > 0)
+        strong_short = trend_short & (adx > 25) & (return_roll < 0)
+        weak_short = trend_short & (adx > 18) & (return_roll < 0)
         exit_setup = self.op.crossed_below(macd_line, signal_line) | self.op.crossed_above(macd_line, signal_line)
 
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(weak_long, position=0.5)
+        self.set_positions(strong_long, position=1)
+        self.set_positions(weak_short, position=-0.5)
+        self.set_positions(strong_short, position=-1)
 '''
 
 TEMPLATES["trend_quantile"] = '''\
@@ -269,13 +370,20 @@ class CustomStrategy(SimpleAlgorithm):
         lower = self.feat.rolling_quantile(close, self.q_window, self.q_low)
         adx = self.feat.adx(high, low, close, timeperiod=self.adx_window)
 
-        long_setup = (close > upper) & (adx > 20)
-        short_setup = (close < lower) & (adx > 20)
+        breakout_high = close > upper
+        breakout_low = close < lower
+
+        strong_long = breakout_high & (adx > 25) & (return_roll > 0)
+        weak_long = breakout_high & (adx > 18) & (return_roll > 0)
+        strong_short = breakout_low & (adx > 25) & (return_roll < 0)
+        weak_short = breakout_low & (adx > 18) & (return_roll < 0)
         exit_setup = self.op.crossed_below(close, upper) | self.op.crossed_above(close, lower)
 
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(weak_long, position=0.5)
+        self.set_positions(strong_long, position=1)
+        self.set_positions(weak_short, position=-0.5)
+        self.set_positions(strong_short, position=-1)
 '''
 
 TEMPLATES["trend_ema_adx"] = '''\
@@ -292,13 +400,20 @@ class CustomStrategy(SimpleAlgorithm):
         ema = self.feat.ema(close, timeperiod=self.fast_window)
         adx = self.feat.adx(high, low, close, timeperiod=self.adx_window)
 
-        long_setup = (close > ema) & (adx > 20) & (adx < 40)
-        short_setup = (close < ema) & (adx > 20) & (adx < 40)
+        above_ema = close > ema
+        below_ema = close < ema
+
+        strong_long = above_ema & (adx > 22) & (adx < 40) & (return_roll > 0)
+        weak_long = above_ema & (adx > 18) & (adx < 40) & (return_roll > 0)
+        strong_short = below_ema & (adx > 22) & (adx < 40) & (return_roll < 0)
+        weak_short = below_ema & (adx > 18) & (adx < 40) & (return_roll < 0)
         exit_setup = self.op.crossed_below(close, ema) | self.op.crossed_above(close, ema)
 
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(weak_long, position=0.5)
+        self.set_positions(strong_long, position=1)
+        self.set_positions(weak_short, position=-0.5)
+        self.set_positions(strong_short, position=-1)
 '''
 
 TEMPLATES["meanrev_quantile"] = '''\
@@ -811,16 +926,24 @@ class CustomStrategy(SimpleAlgorithm):
         mom_z = self.feat.rolling_zscore(momentum, window=self.z_window)
 
         composite = price_z + mom_z + vol_z
-        trend_ok = adx > 20
         rsi_ok = (rsi > 30) & (rsi < 70)
+        score_ok_long = (composite > self.z_threshold)
+        score_ok_short = (composite < -self.z_threshold)
 
-        long_setup = (composite > self.z_threshold) & trend_ok & rsi_ok
-        short_setup = (composite < -self.z_threshold) & trend_ok & rsi_ok
+        core_long = score_ok_long & rsi_ok
+        core_short = score_ok_short & rsi_ok
+
+        strong_long = core_long & (adx > 22) & (vol_z > 0) & (return_roll > 0)
+        weak_long = core_long & (adx > 18) & (return_roll > 0)
+        strong_short = core_short & (adx > 22) & (vol_z < 0) & (return_roll < 0)
+        weak_short = core_short & (adx > 18) & (return_roll < 0)
         exit_setup = (abs(composite) < 0.5) | (adx < 15)
 
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(weak_long, position=0.5)
+        self.set_positions(strong_long, position=1)
+        self.set_positions(weak_short, position=-0.5)
+        self.set_positions(strong_short, position=-1)
 '''
 
 TEMPLATES["multifactor_momentum"] = '''\
@@ -843,15 +966,21 @@ class CustomStrategy(SimpleAlgorithm):
 
         morning_momentum = (roc > 0) & (rsi > 50) & (rsi < 65)
         volume_confirm = volume > vol_sma
-        trend_confirm = adx > 20
 
-        long_setup = morning_momentum & volume_confirm & trend_confirm
-        short_setup = (roc < 0) & (rsi < 50) & (rsi > 35) & volume_confirm & trend_confirm
+        core_long = morning_momentum
+        core_short = (roc < 0) & (rsi < 50) & (rsi > 35)
+
+        strong_long = core_long & volume_confirm & (adx > 22) & (return_roll > 0)
+        weak_long = core_long & (adx > 18) & (return_roll > 0)
+        strong_short = core_short & volume_confirm & (adx > 22) & (return_roll < 0)
+        weak_short = core_short & (adx > 18) & (return_roll < 0)
         exit_setup = self.op.crossed_below(rsi, 50) | self.op.crossed_above(rsi, 50)
 
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(weak_long, position=0.5)
+        self.set_positions(strong_long, position=1)
+        self.set_positions(weak_short, position=-0.5)
+        self.set_positions(strong_short, position=-1)
 '''
 
 TEMPLATES["multifactor_trendvol"] = '''\
@@ -874,17 +1003,23 @@ class CustomStrategy(SimpleAlgorithm):
         vn30_roc = self.feat.roc(vn30_close, timeperiod=self.vol_window)
 
         trend_ok = close > ema
-        strength_ok = (adx > 20) & (adx < 45)
         volume_ok = volume > vol_sma
         vn30_confirm = vn30_roc > 0
 
-        long_setup = trend_ok & strength_ok & volume_ok & vn30_confirm
-        short_setup = (~trend_ok) & strength_ok & volume_ok & (~vn30_confirm)
+        core_long = trend_ok & vn30_confirm
+        core_short = (~trend_ok) & (~vn30_confirm)
+
+        strong_long = core_long & (adx > 22) & (adx < 45) & volume_ok & (return_roll > 0)
+        weak_long = core_long & (adx > 18) & (adx < 45) & (return_roll > 0)
+        strong_short = core_short & (adx > 22) & (adx < 45) & volume_ok & (return_roll < 0)
+        weak_short = core_short & (adx > 18) & (adx < 45) & (return_roll < 0)
         exit_setup = self.op.crossed_below(close, ema) | (adx < 15)
 
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(weak_long, position=0.5)
+        self.set_positions(strong_long, position=1)
+        self.set_positions(weak_short, position=-0.5)
+        self.set_positions(strong_short, position=-1)
 '''
 
 TEMPLATES["momentum_cmo"] = '''\
@@ -1414,6 +1549,15 @@ def main():
 
     for thesis, tf_label, alpha_id, name, summary, idea, template_key, fmt in build_strategies():
         t_id = THESIS_IDS[thesis]
+        tf_min = dict(TIMEFRAMES)[tf_label]
+
+        # Inject enhancement parameters
+        fmt["return_window"] = RETURN_WINDOWS[tf_min]
+        fmt["return_threshold"] = RETURN_THRESH[tf_min]
+        fmt["session_candles"] = SESSION_CANDLES[tf_min]
+        fmt["open_ranges"] = str(OPEN_RANGES)
+        fmt["close_ranges"] = str(CLOSE_RANGES)
+
         thesis_dir = f"thesis_{t_id:02d}_{thesis}"
         filepath = os.path.join(OUTPUT_DIR, thesis_dir, tf_label, filename(alpha_id, name))
 
