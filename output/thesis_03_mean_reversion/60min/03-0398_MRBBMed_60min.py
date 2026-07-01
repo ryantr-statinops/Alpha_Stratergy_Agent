@@ -8,12 +8,13 @@ idea:    Bollinger Band reversion
 class CustomStrategy(SimpleAlgorithm):
 
     bbands_window = 60
+    nbdev = 1.8
 
     def __algorithm__(self):
         close = self.data.pv_close
 
         upper, mid_band, lower = self.feat.bbands(
-            close, timeperiod=self.bbands_window, nbdevup=2, nbdevdn=2
+            close, timeperiod=self.bbands_window, nbdevup=self.nbdev, nbdevdn=self.nbdev
         )
 
         long_setup = close < lower

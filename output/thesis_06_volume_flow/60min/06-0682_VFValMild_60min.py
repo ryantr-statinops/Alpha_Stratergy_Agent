@@ -8,6 +8,7 @@ idea:    Matched value spike
 class CustomStrategy(SimpleAlgorithm):
 
     val_window = 34
+    value_mult = 1.2
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -17,7 +18,7 @@ class CustomStrategy(SimpleAlgorithm):
         val_q80 = self.feat.rolling_quantile(matched_val, self.val_window, 0.80)
         close_sma = self.feat.sma(close, timeperiod=self.val_window)
 
-        flow = (matched_val > val_q80) & (matched_val > val_sma * 1.3)
+        flow = (matched_val > val_q80) & (matched_val > val_sma * self.value_mult)
 
         long_setup = flow & (close > close_sma)
         short_setup = flow & (close < close_sma)

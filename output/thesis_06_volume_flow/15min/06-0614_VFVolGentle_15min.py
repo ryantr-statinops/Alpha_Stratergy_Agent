@@ -8,6 +8,7 @@ idea:    Matched volume surge
 class CustomStrategy(SimpleAlgorithm):
 
     vol_window = 20
+    surge_mult = 1.2
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -17,7 +18,7 @@ class CustomStrategy(SimpleAlgorithm):
         vol_q80 = self.feat.rolling_quantile(matched_vol, self.vol_window, 0.80)
         close_sma = self.feat.sma(close, timeperiod=self.vol_window)
 
-        surge = (matched_vol > vol_sma * 1.5) & (matched_vol > vol_q80)
+        surge = (matched_vol > vol_sma * self.surge_mult) & (matched_vol > vol_q80)
 
         long_setup = surge & (close > close_sma)
         short_setup = surge & (close < close_sma)

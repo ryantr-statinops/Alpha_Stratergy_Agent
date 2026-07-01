@@ -8,6 +8,7 @@ idea:    MACD + ADX trend strength
 class CustomStrategy(SimpleAlgorithm):
 
     adx_window = 21
+    adx_threshold = 15
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -19,8 +20,8 @@ class CustomStrategy(SimpleAlgorithm):
         )
         adx = self.feat.adx(high, low, close, timeperiod=self.adx_window)
 
-        long_setup = (macd_line > signal_line) & (adx > 20)
-        short_setup = (macd_line < signal_line) & (adx > 20)
+        long_setup = (macd_line > signal_line) & (adx > self.adx_threshold)
+        short_setup = (macd_line < signal_line) & (adx > self.adx_threshold)
         exit_setup = self.op.crossed_below(macd_line, signal_line) | self.op.crossed_above(macd_line, signal_line)
 
         self.set_positions(exit_setup, position=0)

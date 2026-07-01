@@ -14,8 +14,8 @@ class CustomStrategy(SimpleAlgorithm):
 
         roc = self.feat.roc(close, timeperiod=self.roc_window)
 
-        long_setup = roc > 0
-        short_setup = roc < 0
+        long_setup = self.op.rising(roc) & (roc > 0)
+        short_setup = self.op.falling(roc) & (roc < 0)
         exit_setup = self.op.crossed_below(roc, 0) | self.op.crossed_above(roc, 0)
 
         self.set_positions(exit_setup, position=0)

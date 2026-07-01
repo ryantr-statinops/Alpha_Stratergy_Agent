@@ -9,6 +9,7 @@ class CustomStrategy(SimpleAlgorithm):
 
     range_window = 13
     vol_window = 20
+    range_mult = 2.0
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -20,7 +21,7 @@ class CustomStrategy(SimpleAlgorithm):
         avg_range = self.feat.sma(daily_range, timeperiod=self.range_window)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
 
-        range_expansion = daily_range > avg_range * 1.5
+        range_expansion = daily_range > avg_range * self.range_mult
         vol_confirmation = volume > vol_sma
 
         long_setup = range_expansion & vol_confirmation & (close > (high + low) / 2)
