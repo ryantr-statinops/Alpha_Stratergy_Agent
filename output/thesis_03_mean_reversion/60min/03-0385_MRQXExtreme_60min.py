@@ -8,12 +8,14 @@ idea:    Quantile extreme reversion
 class CustomStrategy(SimpleAlgorithm):
 
     q_window = 60
+    q_high = 0.98
+    q_low = 0.02
 
     def __algorithm__(self):
         close = self.data.pv_close
 
-        upper = self.feat.rolling_quantile(close, self.q_window, 0.90)
-        lower = self.feat.rolling_quantile(close, self.q_window, 0.10)
+        upper = self.feat.rolling_quantile(close, self.q_window, self.q_high)
+        lower = self.feat.rolling_quantile(close, self.q_window, self.q_low)
 
         long_setup = close < lower
         short_setup = close > upper

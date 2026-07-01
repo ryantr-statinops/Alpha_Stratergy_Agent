@@ -8,6 +8,9 @@ idea:    Multi-factor z-score
 class CustomStrategy(SimpleAlgorithm):
 
     z_window = 60
+    z_threshold = 3.0
+    rsi_window = 21
+    adx_window = 21
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -17,18 +20,18 @@ class CustomStrategy(SimpleAlgorithm):
 
         price_z = self.feat.rolling_zscore(close, window=self.z_window)
         vol_z = self.feat.rolling_zscore(volume, window=self.z_window)
-        rsi = self.feat.rsi(close, timeperiod=21)
-        adx = self.feat.adx(high, low, close, timeperiod=21)
+        rsi = self.feat.rsi(close, timeperiod=self.rsi_window)
+        adx = self.feat.adx(high, low, close, timeperiod=self.adx_window)
 
-        momentum = self.feat.roc(close, timeperiod=21)
+        momentum = self.feat.roc(close, timeperiod=self.rsi_window)
         mom_z = self.feat.rolling_zscore(momentum, window=self.z_window)
 
         composite = price_z + mom_z + vol_z
         trend_ok = adx > 20
         rsi_ok = (rsi > 30) & (rsi < 70)
 
-        long_setup = (composite > 1.5) & trend_ok & rsi_ok
-        short_setup = (composite < -1.5) & trend_ok & rsi_ok
+        long_setup = (composite > self.z_threshold) & trend_ok & rsi_ok
+        short_setup = (composite < -self.z_threshold) & trend_ok & rsi_ok
         exit_setup = (abs(composite) < 0.5) | (adx < 15)
 
         self.set_positions(exit_setup, position=0)

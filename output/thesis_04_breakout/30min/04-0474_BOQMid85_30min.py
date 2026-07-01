@@ -9,13 +9,15 @@ class CustomStrategy(SimpleAlgorithm):
 
     q_window = 40
     vol_window = 26
+    q_high = 0.85
+    q_low = 0.15
 
     def __algorithm__(self):
         close = self.data.pv_close
         volume = self.data.pv_volume
 
-        upper = self.feat.rolling_quantile(close, self.q_window, 0.80)
-        lower = self.feat.rolling_quantile(close, self.q_window, 0.20)
+        upper = self.feat.rolling_quantile(close, self.q_window, self.q_high)
+        lower = self.feat.rolling_quantile(close, self.q_window, self.q_low)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
 
         long_setup = (close > upper) & (volume > vol_sma)

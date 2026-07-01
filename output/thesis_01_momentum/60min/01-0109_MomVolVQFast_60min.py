@@ -15,10 +15,10 @@ class CustomStrategy(SimpleAlgorithm):
         volume = self.data.pv_volume
 
         roc = self.feat.roc(close, timeperiod=self.roc_window)
-        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+        vol_q80 = self.feat.rolling_quantile(volume, self.vol_window, 0.80)
 
-        long_setup = (roc > 0) & (volume > vol_sma)
-        short_setup = (roc < 0) & (volume > vol_sma)
+        long_setup = (roc > 0) & (volume > vol_q80)
+        short_setup = (roc < 0) & (volume > vol_q80)
         exit_setup = self.op.crossed_below(roc, 0) | self.op.crossed_above(roc, 0)
 
         self.set_positions(exit_setup, position=0)

@@ -79,6 +79,45 @@ class CustomStrategy(SimpleAlgorithm):
         self.set_positions(short_setup, position=-1)
 '''
 
+TEMPLATES["momentum_pure_smooth"] = '''\
+class CustomStrategy(SimpleAlgorithm):
+
+    roc_window = {roc_window}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+
+        roc = self.feat.roc(close, timeperiod=self.roc_window)
+        roc_smooth = self.feat.sma(roc, timeperiod=2)
+
+        long_setup = roc_smooth > 0
+        short_setup = roc_smooth < 0
+        exit_setup = self.op.crossed_below(roc_smooth, 0) | self.op.crossed_above(roc_smooth, 0)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+'''
+
+TEMPLATES["momentum_pure_rising"] = '''\
+class CustomStrategy(SimpleAlgorithm):
+
+    roc_window = {roc_window}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+
+        roc = self.feat.roc(close, timeperiod=self.roc_window)
+
+        long_setup = self.op.rising(roc) & (roc > 0)
+        short_setup = self.op.falling(roc) & (roc < 0)
+        exit_setup = self.op.crossed_below(roc, 0) | self.op.crossed_above(roc, 0)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+'''
+
 TEMPLATES["momentum_vol"] = '''\
 class CustomStrategy(SimpleAlgorithm):
 
@@ -94,6 +133,28 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = (roc > 0) & (volume > vol_sma)
         short_setup = (roc < 0) & (volume > vol_sma)
+        exit_setup = self.op.crossed_below(roc, 0) | self.op.crossed_above(roc, 0)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+'''
+
+TEMPLATES["momentum_volq"] = '''\
+class CustomStrategy(SimpleAlgorithm):
+
+    roc_window = {roc_window}
+    vol_window = {vol_window}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        volume = self.data.pv_volume
+
+        roc = self.feat.roc(close, timeperiod=self.roc_window)
+        vol_q80 = self.feat.rolling_quantile(volume, self.vol_window, 0.80)
+
+        long_setup = (roc > 0) & (volume > vol_q80)
+        short_setup = (roc < 0) & (volume > vol_q80)
         exit_setup = self.op.crossed_below(roc, 0) | self.op.crossed_above(roc, 0)
 
         self.set_positions(exit_setup, position=0)
@@ -170,6 +231,7 @@ TEMPLATES["trend_macd"] = '''\
 class CustomStrategy(SimpleAlgorithm):
 
     adx_window = {adx_window}
+    adx_threshold = {adx_threshold}
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -181,8 +243,8 @@ class CustomStrategy(SimpleAlgorithm):
         )
         adx = self.feat.adx(high, low, close, timeperiod=self.adx_window)
 
-        long_setup = (macd_line > signal_line) & (adx > 20)
-        short_setup = (macd_line < signal_line) & (adx > 20)
+        long_setup = (macd_line > signal_line) & (adx > self.adx_threshold)
+        short_setup = (macd_line < signal_line) & (adx > self.adx_threshold)
         exit_setup = self.op.crossed_below(macd_line, signal_line) | self.op.crossed_above(macd_line, signal_line)
 
         self.set_positions(exit_setup, position=0)
@@ -195,14 +257,16 @@ class CustomStrategy(SimpleAlgorithm):
 
     q_window = {mid_window}
     adx_window = {adx_window}
+    q_high = {qh}
+    q_low = {ql}
 
     def __algorithm__(self):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
 
-        upper = self.feat.rolling_quantile(close, self.q_window, 0.75)
-        lower = self.feat.rolling_quantile(close, self.q_window, 0.25)
+        upper = self.feat.rolling_quantile(close, self.q_window, self.q_high)
+        lower = self.feat.rolling_quantile(close, self.q_window, self.q_low)
         adx = self.feat.adx(high, low, close, timeperiod=self.adx_window)
 
         long_setup = (close > upper) & (adx > 20)
@@ -241,12 +305,14 @@ TEMPLATES["meanrev_quantile"] = '''\
 class CustomStrategy(SimpleAlgorithm):
 
     q_window = {mid_window}
+    q_high = {qh}
+    q_low = {ql}
 
     def __algorithm__(self):
         close = self.data.pv_close
 
-        upper = self.feat.rolling_quantile(close, self.q_window, 0.90)
-        lower = self.feat.rolling_quantile(close, self.q_window, 0.10)
+        upper = self.feat.rolling_quantile(close, self.q_window, self.q_high)
+        lower = self.feat.rolling_quantile(close, self.q_window, self.q_low)
 
         long_setup = close < lower
         short_setup = close > upper
@@ -261,14 +327,16 @@ TEMPLATES["meanrev_rsi"] = '''\
 class CustomStrategy(SimpleAlgorithm):
 
     rsi_window = {rsi_window}
+    rsi_low = {rsi_low}
+    rsi_high = {rsi_high}
 
     def __algorithm__(self):
         close = self.data.pv_close
 
         rsi = self.feat.rsi(close, timeperiod=self.rsi_window)
 
-        long_setup = rsi < 30
-        short_setup = rsi > 70
+        long_setup = rsi < self.rsi_low
+        short_setup = rsi > self.rsi_high
         exit_setup = self.op.crossed_above(rsi, 50) | self.op.crossed_below(rsi, 50)
 
         self.set_positions(exit_setup, position=0)
@@ -280,12 +348,13 @@ TEMPLATES["meanrev_bbands"] = '''\
 class CustomStrategy(SimpleAlgorithm):
 
     bbands_window = {mid_window}
+    nbdev = {nbdev}
 
     def __algorithm__(self):
         close = self.data.pv_close
 
         upper, mid_band, lower = self.feat.bbands(
-            close, timeperiod=self.bbands_window, nbdevup=2, nbdevdn=2
+            close, timeperiod=self.bbands_window, nbdevup=self.nbdev, nbdevdn=self.nbdev
         )
 
         long_setup = close < lower
@@ -302,6 +371,9 @@ class CustomStrategy(SimpleAlgorithm):
 
     vol_window = {vol_window}
     rsi_window = {rsi_window}
+    vol_mult = {vol_mult}
+    rsi_low = {rsi_low}
+    rsi_high = {rsi_high}
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -310,9 +382,9 @@ class CustomStrategy(SimpleAlgorithm):
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
         rsi = self.feat.rsi(close, timeperiod=self.rsi_window)
 
-        vol_spike = volume > vol_sma * 1.5
-        downside_climax = vol_spike & (rsi < 25)
-        upside_climax = vol_spike & (rsi > 75)
+        vol_spike = volume > vol_sma * self.vol_mult
+        downside_climax = vol_spike & (rsi < self.rsi_low)
+        upside_climax = vol_spike & (rsi > self.rsi_high)
 
         long_setup = downside_climax
         short_setup = upside_climax
@@ -328,13 +400,15 @@ class CustomStrategy(SimpleAlgorithm):
 
     q_window = {fast_window}
     vol_window = {vol_window}
+    q_high = {qh}
+    q_low = {ql}
 
     def __algorithm__(self):
         close = self.data.pv_close
         volume = self.data.pv_volume
 
-        upper = self.feat.rolling_quantile(close, self.q_window, 0.80)
-        lower = self.feat.rolling_quantile(close, self.q_window, 0.20)
+        upper = self.feat.rolling_quantile(close, self.q_window, self.q_high)
+        lower = self.feat.rolling_quantile(close, self.q_window, self.q_low)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
 
         long_setup = (close > upper) & (volume > vol_sma)
@@ -373,6 +447,7 @@ class CustomStrategy(SimpleAlgorithm):
 
     range_window = {fast_window}
     vol_window = {vol_window}
+    range_mult = {range_mult}
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -384,7 +459,7 @@ class CustomStrategy(SimpleAlgorithm):
         avg_range = self.feat.sma(daily_range, timeperiod=self.range_window)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
 
-        range_expansion = daily_range > avg_range * 1.5
+        range_expansion = daily_range > avg_range * self.range_mult
         vol_confirmation = volume > vol_sma
 
         long_setup = range_expansion & vol_confirmation & (close > (high + low) / 2)
@@ -541,6 +616,7 @@ TEMPLATES["volume_matched_surge"] = '''\
 class CustomStrategy(SimpleAlgorithm):
 
     vol_window = {vol_window}
+    surge_mult = {surge_mult}
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -550,7 +626,7 @@ class CustomStrategy(SimpleAlgorithm):
         vol_q80 = self.feat.rolling_quantile(matched_vol, self.vol_window, 0.80)
         close_sma = self.feat.sma(close, timeperiod=self.vol_window)
 
-        surge = (matched_vol > vol_sma * 1.5) & (matched_vol > vol_q80)
+        surge = (matched_vol > vol_sma * self.surge_mult) & (matched_vol > vol_q80)
 
         long_setup = surge & (close > close_sma)
         short_setup = surge & (close < close_sma)
@@ -565,6 +641,7 @@ TEMPLATES["volume_value"] = '''\
 class CustomStrategy(SimpleAlgorithm):
 
     val_window = {vol_window}
+    value_mult = {value_mult}
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -574,7 +651,7 @@ class CustomStrategy(SimpleAlgorithm):
         val_q80 = self.feat.rolling_quantile(matched_val, self.val_window, 0.80)
         close_sma = self.feat.sma(close, timeperiod=self.val_window)
 
-        flow = (matched_val > val_q80) & (matched_val > val_sma * 1.3)
+        flow = (matched_val > val_q80) & (matched_val > val_sma * self.value_mult)
 
         long_setup = flow & (close > close_sma)
         short_setup = flow & (close < close_sma)
@@ -715,6 +792,9 @@ TEMPLATES["multifactor_zscore"] = '''\
 class CustomStrategy(SimpleAlgorithm):
 
     z_window = {mid_window}
+    z_threshold = {z_threshold}
+    rsi_window = {rsi_window}
+    adx_window = {adx_window}
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -724,18 +804,18 @@ class CustomStrategy(SimpleAlgorithm):
 
         price_z = self.feat.rolling_zscore(close, window=self.z_window)
         vol_z = self.feat.rolling_zscore(volume, window=self.z_window)
-        rsi = self.feat.rsi(close, timeperiod={rsi_window})
-        adx = self.feat.adx(high, low, close, timeperiod={adx_window})
+        rsi = self.feat.rsi(close, timeperiod=self.rsi_window)
+        adx = self.feat.adx(high, low, close, timeperiod=self.adx_window)
 
-        momentum = self.feat.roc(close, timeperiod={rsi_window})
+        momentum = self.feat.roc(close, timeperiod=self.rsi_window)
         mom_z = self.feat.rolling_zscore(momentum, window=self.z_window)
 
         composite = price_z + mom_z + vol_z
         trend_ok = adx > 20
         rsi_ok = (rsi > 30) & (rsi < 70)
 
-        long_setup = (composite > 1.5) & trend_ok & rsi_ok
-        short_setup = (composite < -1.5) & trend_ok & rsi_ok
+        long_setup = (composite > self.z_threshold) & trend_ok & rsi_ok
+        short_setup = (composite < -self.z_threshold) & trend_ok & rsi_ok
         exit_setup = (abs(composite) < 0.5) | (adx < 15)
 
         self.set_positions(exit_setup, position=0)
@@ -748,6 +828,7 @@ class CustomStrategy(SimpleAlgorithm):
 
     rsi_window = {rsi_window}
     roc_window = {fast_window}
+    adx_window = {adx_window}
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -757,7 +838,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         roc = self.feat.roc(close, timeperiod=self.roc_window)
         rsi = self.feat.rsi(close, timeperiod=self.rsi_window)
-        adx = self.feat.adx(high, low, close, timeperiod={adx_window})
+        adx = self.feat.adx(high, low, close, timeperiod=self.adx_window)
         vol_sma = self.feat.sma(volume, timeperiod=self.rsi_window)
 
         morning_momentum = (roc > 0) & (rsi > 50) & (rsi < 65)
@@ -893,15 +974,15 @@ class CustomStrategy(SimpleAlgorithm):
 # ================================================================
 
 def var_momentum_pure(w, _tf_label):
-    """Multi-window ROC momentum: 9 variants"""
+    """Multi-window ROC momentum: 8 variants"""
     for roc_w, tag in [(w['fast'], "Fast"), (w['mid'], "Mid"), (w['slow'], "Slow")]:
         yield tag, f"ROC({roc_w})", "Pure momentum: ROC direction", {"roc_window": roc_w}
     for roc_w, tag in [(w['fast'], "Fast"), (w['mid'], "Mid")]:
         yield f"{tag}2", f"ROC({roc_w}) strength-2", "ROC momentum with 2-period smoothing", \
-            {"roc_window": roc_w}
+            {"roc_window": roc_w}, "momentum_pure_smooth"
     yield "XSlow", "ROC(ultra-slow)", "Ultra-slow pure momentum", {"roc_window": w['slow'] * 2}
     yield "XFast", "ROC(ultra-fast)", "Ultra-fast pure momentum", {"roc_window": max(2, w['fast']//2)}
-    yield "RSig", "ROC with rising strength", "ROC > ROC(lagged)", {"roc_window": w['mid']}
+    yield "RSig", "ROC with rising strength", "ROC > ROC(lagged)", {"roc_window": w['mid']}, "momentum_pure_rising"
 
 
 def var_momentum_vol(w, _tf_label):
@@ -910,7 +991,7 @@ def var_momentum_vol(w, _tf_label):
         yield f"Vol{tag}", f"ROC({roc_w}) + volume surge", "Momentum + volume confirmation", \
             {"roc_window": roc_w, "vol_window": w['vol']}
         yield f"VQ{tag}", f"ROC({roc_w}) + volume Q80", "Momentum + volume quantile", \
-            {"roc_window": roc_w, "vol_window": w['vol']}
+            {"roc_window": roc_w, "vol_window": w['vol']}, "momentum_volq"
     yield "VolSlow", "ROC(slow) + volume", "Slow momentum with volume", {"roc_window": w['slow'], "vol_window": w['vol']}
 
 
@@ -951,7 +1032,8 @@ def var_trend_macd(w, _tf_label):
     """MACD with different ADX thresholds: 6 variants"""
     for adx_th, tag in [(20, "Std"), (25, "Strict"), (15, "Mild"), (30, "Aggr"),
                          (18, "Med"), (35, "XAggr")]:
-        yield tag, f"MACD + ADX({adx_th})", "MACD + ADX trend strength", {"adx_window": w['adx']}
+        yield tag, f"MACD + ADX({adx_th})", "MACD + ADX trend strength", \
+            {"adx_window": w['adx'], "adx_threshold": adx_th}
 
 
 def var_trend_quantile(w, _tf_label):
@@ -960,9 +1042,9 @@ def var_trend_quantile(w, _tf_label):
                (0.70, 0.30, "Mild"), (0.85, 0.15, "Aggr"), (0.95, 0.05, "XExtreme")]
     for qh, ql, tag in configs:
         yield tag, f"Q{qh:.0%}/Q{ql:.0%} + ADX", "Quantile trend channel", \
-            {"mid_window": w['mid'], "adx_window": w['adx']}
-    yield "QSlow", "Q75/Q25 slow + ADX", "Slow quantile trend", {"mid_window": w['slow'], "adx_window": w['adx']}
-    yield "QFast", "Q75/Q25 fast + ADX", "Fast quantile trend", {"mid_window": w['fast'], "adx_window": w['adx']}
+            {"mid_window": w['mid'], "adx_window": w['adx'], "qh": qh, "ql": ql}
+    yield "QSlow", "Q75/Q25 slow + ADX", "Slow quantile trend", {"mid_window": w['slow'], "adx_window": w['adx'], "qh": 0.75, "ql": 0.25}
+    yield "QFast", "Q75/Q25 fast + ADX", "Fast quantile trend", {"mid_window": w['fast'], "adx_window": w['adx'], "qh": 0.75, "ql": 0.25}
 
 
 def var_trend_ema_adx(w, _tf_label):
@@ -988,7 +1070,7 @@ def var_meanrev_quantile(w, _tf_label):
     ]
     for qw, qh, ql, tag in configs:
         yield tag, f"Q{qh:.0%}/Q{ql:.0%}({qw})", "Quantile extreme reversion", \
-            {"mid_window": qw}
+            {"mid_window": qw, "qh": qh, "ql": ql}
 
 
 def var_meanrev_rsi(w, _tf_label):
@@ -998,14 +1080,15 @@ def var_meanrev_rsi(w, _tf_label):
                   (28, 72, "Med"), (15, 85, "XExtreme")]
     for low, high, tag in thresholds:
         yield tag, f"RSI({low}/{high})", \
-            "RSI extreme mean reversion", {"rsi_window": w['rsi']}
+            "RSI extreme mean reversion", {"rsi_window": w['rsi'], "rsi_low": low, "rsi_high": high}
 
 
 def var_meanrev_bbands(w, _tf_label):
     """BBands reversion: 6 variants"""
     for dev, tag in [(2, "Std"), (2.5, "Tight"), (3, "Extreme"), (1.5, "Mild"),
                       (1.8, "Med"), (4, "XExtreme")]:
-        yield tag, f"BBands({dev}STD)", "Bollinger Band reversion", {"mid_window": w['mid']}
+        yield tag, f"BBands({dev}STD)", "Bollinger Band reversion", \
+            {"mid_window": w['mid'], "nbdev": dev}
 
 
 def var_meanrev_volclimax(w, _tf_label):
@@ -1014,7 +1097,7 @@ def var_meanrev_volclimax(w, _tf_label):
                (1.8, 22, "Med"), (2.5, 18, "Aggr"), (1.2, 35, "Gentle")]
     for mult, rsi_th, tag in configs:
         yield tag, f"VolClimax({mult}x,RSI<{rsi_th})", "Volume climax reversal", \
-            {"vol_window": w['vol'], "rsi_window": w['rsi']}
+            {"vol_window": w['vol'], "rsi_window": w['rsi'], "vol_mult": mult, "rsi_low": rsi_th, "rsi_high": 100 - rsi_th}
 
 
 def var_breakout_quantile(w, tf_label):
@@ -1027,7 +1110,7 @@ def var_breakout_quantile(w, tf_label):
     ]
     for qw, qh, ql, tag in configs:
         yield tag, f"Q{qh:.0%}({qw}) + volume", "Quantile breakout with volume", \
-            {"fast_window": qw, "vol_window": w['vol']}
+            {"fast_window": qw, "vol_window": w['vol'], "qh": qh, "ql": ql}
 
 
 def var_breakout_donchian(w, _tf_label):
@@ -1043,7 +1126,7 @@ def var_breakout_range(w, _tf_label):
     for mult, tag in [(1.5, "Std"), (2.0, "Tight"), (1.3, "Mild"),
                        (1.8, "Med"), (2.5, "Aggr"), (3.0, "XAggr"), (1.1, "Gentle")]:
         yield tag, f"Range({mult}x)", "Range expansion breakout", \
-            {"fast_window": w['fast'], "vol_window": w['vol']}
+            {"fast_window": w['fast'], "vol_window": w['vol'], "range_mult": mult}
 
 
 def var_breakout_vn30(w, _tf_label):
@@ -1106,14 +1189,16 @@ def var_volume_surge(w, _tf_label):
     """Volume surge: 7 variants"""
     for mult, tag in [(1.5, "Std"), (2.0, "Tight"), (1.3, "Mild"), (1.8, "Med"),
                        (2.5, "Aggr"), (3.0, "XAggr"), (1.2, "Gentle")]:
-        yield tag, f"VolSurge({mult}x)", "Matched volume surge", {"vol_window": w['vol']}
+        yield tag, f"VolSurge({mult}x)", "Matched volume surge", \
+            {"vol_window": w['vol'], "surge_mult": mult}
 
 
 def var_volume_value(w, _tf_label):
     """Value spike: 6 variants"""
     for mult, tag in [(1.3, "Std"), (1.5, "Tight"), (2.0, "Aggr"),
                        (1.2, "Mild"), (2.5, "XAggr"), (1.8, "Med")]:
-        yield tag, f"ValSpike({mult}x)", "Matched value spike", {"vol_window": w['vol']}
+        yield tag, f"ValSpike({mult}x)", "Matched value spike", \
+            {"vol_window": w['vol'], "value_mult": mult}
 
 
 def var_volume_obv(w, _tf_label):
@@ -1161,7 +1246,7 @@ def var_multifactor_zscore(w, _tf_label):
     for th, tag in [(1.5, "Std"), (2.0, "Tight"), (1.0, "Mild"), (1.2, "Med"),
                      (2.5, "Aggr"), (3.0, "XAggr"), (0.8, "Gentle"), (4.0, "XXAggr")]:
         yield tag, f"ZScore({th})", "Multi-factor z-score", \
-            {"mid_window": w['mid'], "rsi_window": w['rsi'], "adx_window": w['adx']}
+            {"mid_window": w['mid'], "rsi_window": w['rsi'], "adx_window": w['adx'], "z_threshold": th}
 
 
 def var_multifactor_mom(w, _tf_label):
@@ -1311,14 +1396,17 @@ def build_strategies():
             w = WINDOWS[tf_min]
 
             for template_key, variant_fn, prefix, theme in cat["templates"]:
-                for variant_tag, variant_summary, variant_idea, fmt_overrides in variant_fn(w, tf_label):
+                for result in variant_fn(w, tf_label):
+                    variant_tag, variant_summary, variant_idea, fmt_overrides, *variant_extra = result
+                    override_template = variant_extra[0] if variant_extra else None
+                    effective_template = override_template or template_key
                     alpha_counter += 1
                     name = f"{prefix}{variant_tag}_{tf_label}"
                     summary = f"{theme}: {variant_summary} — {tf_label}"
                     idea = variant_idea
 
                     yield thesis_name, tf_label, f"{t_id:02d}-{alpha_counter:04d}", \
-                        name, summary, idea, template_key, fmt_overrides
+                        name, summary, idea, effective_template, fmt_overrides
 
 
 def main():

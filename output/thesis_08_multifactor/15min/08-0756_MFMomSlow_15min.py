@@ -9,6 +9,7 @@ class CustomStrategy(SimpleAlgorithm):
 
     rsi_window = 20
     roc_window = 13
+    adx_window = 10
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -18,7 +19,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         roc = self.feat.roc(close, timeperiod=self.roc_window)
         rsi = self.feat.rsi(close, timeperiod=self.rsi_window)
-        adx = self.feat.adx(high, low, close, timeperiod=10)
+        adx = self.feat.adx(high, low, close, timeperiod=self.adx_window)
         vol_sma = self.feat.sma(volume, timeperiod=self.rsi_window)
 
         morning_momentum = (roc > 0) & (rsi > 50) & (rsi < 65)
