@@ -1,7 +1,7 @@
 # Context Session — Alpha Bot
 
-**Session Date:** 2026-07-01  
-**Purpose:** Full context snapshot for AI Agent continuity  
+**Session Date:** 2026-07-02 (Updated)  
+**Purpose:** Full context snapshot for AI Agent continuity — 805 multi-thesis strategies generated  
 **Next Agent:** Read this first, then proceed
 
 ---
@@ -9,6 +9,10 @@
 ## 1. Project Overview
 
 Dự án nghiên cứu và phát triển chiến lược đầu tư định lượng cho nền tảng **XNOQuant**, tập trung vào thị trường phái sinh VnFuture (VN30F1M).
+
+**Target:** 500+ chiến lược Published cho Vietnam Quant Challenge 2026  
+**Status:** 805 strategies generated across 8 thesis groups × 4 timeframes  
+**Scoring:** Sharpe ≥ 1.2, CAGR ≥ 25%, Sortino ≥ 1.5, Calmar ≥ 0.9, weighted 10-metric scorecard
 
 **Core Tech Stack:**
 - Python on XNOQuant platform
@@ -26,36 +30,44 @@ ALPHA_BOT/
 ├── context_session/
 │   └── session_context.md              # File này
 ├── data/
-│   └── VnFuture.md                     # Dữ liệu fut_* fields
+│   └── VnFuture.md                     # OHLCV + fut_* + pv_vn30_* + pv_dji_* fields
 ├── feature/
 │   └── feature_syntax.md               # 140+ indicators
 ├── operations/
 │   └── operations_syntax.md            # 30+ operators
 ├── template_example/
-│   ├── strategy_framework.md           # **Master spec** — đọc trước khi code
+│   ├── strategy_framework.md           # **Master spec** — multi-timeframe, thesis guide, VN30/DJI
 │   ├── (9 file .py mẫu)
 ├── idea/
 │   ├── planning_alpha/
 │   │   ├── alpha_generation_rolling_mean_quantile.md  # ~890 alpha
-│   │   ├── strategy_001_mean_quantile_rsi.md          # Plan cho Strategy #001
-│   │   └── scaling_proposal_500_10000_strategies.md   # Scaling architecture
+│   │   ├── strategy_001_mean_quantile_rsi.md
+│   │   └── scaling_proposal_500_10000_strategies.md
 │   ├── hypothesis/
-│   │   ├── hypothesis_framework.md     # Testing framework + acceptance criteria
-│   │   └── hyp_strategy_001.md         # Hypothesis test cases
+│   │   ├── hypothesis_framework.md     # Updated: 10-metric scorecard (Sortino, VaR, CVaR, Ulcer, Cost, Correlation)
+│   │   └── hyp_strategy_001.md
 │   └── stage_overview/
-│       └── session_overview.md         # Session log
+│       └── session_overview.md
 ├── output/
-│   ├── index.csv                       # Master manifest (50 strategies)
-│   ├── A_rolling_mean_level/           # 8 files
-│   ├── B_rolling_mean_crossover/       # 6 files
-│   ├── C_mean_confirmation/            # 9 files
-│   ├── D_rolling_quantile_level/       # 6 files
-│   ├── E_quantile_channel/             # 5 files
-│   ├── F_quantile_confirmation/        # 5 files
-│   ├── H_vnfuture_specific/            # 5 files
-│   └── I_combined_mean_quantile/       # 6 files
+│   ├── index.csv                       # Master manifest (805 strategies, enhanced columns)
+│   ├── thesis_01_momentum/             # 132 strategies
+│   │   ├── 5min/  15min/  30min/  60min/
+│   ├── thesis_02_trend/                # 144 strategies
+│   │   ├── 5min/  15min/  30min/  60min/
+│   ├── thesis_03_mean_reversion/       # 136 strategies
+│   │   ├── 5min/  15min/  30min/  60min/
+│   ├── thesis_04_breakout/             # 108 strategies
+│   │   ├── 5min/  15min/  30min/  60min/
+│   ├── thesis_05_cross_market/         # 81 strategies
+│   │   ├── 15min/  30min/  60min/
+│   ├── thesis_06_volume_flow/          # 96 strategies
+│   │   ├── 15min/  30min/  60min/
+│   ├── thesis_07_intraday_session/     # 48 strategies
+│   │   ├── 5min/  15min/
+│   └── thesis_08_multifactor/          # 60 strategies
+│       ├── 15min/  30min/  60min/
 └── tools/
-    └── generate_strategies.py          # Batch generator script
+    └── generate_strategies.py          # Multi-thesis generator: 35+ templates, parameter-grid variants
 ```
 
 ---
@@ -71,7 +83,15 @@ ALPHA_BOT/
 | `pv_open` | Giá mở cửa (dùng `open_price`) |
 | `pv_volume` | Khối lượng |
 | `pv_vn30_open` | VN30 open |
+| `pv_vn30_high` | VN30 high |
+| `pv_vn30_low` | VN30 low |
 | `pv_vn30_close` | VN30 close |
+| `pv_vn30_volume` | VN30 volume |
+| `pv_dji_open` | DJI open |
+| `pv_dji_high` | DJI high |
+| `pv_dji_low` | DJI low |
+| `pv_dji_close` | DJI close |
+| `pv_dji_volume` | DJI volume |
 
 ### VnFuture Futures (`self.data.fut_*_vn30f1m_1d`)
 | Field | Ý nghĩa |
@@ -151,87 +171,56 @@ class CustomStrategy(SimpleAlgorithm):
 | -0.5 | Partial Short |
 | -1.0 | Full Short |
 
+### Multi-Timeframe Window Sizing
+
+| Timeframe | Fast | Mid | Slow | RSI | ADX | Vol |
+|:---------:|:----:|:---:|:----:|:---:|:---:|:---:|
+| 5 min | 8 | 14 | 20 | 7 | 7 | 14 |
+| 15 min | 13 | 26 | 34 | 10 | 10 | 20 |
+| 30 min | 20 | 40 | 50 | 14 | 14 | 26 |
+| 60 min | 30 | 60 | 100 | 21 | 21 | 34 |
+
 ---
 
 ## 7. Acceptance Criteria (`idea/hypothesis/hypothesis_framework.md`)
 
-### Metric Targets (Bắt buộc)
+### Metric Targets (Cập nhật 2026-07-02 — 10 metrics, weighted scoring)
 
-| Metric | Target |
-|--------|--------|
-| Sharpe Ratio | ≥ 1.2 |
-| CAGR | ≥ 25% |
-| Max Drawdown | ≥ -40% |
-| Profit Factor | ≥ 1.7 |
-| Calmar Ratio (CAGR/DD) | ≥ 0.9 |
+| Metric | Weight | Target |
+|--------|:------:|--------|
+| Sharpe Ratio | High | ≥ 1.2 |
+| CAGR | High | ≥ 25% |
+| Sortino Ratio | Medium | ≥ 1.5 |
+| Calmar Ratio | Medium | ≥ 0.9 |
+| Max Drawdown | High | ≥ -40% |
+| Profit Factor | Medium | ≥ 1.7 |
+| Value at Risk (VaR 95%) | Medium | ≥ -5% |
+| Conditional VaR (CVaR 95%) | Low | ≥ -6% |
+| Ulcer Index | Low | ≤ 12 |
+| Cost (slippage + fee) | Low | ≤ 1% |
+| Correlation (vs benchmark) | Low | ≤ 0.8 |
 
-### Multi-Stage Validation
-- **Stage Train:** 70% dữ liệu (cho phép tune, không overfit)
-- **Stage Test:** 30% dữ liệu giấu kín (pass target mới được deploy)
-
-### Verdict
-| Điều kiện | Kết quả |
-|-----------|---------|
-| Train ≥ 4/5 | → Sang Test |
-| Test ≥ 4/5 | → PASS, deploy |
-| Test < 4/5 | → REJECT, redesign |
+**Weight scoring:** HIGH=2pts, MEDIUM=1pt, LOW=0.5pt. Max=13pts. PASS ≥ 8.0 with Sharpe+CAGR+MaxDD MUST-PASS.
 
 ---
 
-## 8. Strategy Inventory (50 Strategies)
+## 8. Strategy Inventory (805 Strategies)
 
-| Alpha ID | Family | File | Logic |
-|----------|--------|------|-------|
-| A-005 | A_rolling_mean_level | `A-005_MeanLevel8.py` | close > mean(8) → LONG |
-| A-006 | A_rolling_mean_level | `A-006_MeanLevel8.py` | close < mean(8) → SHORT |
-| A-009 | A_rolling_mean_level | `A-009_MeanLevel14.py` | close > mean(14) → LONG |
-| A-010 | A_rolling_mean_level | `A-010_MeanLevel14.py` | close < mean(14) → SHORT |
-| A-013 | A_rolling_mean_level | `A-013_MeanLevel30.py` | close > mean(30) → LONG |
-| A-014 | A_rolling_mean_level | `A-014_MeanLevel30.py` | close < mean(30) → SHORT |
-| A-017 | A_rolling_mean_level | `A-017_MeanLevel100.py` | close > mean(100) → LONG |
-| A-018 | A_rolling_mean_level | `A-018_MeanLevel100.py` | close < mean(100) → SHORT |
-| B2-001 | B_rolling_mean_crossover | `B2-001_MACross5_20.py` | MA5 > MA20 → LONG |
-| B2-002 | B_rolling_mean_crossover | `B2-002_MACross5_20.py` | MA5 < MA20 → SHORT |
-| B2-009 | B_rolling_mean_crossover | `B2-009_MACross10_30.py` | MA10 > MA30 → LONG |
-| B2-010 | B_rolling_mean_crossover | `B2-010_MACross10_30.py` | MA10 < MA30 → SHORT |
-| B2-015 | B_rolling_mean_crossover | `B2-015_MACross20_100.py` | MA20 > MA100 → LONG |
-| B2-016 | B_rolling_mean_crossover | `B2-016_MACross20_100.py` | MA20 < MA100 → SHORT |
-| C-005 | C_mean_confirmation | `C-005_Mean50ROC.py` | close > mean(50) & ROC > 0 |
-| C-006 | C_mean_confirmation | `C-006_Mean50ROC.py` | close < mean(50) & ROC < 0 |
-| C-007 | C_mean_confirmation | `C-007_Mean14ADX.py` | close > mean(14) & ADX > 20 |
-| C-008 | C_mean_confirmation | `C-008_Mean14ADX.py` | close < mean(14) & ADX > 20 |
-| C-013 | C_mean_confirmation | `C-013_Mean14MACD.py` | close > mean(14) & MACD > Signal |
-| C-014 | C_mean_confirmation | `C-014_Mean14MACD.py` | close < mean(14) & MACD < Signal |
-| C-019 | C_mean_confirmation | `C-019_Mean20Volume.py` | close > mean(20) & Vol > SMA |
-| C-020 | C_mean_confirmation | `C-020_Mean20Volume.py` | close < mean(20) & Vol > SMA |
-| C-025 | C_mean_confirmation | `C-025_Mean14CMO.py` | close > mean(14) & CMO > 0 |
-| D-001 | D_rolling_quantile_level | `D-001_QuantileChannel10_80.py` | close > Q80(10) → LONG |
-| D-002 | D_rolling_quantile_level | `D-002_QuantileChannel10_80.py` | close < Q20(10) → SHORT |
-| D-019 | D_rolling_quantile_level | `D-019_QuantileChannel30_90.py` | close > Q90(30) → LONG |
-| D-020 | D_rolling_quantile_level | `D-020_QuantileChannel30_90.py` | close < Q10(30) → SHORT |
-| D-031 | D_rolling_quantile_level | `D-031_QuantileChannel100_75.py` | close > Q75(100) → LONG |
-| D-032 | D_rolling_quantile_level | `D-032_QuantileChannel100_75.py` | close < Q25(100) → SHORT |
-| E1-001 | E_quantile_channel | `E1-001_QChannel10_80_20.py` | Close > Q80(10) → L, < Q20(10) → S |
-| E1-003 | E_quantile_channel | `E1-003_QChannel20_80_20.py` | same, window=20 |
-| E1-006 | E_quantile_channel | `E1-006_QChannel14_90_10.py` | Close > Q90(14) → L, < Q10(14) → S |
-| E2-001 | E_quantile_channel | `E2-001_QRev10_80_20.py` | Reversion: short at Q80, long at Q20 |
-| E2-003 | E_quantile_channel | `E2-003_QRev20_80_20.py` | Reversion, window=20 |
-| F-001 | F_quantile_confirmation | `F-001_Q14RSI.py` | Close > Q80(14) & RSI > 50 |
-| F-002 | F_quantile_confirmation | `F-002_Q14RSI.py` | Close < Q20(14) & RSI < 50 |
-| F-005 | F_quantile_confirmation | `F-005_Q20ADX.py` | Close > Q80(20) & ADX > 20 |
-| F-006 | F_quantile_confirmation | `F-006_Q20ADX.py` | Close < Q20(20) & ADX > 20 |
-| F-013 | F_quantile_confirmation | `F-013_Q20Volume.py` | Close > Q80(20) & Vol > SMA |
-| H-001 | H_vnfuture_specific | `H-001_MatchedVolMean14.py` | matched_vol > mean(14) |
-| H-003 | H_vnfuture_specific | `H-003_OpenInterestQ80.py` | OI > Q80(20) & price > mean(20) |
-| H-005 | H_vnfuture_specific | `H-005_OpenInterestMean14.py` | OI > mean(14) & price > mean(14) |
-| H-009 | H_vnfuture_specific | `H-009_TotalVolMean20.py` | total_vol > mean(20) & price > mean(20) |
-| H-021 | H_vnfuture_specific | `H-021_MatchedValQ80.py` | matched_val > Q80(14) & price > mean(14) |
-| I-000 | I_combined_mean_quantile | `I-000_VNFutureMeanQuantileRSI.py` | close > Q80 > mean(14) & RSI > 50 |
-| I-001 | I_combined_mean_quantile | `I-001_Mean14Q10RSI.py` | close > Q80(10) > mean(14) & RSI > 50 |
-| I-002 | I_combined_mean_quantile | `I-002_Mean14Q10RSI.py` | close < Q20(10) < mean(14) & RSI < 50 |
-| I-003 | I_combined_mean_quantile | `I-003_Mean20Q14Volume.py` | close > Q80(14) > mean(20) & Vol > SMA |
-| I-005 | I_combined_mean_quantile | `I-005_Mean50Q20ADX.py` | close > Q80(20) > mean(50) & ADX > 20 |
-| I-006 | I_combined_mean_quantile | `I-006_Mean50Q20ADX.py` | close < Q20(20) < mean(50) & ADX > 20 |
+**8 Thesis Groups × 4 Timeframes:**
+
+| # | Thesis Group | 5min | 15min | 30min | 60min | Total | Key Indicators |
+|:-:|--------------|:----:|:-----:|:-----:|:-----:|:-----:|----------------|
+| 01 | Momentum | 33 | 33 | 33 | 33 | 132 | ROC, CMO, VN30 confirm |
+| 02 | Trend | 36 | 36 | 36 | 36 | 144 | MA cross, MACD, ADX, Aroon |
+| 03 | Mean Reversion | 34 | 34 | 34 | 34 | 136 | Quantile, RSI, BBands, CCI, VolClimax |
+| 04 | Breakout | 27 | 27 | 27 | 27 | 108 | Quantile BO, Donchian, Range, VN30 |
+| 05 | Cross-Market | — | 27 | 27 | 27 | 81 | Relative strength, DJI, Consensus, Gap |
+| 06 | Volume & Flow | — | 32 | 32 | 32 | 96 | OI, Matched Vol/Val, OBV, MFI |
+| 07 | Intraday Session | 24 | 24 | — | — | 48 | Open drive, Lunch rev, Close sqz, Gap fill |
+| 08 | Multi-Factor | — | 20 | 20 | 20 | 60 | Z-score, Mom multi, Trend+Vol+VN30 |
+| | **Total** | **154** | **233** | **209** | **209** | **805** | |
+
+**Generator:** `tools/generate_strategies.py` — 35+ templates, parameter-grid variant generators, timeframe-aware window scaling. Template types: momentum_pure, momentum_vol, momentum_vn30, momentum_cascade, momentum_cmo, trend_ma_cross, trend_macd, trend_quantile, trend_ema_adx, trend_aroon, meanrev_quantile, meanrev_rsi, meanrev_bbands, meanrev_volclimax, meanrev_cci, breakout_quantile, breakout_donchian, breakout_range, breakout_vn30, cross_relative, cross_dji, cross_consensus, cross_gap, volume_oi, volume_matched_surge, volume_value, volume_obv, volume_mfi, intraday_open_drive, intraday_revert, intraday_close, intraday_gapfill, multifactor_zscore, multifactor_momentum, multifactor_trendvol.
 
 ---
 
@@ -242,14 +231,17 @@ Step 1: Alpha Generation    ✅ (890 alpha in planning_alpha/)
 Step 2: Planning & Hypoth   ✅ (Strategy #001 planned + 6 hypotheses)
 Step 3: User Review          ✅ (Approved)
 Step 4: Chain-of-Thought     ✅ (Strategy #001 coded)
-Step 5: Output               ✅ (50 strategies generated in output/)
+Step 5: Output               ✅ (805 strategies — 8 thesis groups × 4 timeframes)
 ```
 
 **Next possible tasks:**
-- Generate more strategies (up to 10,000 using `tools/generate_strategies.py`)
-- Update `output/index.csv` with more metadata columns
-- Create detailed hypothesis docs for other strategies
-- Refactor generator to support all 890 alpha variants
+- Backtest validation on XNOQuant platform (verify Sharpe, CAGR, Sortino)
+- Create hypothesis documents for each thesis group
+- Optimize strategy parameters via walk-forward validation
+- Generate remaining strategies to reach 1,000+ (add more templates/variants)
+- Split each "BOTH" strategy into separate LONG/SHORT variants
+- Correlation analysis: identify low-correlation strategy portfolio
+- Create thesis-specific documentation in `idea/hypothesis/`
 
 ---
 
@@ -262,8 +254,12 @@ Step 5: Output               ✅ (50 strategies generated in output/)
 | No pandas/numpy imports | Framework handles internally |
 | Lowercase feat functions (`ema`, `rsi`) | Matches `feature_syntax.md` API |
 | Exit → Long → Short order | Framework requirement (strategy_framework.md) |
-| `output/` subdirectories by family | Scale to 10,000+ strategies |
-| `output/index.csv` manifest | Tra cứu nhanh, filter được |
+| `output/thesis_NN_name/timeframe/` structure | Scales to 10,000+ strategies, filterable by thesis + timeframe |
+| `output/index.csv` with thesis_group, timeframe, thesis_id | Enhanced metadata for filtering & analysis |
+| Variant generators (parameter grids) | One template → 5-10 strategy variants via window/threshold sweeps |
+| Timeframe-aware window scaling | 5/15/30/60 min use different default windows for appropriate signal sensitivity |
+| VN30 + DJI data available | Cross-market relative strength, consensus, gap strategies |
+| 10-metric weighted scorecard | Competition scoring: Sharpe > CAGR > Sortino > Calmar > Max DD > VaR > CVaR > Ulcer > Cost > Correlation |
 | Fake data not used | Only `self.data.*` fields allowed |
 
 ---
