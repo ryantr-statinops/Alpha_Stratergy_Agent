@@ -15,9 +15,6 @@ class CustomStrategy(SimpleAlgorithm):
         # =====================================================
 
         close = self.data.pv_close
-        high = self.data.pv_high
-        low = self.data.pv_low
-        volume = self.data.pv_volume
 
         # =====================================================
         # STEP 2: Feature Engineering
