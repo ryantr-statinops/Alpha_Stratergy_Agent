@@ -715,21 +715,33 @@ Cảnh báo: Nếu bất kỳ scenario nào fail → Redesign logic hoặc param
 
 #### **Bước 5: Validation Scorecard** 📊
 ```
-Chấm điểm theo tiêu chí Acceptance Criteria:
+Chấm điểm theo tiêu chí Acceptance Criteria (Vietnam Quant Challenge 2026):
 
-Metric                          | Target  | Actual | Pass?
---------------------------------|---------|--------|-------
-Sharpe Ratio                    | ≥ 1.2   | ?      | □
-CAGR                            | ≥ 25%   | ?      | □
-Max Drawdown                    | ≥ -40%  | ?      | □
-Profit Factor                   | ≥ 1.7   | ?      | □
-Calmar Ratio (CAGR / Max DD)    | ≥ 0.9   | ?      | □
+Metric                          | Weight | Target      | Actual | Pass?
+--------------------------------|:------:|-------------|--------|-------
+Sharpe Ratio                    | High   | ≥ 1.2       | ?      | □
+CAGR                            | High   | ≥ 25%       | ?      | □
+Sortino Ratio                   | Medium | ≥ 1.5       | ?      | □
+Calmar Ratio (CAGR / Max DD)    | Medium | ≥ 0.9       | ?      | □
+Max Drawdown                    | High   | ≥ -40%      | ?      | □
+Profit Factor                   | Medium | ≥ 1.7       | ?      | □
+Value at Risk (VaR 95%)         | Medium | ≥ -5%       | ?      | □
+Conditional VaR (CVaR 95%)      | Low    | ≥ -6%       | ?      | □
+Ulcer Index                     | Low    | ≤ 12        | ?      | □
+Cost (round-trip slippage+trading fee) | Low | ≤ 1%  | ?      | □
+Correlation (với benchmark)     | Low    | ≤ 0.8       | ?      | □
+
+Weight scoring:
+  - HIGH weight × 2 điểm, MEDIUM × 1, LOW × 0.5
+  - Tổng tối đa: 2×4 + 1×3 + 0.5×4 = 8 + 3 + 2 = 13 điểm
 
 VERDICT:
-  - Train: Đạt ≥ 4/5 → ✓ Sang Stage Test
-  - Train: Đạt < 4/5 → ✗ REJECT, tune lại, không qua Test
-  - Test: Đạt ≥ 4/5 → ✓ PASS, sẵn sàng deploy
-  - Test: Đạt < 4/5 → ✗ REJECT, quay lại Bước 2 & 3
+  - Train: Đạt ≥ 8.0 điểm → ✓ Sang Stage Test
+  - Train: Đạt < 8.0 điểm → ✗ REJECT, tune lại, không qua Test
+  - Test: Đạt ≥ 8.0 điểm → ✓ PASS, sẵn sàng deploy
+  - Test: Đạt < 8.0 điểm → ✗ REJECT, quay lại Bước 2 & 3
+
+  NOTE: Sharpe, CAGR, Max DD là MUST-PASS (không pass → auto REJECT dù tổng điểm ≥ 8)
 ```
 
 #### **Bước 6: Live Validation Protocol** 🚀
