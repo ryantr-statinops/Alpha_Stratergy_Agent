@@ -685,7 +685,24 @@ Câu hỏi: Mục tiêu metric là gì?
   - Support/Resistance từ 1H có phá vỡ 1D structure không?
 ```
 
-#### **Bước 4: Backtest Scenario Planning** 🧪
+#### **Bước 4: Multi-Stage Validation & Backtest Scenario Planning** 🧪
+
+##### Multi-Stage Validation
+```
+Quy trình kiểm thử 2 giai đoạn bắt buộc:
+
+Stage 1: Train (Huấn luyện - In-Sample) — 70% dữ liệu
+  □ Cho phép tối ưu hóa tham số
+  □ Không được Overfitting (nếu quá tốt so với Test → cảnh báo)
+  □ Target: đạt tất cả các chỉ số trong Validation Scorecard
+
+Stage 2: Test (Kiểm thử - Out-of-Sample) — 30% dữ liệu gần nhất
+  □ Dữ liệu giấu kín (không được dùng để tune)
+  □ Kết quả phải ổn định, pass các chỉ số mục tiêu
+  □ Nếu không pass → REJECT, không deploy
+```
+
+##### Backtest Scenario Planning
 ```
 Chạy backtest với 4 scenario:
 1. NORMAL MARKET (trending, vol normal): Expected profit ratio
@@ -698,22 +715,21 @@ Cảnh báo: Nếu bất kỳ scenario nào fail → Redesign logic hoặc param
 
 #### **Bước 5: Validation Scorecard** 📊
 ```
-Chấm điểm theo tiêu chí:
+Chấm điểm theo tiêu chí Acceptance Criteria:
 
-Metric                          | Target | Actual | Pass?
---------------------------------|--------|--------|-------
-Win Rate                        | ≥ 52%  | ?      | □
-Profit Factor                   | ≥ 1.2  | ?      | □
-Sharpe Ratio                    | ≥ 0.6  | ?      | □
-Max Drawdown                    | ≤ 15%  | ?      | □
-Consecutive Loss Limit          | ≤ 5    | ?      | □
-Avg Win / Avg Loss              | ≥ 1.3  | ?      | □
-Risk-Adjusted Return (CAGR/DD)  | ≥ 0.5  | ?      | □
+Metric                          | Target  | Actual | Pass?
+--------------------------------|---------|--------|-------
+Sharpe Ratio                    | ≥ 1.2   | ?      | □
+CAGR                            | ≥ 25%   | ?      | □
+Max Drawdown                    | ≥ -40%  | ?      | □
+Profit Factor                   | ≥ 1.7   | ?      | □
+Calmar Ratio (CAGR / Max DD)    | ≥ 0.9   | ?      | □
 
 VERDICT:
-  - Đạt ≥ 5/7 → ✓ PASS, có thể trade
-  - Đạt 4/7  → ⚠ CONDITIONAL PASS, giảm position size 50%, monitor closely
-  - Đạt < 4/7 → ✗ REJECT, quay lại Bước 2 & 3, tune lại logic
+  - Train: Đạt ≥ 4/5 → ✓ Sang Stage Test
+  - Train: Đạt < 4/5 → ✗ REJECT, tune lại, không qua Test
+  - Test: Đạt ≥ 4/5 → ✓ PASS, sẵn sàng deploy
+  - Test: Đạt < 4/5 → ✗ REJECT, quay lại Bước 2 & 3
 ```
 
 #### **Bước 6: Live Validation Protocol** 🚀
@@ -784,6 +800,29 @@ HYP-1H-001 Status: VALIDATED
   - Notes: Perform well in trending market, struggled in choppy period 12/15-12/20
   - Next: Test on 1D frame, reduce SL tightness
 ```
+
+---
+
+## 6. Design Guidelines for AI Agent (Achieving Acceptance Criteria)
+
+### Để đạt Sharpe ≥ 1.2 & Profit Factor ≥ 1.7
+
+- Cần **bộ lọc xu hướng mạnh** tránh vào lệnh trong thị trường Sideway (nhiễu)
+- Sử dụng `operations/` như `self.op.crossed_above`, `self.op.crossed_below` để phát hiện điểm đảo chiều chính xác
+- Kết hợp 2+ tín hiệu độc lập trước khi entry (ví dụ: trend filter + momentum + volume)
+- Không trade khi ADX < 20 (thị trường đi ngang, không có xu hướng rõ)
+
+### Để chặn Max Drawdown (tối thiểu ≥ -40%)
+
+- Thiết kế **exit_setup nhanh** khi giá vi phạm xu hướng hoặc cắt xuống các đường hỗ trợ động (Rolling Mean / Rolling Quantile)
+- Dùng trailing exit: đóng vị thế khi giá quay ngược qua các đường trung bình động ngắn hạn
+- Không giữ vị thế quá lâu nếu không có xác nhận mới từ thị trường
+
+### Multi-Stage Discipline
+
+- Khi code strategy, luôn nghĩ: *"Logic này có overfit Train không? Khi qua Test nó có còn hoạt động không?"*
+- Tham số càng đơn giản (ít tuning) càng ít overfit
+- Ưu tiên logic có ý nghĩa thị trường hơn là logic quá phức tạp
 
 ---
 
