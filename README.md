@@ -12,7 +12,7 @@ Mục đích cốt lõi của không gian làm việc này là giúp AI Agent đ
 
 ```text
 ALPHA_BOT/
-├── data/                   # Tài liệu về dữ liệu đầu vào (Close, High, Low, Volume, ...)
+├── data/                   # Tài liệu về dữ liệu đầu vào (OHLCV, Futures, VN30, DJI)
 ├── feature/                # Danh mục chỉ báo kỹ thuật (EMA, RSI, BBands, Hikkake, ...)
 ├── operations/             # Danh mục toán tử xử lý chuỗi thời gian (crossed_above, fillna, ...)
 ├── template_example/       # Framework chuẩn + strategy mẫu chạy được trên XNOQuant
@@ -21,10 +21,39 @@ ALPHA_BOT/
 │   ├── planning_alpha/     # Kế hoạch phát triển Alpha theo từng chủ đề
 │   ├── hypothesis/         # Giả thuyết kiểm thử, tiêu chí chấm điểm, design guidelines
 │   └── stage_overview/     # Ghi lại tiến độ và lịch sử phiên làm việc
-├── output/                 # Mã nguồn chiến lược hoàn chỉnh (.py)
-│   └── index.csv           # (Kế hoạch) Master manifest tra cứu strategy
+├── output/                 # Mã nguồn chiến lược hoàn chỉnh (.py) — theo thesis group / timeframe
+│   ├── index.csv           # Master manifest tra cứu strategy
+│   ├── thesis_01_momentum/      # Momentum strategies (5, 15, 30, 60 min)
+│   ├── thesis_02_trend/         # Trend following strategies
+│   ├── thesis_03_mean_reversion/ # Mean reversion strategies
+│   ├── thesis_04_breakout/      # Breakout strategies
+│   ├── thesis_05_cross_market/  # Cross-market (VN30, DJI) strategies
+│   ├── thesis_06_volume_flow/   # Volume & flow strategies
+│   ├── thesis_07_intraday_session/ # Intraday session strategies
+│   └── thesis_08_multifactor/   # Multi-factor composite strategies
+├── tools/                  # Batch generator scripts
+│   └── generate_strategies.py
 └── README.md               # Tài liệu hướng dẫn dành cho AI Agent
 ```
+
+### 8 Thesis Groups
+
+| # | Thesis | Target | Timeframes |
+|:-:|--------|--------|:----------:|
+| 01 | **Momentum** | Giá tiếp diễn xu hướng ngắn hạn — ROC, price acceleration, VN30 confirm | 5, 15, 30, 60 |
+| 02 | **Trend Following** | Giao dịch cùng xu hướng đã xác nhận — MA crossover, MACD, ADX filter | 5, 15, 30, 60 |
+| 03 | **Mean Reversion** | Giá quay về trung bình — quantile extremes, RSI, BBands | 5, 15, 30, 60 |
+| 04 | **Breakout** | Phá vỡ vùng tích lũy — quantile breakout, Donchian, range expansion | 5, 15, 30, 60 |
+| 05 | **Cross-Market** | VN30 + DJI ảnh hưởng VN30F1M — relative strength, global spillover | 15, 30, 60 |
+| 06 | **Volume & Flow** | Institutional flow signals — OI, matched volume/value | 15, 30, 60 |
+| 07 | **Intraday Session** | Hành vi giá đặc thù theo phiên — open drive, lunch revert, close squeeze | 5, 15 |
+| 08 | **Multi-Factor** | Kết hợp nhiều tín hiệu — z-score composite, multi-layer confirmation | 15, 30, 60 |
+
+### Competition Context
+
+Dự án hướng tới **Vietnam Quant Challenge 2026** trên nền tảng XNOQuant.  
+**Target:** 500+ chiến lược Published đạt Sharpe ≥ 1.2, CAGR ≥ 25%, Sortino ≥ 1.5, Calmar ≥ 0.9.  
+**Cách tính điểm:** Sharpe > CAGR > Sortino > Calmar > Max DD > VaR > CVaR > Ulcer Index > Cost > Correlation.
 
 ---
 
@@ -53,6 +82,26 @@ Trước khi thực hiện bất kỳ yêu cầu nào từ người dùng, AI Ag
 | `fut_open_interest_vn30f1m_1d` | Hợp đồng mở (Open Interest) |
 
 Chi tiết xem tại [`data/VnFuture.md`](data/VnFuture.md).
+
+#### Danh sách trường VN30 Index
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| `pv_vn30_open` | VN30 Open |
+| `pv_vn30_high` | VN30 High |
+| `pv_vn30_low` | VN30 Low |
+| `pv_vn30_close` | VN30 Close |
+| `pv_vn30_volume` | VN30 Volume |
+
+#### Danh sách trường Dow Jones Index
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| `pv_dji_open` | DJI Open |
+| `pv_dji_high` | DJI High |
+| `pv_dji_low` | DJI Low |
+| `pv_dji_close` | DJI Close |
+| `pv_dji_volume` | DJI Volume |
 
 ### `feature/`
 
@@ -130,10 +179,10 @@ idea/planning_alpha/
 
 Sử dụng framework kiểm thử tại [`idea/hypothesis/hypothesis_framework.md`](idea/hypothesis/hypothesis_framework.md) — tài liệu này định nghĩa:
 
-- **Acceptance Criteria:** Sharpe ≥ 1.2, CAGR ≥ 25%, PF ≥ 1.7, Calmar ≥ 0.9
+- **Acceptance Criteria:** Sharpe ≥ 1.2, CAGR ≥ 25%, Sortino ≥ 1.5, PF ≥ 1.7, Calmar ≥ 0.9, Max DD ≥ -40%, VaR ≥ -5%, CVaR ≥ -6%, Ulcer Index ≤ 12, Cost ≤ 1%, Correlation ≤ 0.8
 - **Multi-Stage Validation:** Train 70% → Test 30% (bắt buộc)
 - **Hard Rules:** Risk, drawdown, signal validation
-- **Scorecard:** Chấm điểm, kết luận PASS/REJECT
+- **Scorecard:** Chấm điểm 10 metrics, PASS = đạt ≥ 8/10
 
 AI cần thực hiện vòng lặp nghiên cứu:
 
