@@ -83,6 +83,17 @@ Trước khi thực hiện bất kỳ yêu cầu nào từ người dùng, AI Ag
 
 Chi tiết xem tại [`data/VnFuture.md`](data/VnFuture.md).
 
+#### Đặc thù thị trường Việt Nam
+
+Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_characteristics.md) phân tích chi tiết:
+- Retail 80-90% → herding, overreaction, panic sell
+- Đòn bẩy phái sinh 1:6-1:8 → margin call cascade, forced momentum
+- Session microstructure → pre-cash, lunch dead zone, ATC manipulation
+- Basis volatility → cross-market signal
+- **Mapping table**: đặc thù → signal → entry/exit rule → templates áp dụng
+- **Sharpe optimization rules**: công thức đạt Sharpe ≥ 2.0
+- **Parameter guidelines**: regime detection, tham số từng chế độ thị trường
+
 #### Danh sách trường VN30 Index
 
 | Trường | Ý nghĩa |
@@ -278,3 +289,47 @@ AI Agent **luôn phải**:
 4. Tuân thủ cú pháp của `feature/`, `operations/` và `template_example/`.
 5. Tham chiếu acceptance criteria trong `idea/hypothesis/hypothesis_framework.md` khi thiết kế logic.
 6. Đảm bảo mã nguồn có thể chạy trực tiếp trên nền tảng.
+
+---
+
+## 6. Where to Look When...
+
+| Khi bạn cần… | Đọc file này |
+|--------------|-------------|
+| **Hiểu tổng quan dự án, workflow 5 bước** | `README.md` (file này) |
+| **Context chi tiết phiên làm việc trước** | `context_session/session_context.md` |
+| **Onboarding nhanh cho AI Agent** | `.agent/GUIDE.md` |
+| **Master spec: class structure, compliance checklist** | `template_example/strategy_framework.md` |
+| **Đặc thù thị trường VN → thiết kế strategy** | `data/vietnam_market_characteristics.md` |
+| **Data fields (OHLCV, futures, VN30, DJI)** | `data/VnFuture.md` |
+| **Feature functions (140+ indicators)** | `feature/feature_syntax.md` |
+| **Operator functions (30+ operators)** | `operations/operations_syntax.md` |
+| **Acceptance criteria, scorecard** | `idea/hypothesis/hypothesis_framework.md` |
+| **Hypothesis docs (30 hypotheses)** | `idea/hypothesis/hyp_thesis_01_momentum.md` → `08_multifactor.md` |
+| **Planning docs (enhancements, alpha ideas)** | `idea/planning_alpha/` |
+| **Generator code (sửa generator, không sửa output)** | `tools/generate_strategies.py` |
+| **Validate output files** | `tools/validate_framework.py` |
+| **Backtest plan, decision rules** | `idea/planning_alpha/backtest_plan.md` |
+
+### Debug Flow
+
+```
+Sharpe < target?
+  → Đọc data/vietnam_market_characteristics.md §5 (Sharpe Rules)
+  → Kiểm tra: ADX filter? return_roll? volume? asymmetric exit? session gating?
+  
+Strategy không publish được?
+  → Đọc template_example/strategy_framework.md §Checklist
+  → Kiểm tra: docstring thesis? position bounds? no look-ahead? valid execution?
+  
+Generator ra code sai?
+  → Sửa tools/generate_strategies.py
+  → Chạy python tools/generate_strategies.py
+  → Chạy python tools/validate_framework.py
+  → KHÔNG patch output files trực tiếp
+
+Cần thêm template mới?
+  → Đọc tools/generate_strategies.py search TEMPLATES
+  → Thêm vào TEMPLATES dict, thêm parameter variants
+  → Thêm vào inject_filters() nếu cần post-processing
+```
