@@ -36,7 +36,6 @@ class CustomStrategy(SimpleAlgorithm):
         ll = self.feat.rolling_min(low, window=self.chandelier_window)
         trailing_long_exit = close < (hh - avg_range * self.chandelier_mult)
         trailing_short_exit = close > (ll + avg_range * self.chandelier_mult)
-        vol_scale = self.op.clip(avg_range / daily_range, 0.3, 1.0)
 
         oi_sma = self.feat.sma(oi, timeperiod=self.oi_window)
         close_sma = self.feat.sma(close, timeperiod=self.ma_window)
@@ -52,5 +51,5 @@ class CustomStrategy(SimpleAlgorithm):
         short_setup = short_setup & (recent_exit < 1)
 
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=vol_scale)
-        self.set_positions(short_setup, position=-vol_scale)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
