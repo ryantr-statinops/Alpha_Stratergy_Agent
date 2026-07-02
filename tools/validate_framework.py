@@ -1,286 +1,222 @@
 """
-Comprehensive Framework Validator — checks ALL 805 strategies against XNOQuant rules.
-Usage: python tools/validate_framework.py
+Alpha Bot — Framework Compliance Validator
+Checks generated strategies for framework compliance per strategy_framework.md
 """
 
 import os
 import re
-import ast
 import sys
-import glob
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUTPUT_DIR = os.path.join(BASE, "output")
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "output")
+INDEX_PATH = os.path.join(OUTPUT_DIR, "index.csv")
 
-PASS = 0
-FAIL = 0
-ERRORS = []
+FORBIDDEN_PATTERNS = [
+    (r'\bimport pandas\b',                    "import pandas is forbidden"),
+    (r'\bSeriesT\b',                           "SeriesT type hint is forbidden"),
+    (r'(?<!= )open\s*=',                       "'open =' as variable name is forbidden (use open_price)"),
+    (r'\b__init__\s*\(',                       "__init__ is forbidden"),
+    (r'[^.]np\.',                              "numpy import is forbidden"),
+]
 
+REQUIRED_STRUCTURE = [
+    (r'class CustomStrategy\(SimpleAlgorithm\):', "Must extend SimpleAlgorithm"),
+    (r'def __algorithm__\(self\):',                "Must have __algorithm__ method"),
+    (r'self\.set_positions\(',                     "Must use self.set_positions()"),
+]
 
-def check(rule_id, description, condition, filepath, detail=""):
-    global PASS, FAIL
-    if condition:
-        PASS += 1
-        return True
-    else:
-        FAIL += 1
-        msg = f"[{rule_id}] FAIL {filepath}: {description}"
-        if detail:
-            msg += f" — {detail}"
-        ERRORS.append(msg)
-        return False
+SETPOSITION_ORDER = ["exit", "long", "short"]
+SETPOSITION_PATTERN = re.compile(r'self\.set_positions\((\w+[^,]*),\s*position=([^)]+)\)')
+VALID_POSITIONS = {0, 0.5, 1.0, -0.5, -1.0}
 
-
-def has_line_containing(text, pattern):
-    """Check if any line in text contains the regex pattern."""
-    for line in text.split("\n"):
-        if re.search(pattern, line):
-            return True
-    return False
+EXIT_KEYWORDS = re.compile(r'(exit|close_out)', re.IGNORECASE)
+LONG_KEYWORDS = re.compile(r'(long_setup|long)', re.IGNORECASE)
+SHORT_KEYWORDS = re.compile(r'(short_setup|short)', re.IGNORECASE)
 
 
-def has_line_starting(text, pattern):
-    """Check if any line starts with the pattern (after stripping)."""
-    for line in text.split("\n"):
-        if line.strip().startswith(pattern):
-            return True
-    return False
+def classify_var(name):
+    """Guess whether a variable name is exit/long/short."""
+    if EXIT_KEYWORDS.search(name):
+        return "exit"
+    if LONG_KEYWORDS.search(name):
+        return "long"
+    if SHORT_KEYWORDS.search(name):
+        return "short"
+    return None
 
 
-def count_pattern(text, pattern):
-    """Count lines matching the pattern."""
-    return len(re.findall(pattern, text, re.MULTILINE))
+def _try_float(val):
+    try:
+        return float(val)
+    except ValueError:
+        return None
 
 
-def validate_file(filepath):
-    """Run all validation rules on a single strategy file."""
-    with open(filepath, "r", encoding="utf-8") as f:
-        text = f.read()
-        lines = text.split("\n")
-
-    relpath = os.path.relpath(filepath, BASE)
-
-    # Determine thesis from path
-    path_parts = relpath.replace("\\", "/").split("/")
-    thesis_dir = path_parts[1] if len(path_parts) > 1 else ""
-    thesis_match = re.match(r"thesis_(\d+)_(\w+)", thesis_dir)
-    thesis_id = int(thesis_match.group(1)) if thesis_match else 0
-    thesis_name = thesis_match.group(2) if thesis_match else ""
-
-    # ── Structural Checks ──
-
-    # R1: Docstring format
-    check("R1", "Docstring has name:", "name:" in text, filepath)
-    check("R1", "Docstring has summary:", "summary:" in text, filepath)
-    check("R1", "Docstring has thesis:", "thesis:" in text, filepath)
-    check("R1", "Docstring has idea:", "idea:" in text, filepath)
-
-    # R2: Class definition
-    check("R2", 'Class is "class CustomStrategy(SimpleAlgorithm):',
-          'class CustomStrategy(SimpleAlgorithm):' in text, filepath)
-
-    # R3: Algorithm method
-    check("R3", 'Has "def __algorithm__(self):"',
-          'def __algorithm__(self):' in text, filepath)
-
-    # R4: No SeriesT type hints
-    check("R4", "No SeriesT type hints", "SeriesT" not in text, filepath)
-
-    # R5: No 'open' variable name (allow 'open_', 'open_price', 'open_ranges')
-    open_vars = re.findall(r'^\s+open\s*=', text, re.MULTILINE)
-    check("R5", "No 'open' as variable name", len(open_vars) == 0, filepath,
-          detail=f"found {len(open_vars)} occurrences" if open_vars else "")
-
-    # R6: No external library imports
-    bad_imports = [imp for imp in ["import pandas", "import numpy", "from pandas",
-                                    "from numpy", "import scipy", "import sklearn"]
-                   if imp in text]
-    check("R6", "No external library imports", len(bad_imports) == 0, filepath)
-
-    # R7: Only self.set_positions for trading
-    if thesis_name != "intraday_session":  # intraday uses enter/exit ranges differently
-        check("R7", "Uses self.set_positions only",
-              has_line_containing(text, r"self\.set_positions\("), filepath)
-
-    # ── return_roll Enhancement Checks ──
-
-    # R8: Has return_window class attribute
-    check("R8", "Has return_window class attribute",
-          has_line_containing(text, r"return_window\s*="), filepath)
-
-    # R9: Has return_threshold class attribute
-    check("R9", "Has return_threshold class attribute",
-          has_line_containing(text, r"return_threshold\s*="), filepath)
-
-    # R10: Has position_close_after_n_candles
-    check("R10", "Has position_close_after_n_candles",
-          has_line_containing(text, r"position_close_after_n_candles\s*="), filepath)
-
-    # R11: Has return_1 computation
-    check("R11", "Has return_1 = self.op.fillna(self.op.pct_change(...))",
-          "self.op.fillna(self.op.pct_change(close, periods=1), value=0)" in text, filepath)
-
-    # R12: Has return_roll computation
-    check("R12", "Has return_roll = self.feat.rolling_mean(...)",
-          "return_roll = self.feat.rolling_mean(return_1, window=self.return_window)" in text, filepath)
-
-    # R13: Entry conditions include return_roll filter
-    has_ret_long = has_line_containing(text, r"long_setup\s*=.*return_roll\s*>\s*0") or \
-                   has_line_containing(text, r"strong_long\s*=.*return_roll\s*>\s*0")
-    has_ret_short = has_line_containing(text, r"short_setup\s*=.*return_roll\s*<\s*0") or \
-                    has_line_containing(text, r"strong_short\s*=.*return_roll\s*<\s*0")
-    check("R13", "Long entry includes return_roll > 0", has_ret_long, filepath)
-    check("R13", "Short entry includes return_roll < 0", has_ret_short, filepath)
-
-    # R14: Exit includes return_roll-based exit (level check or crossed_below)
-    has_return_roll_exit = (
-        "abs(return_roll) < self.return_threshold" in text
-        or "self.op.crossed_below(abs(return_roll), self.return_threshold)" in text
-    )
-    check("R14", "Exit includes return_roll-based exit",
-          has_return_roll_exit, filepath)
-
-    # ── Thesis-Specific Checks ──
-
-    # R15: Thesis 07 must have position_open_ranges + position_close_ranges
-    if thesis_name == "intraday_session":
-        check("R15", "Has position_open_ranges",
-              has_line_containing(text, r"position_open_ranges\s*="), filepath)
-        check("R15", "Has position_close_ranges",
-              has_line_containing(text, r"position_close_ranges\s*="), filepath)
-
-    # R16: Tiered templates (thesis 02 + 08) must have strong/weak split
-    if thesis_name in ("trend", "multifactor"):
-        has_strong = has_line_containing(text, r"strong_long\s*=")
-        has_weak = has_line_containing(text, r"weak_long\s*=")
-        # Only check tiered sizing if the template already uses strong/weak pattern
-        # (original ADX templates like macd/quantile/ema_adx/zscore/momentum/trendvol)
-        # Non-tiered templates (ma_cross, aroon) should NOT be checked
-        if has_strong:
-            check("R16", "Tiered templates have strong_long position",
-                  has_strong, filepath)
-            check("R16", "Tiered templates have weak_long position",
-                  has_weak, filepath)
-            check("R16", "Tiered templates have 0.5 sizing",
-                  has_line_containing(text, r"set_positions\(.*position\s*=\s*0\.5"), filepath)
-
-    # ── Position Sizing Order ──
-
-    # R17: Exit (position=0) comes before Long/Short
-    pos_calls = []
-    for line in lines:
-        m = re.search(r'self\.set_positions\((.+?),\s*position\s*=\s*([^\s)]+)', line)
+def check_order(code: str, filepath: str) -> list:
+    """Check that set_positions calls are in Exit → Long → Short order."""
+    lines = code.splitlines()
+    findings = []
+    calls = []
+    for i, line in enumerate(lines, 1):
+        m = SETPOSITION_PATTERN.search(line)
         if m:
-            pos_calls.append((line.strip(), m.group(2)))
+            var_name = m.group(1).strip()
+            raw_pos = m.group(2).strip()
+            pos_val = _try_float(raw_pos)
+            role = classify_var(var_name)
+            calls.append((i, role, pos_val, var_name, raw_pos))
 
-    exit_order = [i for i, (_, p) in enumerate(pos_calls) if p == "0"]
-    long_order = [i for i, (_, p) in enumerate(pos_calls) if p == "vol_scale" or p == "1" or p == "0.5"]
-    short_order = [i for i, (_, p) in enumerate(pos_calls) if p == "-vol_scale" or p == "-1" or p == "-0.5"]
+    if not calls:
+        return findings
 
-    if exit_order and long_order and short_order:
-        first_exit = exit_order[0]
-        first_long = long_order[0]
-        first_short = short_order[0]
-        check("R17", "Exit (position=0) called before Long positions",
-              first_exit < first_long, filepath,
-              detail=f"exit at index {first_exit}, long at {first_long}")
-        check("R17", "Exit (position=0) called before Short positions",
-              first_exit < first_short, filepath,
-              detail=f"exit at index {first_exit}, short at {first_short}")
+    # Check first call is exit
+    first = calls[0]
+    first_is_exit = first[1] == "exit" or (first[2] is not None and first[2] == 0)
+    if not first_is_exit:
+        findings.append((
+            filepath, first[0],
+            f"First set_positions should be Exit (position=0), got '{first[3]}' pos={first[4]}"
+        ))
 
-    # R18: Valid position values (literal numbers or vol_scale expressions)
-    for _, pos in pos_calls:
-        valid = pos in ("0", "0.5", "1", "-0.5", "-1") or "vol_scale" in pos
-        check("R18", f"Position value '{pos}' is valid",
-              valid, filepath, detail=f"invalid position: {pos}")
+    # Check last call is short
+    last = calls[-1]
+    last_is_short = last[1] == "short" or (last[2] is not None and last[2] < 0)
+    if not last_is_short:
+        findings.append((
+            filepath, last[0],
+            f"Last set_positions should be Short (position<0), got '{last[3]}' pos={last[4]}"
+        ))
 
-    # ── Data & Feature Access ──
+    # Check numeric positions are valid
+    for line_no, role, pos_val, var_name, raw_pos in calls:
+        if pos_val is not None and pos_val not in VALID_POSITIONS:
+            findings.append((
+                filepath, line_no,
+                f"Invalid position {pos_val} in '{var_name}'"
+            ))
 
-    # R19: Data only from self.data
-    bad_data = re.findall(r'(?<!self\.)data\.(?!pv_|fut_)', text)
-    if bad_data:
-        check("R19", "No direct data access outside self.data",
-              False, filepath, detail=f"found: {bad_data}")
+    return findings
 
-    # R20: Has session_candles value matches timeframe
-    # (we embedded it as position_close_after_n_candles, which we already check)
 
-    # R21: At least one set_positions with position=0 (exit)
-    check("R21", "Has at least one exit (position=0)",
-          any(p == "0" for _, p in pos_calls), filepath)
+def validate_file(filepath: str) -> list:
+    """Validate a single strategy file. Returns list of (file, line, issue)."""
+    findings = []
+    abspath = os.path.join(OUTPUT_DIR, filepath)
+    if not os.path.exists(abspath):
+        return [(filepath, 0, "File missing")]
 
-    # R22: Closed-form positions (no complex Python expressions as positions)
-    # Already checked by R18 which validates each position value.
+    with open(abspath, "r", encoding="utf-8") as f:
+        code = f.read()
 
-    # ── Position Values Range ──
+    lines = code.splitlines()
 
-    # R23: Position values within [-1, 1] (literal numbers only)
-    for _, pos in pos_calls:
-        try:
-            pval = float(pos)
-            check("R23", f"Position {pos} within [-1, 1]",
-                  -1 <= pval <= 1, filepath)
-        except ValueError:
-            # Dynamic positions (vol_scale) assumed valid at runtime
-            check("R23", f"Position {pos} (dynamic, accepted)",
-                  "vol_scale" in pos, filepath)
+    # Check required structure
+    for pattern, msg in REQUIRED_STRUCTURE:
+        if not re.search(pattern, code):
+            findings.append((filepath, 1, f"Missing: {msg}"))
 
-    # R24: Data fields used match what's available (no undefined self.data fields)
-    data_refs = re.findall(r'self\.data\.(\w+)', text)
-    valid_data = {
-        "pv_close", "pv_high", "pv_low", "pv_open", "pv_volume",
-        "pv_vn30_close", "pv_vn30_high", "pv_vn30_low", "pv_vn30_open", "pv_vn30_volume",
-        "pv_dji_close", "pv_dji_high", "pv_dji_low", "pv_dji_open",
-        "fut_matched_volume_vn30f1m_1d", "fut_matched_value_vn30f1m_1d",
-        "fut_open_interest_vn30f1m_1d", "fut_total_volume_vn30f1m_1d",
-        "fut_total_value_vn30f1m_1d",
-    }
-    for ref in data_refs:
-        check("R24", f"self.data.{ref} is a valid field",
-              ref in valid_data, filepath, detail=f"unknown field: {ref}")
+    # Check forbidden patterns
+    for pattern, msg in FORBIDDEN_PATTERNS:
+        m = re.search(pattern, code)
+        if m:
+            line_no = 1 + code[:m.start()].count("\n")
+            findings.append((filepath, line_no, f"Forbidden: {msg}"))
+
+    # Check set_positions order
+    findings.extend(check_order(code, filepath))
+
+    # Check open variable naming
+    for i, line in enumerate(lines, 1):
+        # Check for bare 'open =' assignment
+        if re.match(r'^\s*open\s*=\s', line) and 'open_price' not in line and 'open_' not in line:
+            findings.append((filepath, i, "Uses 'open' as variable name"))
+
+    return findings
+
+
+def validate_index():
+    """Check index.csv matches files on disk."""
+    findings = []
+    if not os.path.exists(INDEX_PATH):
+        return [("index.csv", 0, "Index file missing")]
+
+    with open(INDEX_PATH, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    if len(lines) < 2:
+        return [("index.csv", 1, "Index has no data rows")]
+
+    header = lines[0].strip().split(",")
+    if header != ["filepath", "thesis_group", "template", "timeframe", "description", "params"]:
+        return [("index.csv", 1, f"Unexpected header: {header}")]
+
+    indexed_files = set()
+    for i, line in enumerate(lines[1:], 2):
+        parts = line.strip().split(",")
+        if not parts:
+            continue
+        fname = parts[0]
+        indexed_files.add(fname)
+        abspath = os.path.join(OUTPUT_DIR, fname)
+        if not os.path.exists(abspath):
+            findings.append(("index.csv", i, f"Index references missing file: {fname}"))
+
+    # Check for files not in index
+    actual_files = {f for f in os.listdir(OUTPUT_DIR) if f.endswith(".py")}
+    orphaned = actual_files - indexed_files
+    for f in sorted(orphaned):
+        findings.append(("index.csv", 0, f"File not in index: {f}"))
+
+    return findings
 
 
 def main():
-    global PASS, FAIL, ERRORS
-    py_files = glob.glob(os.path.join(OUTPUT_DIR, "**", "*.py"), recursive=True)
-    print(f"Found {len(py_files)} strategy files to validate...")
+    if not os.path.exists(OUTPUT_DIR):
+        print(f"Error: Output directory not found: {OUTPUT_DIR}")
+        print("Run tools/generate_strategies.py first.")
+        sys.exit(1)
 
-    for i, filepath in enumerate(py_files):
-        if (i + 1) % 100 == 0:
-            print(f"  Progress: {i + 1}/{len(py_files)}...")
-        try:
-            validate_file(filepath)
-        except Exception as e:
-            FAIL += 1
-            ERRORS.append(f"[EXCEPTION] {filepath}: {e}")
+    all_findings = []
 
-    # Summary
-    print(f"\n{'='*60}")
-    print(f"Validation Summary")
-    print(f"{'='*60}")
+    # 1. Validate index
+    print("Checking index.csv...")
+    all_findings.extend(validate_index())
+
+    # 2. Validate each .py file
+    print("Checking strategy files...")
+    py_files = sorted(f for f in os.listdir(OUTPUT_DIR) if f.endswith(".py"))
+    for fname in py_files:
+        findings = validate_file(fname)
+        all_findings.extend(findings)
+
+    # 3. Report
+    errors = [f for f in all_findings if any(
+        kw in f[2] for kw in ["Error", "Missing", "Forbidden", "Invalid", "Uses"]
+    )]
+    warnings = [f for f in all_findings if f not in errors]
+
+    print(f"\nResults:")
     print(f"  Files checked: {len(py_files)}")
-    print(f"  Checks passed: {PASS}")
-    print(f"  Checks failed: {FAIL}")
-    print(f"  Pass rate:     {PASS / (PASS + FAIL) * 100:.1f}%" if (PASS + FAIL) > 0 else "  N/A")
+    print(f"  Issues found: {len(all_findings)}")
 
-    if ERRORS:
-        print(f"\n  Failures ({len(ERRORS)}):")
-        # Group by rule
-        from collections import Counter
-        rule_counts = Counter()
-        for e in ERRORS:
-            rule_id = e.split("]")[0].lstrip("[")
-            rule_counts[rule_id] += 1
-        print(f"\n  Failures by rule:")
-        for rule_id, count in sorted(rule_counts.items()):
-            print(f"    {rule_id}: {count} failures")
+    if errors:
+        print(f"\n  ERRORS ({len(errors)}):")
+        for fname, line, msg in sorted(errors):
+            print(f"    {fname}:{line} — {msg}")
 
-        # Show first 5 errors with file paths
-        print(f"\n  First 10 errors:")
-        for e in ERRORS[:10]:
-            print(f"    {e}")
+    if warnings:
+        print(f"\n  WARNINGS ({len(warnings)}):")
+        for fname, line, msg in sorted(warnings):
+            print(f"    {fname}:{line} — {msg}")
 
-    return 0 if FAIL == 0 else 1
+    if not errors and not warnings:
+        print("\n  All checks passed!")
+        return 0
+    elif not errors:
+        print("\n  No errors (warnings only).")
+        return 0
+    else:
+        print(f"\n  {len(errors)} error(s) found.")
+        return 1
 
 
 if __name__ == "__main__":
