@@ -17,10 +17,13 @@
 | 6 | `data/VnFuture.md` | All data fields: OHLCV + futures + VN30 + DJI | **Khi cần tra field** |
 | 7 | `feature/feature_syntax.md` | 140+ indicators reference | **Khi cần tra function** |
 | 8 | `operations/operations_syntax.md` | 30+ operators reference | **Khi cần tra operator** |
-| 9 | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants (idea source) | **Khi cần thêm ý tưởng** |
-| 10 | `idea/planning_alpha/backtest_plan.md` | Kế hoạch backtest 4 tuần, decision rules, tracking template | **Khi bắt đầu backtest** |
+| 9 | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | 3 enhancements implemented (return_roll, tiered sizing, session gating) | **Khi cần hiểu code hiện tại** |
+| 10 | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants (idea source) | **Khi cần thêm ý tưởng** |
+| 11 | `idea/planning_alpha/backtest_plan.md` | Kế hoạch backtest 4 tuần, decision rules, tracking template | **Khi bắt đầu backtest** |
+| 12 | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Kế hoạch mở rộng từ 500 lên 10000 strategies | **Khi planning scale** |
+| 13 | `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` | Strategy design mẫu đầu tiên — mean reversion + quantile + RSI | **Khi tham khảo mẫu** |
 
-**Optimal order:** 1→2→3→4→5 first, then 6→7→8 on-demand when coding. Read 9→10 when needed.
+**Optimal order:** 1→2→3→4→5 first, then 6→7→8 on-demand when coding. Read 9→13 when needed.
 
 ---
 
@@ -106,6 +109,10 @@ Khi gặp vấn đề, tra theo triệu chứng:
 | **Cần thêm template mới** | `tools/generate_strategies.py` search `TEMPLATES` | Thêm vào TEMPLATES dict |
 | **Cần validate output** | `python tools/validate_framework.py` | Run validator |
 | **Cần hiểu VN market behavior** | `data/vietnam_market_characteristics.md` | Full analysis + mapping table |
+| **Cần cải thiện Sharpe** | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | 3 enhancements đã implement (A/B/C) |
+| **Cần thêm alpha ideas** | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 variants tham khảo |
+| **Cần planning scale** | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Roadmap mở rộng |
+| **Cần bắt đầu backtest** | `idea/planning_alpha/backtest_plan.md` | Decision rules, tracking |
 
 ---
 
@@ -169,8 +176,11 @@ Nguyên tắc: commit nhỏ, commit thường xuyên → dễ rollback, dễ rev
 | `context_session/session_context.md` | Every session start |
 | `tools/generate_strategies.py` | ALL code changes go here (NEVER patch output files) |
 | `tools/validate_framework.py` | After every generation |
-| `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | Understanding implemented enhancements |
+| `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | Understanding implemented enhancements (A/B/C) |
+| `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants for new ideas |
 | `idea/planning_alpha/backtest_plan.md` | Starting backtest workflow |
+| `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Scale-up roadmap |
+| `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` | First strategy design reference |
 | `idea/hypothesis/hyp_thesis_01_momentum.md` → `08_multifactor.md` | Hypothesis docs (30 hypotheses) |
 
 ---

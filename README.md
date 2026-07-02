@@ -307,6 +307,10 @@ AI Agent **luôn phải**:
 | **Acceptance criteria, scorecard** | `idea/hypothesis/hypothesis_framework.md` |
 | **Hypothesis docs (30 hypotheses)** | `idea/hypothesis/hyp_thesis_01_momentum.md` → `08_multifactor.md` |
 | **Planning docs (enhancements, alpha ideas)** | `idea/planning_alpha/` |
+| **— Sharpe improvement plan (3 phases)** | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` |
+| **— ~890 alpha variants reference** | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` |
+| **— Scaling proposal 500→10000** | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` |
+| **— Strategy design mẫu đầu tiên** | `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` |
 | **Generator code (sửa generator, không sửa output)** | `tools/generate_strategies.py` |
 | **Validate output files** | `tools/validate_framework.py` |
 | **Backtest plan, decision rules** | `idea/planning_alpha/backtest_plan.md` |
