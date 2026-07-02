@@ -5,7 +5,7 @@ idea:    Confirm price trend with On-Balance Volume alignment; exit on OBV/price
 """
 class CustomStrategy(SimpleAlgorithm):
     obv_window = 20
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

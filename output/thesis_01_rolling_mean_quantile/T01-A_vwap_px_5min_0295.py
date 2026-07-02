@@ -5,7 +5,7 @@ idea:    Compare price to rolling mean at multiple price sources (close, typical
 """
 class CustomStrategy(SimpleAlgorithm):
     mean_window = 50
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

@@ -5,7 +5,7 @@ idea:    Trade Money Flow Index extremes with ADX and volume confirmation for hi
 """
 class CustomStrategy(SimpleAlgorithm):
     mfi_window = 10
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

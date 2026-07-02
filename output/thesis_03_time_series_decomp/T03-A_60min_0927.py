@@ -4,7 +4,7 @@ summary: Hilbert Trendline + Sine Cycle
 idea:    Decompose price into trend and cycle components via Hilbert Transform; trade sine/leadsine phase alignment.
 """
 class CustomStrategy(SimpleAlgorithm):
-    thesis_group = "03"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

@@ -6,7 +6,7 @@ idea:    Trend following with ATR-based trailing stop and EMA/ADX directional fi
 class CustomStrategy(SimpleAlgorithm):
     atr_window = 20
     atr_mult = 2
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

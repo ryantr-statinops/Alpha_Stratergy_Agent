@@ -5,7 +5,7 @@ idea:    Bet on over-extensions via rolling z-score; long when deeply negative, 
 """
 class CustomStrategy(SimpleAlgorithm):
     z_window = 34
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

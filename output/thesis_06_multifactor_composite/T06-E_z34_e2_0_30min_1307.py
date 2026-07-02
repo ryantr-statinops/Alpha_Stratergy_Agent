@@ -5,7 +5,7 @@ idea:    Dynamically weight z-score factors based on ADX/ATR regime; trend weigh
 """
 class CustomStrategy(SimpleAlgorithm):
     z_window = 34
-    thesis_group = "06"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

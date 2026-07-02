@@ -6,7 +6,7 @@ idea:    Proxy Hidden Markov Model via ADX (trend) and vol regime (ATR std); swi
 class CustomStrategy(SimpleAlgorithm):
     adx_window = 10
     vol_window = 14
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

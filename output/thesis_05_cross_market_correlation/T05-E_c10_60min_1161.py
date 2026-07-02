@@ -5,7 +5,7 @@ idea:    Use rolling correlation between futures/VN30 and futures/DJI as a trend
 """
 class CustomStrategy(SimpleAlgorithm):
     correl_window = 10
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

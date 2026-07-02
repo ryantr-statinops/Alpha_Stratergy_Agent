@@ -5,7 +5,7 @@ idea:    Trade linear regression slope direction with angle filter and price-for
 """
 class CustomStrategy(SimpleAlgorithm):
     lr_window = 14
-    thesis_group = "03"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

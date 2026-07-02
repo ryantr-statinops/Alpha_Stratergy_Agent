@@ -5,7 +5,7 @@ idea:    Detect correlation breakdown between futures and VN30; trade the disloc
 """
 class CustomStrategy(SimpleAlgorithm):
     correl_window = 10
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

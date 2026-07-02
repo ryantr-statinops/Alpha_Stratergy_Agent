@@ -5,7 +5,7 @@ idea:    Detect institutional activity via avg trade size deviation; trade compr
 """
 class CustomStrategy(SimpleAlgorithm):
     whale_window = 34
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

@@ -6,7 +6,7 @@ idea:    Combine mean and quantile filters: require price above both upper quant
 class CustomStrategy(SimpleAlgorithm):
     mean_window = 20
     q_window = 14
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

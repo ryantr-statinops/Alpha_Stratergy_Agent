@@ -5,7 +5,7 @@ idea:    Use Kaufman Adaptive MA and Mesa MAMA for trend detection in varying ma
 """
 class CustomStrategy(SimpleAlgorithm):
     kama_window = 20
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

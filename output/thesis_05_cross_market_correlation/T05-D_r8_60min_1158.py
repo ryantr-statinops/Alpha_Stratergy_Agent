@@ -5,7 +5,7 @@ idea:    Require futures, VN30, and Dow Jones momentum alignment for global tren
 """
 class CustomStrategy(SimpleAlgorithm):
     roc_window = 8
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
