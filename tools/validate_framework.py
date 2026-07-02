@@ -169,13 +169,13 @@ def validate_file(filepath):
     # R17: Exit (position=0) comes before Long/Short
     pos_calls = []
     for line in lines:
-        m = re.search(r'self\.set_positions\((.+?),\s*position\s*=\s*([-0-9.]+)', line)
+        m = re.search(r'self\.set_positions\((.+?),\s*position\s*=\s*([^\s)]+)', line)
         if m:
-            pos_calls.append((line.strip(), float(m.group(2))))
+            pos_calls.append((line.strip(), m.group(2)))
 
-    exit_order = [i for i, (_, p) in enumerate(pos_calls) if p == 0]
-    long_order = [i for i, (_, p) in enumerate(pos_calls) if p > 0]
-    short_order = [i for i, (_, p) in enumerate(pos_calls) if p < 0]
+    exit_order = [i for i, (_, p) in enumerate(pos_calls) if p == "0"]
+    long_order = [i for i, (_, p) in enumerate(pos_calls) if p == "vol_scale" or p == "1" or p == "0.5"]
+    short_order = [i for i, (_, p) in enumerate(pos_calls) if p == "-vol_scale" or p == "-1" or p == "-0.5"]
 
     if exit_order and long_order and short_order:
         first_exit = exit_order[0]
@@ -188,11 +188,11 @@ def validate_file(filepath):
               first_exit < first_short, filepath,
               detail=f"exit at index {first_exit}, short at {first_short}")
 
-    # R18: Valid position values
+    # R18: Valid position values (literal numbers or vol_scale expressions)
     for _, pos in pos_calls:
-        check("R18", f"Position value {pos} is valid",
-              pos in (0, 0.5, 1, -0.5, -1), filepath,
-              detail=f"invalid position: {pos}")
+        valid = pos in ("0", "0.5", "1", "-0.5", "-1") or "vol_scale" in pos
+        check("R18", f"Position value '{pos}' is valid",
+              valid, filepath, detail=f"invalid position: {pos}")
 
     # ── Data & Feature Access ──
 
@@ -207,17 +207,23 @@ def validate_file(filepath):
 
     # R21: At least one set_positions with position=0 (exit)
     check("R21", "Has at least one exit (position=0)",
-          any(p == 0 for _, p in pos_calls), filepath)
+          any(p == "0" for _, p in pos_calls), filepath)
 
     # R22: Closed-form positions (no complex Python expressions as positions)
     # Already checked by R18 which validates each position value.
 
     # ── Position Values Range ──
 
-    # R23: Position values within [-1, 1]
+    # R23: Position values within [-1, 1] (literal numbers only)
     for _, pos in pos_calls:
-        check("R23", f"Position {pos} within [-1, 1]",
-              -1 <= pos <= 1, filepath)
+        try:
+            pval = float(pos)
+            check("R23", f"Position {pos} within [-1, 1]",
+                  -1 <= pval <= 1, filepath)
+        except ValueError:
+            # Dynamic positions (vol_scale) assumed valid at runtime
+            check("R23", f"Position {pos} (dynamic, accepted)",
+                  "vol_scale" in pos, filepath)
 
     # R24: Data fields used match what's available (no undefined self.data fields)
     data_refs = re.findall(r'self\.data\.(\w+)', text)

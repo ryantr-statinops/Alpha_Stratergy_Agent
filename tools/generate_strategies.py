@@ -43,6 +43,18 @@ SESSION_CANDLES = {5: 72, 15: 24, 30: 12, 60: 6}
 # Session time ranges for intraday_session thesis (UTC)
 OPEN_RANGES = ["02:00-04:30", "06:00-07:45"]
 CLOSE_RANGES = ["04:20-04:30", "07:30-07:45"]
+# Lunch close for ALL theses (UTC 04:30-06:00 = VN 11:30-13:00)
+LUNCH_CLOSE_RANGES = ["04:30-06:00"]
+
+# Chandelier trailing stop params
+CHANDELIER_WINDOW = {5: 6, 15: 5, 30: 4, 60: 3}
+CHANDELIER_MULT = {5: 2.0, 15: 2.0, 30: 2.5, 60: 3.0}
+
+# Volatility scaling params
+RANGE_WINDOW = {5: 7, 15: 5, 30: 5, 60: 3}
+
+# Cooldown after exit before re-entry (candles)
+COOLDOWN_PERIOD = {5: 3, 15: 2, 30: 2, 60: 1}
 
 THESIS_IDS = {
     "momentum": 1, "trend": 2, "mean_reversion": 3, "breakout": 4,
@@ -62,7 +74,7 @@ TEMPLATES = {}
 
 
 def inject_filters(code, fmt, thesis):
-    """Post-process rendered strategy: inject return_roll, ADX filter, session management."""
+    """Post-process: return_roll, ADX (if needed), session filter, trailing stop, vol sizing, cooldown."""
     if "return_window" not in fmt:
         return code
 
@@ -70,28 +82,32 @@ def inject_filters(code, fmt, thesis):
     rt = fmt["return_threshold"]
     sc = fmt["session_candles"]
 
-    # Guarantee all required fmt keys exist for templates that use them
     for key in ("open_ranges", "close_ranges"):
         if key not in fmt:
             fmt[key] = ""
+
+    cw = fmt["chandelier_window"]
+    cm = fmt["chandelier_mult"]
+    rngw = fmt["range_window"]
+    cd = fmt["cooldown_period"]
 
     # 1. Add class attributes
     extra = (
         f"    return_window = {rw}\n"
         f"    return_threshold = {rt}\n"
         f"    position_close_after_n_candles = {sc}\n"
+        f"    chandelier_window = {cw}\n"
+        f"    chandelier_mult = {cm}\n"
+        f"    range_window = {rngw}\n"
+        f"    cooldown_period = {cd}\n"
     )
+    # Lunch close for ALL theses
+    extra += f"    position_close_ranges = {fmt['lunch_close_ranges']}\n"
     if thesis == "intraday_session":
-        extra += (
-            f"    position_open_ranges = {OPEN_RANGES}\n"
-            f"    position_close_ranges = {CLOSE_RANGES}\n"
-        )
+        extra += f"    position_open_ranges = {OPEN_RANGES}\n"
 
-    # Get ADX thresholds from fmt (timeframe-dependent)
     adx_entry = fmt.get("adx_entry_threshold", 22)
     adx_exit = fmt.get("adx_exit_threshold", 15)
-
-    # Inject adx_window for templates that don't already have it
     needs_adx = "self.feat.adx" not in code
     if needs_adx:
         aw = fmt.get("adx_window")
@@ -104,7 +120,7 @@ def inject_filters(code, fmt, thesis):
         extra + "\n    def __algorithm__(self):"
     )
 
-    # 2. Inject return_roll + ADX computation after the last data variable assignment
+    # 2. Inject computation blocks after last data variable
     lines = code.split("\n")
     last_data = -1
     for i in range(len(lines) - 1, -1, -1):
@@ -116,29 +132,41 @@ def inject_filters(code, fmt, thesis):
     if last_data >= 0:
         insert_blocks = []
 
-        # If ADX is needed and high/low not present, add them
-        if needs_adx:
-            has_high = any("self.data.pv_high" in line for line in lines)
-            has_low = any("self.data.pv_low" in line for line in lines)
-            if not has_high:
-                insert_blocks.append("        high = self.data.pv_high")
-            if not has_low:
-                insert_blocks.append("        low = self.data.pv_low")
+        # Ensure high/low exist for trailing stop + vol calc
+        has_high = any("self.data.pv_high" in line for line in lines)
+        has_low = any("self.data.pv_low" in line for line in lines)
+        if not has_high:
+            insert_blocks.append("        high = self.data.pv_high")
+        if not has_low:
+            insert_blocks.append("        low = self.data.pv_low")
 
-        # return_roll computation
+        # return_roll
         insert_blocks.append("        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)")
         insert_blocks.append("        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)")
 
-        # ADX computation
+        # ADX if needed
         if needs_adx:
             aw = fmt.get("adx_window")
             if aw is not None:
                 insert_blocks.append(f"        adx = self.feat.adx(high, low, close, timeperiod={aw})")
 
+        # Trailing stop (chandelier)
+        insert_blocks.append("        daily_range = high - low")
+        insert_blocks.append("        avg_range = self.feat.sma(daily_range, timeperiod=self.range_window)")
+        insert_blocks.append("        hh = self.feat.rolling_max(high, window=self.chandelier_window)")
+        insert_blocks.append("        ll = self.feat.rolling_min(low, window=self.chandelier_window)")
+        insert_blocks.append("        trailing_long_exit = close < (hh - avg_range * self.chandelier_mult)")
+        insert_blocks.append("        trailing_short_exit = close > (ll + avg_range * self.chandelier_mult)")
+
+        # Vol scaling (non-tiered only — tiered has own sizing)
+        is_tiered = "strong_long" in code or "weak_long" in code
+        if not is_tiered:
+            insert_blocks.append("        vol_scale = self.op.clip(avg_range / daily_range, 0.3, 1.0)")
+
         for j, line in enumerate(insert_blocks):
             lines.insert(last_data + 1 + j, line)
 
-    # 3. Modify long_setup / short_setup / exit_setup inside __algorithm__
+    # 3. Modify entry/exit conditions + insert cooldown re-assignment
     algo_start = -1
     for i, line in enumerate(lines):
         if line.strip() == "def __algorithm__(self):":
@@ -146,6 +174,9 @@ def inject_filters(code, fmt, thesis):
             break
 
     if algo_start >= 0:
+        is_tiered = "strong_long" in code or "weak_long" in code
+        exit_line = -1
+
         for i in range(algo_start + 1, len(lines)):
             s = lines[i].strip()
             indent = " " * (len(lines[i]) - len(s))
@@ -158,23 +189,64 @@ def inject_filters(code, fmt, thesis):
             ):
                 continue
 
-            if s.startswith("long_setup = "):
+            # Non-tiered entry
+            if not is_tiered and s.startswith("long_setup = "):
                 expr = s[len("long_setup = "):]
                 lines[i] = indent + f"long_setup = ({expr}) & (return_roll > 0)"
                 if needs_adx:
                     lines[i] = indent + f"long_setup = ({lines[i].strip()[len('long_setup = '):]}) & (adx > self.adx_entry_threshold)"
-            elif s.startswith("short_setup = "):
+            elif not is_tiered and s.startswith("short_setup = "):
                 expr = s[len("short_setup = "):]
                 lines[i] = indent + f"short_setup = ({expr}) & (return_roll < 0)"
                 if needs_adx:
                     lines[i] = indent + f"short_setup = ({lines[i].strip()[len('short_setup = '):]}) & (adx > self.adx_entry_threshold)"
+
+            # Tiered entry (strong_long/weak_long have return_roll + ADX already in template)
+            elif is_tiered and s.startswith("strong_long = "):
+                pass  # Already has filters in template
+            elif is_tiered and s.startswith("weak_long = "):
+                pass
+            elif is_tiered and s.startswith("strong_short = "):
+                pass
+            elif is_tiered and s.startswith("weak_short = "):
+                pass
+
+            # Exit (all templates)
             elif s.startswith("exit_setup = "):
                 expr = s[len("exit_setup = "):]
-                # Use crossed_below for return_roll exit (trigger once, avoid re-trigger)
                 lines[i] = indent + f"exit_setup = ({expr}) | self.op.crossed_below(abs(return_roll), self.return_threshold)"
                 if needs_adx:
-                    # Use crossed_below for ADX exit too
                     lines[i] = indent + f"exit_setup = ({lines[i].strip()[len('exit_setup = '):]}) | self.op.crossed_below(adx, self.adx_exit_threshold)"
+                lines[i] = indent + f"exit_setup = {lines[i].strip()[len('exit_setup = '):]} | trailing_long_exit | trailing_short_exit"
+                exit_line = i
+
+        # Insert cooldown re-assignment right after exit_setup
+        if exit_line >= 0:
+            indent = " " * (len(lines[exit_line]) - len(lines[exit_line].strip()))
+            cooldown_lines = [
+                indent + "recent_exit = self.feat.rolling_max(exit_setup, window=self.cooldown_period)",
+            ]
+            if is_tiered:
+                cooldown_lines.append(indent + "strong_long = strong_long & (recent_exit < 1)")
+                cooldown_lines.append(indent + "weak_long = weak_long & (recent_exit < 1)")
+                cooldown_lines.append(indent + "strong_short = strong_short & (recent_exit < 1)")
+                cooldown_lines.append(indent + "weak_short = weak_short & (recent_exit < 1)")
+            else:
+                cooldown_lines.append(indent + "long_setup = long_setup & (recent_exit < 1)")
+                cooldown_lines.append(indent + "short_setup = short_setup & (recent_exit < 1)")
+            for j, blk in enumerate(cooldown_lines):
+                lines.insert(exit_line + 1 + j, blk)
+
+        # 4. Replace position sizing (vol scaling for non-tiered)
+        if not is_tiered:
+            for i in range(algo_start + 1, len(lines)):
+                s = lines[i].strip()
+                indent = " " * (len(lines[i]) - len(s))
+                if s.startswith("self.set_positions("):
+                    if ", position=1)" in s or ", position=1.0)" in s:
+                        lines[i] = indent + s.replace("position=1", "position=vol_scale")
+                    elif ", position=-1)" in s or ", position=-1.0)" in s:
+                        lines[i] = indent + s.replace("position=-1", "position=-vol_scale")
 
     return "\n".join(lines)
 
@@ -1606,6 +1678,12 @@ def main():
         # Timeframe-dependent ADX entry/exit thresholds
         fmt["adx_entry_threshold"] = ADX_ENTRY[tf_min]
         fmt["adx_exit_threshold"] = ADX_EXIT[tf_min]
+        # Structural improvement params
+        fmt["chandelier_window"] = CHANDELIER_WINDOW[tf_min]
+        fmt["chandelier_mult"] = CHANDELIER_MULT[tf_min]
+        fmt["range_window"] = RANGE_WINDOW[tf_min]
+        fmt["cooldown_period"] = COOLDOWN_PERIOD[tf_min]
+        fmt["lunch_close_ranges"] = str(LUNCH_CLOSE_RANGES)
 
         thesis_dir = f"thesis_{t_id:02d}_{thesis}"
         filepath = os.path.join(OUTPUT_DIR, thesis_dir, tf_label, filename(alpha_id, name))
