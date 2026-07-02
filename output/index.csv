@@ -600,207 +600,251 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 05-0599,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0599_XMGapMild_60min.py,XMGapMild_60min,Gap: Gap(Mild+0.5%) — 60min
 05-0600,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0600_XMGapFast_60min.py,XMGapFast_60min,Gap: Gap(Fast+0.2%) — 60min
 05-0601,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0601_XMGapXSlow_60min.py,XMGapXSlow_60min,Gap: Gap(VSlow+1%) — 60min
-06-0602,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0602_VFOISlow_15min.py,VFOISlow_15min,OI Trend: OI(34) — 15min
-06-0603,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0603_VFOIMid_15min.py,VFOIMid_15min,OI Trend: OI(26) — 15min
-06-0604,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0604_VFOIXSlow_15min.py,VFOIXSlow_15min,OI Trend: OI(52) — 15min
-06-0605,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0605_VFOIFast_15min.py,VFOIFast_15min,OI Trend: OI(13) — 15min
-06-0606,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0606_VFOIVSlow_15min.py,VFOIVSlow_15min,OI Trend: OI(68) — 15min
-06-0607,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0607_VFOIUltra_15min.py,VFOIUltra_15min,OI Trend: OI(6) — 15min
-06-0608,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0608_VFVolStd_15min.py,VFVolStd_15min,Vol Surge: VolSurge(1.5x) — 15min
-06-0609,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0609_VFVolTight_15min.py,VFVolTight_15min,Vol Surge: VolSurge(2.0x) — 15min
-06-0610,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0610_VFVolMild_15min.py,VFVolMild_15min,Vol Surge: VolSurge(1.3x) — 15min
-06-0611,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0611_VFVolMed_15min.py,VFVolMed_15min,Vol Surge: VolSurge(1.8x) — 15min
-06-0612,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0612_VFVolAggr_15min.py,VFVolAggr_15min,Vol Surge: VolSurge(2.5x) — 15min
-06-0613,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0613_VFVolXAggr_15min.py,VFVolXAggr_15min,Vol Surge: VolSurge(3.0x) — 15min
-06-0614,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0614_VFVolGentle_15min.py,VFVolGentle_15min,Vol Surge: VolSurge(1.2x) — 15min
-06-0615,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0615_VFValStd_15min.py,VFValStd_15min,Val Spike: ValSpike(1.3x) — 15min
-06-0616,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0616_VFValTight_15min.py,VFValTight_15min,Val Spike: ValSpike(1.5x) — 15min
-06-0617,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0617_VFValAggr_15min.py,VFValAggr_15min,Val Spike: ValSpike(2.0x) — 15min
-06-0618,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0618_VFValMild_15min.py,VFValMild_15min,Val Spike: ValSpike(1.2x) — 15min
-06-0619,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0619_VFValXAggr_15min.py,VFValXAggr_15min,Val Spike: ValSpike(2.5x) — 15min
-06-0620,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0620_VFValMed_15min.py,VFValMed_15min,Val Spike: ValSpike(1.8x) — 15min
-06-0621,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0621_VFOBVMid_15min.py,VFOBVMid_15min,OBV Flow: OBV(26) — 15min
-06-0622,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0622_VFOBVSlow_15min.py,VFOBVSlow_15min,OBV Flow: OBV(34) — 15min
-06-0623,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0623_VFOBVFast_15min.py,VFOBVFast_15min,OBV Flow: OBV(13) — 15min
-06-0624,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0624_VFOBVUltra_15min.py,VFOBVUltra_15min,OBV Flow: OBV(13) — 15min
-06-0625,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0625_VFOBVXSlow_15min.py,VFOBVXSlow_15min,OBV Flow: OBV(52) — 15min
-06-0626,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0626_VFOBVVSlow_15min.py,VFOBVVSlow_15min,OBV Flow: OBV(68) — 15min
-06-0627,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0627_VFMFIStd_15min.py,VFMFIStd_15min,MFI: MFI(20) — 15min
-06-0628,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0628_VFMFIFast_15min.py,VFMFIFast_15min,MFI: MFI(13) — 15min
-06-0629,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0629_VFMFIMid_15min.py,VFMFIMid_15min,MFI: MFI(26) — 15min
-06-0630,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0630_VFMFIUltra_15min.py,VFMFIUltra_15min,MFI: MFI(10) — 15min
-06-0631,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0631_VFMFISlow_15min.py,VFMFISlow_15min,MFI: MFI(40) — 15min
-06-0632,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0632_VFMFIVSlow_15min.py,VFMFIVSlow_15min,MFI: MFI(60) — 15min
-06-0633,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0633_VFMFIXUltra_15min.py,VFMFIXUltra_15min,MFI: MFI(6) — 15min
-06-0634,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0634_VFOISlow_30min.py,VFOISlow_30min,OI Trend: OI(34) — 30min
-06-0635,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0635_VFOIMid_30min.py,VFOIMid_30min,OI Trend: OI(26) — 30min
-06-0636,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0636_VFOIXSlow_30min.py,VFOIXSlow_30min,OI Trend: OI(52) — 30min
-06-0637,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0637_VFOIFast_30min.py,VFOIFast_30min,OI Trend: OI(13) — 30min
-06-0638,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0638_VFOIVSlow_30min.py,VFOIVSlow_30min,OI Trend: OI(68) — 30min
-06-0639,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0639_VFOIUltra_30min.py,VFOIUltra_30min,OI Trend: OI(6) — 30min
-06-0640,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0640_VFVolStd_30min.py,VFVolStd_30min,Vol Surge: VolSurge(1.5x) — 30min
-06-0641,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0641_VFVolTight_30min.py,VFVolTight_30min,Vol Surge: VolSurge(2.0x) — 30min
-06-0642,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0642_VFVolMild_30min.py,VFVolMild_30min,Vol Surge: VolSurge(1.3x) — 30min
-06-0643,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0643_VFVolMed_30min.py,VFVolMed_30min,Vol Surge: VolSurge(1.8x) — 30min
-06-0644,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0644_VFVolAggr_30min.py,VFVolAggr_30min,Vol Surge: VolSurge(2.5x) — 30min
-06-0645,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0645_VFVolXAggr_30min.py,VFVolXAggr_30min,Vol Surge: VolSurge(3.0x) — 30min
-06-0646,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0646_VFVolGentle_30min.py,VFVolGentle_30min,Vol Surge: VolSurge(1.2x) — 30min
-06-0647,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0647_VFValStd_30min.py,VFValStd_30min,Val Spike: ValSpike(1.3x) — 30min
-06-0648,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0648_VFValTight_30min.py,VFValTight_30min,Val Spike: ValSpike(1.5x) — 30min
-06-0649,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0649_VFValAggr_30min.py,VFValAggr_30min,Val Spike: ValSpike(2.0x) — 30min
-06-0650,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0650_VFValMild_30min.py,VFValMild_30min,Val Spike: ValSpike(1.2x) — 30min
-06-0651,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0651_VFValXAggr_30min.py,VFValXAggr_30min,Val Spike: ValSpike(2.5x) — 30min
-06-0652,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0652_VFValMed_30min.py,VFValMed_30min,Val Spike: ValSpike(1.8x) — 30min
-06-0653,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0653_VFOBVMid_30min.py,VFOBVMid_30min,OBV Flow: OBV(26) — 30min
-06-0654,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0654_VFOBVSlow_30min.py,VFOBVSlow_30min,OBV Flow: OBV(34) — 30min
-06-0655,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0655_VFOBVFast_30min.py,VFOBVFast_30min,OBV Flow: OBV(13) — 30min
-06-0656,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0656_VFOBVUltra_30min.py,VFOBVUltra_30min,OBV Flow: OBV(13) — 30min
-06-0657,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0657_VFOBVXSlow_30min.py,VFOBVXSlow_30min,OBV Flow: OBV(52) — 30min
-06-0658,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0658_VFOBVVSlow_30min.py,VFOBVVSlow_30min,OBV Flow: OBV(68) — 30min
-06-0659,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0659_VFMFIStd_30min.py,VFMFIStd_30min,MFI: MFI(20) — 30min
-06-0660,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0660_VFMFIFast_30min.py,VFMFIFast_30min,MFI: MFI(13) — 30min
-06-0661,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0661_VFMFIMid_30min.py,VFMFIMid_30min,MFI: MFI(26) — 30min
-06-0662,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0662_VFMFIUltra_30min.py,VFMFIUltra_30min,MFI: MFI(10) — 30min
-06-0663,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0663_VFMFISlow_30min.py,VFMFISlow_30min,MFI: MFI(40) — 30min
-06-0664,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0664_VFMFIVSlow_30min.py,VFMFIVSlow_30min,MFI: MFI(60) — 30min
-06-0665,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0665_VFMFIXUltra_30min.py,VFMFIXUltra_30min,MFI: MFI(6) — 30min
-06-0666,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0666_VFOISlow_60min.py,VFOISlow_60min,OI Trend: OI(20) — 60min
-06-0667,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0667_VFOIMid_60min.py,VFOIMid_60min,OI Trend: OI(14) — 60min
-06-0668,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0668_VFOIXSlow_60min.py,VFOIXSlow_60min,OI Trend: OI(28) — 60min
-06-0669,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0669_VFOIFast_60min.py,VFOIFast_60min,OI Trend: OI(8) — 60min
-06-0670,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0670_VFOIVSlow_60min.py,VFOIVSlow_60min,OI Trend: OI(40) — 60min
-06-0671,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0671_VFOIUltra_60min.py,VFOIUltra_60min,OI Trend: OI(4) — 60min
-06-0672,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0672_VFVolStd_60min.py,VFVolStd_60min,Vol Surge: VolSurge(1.5x) — 60min
-06-0673,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0673_VFVolTight_60min.py,VFVolTight_60min,Vol Surge: VolSurge(2.0x) — 60min
-06-0674,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0674_VFVolMild_60min.py,VFVolMild_60min,Vol Surge: VolSurge(1.3x) — 60min
-06-0675,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0675_VFVolMed_60min.py,VFVolMed_60min,Vol Surge: VolSurge(1.8x) — 60min
-06-0676,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0676_VFVolAggr_60min.py,VFVolAggr_60min,Vol Surge: VolSurge(2.5x) — 60min
-06-0677,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0677_VFVolXAggr_60min.py,VFVolXAggr_60min,Vol Surge: VolSurge(3.0x) — 60min
-06-0678,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0678_VFVolGentle_60min.py,VFVolGentle_60min,Vol Surge: VolSurge(1.2x) — 60min
-06-0679,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0679_VFValStd_60min.py,VFValStd_60min,Val Spike: ValSpike(1.3x) — 60min
-06-0680,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0680_VFValTight_60min.py,VFValTight_60min,Val Spike: ValSpike(1.5x) — 60min
-06-0681,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0681_VFValAggr_60min.py,VFValAggr_60min,Val Spike: ValSpike(2.0x) — 60min
-06-0682,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0682_VFValMild_60min.py,VFValMild_60min,Val Spike: ValSpike(1.2x) — 60min
-06-0683,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0683_VFValXAggr_60min.py,VFValXAggr_60min,Val Spike: ValSpike(2.5x) — 60min
-06-0684,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0684_VFValMed_60min.py,VFValMed_60min,Val Spike: ValSpike(1.8x) — 60min
-06-0685,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0685_VFOBVMid_60min.py,VFOBVMid_60min,OBV Flow: OBV(14) — 60min
-06-0686,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0686_VFOBVSlow_60min.py,VFOBVSlow_60min,OBV Flow: OBV(20) — 60min
-06-0687,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0687_VFOBVFast_60min.py,VFOBVFast_60min,OBV Flow: OBV(8) — 60min
-06-0688,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0688_VFOBVUltra_60min.py,VFOBVUltra_60min,OBV Flow: OBV(7) — 60min
-06-0689,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0689_VFOBVXSlow_60min.py,VFOBVXSlow_60min,OBV Flow: OBV(28) — 60min
-06-0690,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0690_VFOBVVSlow_60min.py,VFOBVVSlow_60min,OBV Flow: OBV(40) — 60min
-06-0691,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0691_VFMFIStd_60min.py,VFMFIStd_60min,MFI: MFI(14) — 60min
-06-0692,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0692_VFMFIFast_60min.py,VFMFIFast_60min,MFI: MFI(8) — 60min
-06-0693,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0693_VFMFIMid_60min.py,VFMFIMid_60min,MFI: MFI(14) — 60min
-06-0694,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0694_VFMFIUltra_60min.py,VFMFIUltra_60min,MFI: MFI(7) — 60min
-06-0695,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0695_VFMFISlow_60min.py,VFMFISlow_60min,MFI: MFI(28) — 60min
-06-0696,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0696_VFMFIVSlow_60min.py,VFMFIVSlow_60min,MFI: MFI(42) — 60min
-06-0697,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0697_VFMFIXUltra_60min.py,VFMFIXUltra_60min,MFI: MFI(4) — 60min
-07-0698,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0698_ISMOpnStd_5min.py,ISMOpnStd_5min,Open Drive: OpenDrive(7) — 5min
-07-0699,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0699_ISMOpnFast_5min.py,ISMOpnFast_5min,Open Drive: OpenDrive(3) — 5min
-07-0700,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0700_ISMOpnSlow_5min.py,ISMOpnSlow_5min,Open Drive: OpenDrive(14) — 5min
-07-0701,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0701_ISMOpnUltra_5min.py,ISMOpnUltra_5min,Open Drive: OpenDrive(3) — 5min
-07-0702,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0702_ISMOpnVSlow_5min.py,ISMOpnVSlow_5min,Open Drive: OpenDrive(21) — 5min
-07-0703,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0703_ISMOpnXUltra_5min.py,ISMOpnXUltra_5min,Open Drive: OpenDrive(3) — 5min
-07-0704,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0704_ISMLunStd_5min.py,ISMLunStd_5min,Lunch Rev: LunchRev(7) — 5min
-07-0705,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0705_ISMLunFast_5min.py,ISMLunFast_5min,Lunch Rev: LunchRev(3) — 5min
-07-0706,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0706_ISMLunSlow_5min.py,ISMLunSlow_5min,Lunch Rev: LunchRev(14) — 5min
-07-0707,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0707_ISMLunUltra_5min.py,ISMLunUltra_5min,Lunch Rev: LunchRev(3) — 5min
-07-0708,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0708_ISMLunVSlow_5min.py,ISMLunVSlow_5min,Lunch Rev: LunchRev(21) — 5min
-07-0709,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0709_ISMLunXUltra_5min.py,ISMLunXUltra_5min,Lunch Rev: LunchRev(3) — 5min
-07-0710,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0710_ISMClsStd_5min.py,ISMClsStd_5min,Close Sq: CloseSqz(7) — 5min
-07-0711,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0711_ISMClsFast_5min.py,ISMClsFast_5min,Close Sq: CloseSqz(3) — 5min
-07-0712,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0712_ISMClsSlow_5min.py,ISMClsSlow_5min,Close Sq: CloseSqz(14) — 5min
-07-0713,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0713_ISMClsUltra_5min.py,ISMClsUltra_5min,Close Sq: CloseSqz(3) — 5min
-07-0714,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0714_ISMClsVSlow_5min.py,ISMClsVSlow_5min,Close Sq: CloseSqz(21) — 5min
-07-0715,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0715_ISMClsXUltra_5min.py,ISMClsXUltra_5min,Close Sq: CloseSqz(3) — 5min
-07-0716,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0716_ISMGapStd_5min.py,ISMGapStd_5min,Gap Fill: GapFill(7) — 5min
-07-0717,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0717_ISMGapFast_5min.py,ISMGapFast_5min,Gap Fill: GapFill(3) — 5min
-07-0718,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0718_ISMGapSlow_5min.py,ISMGapSlow_5min,Gap Fill: GapFill(14) — 5min
-07-0719,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0719_ISMGapUltra_5min.py,ISMGapUltra_5min,Gap Fill: GapFill(3) — 5min
-07-0720,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0720_ISMGapVSlow_5min.py,ISMGapVSlow_5min,Gap Fill: GapFill(21) — 5min
-07-0721,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0721_ISMGapXUltra_5min.py,ISMGapXUltra_5min,Gap Fill: GapFill(3) — 5min
-07-0722,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0722_ISMOpnStd_15min.py,ISMOpnStd_15min,Open Drive: OpenDrive(10) — 15min
-07-0723,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0723_ISMOpnFast_15min.py,ISMOpnFast_15min,Open Drive: OpenDrive(5) — 15min
-07-0724,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0724_ISMOpnSlow_15min.py,ISMOpnSlow_15min,Open Drive: OpenDrive(20) — 15min
-07-0725,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0725_ISMOpnUltra_15min.py,ISMOpnUltra_15min,Open Drive: OpenDrive(3) — 15min
-07-0726,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0726_ISMOpnVSlow_15min.py,ISMOpnVSlow_15min,Open Drive: OpenDrive(30) — 15min
-07-0727,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0727_ISMOpnXUltra_15min.py,ISMOpnXUltra_15min,Open Drive: OpenDrive(3) — 15min
-07-0728,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0728_ISMLunStd_15min.py,ISMLunStd_15min,Lunch Rev: LunchRev(10) — 15min
-07-0729,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0729_ISMLunFast_15min.py,ISMLunFast_15min,Lunch Rev: LunchRev(5) — 15min
-07-0730,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0730_ISMLunSlow_15min.py,ISMLunSlow_15min,Lunch Rev: LunchRev(20) — 15min
-07-0731,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0731_ISMLunUltra_15min.py,ISMLunUltra_15min,Lunch Rev: LunchRev(3) — 15min
-07-0732,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0732_ISMLunVSlow_15min.py,ISMLunVSlow_15min,Lunch Rev: LunchRev(30) — 15min
-07-0733,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0733_ISMLunXUltra_15min.py,ISMLunXUltra_15min,Lunch Rev: LunchRev(3) — 15min
-07-0734,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0734_ISMClsStd_15min.py,ISMClsStd_15min,Close Sq: CloseSqz(10) — 15min
-07-0735,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0735_ISMClsFast_15min.py,ISMClsFast_15min,Close Sq: CloseSqz(5) — 15min
-07-0736,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0736_ISMClsSlow_15min.py,ISMClsSlow_15min,Close Sq: CloseSqz(20) — 15min
-07-0737,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0737_ISMClsUltra_15min.py,ISMClsUltra_15min,Close Sq: CloseSqz(3) — 15min
-07-0738,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0738_ISMClsVSlow_15min.py,ISMClsVSlow_15min,Close Sq: CloseSqz(30) — 15min
-07-0739,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0739_ISMClsXUltra_15min.py,ISMClsXUltra_15min,Close Sq: CloseSqz(3) — 15min
-07-0740,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0740_ISMGapStd_15min.py,ISMGapStd_15min,Gap Fill: GapFill(10) — 15min
-07-0741,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0741_ISMGapFast_15min.py,ISMGapFast_15min,Gap Fill: GapFill(5) — 15min
-07-0742,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0742_ISMGapSlow_15min.py,ISMGapSlow_15min,Gap Fill: GapFill(20) — 15min
-07-0743,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0743_ISMGapUltra_15min.py,ISMGapUltra_15min,Gap Fill: GapFill(3) — 15min
-07-0744,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0744_ISMGapVSlow_15min.py,ISMGapVSlow_15min,Gap Fill: GapFill(30) — 15min
-07-0745,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0745_ISMGapXUltra_15min.py,ISMGapXUltra_15min,Gap Fill: GapFill(3) — 15min
-08-0746,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0746_MFZStd_15min.py,MFZStd_15min,Z-Score: ZScore(1.5) — 15min
-08-0747,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0747_MFZTight_15min.py,MFZTight_15min,Z-Score: ZScore(2.0) — 15min
-08-0748,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0748_MFZMild_15min.py,MFZMild_15min,Z-Score: ZScore(1.0) — 15min
-08-0749,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0749_MFZMed_15min.py,MFZMed_15min,Z-Score: ZScore(1.2) — 15min
-08-0750,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0750_MFZAggr_15min.py,MFZAggr_15min,Z-Score: ZScore(2.5) — 15min
-08-0751,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0751_MFZXAggr_15min.py,MFZXAggr_15min,Z-Score: ZScore(3.0) — 15min
-08-0752,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0752_MFZGentle_15min.py,MFZGentle_15min,Z-Score: ZScore(0.8) — 15min
-08-0753,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0753_MFZXXAggr_15min.py,MFZXXAggr_15min,Z-Score: ZScore(4.0) — 15min
-08-0754,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0754_MFMomStd_15min.py,MFMomStd_15min,Momentum MF: MFMom(10) — 15min
-08-0755,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0755_MFMomFast_15min.py,MFMomFast_15min,Momentum MF: MFMom(5) — 15min
-08-0756,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0756_MFMomSlow_15min.py,MFMomSlow_15min,Momentum MF: MFMom(20) — 15min
-08-0757,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0757_MFMomUltra_15min.py,MFMomUltra_15min,Momentum MF: MFMom(3) — 15min
-08-0758,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0758_MFMomVSlow_15min.py,MFMomVSlow_15min,Momentum MF: MFMom(30) — 15min
-08-0759,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0759_MFMomXUltra_15min.py,MFMomXUltra_15min,Momentum MF: MFMom(3) — 15min
-08-0760,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0760_MFTVMid_15min.py,MFTVMid_15min,Trend+Vol: MFTrendVol(26) — 15min
-08-0761,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0761_MFTVSlow_15min.py,MFTVSlow_15min,Trend+Vol: MFTrendVol(34) — 15min
-08-0762,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0762_MFTVFast_15min.py,MFTVFast_15min,Trend+Vol: MFTrendVol(13) — 15min
-08-0763,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0763_MFTVXSlow_15min.py,MFTVXSlow_15min,Trend+Vol: MFTrendVol(52) — 15min
-08-0764,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0764_MFTVVSlow_15min.py,MFTVVSlow_15min,Trend+Vol: MFTrendVol(68) — 15min
-08-0765,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0765_MFTVUltra_15min.py,MFTVUltra_15min,Trend+Vol: MFTrendVol(6) — 15min
-08-0766,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0766_MFZStd_30min.py,MFZStd_30min,Z-Score: ZScore(1.5) — 30min
-08-0767,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0767_MFZTight_30min.py,MFZTight_30min,Z-Score: ZScore(2.0) — 30min
-08-0768,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0768_MFZMild_30min.py,MFZMild_30min,Z-Score: ZScore(1.0) — 30min
-08-0769,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0769_MFZMed_30min.py,MFZMed_30min,Z-Score: ZScore(1.2) — 30min
-08-0770,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0770_MFZAggr_30min.py,MFZAggr_30min,Z-Score: ZScore(2.5) — 30min
-08-0771,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0771_MFZXAggr_30min.py,MFZXAggr_30min,Z-Score: ZScore(3.0) — 30min
-08-0772,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0772_MFZGentle_30min.py,MFZGentle_30min,Z-Score: ZScore(0.8) — 30min
-08-0773,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0773_MFZXXAggr_30min.py,MFZXXAggr_30min,Z-Score: ZScore(4.0) — 30min
-08-0774,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0774_MFMomStd_30min.py,MFMomStd_30min,Momentum MF: MFMom(10) — 30min
-08-0775,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0775_MFMomFast_30min.py,MFMomFast_30min,Momentum MF: MFMom(5) — 30min
-08-0776,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0776_MFMomSlow_30min.py,MFMomSlow_30min,Momentum MF: MFMom(20) — 30min
-08-0777,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0777_MFMomUltra_30min.py,MFMomUltra_30min,Momentum MF: MFMom(3) — 30min
-08-0778,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0778_MFMomVSlow_30min.py,MFMomVSlow_30min,Momentum MF: MFMom(30) — 30min
-08-0779,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0779_MFMomXUltra_30min.py,MFMomXUltra_30min,Momentum MF: MFMom(3) — 30min
-08-0780,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0780_MFTVMid_30min.py,MFTVMid_30min,Trend+Vol: MFTrendVol(26) — 30min
-08-0781,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0781_MFTVSlow_30min.py,MFTVSlow_30min,Trend+Vol: MFTrendVol(34) — 30min
-08-0782,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0782_MFTVFast_30min.py,MFTVFast_30min,Trend+Vol: MFTrendVol(13) — 30min
-08-0783,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0783_MFTVXSlow_30min.py,MFTVXSlow_30min,Trend+Vol: MFTrendVol(52) — 30min
-08-0784,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0784_MFTVVSlow_30min.py,MFTVVSlow_30min,Trend+Vol: MFTrendVol(68) — 30min
-08-0785,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0785_MFTVUltra_30min.py,MFTVUltra_30min,Trend+Vol: MFTrendVol(6) — 30min
-08-0786,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0786_MFZStd_60min.py,MFZStd_60min,Z-Score: ZScore(1.5) — 60min
-08-0787,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0787_MFZTight_60min.py,MFZTight_60min,Z-Score: ZScore(2.0) — 60min
-08-0788,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0788_MFZMild_60min.py,MFZMild_60min,Z-Score: ZScore(1.0) — 60min
-08-0789,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0789_MFZMed_60min.py,MFZMed_60min,Z-Score: ZScore(1.2) — 60min
-08-0790,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0790_MFZAggr_60min.py,MFZAggr_60min,Z-Score: ZScore(2.5) — 60min
-08-0791,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0791_MFZXAggr_60min.py,MFZXAggr_60min,Z-Score: ZScore(3.0) — 60min
-08-0792,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0792_MFZGentle_60min.py,MFZGentle_60min,Z-Score: ZScore(0.8) — 60min
-08-0793,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0793_MFZXXAggr_60min.py,MFZXXAggr_60min,Z-Score: ZScore(4.0) — 60min
-08-0794,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0794_MFMomStd_60min.py,MFMomStd_60min,Momentum MF: MFMom(7) — 60min
-08-0795,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0795_MFMomFast_60min.py,MFMomFast_60min,Momentum MF: MFMom(3) — 60min
-08-0796,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0796_MFMomSlow_60min.py,MFMomSlow_60min,Momentum MF: MFMom(14) — 60min
-08-0797,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0797_MFMomUltra_60min.py,MFMomUltra_60min,Momentum MF: MFMom(3) — 60min
-08-0798,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0798_MFMomVSlow_60min.py,MFMomVSlow_60min,Momentum MF: MFMom(21) — 60min
-08-0799,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0799_MFMomXUltra_60min.py,MFMomXUltra_60min,Momentum MF: MFMom(3) — 60min
-08-0800,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0800_MFTVMid_60min.py,MFTVMid_60min,Trend+Vol: MFTrendVol(14) — 60min
-08-0801,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0801_MFTVSlow_60min.py,MFTVSlow_60min,Trend+Vol: MFTrendVol(20) — 60min
-08-0802,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0802_MFTVFast_60min.py,MFTVFast_60min,Trend+Vol: MFTrendVol(8) — 60min
-08-0803,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0803_MFTVXSlow_60min.py,MFTVXSlow_60min,Trend+Vol: MFTrendVol(28) — 60min
-08-0804,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0804_MFTVVSlow_60min.py,MFTVVSlow_60min,Trend+Vol: MFTrendVol(40) — 60min
-08-0805,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0805_MFTVUltra_60min.py,MFTVUltra_60min,Trend+Vol: MFTrendVol(4) — 60min
+06-0602,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0602_VFOISlow_5min.py,VFOISlow_5min,OI Trend: OI(20) — 5min
+06-0603,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0603_VFOIMid_5min.py,VFOIMid_5min,OI Trend: OI(14) — 5min
+06-0604,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0604_VFOIXSlow_5min.py,VFOIXSlow_5min,OI Trend: OI(28) — 5min
+06-0605,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0605_VFOIFast_5min.py,VFOIFast_5min,OI Trend: OI(8) — 5min
+06-0606,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0606_VFOIVSlow_5min.py,VFOIVSlow_5min,OI Trend: OI(40) — 5min
+06-0607,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0607_VFOIUltra_5min.py,VFOIUltra_5min,OI Trend: OI(4) — 5min
+06-0608,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0608_VFVolStd_5min.py,VFVolStd_5min,Vol Surge: VolSurge(1.5x) — 5min
+06-0609,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0609_VFVolTight_5min.py,VFVolTight_5min,Vol Surge: VolSurge(2.0x) — 5min
+06-0610,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0610_VFVolMild_5min.py,VFVolMild_5min,Vol Surge: VolSurge(1.3x) — 5min
+06-0611,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0611_VFVolMed_5min.py,VFVolMed_5min,Vol Surge: VolSurge(1.8x) — 5min
+06-0612,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0612_VFVolAggr_5min.py,VFVolAggr_5min,Vol Surge: VolSurge(2.5x) — 5min
+06-0613,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0613_VFVolXAggr_5min.py,VFVolXAggr_5min,Vol Surge: VolSurge(3.0x) — 5min
+06-0614,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0614_VFVolGentle_5min.py,VFVolGentle_5min,Vol Surge: VolSurge(1.2x) — 5min
+06-0615,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0615_VFValStd_5min.py,VFValStd_5min,Val Spike: ValSpike(1.3x) — 5min
+06-0616,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0616_VFValTight_5min.py,VFValTight_5min,Val Spike: ValSpike(1.5x) — 5min
+06-0617,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0617_VFValAggr_5min.py,VFValAggr_5min,Val Spike: ValSpike(2.0x) — 5min
+06-0618,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0618_VFValMild_5min.py,VFValMild_5min,Val Spike: ValSpike(1.2x) — 5min
+06-0619,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0619_VFValXAggr_5min.py,VFValXAggr_5min,Val Spike: ValSpike(2.5x) — 5min
+06-0620,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0620_VFValMed_5min.py,VFValMed_5min,Val Spike: ValSpike(1.8x) — 5min
+06-0621,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0621_VFOBVMid_5min.py,VFOBVMid_5min,OBV Flow: OBV(14) — 5min
+06-0622,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0622_VFOBVSlow_5min.py,VFOBVSlow_5min,OBV Flow: OBV(20) — 5min
+06-0623,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0623_VFOBVFast_5min.py,VFOBVFast_5min,OBV Flow: OBV(8) — 5min
+06-0624,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0624_VFOBVUltra_5min.py,VFOBVUltra_5min,OBV Flow: OBV(7) — 5min
+06-0625,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0625_VFOBVXSlow_5min.py,VFOBVXSlow_5min,OBV Flow: OBV(28) — 5min
+06-0626,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0626_VFOBVVSlow_5min.py,VFOBVVSlow_5min,OBV Flow: OBV(40) — 5min
+06-0627,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0627_VFMFIStd_5min.py,VFMFIStd_5min,MFI: MFI(14) — 5min
+06-0628,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0628_VFMFIFast_5min.py,VFMFIFast_5min,MFI: MFI(8) — 5min
+06-0629,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0629_VFMFIMid_5min.py,VFMFIMid_5min,MFI: MFI(14) — 5min
+06-0630,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0630_VFMFIUltra_5min.py,VFMFIUltra_5min,MFI: MFI(7) — 5min
+06-0631,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0631_VFMFISlow_5min.py,VFMFISlow_5min,MFI: MFI(28) — 5min
+06-0632,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0632_VFMFIVSlow_5min.py,VFMFIVSlow_5min,MFI: MFI(42) — 5min
+06-0633,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0633_VFMFIXUltra_5min.py,VFMFIXUltra_5min,MFI: MFI(4) — 5min
+06-0634,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0634_CCAggr_5min.py,CCAggr_5min,Cascade Catcher: Aggressive cascade: OI-0.5%/vol-1.5x/price-0.3% — 5min
+06-0635,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0635_CCStd_5min.py,CCStd_5min,Cascade Catcher: Standard cascade: OI-1%/vol-2x/price-0.5% — 5min
+06-0636,thesis_06_volume_flow,5min,BOTH,6,thesis_06_volume_flow\5min\06-0636_CCCons_5min.py,CCCons_5min,Cascade Catcher: Conservative cascade: OI-2%/vol-3x/price-1% — 5min
+06-0637,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0637_VFOISlow_15min.py,VFOISlow_15min,OI Trend: OI(34) — 15min
+06-0638,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0638_VFOIMid_15min.py,VFOIMid_15min,OI Trend: OI(26) — 15min
+06-0639,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0639_VFOIXSlow_15min.py,VFOIXSlow_15min,OI Trend: OI(52) — 15min
+06-0640,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0640_VFOIFast_15min.py,VFOIFast_15min,OI Trend: OI(13) — 15min
+06-0641,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0641_VFOIVSlow_15min.py,VFOIVSlow_15min,OI Trend: OI(68) — 15min
+06-0642,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0642_VFOIUltra_15min.py,VFOIUltra_15min,OI Trend: OI(6) — 15min
+06-0643,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0643_VFVolStd_15min.py,VFVolStd_15min,Vol Surge: VolSurge(1.5x) — 15min
+06-0644,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0644_VFVolTight_15min.py,VFVolTight_15min,Vol Surge: VolSurge(2.0x) — 15min
+06-0645,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0645_VFVolMild_15min.py,VFVolMild_15min,Vol Surge: VolSurge(1.3x) — 15min
+06-0646,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0646_VFVolMed_15min.py,VFVolMed_15min,Vol Surge: VolSurge(1.8x) — 15min
+06-0647,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0647_VFVolAggr_15min.py,VFVolAggr_15min,Vol Surge: VolSurge(2.5x) — 15min
+06-0648,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0648_VFVolXAggr_15min.py,VFVolXAggr_15min,Vol Surge: VolSurge(3.0x) — 15min
+06-0649,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0649_VFVolGentle_15min.py,VFVolGentle_15min,Vol Surge: VolSurge(1.2x) — 15min
+06-0650,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0650_VFValStd_15min.py,VFValStd_15min,Val Spike: ValSpike(1.3x) — 15min
+06-0651,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0651_VFValTight_15min.py,VFValTight_15min,Val Spike: ValSpike(1.5x) — 15min
+06-0652,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0652_VFValAggr_15min.py,VFValAggr_15min,Val Spike: ValSpike(2.0x) — 15min
+06-0653,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0653_VFValMild_15min.py,VFValMild_15min,Val Spike: ValSpike(1.2x) — 15min
+06-0654,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0654_VFValXAggr_15min.py,VFValXAggr_15min,Val Spike: ValSpike(2.5x) — 15min
+06-0655,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0655_VFValMed_15min.py,VFValMed_15min,Val Spike: ValSpike(1.8x) — 15min
+06-0656,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0656_VFOBVMid_15min.py,VFOBVMid_15min,OBV Flow: OBV(26) — 15min
+06-0657,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0657_VFOBVSlow_15min.py,VFOBVSlow_15min,OBV Flow: OBV(34) — 15min
+06-0658,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0658_VFOBVFast_15min.py,VFOBVFast_15min,OBV Flow: OBV(13) — 15min
+06-0659,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0659_VFOBVUltra_15min.py,VFOBVUltra_15min,OBV Flow: OBV(13) — 15min
+06-0660,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0660_VFOBVXSlow_15min.py,VFOBVXSlow_15min,OBV Flow: OBV(52) — 15min
+06-0661,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0661_VFOBVVSlow_15min.py,VFOBVVSlow_15min,OBV Flow: OBV(68) — 15min
+06-0662,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0662_VFMFIStd_15min.py,VFMFIStd_15min,MFI: MFI(20) — 15min
+06-0663,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0663_VFMFIFast_15min.py,VFMFIFast_15min,MFI: MFI(13) — 15min
+06-0664,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0664_VFMFIMid_15min.py,VFMFIMid_15min,MFI: MFI(26) — 15min
+06-0665,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0665_VFMFIUltra_15min.py,VFMFIUltra_15min,MFI: MFI(10) — 15min
+06-0666,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0666_VFMFISlow_15min.py,VFMFISlow_15min,MFI: MFI(40) — 15min
+06-0667,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0667_VFMFIVSlow_15min.py,VFMFIVSlow_15min,MFI: MFI(60) — 15min
+06-0668,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0668_VFMFIXUltra_15min.py,VFMFIXUltra_15min,MFI: MFI(6) — 15min
+06-0669,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0669_CCAggr_15min.py,CCAggr_15min,Cascade Catcher: Aggressive cascade: OI-0.5%/vol-1.5x/price-0.3% — 15min
+06-0670,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0670_CCStd_15min.py,CCStd_15min,Cascade Catcher: Standard cascade: OI-1%/vol-2x/price-0.5% — 15min
+06-0671,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0671_CCCons_15min.py,CCCons_15min,Cascade Catcher: Conservative cascade: OI-2%/vol-3x/price-1% — 15min
+06-0672,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0672_VFOISlow_30min.py,VFOISlow_30min,OI Trend: OI(34) — 30min
+06-0673,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0673_VFOIMid_30min.py,VFOIMid_30min,OI Trend: OI(26) — 30min
+06-0674,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0674_VFOIXSlow_30min.py,VFOIXSlow_30min,OI Trend: OI(52) — 30min
+06-0675,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0675_VFOIFast_30min.py,VFOIFast_30min,OI Trend: OI(13) — 30min
+06-0676,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0676_VFOIVSlow_30min.py,VFOIVSlow_30min,OI Trend: OI(68) — 30min
+06-0677,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0677_VFOIUltra_30min.py,VFOIUltra_30min,OI Trend: OI(6) — 30min
+06-0678,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0678_VFVolStd_30min.py,VFVolStd_30min,Vol Surge: VolSurge(1.5x) — 30min
+06-0679,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0679_VFVolTight_30min.py,VFVolTight_30min,Vol Surge: VolSurge(2.0x) — 30min
+06-0680,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0680_VFVolMild_30min.py,VFVolMild_30min,Vol Surge: VolSurge(1.3x) — 30min
+06-0681,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0681_VFVolMed_30min.py,VFVolMed_30min,Vol Surge: VolSurge(1.8x) — 30min
+06-0682,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0682_VFVolAggr_30min.py,VFVolAggr_30min,Vol Surge: VolSurge(2.5x) — 30min
+06-0683,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0683_VFVolXAggr_30min.py,VFVolXAggr_30min,Vol Surge: VolSurge(3.0x) — 30min
+06-0684,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0684_VFVolGentle_30min.py,VFVolGentle_30min,Vol Surge: VolSurge(1.2x) — 30min
+06-0685,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0685_VFValStd_30min.py,VFValStd_30min,Val Spike: ValSpike(1.3x) — 30min
+06-0686,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0686_VFValTight_30min.py,VFValTight_30min,Val Spike: ValSpike(1.5x) — 30min
+06-0687,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0687_VFValAggr_30min.py,VFValAggr_30min,Val Spike: ValSpike(2.0x) — 30min
+06-0688,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0688_VFValMild_30min.py,VFValMild_30min,Val Spike: ValSpike(1.2x) — 30min
+06-0689,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0689_VFValXAggr_30min.py,VFValXAggr_30min,Val Spike: ValSpike(2.5x) — 30min
+06-0690,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0690_VFValMed_30min.py,VFValMed_30min,Val Spike: ValSpike(1.8x) — 30min
+06-0691,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0691_VFOBVMid_30min.py,VFOBVMid_30min,OBV Flow: OBV(26) — 30min
+06-0692,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0692_VFOBVSlow_30min.py,VFOBVSlow_30min,OBV Flow: OBV(34) — 30min
+06-0693,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0693_VFOBVFast_30min.py,VFOBVFast_30min,OBV Flow: OBV(13) — 30min
+06-0694,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0694_VFOBVUltra_30min.py,VFOBVUltra_30min,OBV Flow: OBV(13) — 30min
+06-0695,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0695_VFOBVXSlow_30min.py,VFOBVXSlow_30min,OBV Flow: OBV(52) — 30min
+06-0696,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0696_VFOBVVSlow_30min.py,VFOBVVSlow_30min,OBV Flow: OBV(68) — 30min
+06-0697,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0697_VFMFIStd_30min.py,VFMFIStd_30min,MFI: MFI(20) — 30min
+06-0698,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0698_VFMFIFast_30min.py,VFMFIFast_30min,MFI: MFI(13) — 30min
+06-0699,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0699_VFMFIMid_30min.py,VFMFIMid_30min,MFI: MFI(26) — 30min
+06-0700,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0700_VFMFIUltra_30min.py,VFMFIUltra_30min,MFI: MFI(10) — 30min
+06-0701,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0701_VFMFISlow_30min.py,VFMFISlow_30min,MFI: MFI(40) — 30min
+06-0702,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0702_VFMFIVSlow_30min.py,VFMFIVSlow_30min,MFI: MFI(60) — 30min
+06-0703,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0703_VFMFIXUltra_30min.py,VFMFIXUltra_30min,MFI: MFI(6) — 30min
+06-0704,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0704_CCAggr_30min.py,CCAggr_30min,Cascade Catcher: Aggressive cascade: OI-0.5%/vol-1.5x/price-0.3% — 30min
+06-0705,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0705_CCStd_30min.py,CCStd_30min,Cascade Catcher: Standard cascade: OI-1%/vol-2x/price-0.5% — 30min
+06-0706,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0706_CCCons_30min.py,CCCons_30min,Cascade Catcher: Conservative cascade: OI-2%/vol-3x/price-1% — 30min
+06-0707,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0707_VFOISlow_60min.py,VFOISlow_60min,OI Trend: OI(20) — 60min
+06-0708,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0708_VFOIMid_60min.py,VFOIMid_60min,OI Trend: OI(14) — 60min
+06-0709,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0709_VFOIXSlow_60min.py,VFOIXSlow_60min,OI Trend: OI(28) — 60min
+06-0710,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0710_VFOIFast_60min.py,VFOIFast_60min,OI Trend: OI(8) — 60min
+06-0711,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0711_VFOIVSlow_60min.py,VFOIVSlow_60min,OI Trend: OI(40) — 60min
+06-0712,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0712_VFOIUltra_60min.py,VFOIUltra_60min,OI Trend: OI(4) — 60min
+06-0713,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0713_VFVolStd_60min.py,VFVolStd_60min,Vol Surge: VolSurge(1.5x) — 60min
+06-0714,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0714_VFVolTight_60min.py,VFVolTight_60min,Vol Surge: VolSurge(2.0x) — 60min
+06-0715,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0715_VFVolMild_60min.py,VFVolMild_60min,Vol Surge: VolSurge(1.3x) — 60min
+06-0716,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0716_VFVolMed_60min.py,VFVolMed_60min,Vol Surge: VolSurge(1.8x) — 60min
+06-0717,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0717_VFVolAggr_60min.py,VFVolAggr_60min,Vol Surge: VolSurge(2.5x) — 60min
+06-0718,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0718_VFVolXAggr_60min.py,VFVolXAggr_60min,Vol Surge: VolSurge(3.0x) — 60min
+06-0719,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0719_VFVolGentle_60min.py,VFVolGentle_60min,Vol Surge: VolSurge(1.2x) — 60min
+06-0720,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0720_VFValStd_60min.py,VFValStd_60min,Val Spike: ValSpike(1.3x) — 60min
+06-0721,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0721_VFValTight_60min.py,VFValTight_60min,Val Spike: ValSpike(1.5x) — 60min
+06-0722,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0722_VFValAggr_60min.py,VFValAggr_60min,Val Spike: ValSpike(2.0x) — 60min
+06-0723,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0723_VFValMild_60min.py,VFValMild_60min,Val Spike: ValSpike(1.2x) — 60min
+06-0724,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0724_VFValXAggr_60min.py,VFValXAggr_60min,Val Spike: ValSpike(2.5x) — 60min
+06-0725,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0725_VFValMed_60min.py,VFValMed_60min,Val Spike: ValSpike(1.8x) — 60min
+06-0726,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0726_VFOBVMid_60min.py,VFOBVMid_60min,OBV Flow: OBV(14) — 60min
+06-0727,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0727_VFOBVSlow_60min.py,VFOBVSlow_60min,OBV Flow: OBV(20) — 60min
+06-0728,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0728_VFOBVFast_60min.py,VFOBVFast_60min,OBV Flow: OBV(8) — 60min
+06-0729,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0729_VFOBVUltra_60min.py,VFOBVUltra_60min,OBV Flow: OBV(7) — 60min
+06-0730,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0730_VFOBVXSlow_60min.py,VFOBVXSlow_60min,OBV Flow: OBV(28) — 60min
+06-0731,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0731_VFOBVVSlow_60min.py,VFOBVVSlow_60min,OBV Flow: OBV(40) — 60min
+06-0732,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0732_VFMFIStd_60min.py,VFMFIStd_60min,MFI: MFI(14) — 60min
+06-0733,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0733_VFMFIFast_60min.py,VFMFIFast_60min,MFI: MFI(8) — 60min
+06-0734,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0734_VFMFIMid_60min.py,VFMFIMid_60min,MFI: MFI(14) — 60min
+06-0735,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0735_VFMFIUltra_60min.py,VFMFIUltra_60min,MFI: MFI(7) — 60min
+06-0736,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0736_VFMFISlow_60min.py,VFMFISlow_60min,MFI: MFI(28) — 60min
+06-0737,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0737_VFMFIVSlow_60min.py,VFMFIVSlow_60min,MFI: MFI(42) — 60min
+06-0738,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0738_VFMFIXUltra_60min.py,VFMFIXUltra_60min,MFI: MFI(4) — 60min
+06-0739,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0739_CCAggr_60min.py,CCAggr_60min,Cascade Catcher: Aggressive cascade: OI-0.5%/vol-1.5x/price-0.3% — 60min
+06-0740,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0740_CCStd_60min.py,CCStd_60min,Cascade Catcher: Standard cascade: OI-1%/vol-2x/price-0.5% — 60min
+06-0741,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0741_CCCons_60min.py,CCCons_60min,Cascade Catcher: Conservative cascade: OI-2%/vol-3x/price-1% — 60min
+07-0742,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0742_ISMOpnStd_5min.py,ISMOpnStd_5min,Open Drive: OpenDrive(7) — 5min
+07-0743,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0743_ISMOpnFast_5min.py,ISMOpnFast_5min,Open Drive: OpenDrive(3) — 5min
+07-0744,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0744_ISMOpnSlow_5min.py,ISMOpnSlow_5min,Open Drive: OpenDrive(14) — 5min
+07-0745,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0745_ISMOpnUltra_5min.py,ISMOpnUltra_5min,Open Drive: OpenDrive(3) — 5min
+07-0746,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0746_ISMOpnVSlow_5min.py,ISMOpnVSlow_5min,Open Drive: OpenDrive(21) — 5min
+07-0747,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0747_ISMOpnXUltra_5min.py,ISMOpnXUltra_5min,Open Drive: OpenDrive(3) — 5min
+07-0748,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0748_ISMLunStd_5min.py,ISMLunStd_5min,Lunch Rev: LunchRev(7) — 5min
+07-0749,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0749_ISMLunFast_5min.py,ISMLunFast_5min,Lunch Rev: LunchRev(3) — 5min
+07-0750,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0750_ISMLunSlow_5min.py,ISMLunSlow_5min,Lunch Rev: LunchRev(14) — 5min
+07-0751,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0751_ISMLunUltra_5min.py,ISMLunUltra_5min,Lunch Rev: LunchRev(3) — 5min
+07-0752,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0752_ISMLunVSlow_5min.py,ISMLunVSlow_5min,Lunch Rev: LunchRev(21) — 5min
+07-0753,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0753_ISMLunXUltra_5min.py,ISMLunXUltra_5min,Lunch Rev: LunchRev(3) — 5min
+07-0754,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0754_ISMClsStd_5min.py,ISMClsStd_5min,Close Sq: CloseSqz(7) — 5min
+07-0755,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0755_ISMClsFast_5min.py,ISMClsFast_5min,Close Sq: CloseSqz(3) — 5min
+07-0756,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0756_ISMClsSlow_5min.py,ISMClsSlow_5min,Close Sq: CloseSqz(14) — 5min
+07-0757,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0757_ISMClsUltra_5min.py,ISMClsUltra_5min,Close Sq: CloseSqz(3) — 5min
+07-0758,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0758_ISMClsVSlow_5min.py,ISMClsVSlow_5min,Close Sq: CloseSqz(21) — 5min
+07-0759,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0759_ISMClsXUltra_5min.py,ISMClsXUltra_5min,Close Sq: CloseSqz(3) — 5min
+07-0760,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0760_ISMGapStd_5min.py,ISMGapStd_5min,Gap Fill: GapFill(7) — 5min
+07-0761,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0761_ISMGapFast_5min.py,ISMGapFast_5min,Gap Fill: GapFill(3) — 5min
+07-0762,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0762_ISMGapSlow_5min.py,ISMGapSlow_5min,Gap Fill: GapFill(14) — 5min
+07-0763,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0763_ISMGapUltra_5min.py,ISMGapUltra_5min,Gap Fill: GapFill(3) — 5min
+07-0764,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0764_ISMGapVSlow_5min.py,ISMGapVSlow_5min,Gap Fill: GapFill(21) — 5min
+07-0765,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0765_ISMGapXUltra_5min.py,ISMGapXUltra_5min,Gap Fill: GapFill(3) — 5min
+07-0766,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0766_ISMOpnStd_15min.py,ISMOpnStd_15min,Open Drive: OpenDrive(10) — 15min
+07-0767,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0767_ISMOpnFast_15min.py,ISMOpnFast_15min,Open Drive: OpenDrive(5) — 15min
+07-0768,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0768_ISMOpnSlow_15min.py,ISMOpnSlow_15min,Open Drive: OpenDrive(20) — 15min
+07-0769,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0769_ISMOpnUltra_15min.py,ISMOpnUltra_15min,Open Drive: OpenDrive(3) — 15min
+07-0770,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0770_ISMOpnVSlow_15min.py,ISMOpnVSlow_15min,Open Drive: OpenDrive(30) — 15min
+07-0771,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0771_ISMOpnXUltra_15min.py,ISMOpnXUltra_15min,Open Drive: OpenDrive(3) — 15min
+07-0772,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0772_ISMLunStd_15min.py,ISMLunStd_15min,Lunch Rev: LunchRev(10) — 15min
+07-0773,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0773_ISMLunFast_15min.py,ISMLunFast_15min,Lunch Rev: LunchRev(5) — 15min
+07-0774,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0774_ISMLunSlow_15min.py,ISMLunSlow_15min,Lunch Rev: LunchRev(20) — 15min
+07-0775,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0775_ISMLunUltra_15min.py,ISMLunUltra_15min,Lunch Rev: LunchRev(3) — 15min
+07-0776,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0776_ISMLunVSlow_15min.py,ISMLunVSlow_15min,Lunch Rev: LunchRev(30) — 15min
+07-0777,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0777_ISMLunXUltra_15min.py,ISMLunXUltra_15min,Lunch Rev: LunchRev(3) — 15min
+07-0778,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0778_ISMClsStd_15min.py,ISMClsStd_15min,Close Sq: CloseSqz(10) — 15min
+07-0779,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0779_ISMClsFast_15min.py,ISMClsFast_15min,Close Sq: CloseSqz(5) — 15min
+07-0780,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0780_ISMClsSlow_15min.py,ISMClsSlow_15min,Close Sq: CloseSqz(20) — 15min
+07-0781,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0781_ISMClsUltra_15min.py,ISMClsUltra_15min,Close Sq: CloseSqz(3) — 15min
+07-0782,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0782_ISMClsVSlow_15min.py,ISMClsVSlow_15min,Close Sq: CloseSqz(30) — 15min
+07-0783,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0783_ISMClsXUltra_15min.py,ISMClsXUltra_15min,Close Sq: CloseSqz(3) — 15min
+07-0784,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0784_ISMGapStd_15min.py,ISMGapStd_15min,Gap Fill: GapFill(10) — 15min
+07-0785,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0785_ISMGapFast_15min.py,ISMGapFast_15min,Gap Fill: GapFill(5) — 15min
+07-0786,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0786_ISMGapSlow_15min.py,ISMGapSlow_15min,Gap Fill: GapFill(20) — 15min
+07-0787,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0787_ISMGapUltra_15min.py,ISMGapUltra_15min,Gap Fill: GapFill(3) — 15min
+07-0788,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0788_ISMGapVSlow_15min.py,ISMGapVSlow_15min,Gap Fill: GapFill(30) — 15min
+07-0789,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0789_ISMGapXUltra_15min.py,ISMGapXUltra_15min,Gap Fill: GapFill(3) — 15min
+08-0790,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0790_MFZStd_15min.py,MFZStd_15min,Z-Score: ZScore(1.5) — 15min
+08-0791,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0791_MFZTight_15min.py,MFZTight_15min,Z-Score: ZScore(2.0) — 15min
+08-0792,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0792_MFZMild_15min.py,MFZMild_15min,Z-Score: ZScore(1.0) — 15min
+08-0793,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0793_MFZMed_15min.py,MFZMed_15min,Z-Score: ZScore(1.2) — 15min
+08-0794,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0794_MFZAggr_15min.py,MFZAggr_15min,Z-Score: ZScore(2.5) — 15min
+08-0795,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0795_MFZXAggr_15min.py,MFZXAggr_15min,Z-Score: ZScore(3.0) — 15min
+08-0796,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0796_MFZGentle_15min.py,MFZGentle_15min,Z-Score: ZScore(0.8) — 15min
+08-0797,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0797_MFZXXAggr_15min.py,MFZXXAggr_15min,Z-Score: ZScore(4.0) — 15min
+08-0798,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0798_MFMomStd_15min.py,MFMomStd_15min,Momentum MF: MFMom(10) — 15min
+08-0799,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0799_MFMomFast_15min.py,MFMomFast_15min,Momentum MF: MFMom(5) — 15min
+08-0800,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0800_MFMomSlow_15min.py,MFMomSlow_15min,Momentum MF: MFMom(20) — 15min
+08-0801,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0801_MFMomUltra_15min.py,MFMomUltra_15min,Momentum MF: MFMom(3) — 15min
+08-0802,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0802_MFMomVSlow_15min.py,MFMomVSlow_15min,Momentum MF: MFMom(30) — 15min
+08-0803,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0803_MFMomXUltra_15min.py,MFMomXUltra_15min,Momentum MF: MFMom(3) — 15min
+08-0804,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0804_MFTVMid_15min.py,MFTVMid_15min,Trend+Vol: MFTrendVol(26) — 15min
+08-0805,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0805_MFTVSlow_15min.py,MFTVSlow_15min,Trend+Vol: MFTrendVol(34) — 15min
+08-0806,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0806_MFTVFast_15min.py,MFTVFast_15min,Trend+Vol: MFTrendVol(13) — 15min
+08-0807,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0807_MFTVXSlow_15min.py,MFTVXSlow_15min,Trend+Vol: MFTrendVol(52) — 15min
+08-0808,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0808_MFTVVSlow_15min.py,MFTVVSlow_15min,Trend+Vol: MFTrendVol(68) — 15min
+08-0809,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0809_MFTVUltra_15min.py,MFTVUltra_15min,Trend+Vol: MFTrendVol(6) — 15min
+08-0810,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0810_MFZStd_30min.py,MFZStd_30min,Z-Score: ZScore(1.5) — 30min
+08-0811,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0811_MFZTight_30min.py,MFZTight_30min,Z-Score: ZScore(2.0) — 30min
+08-0812,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0812_MFZMild_30min.py,MFZMild_30min,Z-Score: ZScore(1.0) — 30min
+08-0813,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0813_MFZMed_30min.py,MFZMed_30min,Z-Score: ZScore(1.2) — 30min
+08-0814,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0814_MFZAggr_30min.py,MFZAggr_30min,Z-Score: ZScore(2.5) — 30min
+08-0815,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0815_MFZXAggr_30min.py,MFZXAggr_30min,Z-Score: ZScore(3.0) — 30min
+08-0816,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0816_MFZGentle_30min.py,MFZGentle_30min,Z-Score: ZScore(0.8) — 30min
+08-0817,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0817_MFZXXAggr_30min.py,MFZXXAggr_30min,Z-Score: ZScore(4.0) — 30min
+08-0818,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0818_MFMomStd_30min.py,MFMomStd_30min,Momentum MF: MFMom(10) — 30min
+08-0819,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0819_MFMomFast_30min.py,MFMomFast_30min,Momentum MF: MFMom(5) — 30min
+08-0820,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0820_MFMomSlow_30min.py,MFMomSlow_30min,Momentum MF: MFMom(20) — 30min
+08-0821,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0821_MFMomUltra_30min.py,MFMomUltra_30min,Momentum MF: MFMom(3) — 30min
+08-0822,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0822_MFMomVSlow_30min.py,MFMomVSlow_30min,Momentum MF: MFMom(30) — 30min
+08-0823,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0823_MFMomXUltra_30min.py,MFMomXUltra_30min,Momentum MF: MFMom(3) — 30min
+08-0824,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0824_MFTVMid_30min.py,MFTVMid_30min,Trend+Vol: MFTrendVol(26) — 30min
+08-0825,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0825_MFTVSlow_30min.py,MFTVSlow_30min,Trend+Vol: MFTrendVol(34) — 30min
+08-0826,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0826_MFTVFast_30min.py,MFTVFast_30min,Trend+Vol: MFTrendVol(13) — 30min
+08-0827,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0827_MFTVXSlow_30min.py,MFTVXSlow_30min,Trend+Vol: MFTrendVol(52) — 30min
+08-0828,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0828_MFTVVSlow_30min.py,MFTVVSlow_30min,Trend+Vol: MFTrendVol(68) — 30min
+08-0829,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0829_MFTVUltra_30min.py,MFTVUltra_30min,Trend+Vol: MFTrendVol(6) — 30min
+08-0830,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0830_MFZStd_60min.py,MFZStd_60min,Z-Score: ZScore(1.5) — 60min
+08-0831,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0831_MFZTight_60min.py,MFZTight_60min,Z-Score: ZScore(2.0) — 60min
+08-0832,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0832_MFZMild_60min.py,MFZMild_60min,Z-Score: ZScore(1.0) — 60min
+08-0833,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0833_MFZMed_60min.py,MFZMed_60min,Z-Score: ZScore(1.2) — 60min
+08-0834,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0834_MFZAggr_60min.py,MFZAggr_60min,Z-Score: ZScore(2.5) — 60min
+08-0835,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0835_MFZXAggr_60min.py,MFZXAggr_60min,Z-Score: ZScore(3.0) — 60min
+08-0836,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0836_MFZGentle_60min.py,MFZGentle_60min,Z-Score: ZScore(0.8) — 60min
+08-0837,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0837_MFZXXAggr_60min.py,MFZXXAggr_60min,Z-Score: ZScore(4.0) — 60min
+08-0838,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0838_MFMomStd_60min.py,MFMomStd_60min,Momentum MF: MFMom(7) — 60min
+08-0839,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0839_MFMomFast_60min.py,MFMomFast_60min,Momentum MF: MFMom(3) — 60min
+08-0840,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0840_MFMomSlow_60min.py,MFMomSlow_60min,Momentum MF: MFMom(14) — 60min
+08-0841,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0841_MFMomUltra_60min.py,MFMomUltra_60min,Momentum MF: MFMom(3) — 60min
+08-0842,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0842_MFMomVSlow_60min.py,MFMomVSlow_60min,Momentum MF: MFMom(21) — 60min
+08-0843,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0843_MFMomXUltra_60min.py,MFMomXUltra_60min,Momentum MF: MFMom(3) — 60min
+08-0844,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0844_MFTVMid_60min.py,MFTVMid_60min,Trend+Vol: MFTrendVol(14) — 60min
+08-0845,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0845_MFTVSlow_60min.py,MFTVSlow_60min,Trend+Vol: MFTrendVol(20) — 60min
+08-0846,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0846_MFTVFast_60min.py,MFTVFast_60min,Trend+Vol: MFTrendVol(8) — 60min
+08-0847,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0847_MFTVXSlow_60min.py,MFTVXSlow_60min,Trend+Vol: MFTrendVol(28) — 60min
+08-0848,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0848_MFTVVSlow_60min.py,MFTVVSlow_60min,Trend+Vol: MFTrendVol(40) — 60min
+08-0849,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0849_MFTVUltra_60min.py,MFTVUltra_60min,Trend+Vol: MFTrendVol(4) — 60min

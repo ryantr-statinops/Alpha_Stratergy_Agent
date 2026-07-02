@@ -1218,6 +1218,44 @@ class CustomStrategy(SimpleAlgorithm):
         self.set_positions(short_setup, position=-1)
 '''
 
+TEMPLATES["cascade_catcher"] = '''\
+class CustomStrategy(SimpleAlgorithm):
+
+    oi_window = {oi_window}
+    vol_window = {vol_window}
+    oi_drop_threshold = {oi_drop_threshold}
+    vol_spike_mult = {vol_spike_mult}
+    price_fall_threshold = {price_fall_threshold}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        matched_vol = self.data.fut_matched_volume_vn30f1m_1d
+        oi = self.data.fut_open_interest_vn30f1m_1d
+
+        oi_sma = self.feat.sma(oi, timeperiod=self.oi_window)
+        vol_sma = self.feat.sma(matched_vol, timeperiod=self.vol_window)
+
+        oi_change = self.op.fillna(self.op.pct_change(oi, periods=1), value=0)
+        oi_drop = oi_change < -self.oi_drop_threshold
+        vol_spike = matched_vol > vol_sma * self.vol_spike_mult
+        price_fall = self.op.pct_change(close, periods=1) < -self.price_fall_threshold
+
+        cascade = oi_drop & vol_spike & price_fall
+
+        vol_collapse = matched_vol < vol_sma * 0.5
+        price_stable = self.op.abs(self.op.pct_change(close, periods=1)) < self.price_fall_threshold * 0.2
+        exhaustion = oi_drop & vol_collapse & price_stable
+
+        long_setup = exhaustion
+        short_setup = cascade
+
+        exit_setup = self.op.crossed_below(close, oi_sma) | self.op.crossed_above(close, oi_sma)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+'''
+
 
 # ================================================================
 # VARIANT GENERATORS — each yields (name_sfx, summary_sfx, idea, fmt_overrides)
@@ -1551,6 +1589,20 @@ def var_volume_mfi(w, _tf_label):
         yield tag, f"MFI({mw})", "MFI overbought/oversold", {"vol_window": mw}
 
 
+def var_cascade_catcher(w, _tf_label):
+    """Cascade catcher: 3 variants — OI drop + volume spike + price fall"""
+    configs = [
+        (0.005, 1.5, 0.003, "Aggr", "Aggressive cascade: OI-0.5%/vol-1.5x/price-0.3%"),
+        (0.01, 2.0, 0.005, "Std", "Standard cascade: OI-1%/vol-2x/price-0.5%"),
+        (0.02, 3.0, 0.01, "Cons", "Conservative cascade: OI-2%/vol-3x/price-1%"),
+    ]
+    for oi_drop, vol_mult, price_fall, tag, summary in configs:
+        yield tag, summary, "Margin call cascade — OI drop + volume spike + price fall", \
+            {"oi_window": w['slow'], "vol_window": w['vol'],
+             "oi_drop_threshold": oi_drop, "vol_spike_mult": vol_mult,
+             "price_fall_threshold": price_fall}
+
+
 # ================================================================
 # THESIS CATALOG
 # ================================================================
@@ -1605,13 +1657,14 @@ THESIS_CATALOG = {
         ],
     },
     "volume_flow": {
-        "id": 6, "timeframes": [15, 30, 60],
+        "id": 6, "timeframes": [5, 15, 30, 60],
         "templates": [
             ("volume_oi", var_volume_oi, "VFOI", "OI Trend"),
             ("volume_matched_surge", var_volume_surge, "VFVol", "Vol Surge"),
             ("volume_value", var_volume_value, "VFVal", "Val Spike"),
             ("volume_obv", var_volume_obv, "VFOBV", "OBV Flow"),
             ("volume_mfi", var_volume_mfi, "VFMFI", "MFI"),
+            ("cascade_catcher", var_cascade_catcher, "CC", "Cascade Catcher"),
         ]
     },
     "intraday_session": {
