@@ -7,9 +7,9 @@ idea:    MACD + ADX trend strength
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    adx_window = 7
+    adx_window = 5
 
-    return_window = 3
+    return_window = 2
     return_threshold = 0.0001
     position_close_after_n_candles = 72
 

@@ -1,16 +1,16 @@
 
 """
 name:    TrendEMAFast_5min
-summary: EMA Trend: EMA(8) + ADX — 5min
+summary: EMA Trend: EMA(5) + ADX — 5min
 thesis:  trend | 5min
 idea:    EMA trend with ADX strength
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    fast_window = 8
-    adx_window = 7
+    fast_window = 5
+    adx_window = 5
 
-    return_window = 3
+    return_window = 2
     return_threshold = 0.0001
     position_close_after_n_candles = 72
 

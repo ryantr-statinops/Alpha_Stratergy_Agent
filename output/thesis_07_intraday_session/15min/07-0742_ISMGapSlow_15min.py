@@ -1,20 +1,22 @@
 
 """
 name:    ISMGapSlow_15min
-summary: Gap Fill: GapFill(20) — 15min
+summary: Gap Fill: GapFill(14) — 15min
 thesis:  intraday_session | 15min
 idea:    Intraday gap fill
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    rsi_window = 20
+    rsi_window = 14
 
-    return_window = 5
-    return_threshold = 0.0002
+    return_window = 3
+    return_threshold = 0.0003
     position_close_after_n_candles = 24
     position_open_ranges = ['02:00-04:30', '06:00-07:45']
     position_close_ranges = ['04:20-04:30', '07:30-07:45']
-    adx_window = 10
+    adx_window = 7
+    adx_entry_threshold = 20
+    adx_exit_threshold = 14
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -23,7 +25,7 @@ class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
-        adx = self.feat.adx(high, low, close, timeperiod=10)
+        adx = self.feat.adx(high, low, close, timeperiod=7)
 
         rsi = self.feat.rsi(close, timeperiod=self.rsi_window)
         gap = (open_price / close - 1) * 100
@@ -33,9 +35,9 @@ class CustomStrategy(SimpleAlgorithm):
         filling_down = gap_up & (close < open_price) & (rsi < 60)
         filling_up = gap_down & (close > open_price) & (rsi > 40)
 
-        long_setup = ((filling_up) & (return_roll > 0)) & (adx > 22)
-        short_setup = ((filling_down) & (return_roll < 0)) & (adx > 22)
-        exit_setup = ((self.op.crossed_above(abs(gap), 0.1)) | (abs(return_roll) < self.return_threshold)) | (adx < 15)
+        long_setup = ((filling_up) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
+        short_setup = ((filling_down) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
+        exit_setup = ((self.op.crossed_above(abs(gap), 0.1)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

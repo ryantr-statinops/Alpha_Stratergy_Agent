@@ -7,10 +7,10 @@ idea:    Half EMA + ADX
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    fast_window = 4
-    adx_window = 7
+    fast_window = 3
+    adx_window = 5
 
-    return_window = 3
+    return_window = 2
     return_threshold = 0.0001
     position_close_after_n_candles = 72
 

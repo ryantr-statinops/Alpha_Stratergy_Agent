@@ -1,18 +1,18 @@
 
 """
 name:    MFMomStd_15min
-summary: Momentum MF: MFMom(10) — 15min
+summary: Momentum MF: MFMom(7) — 15min
 thesis:  multifactor | 15min
 idea:    Multi-layer momentum
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    rsi_window = 10
-    roc_window = 13
-    adx_window = 10
+    rsi_window = 7
+    roc_window = 8
+    adx_window = 7
 
-    return_window = 5
-    return_threshold = 0.0002
+    return_window = 3
+    return_threshold = 0.0003
     position_close_after_n_candles = 24
 
     def __algorithm__(self):

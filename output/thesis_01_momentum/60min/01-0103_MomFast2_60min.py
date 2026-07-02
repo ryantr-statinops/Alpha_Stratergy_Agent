@@ -1,18 +1,20 @@
 
 """
 name:    MomFast2_60min
-summary: Momentum: ROC(30) strength-2 — 60min
+summary: Momentum: ROC(20) strength-2 — 60min
 thesis:  momentum | 60min
 idea:    ROC momentum with 2-period smoothing
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    roc_window = 30
+    roc_window = 20
 
-    return_window = 14
-    return_threshold = 0.0005
+    return_window = 8
+    return_threshold = 0.001
     position_close_after_n_candles = 6
-    adx_window = 21
+    adx_window = 12
+    adx_entry_threshold = 16
+    adx_exit_threshold = 10
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -20,14 +22,14 @@ class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
-        adx = self.feat.adx(high, low, close, timeperiod=21)
+        adx = self.feat.adx(high, low, close, timeperiod=12)
 
         roc = self.feat.roc(close, timeperiod=self.roc_window)
         roc_smooth = self.feat.sma(roc, timeperiod=2)
 
-        long_setup = ((roc_smooth > 0) & (return_roll > 0)) & (adx > 22)
-        short_setup = ((roc_smooth < 0) & (return_roll < 0)) & (adx > 22)
-        exit_setup = ((self.op.crossed_below(roc_smooth, 0) | self.op.crossed_above(roc_smooth, 0)) | (abs(return_roll) < self.return_threshold)) | (adx < 15)
+        long_setup = ((roc_smooth > 0) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
+        short_setup = ((roc_smooth < 0) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
+        exit_setup = ((self.op.crossed_below(roc_smooth, 0) | self.op.crossed_above(roc_smooth, 0)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

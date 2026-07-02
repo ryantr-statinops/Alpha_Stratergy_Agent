@@ -7,11 +7,11 @@ idea:    Very slow EMA + ADX
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    fast_window = 50
-    adx_window = 14
+    fast_window = 30
+    adx_window = 9
 
-    return_window = 8
-    return_threshold = 0.0003
+    return_window = 5
+    return_threshold = 0.0006
     position_close_after_n_candles = 12
 
     def __algorithm__(self):

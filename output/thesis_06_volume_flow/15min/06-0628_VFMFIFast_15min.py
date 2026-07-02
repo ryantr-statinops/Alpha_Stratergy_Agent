@@ -1,18 +1,20 @@
 
 """
 name:    VFMFIFast_15min
-summary: MFI: MFI(13) — 15min
+summary: MFI: MFI(8) — 15min
 thesis:  volume_flow | 15min
 idea:    MFI overbought/oversold
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    mfi_window = 13
+    mfi_window = 8
 
-    return_window = 5
-    return_threshold = 0.0002
+    return_window = 3
+    return_threshold = 0.0003
     position_close_after_n_candles = 24
-    adx_window = 10
+    adx_window = 7
+    adx_entry_threshold = 20
+    adx_exit_threshold = 14
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -21,13 +23,13 @@ class CustomStrategy(SimpleAlgorithm):
         volume = self.data.pv_volume
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
-        adx = self.feat.adx(high, low, close, timeperiod=10)
+        adx = self.feat.adx(high, low, close, timeperiod=7)
 
         mfi = self.feat.mfi(high, low, close, volume, timeperiod=self.mfi_window)
 
-        long_setup = ((mfi < 30) & (return_roll > 0)) & (adx > 22)
-        short_setup = ((mfi > 70) & (return_roll < 0)) & (adx > 22)
-        exit_setup = ((self.op.crossed_above(mfi, 50) | self.op.crossed_below(mfi, 50)) | (abs(return_roll) < self.return_threshold)) | (adx < 15)
+        long_setup = ((mfi < 30) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
+        short_setup = ((mfi > 70) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
+        exit_setup = ((self.op.crossed_above(mfi, 50) | self.op.crossed_below(mfi, 50)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

@@ -7,14 +7,16 @@ idea:    Range expansion breakout
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    range_window = 30
-    vol_window = 34
+    range_window = 20
+    vol_window = 30
     range_mult = 1.8
 
-    return_window = 14
-    return_threshold = 0.0005
+    return_window = 8
+    return_threshold = 0.001
     position_close_after_n_candles = 6
-    adx_window = 21
+    adx_window = 12
+    adx_entry_threshold = 16
+    adx_exit_threshold = 10
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -23,7 +25,7 @@ class CustomStrategy(SimpleAlgorithm):
         volume = self.data.pv_volume
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
-        adx = self.feat.adx(high, low, close, timeperiod=21)
+        adx = self.feat.adx(high, low, close, timeperiod=12)
 
         daily_range = high - low
         avg_range = self.feat.sma(daily_range, timeperiod=self.range_window)
@@ -32,9 +34,9 @@ class CustomStrategy(SimpleAlgorithm):
         range_expansion = daily_range > avg_range * self.range_mult
         vol_confirmation = volume > vol_sma
 
-        long_setup = ((range_expansion & vol_confirmation & (close > (high + low) / 2)) & (return_roll > 0)) & (adx > 22)
-        short_setup = ((range_expansion & vol_confirmation & (close < (high + low) / 2)) & (return_roll < 0)) & (adx > 22)
-        exit_setup = (((daily_range < avg_range) | (volume < vol_sma)) | (abs(return_roll) < self.return_threshold)) | (adx < 15)
+        long_setup = ((range_expansion & vol_confirmation & (close > (high + low) / 2)) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
+        short_setup = ((range_expansion & vol_confirmation & (close < (high + low) / 2)) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
+        exit_setup = (((daily_range < avg_range) | (volume < vol_sma)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

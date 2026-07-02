@@ -1,18 +1,18 @@
 
 """
 name:    MFTVFast_60min
-summary: Trend+Vol: MFTrendVol(30) — 60min
+summary: Trend+Vol: MFTrendVol(20) — 60min
 thesis:  multifactor | 60min
 idea:    4-layer trend confirmation
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    mid_window = 30
-    vol_window = 34
-    adx_window = 21
+    mid_window = 20
+    vol_window = 30
+    adx_window = 12
 
-    return_window = 14
-    return_threshold = 0.0005
+    return_window = 8
+    return_threshold = 0.001
     position_close_after_n_candles = 6
 
     def __algorithm__(self):
