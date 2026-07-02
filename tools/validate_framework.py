@@ -181,9 +181,15 @@ def main():
     print("Checking index.csv...")
     all_findings.extend(validate_index())
 
-    # 2. Validate each .py file
+    # 2. Validate each .py file (search recursively)
     print("Checking strategy files...")
-    py_files = sorted(f for f in os.listdir(OUTPUT_DIR) if f.endswith(".py"))
+    py_files = []
+    for root, dirs, files in os.walk(OUTPUT_DIR):
+        for f in files:
+            if f.endswith(".py"):
+                rel = os.path.relpath(os.path.join(root, f), OUTPUT_DIR)
+                py_files.append(rel)
+    py_files = sorted(py_files)
     for fname in py_files:
         findings = validate_file(fname)
         all_findings.extend(findings)
