@@ -35,7 +35,6 @@ class CustomStrategy(SimpleAlgorithm):
         ll = self.feat.rolling_min(low, window=self.chandelier_window)
         trailing_long_exit = close < (hh - avg_range * self.chandelier_mult)
         trailing_short_exit = close > (ll + avg_range * self.chandelier_mult)
-        vol_scale = self.op.clip(avg_range / daily_range, 0.3, 1.0)
 
         fut_upper = self.feat.rolling_quantile(close, self.q_window, 0.80)
         fut_lower = self.feat.rolling_quantile(close, self.q_window, 0.20)
@@ -50,5 +49,5 @@ class CustomStrategy(SimpleAlgorithm):
         short_setup = short_setup & (recent_exit < 1)
 
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=vol_scale)
-        self.set_positions(short_setup, position=-vol_scale)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)

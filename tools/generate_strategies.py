@@ -158,11 +158,6 @@ def inject_filters(code, fmt, thesis):
         insert_blocks.append("        trailing_long_exit = close < (hh - avg_range * self.chandelier_mult)")
         insert_blocks.append("        trailing_short_exit = close > (ll + avg_range * self.chandelier_mult)")
 
-        # Vol scaling (non-tiered only — tiered has own sizing)
-        is_tiered = "strong_long" in code or "weak_long" in code
-        if not is_tiered:
-            insert_blocks.append("        vol_scale = self.op.clip(avg_range / daily_range, 0.3, 1.0)")
-
         for j, line in enumerate(insert_blocks):
             lines.insert(last_data + 1 + j, line)
 
@@ -236,17 +231,6 @@ def inject_filters(code, fmt, thesis):
                 cooldown_lines.append(indent + "short_setup = short_setup & (recent_exit < 1)")
             for j, blk in enumerate(cooldown_lines):
                 lines.insert(exit_line + 1 + j, blk)
-
-        # 4. Replace position sizing (vol scaling for non-tiered)
-        if not is_tiered:
-            for i in range(algo_start + 1, len(lines)):
-                s = lines[i].strip()
-                indent = " " * (len(lines[i]) - len(s))
-                if s.startswith("self.set_positions("):
-                    if ", position=1)" in s or ", position=1.0)" in s:
-                        lines[i] = indent + s.replace("position=1", "position=vol_scale")
-                    elif ", position=-1)" in s or ", position=-1.0)" in s:
-                        lines[i] = indent + s.replace("position=-1", "position=-vol_scale")
 
     return "\n".join(lines)
 
