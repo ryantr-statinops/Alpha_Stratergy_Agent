@@ -1,18 +1,18 @@
 
 """
 name:    MomCMOStd_5min
-summary: CMO: CMO(5) — 5min
+summary: CMO: CMO(7) — 5min
 thesis:  momentum | 5min
 idea:    CMO momentum oscillator
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    cmo_window = 5
+    cmo_window = 7
 
-    return_window = 2
+    return_window = 3
     return_threshold = 0.0001
     position_close_after_n_candles = 72
-    adx_window = 5
+    adx_window = 7
     adx_entry_threshold = 22
     adx_exit_threshold = 15
 
@@ -22,13 +22,13 @@ class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
-        adx = self.feat.adx(high, low, close, timeperiod=5)
+        adx = self.feat.adx(high, low, close, timeperiod=7)
 
         cmo = self.feat.cmo(close, timeperiod=self.cmo_window)
 
         long_setup = ((cmo > 0) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
         short_setup = ((cmo < 0) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
-        exit_setup = ((self.op.crossed_below(cmo, 0) | self.op.crossed_above(cmo, 0)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
+        exit_setup = ((self.op.crossed_below(cmo, 0) | self.op.crossed_above(cmo, 0)) | self.op.crossed_below(abs(return_roll), self.return_threshold)) | self.op.crossed_below(adx, self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

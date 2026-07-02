@@ -7,12 +7,12 @@ idea:    Quantile trend channel
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    q_window = 10
-    adx_window = 5
+    q_window = 14
+    adx_window = 7
     q_high = 0.95
     q_low = 0.05
 
-    return_window = 2
+    return_window = 3
     return_threshold = 0.0001
     position_close_after_n_candles = 72
 
@@ -34,7 +34,7 @@ class CustomStrategy(SimpleAlgorithm):
         weak_long = breakout_high & (adx > 18) & (return_roll > 0)
         strong_short = breakout_low & (adx > 25) & (return_roll < 0)
         weak_short = breakout_low & (adx > 18) & (return_roll < 0)
-        exit_setup = (self.op.crossed_below(close, upper) | self.op.crossed_above(close, lower)) | (abs(return_roll) < self.return_threshold)
+        exit_setup = (self.op.crossed_below(close, upper) | self.op.crossed_above(close, lower)) | self.op.crossed_below(abs(return_roll), self.return_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(weak_long, position=0.5)

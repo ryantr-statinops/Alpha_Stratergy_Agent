@@ -7,10 +7,10 @@ idea:    Half EMA + ADX
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    fast_window = 3
-    adx_window = 5
+    fast_window = 4
+    adx_window = 7
 
-    return_window = 2
+    return_window = 3
     return_threshold = 0.0001
     position_close_after_n_candles = 72
 
@@ -31,7 +31,7 @@ class CustomStrategy(SimpleAlgorithm):
         weak_long = above_ema & (adx > 18) & (adx < 40) & (return_roll > 0)
         strong_short = below_ema & (adx > 22) & (adx < 40) & (return_roll < 0)
         weak_short = below_ema & (adx > 18) & (adx < 40) & (return_roll < 0)
-        exit_setup = (self.op.crossed_below(close, ema) | self.op.crossed_above(close, ema)) | (abs(return_roll) < self.return_threshold)
+        exit_setup = (self.op.crossed_below(close, ema) | self.op.crossed_above(close, ema)) | self.op.crossed_below(abs(return_roll), self.return_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(weak_long, position=0.5)

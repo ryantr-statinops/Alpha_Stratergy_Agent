@@ -1,18 +1,18 @@
 
 """
 name:    BODonXSlow_60min
-summary: Donchian: Donchian(60) — 60min
+summary: Donchian: Donchian(28) — 60min
 thesis:  breakout | 60min
 idea:    Donchian channel breakout
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    d_window = 60
+    d_window = 28
 
-    return_window = 8
-    return_threshold = 0.001
+    return_window = 3
+    return_threshold = 0.0001
     position_close_after_n_candles = 6
-    adx_window = 12
+    adx_window = 7
     adx_entry_threshold = 16
     adx_exit_threshold = 10
 
@@ -22,14 +22,14 @@ class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
-        adx = self.feat.adx(high, low, close, timeperiod=12)
+        adx = self.feat.adx(high, low, close, timeperiod=7)
 
         hh = self.feat.rolling_max(high, window=self.d_window)
         ll = self.feat.rolling_min(low, window=self.d_window)
 
         long_setup = ((close > hh) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
         short_setup = ((close < ll) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
-        exit_setup = ((self.op.crossed_below(close, hh) | self.op.crossed_above(close, ll)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
+        exit_setup = ((self.op.crossed_below(close, hh) | self.op.crossed_above(close, ll)) | self.op.crossed_below(abs(return_roll), self.return_threshold)) | self.op.crossed_below(adx, self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

@@ -10,7 +10,7 @@ class CustomStrategy(SimpleAlgorithm):
     aroon_window = 13
 
     return_window = 5
-    return_threshold = 0.0006
+    return_threshold = 0.0002
     position_close_after_n_candles = 12
     adx_window = 13
     adx_entry_threshold = 18
@@ -28,7 +28,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = (((aroon_up > 70) & (aroon_up > aroon_down)) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
         short_setup = (((aroon_down > 70) & (aroon_down > aroon_up)) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
-        exit_setup = (((aroon_up < 30) | (aroon_down < 30) | self.op.crossed_below(aroon_up, aroon_down)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
+        exit_setup = (((aroon_up < 30) | (aroon_down < 30) | self.op.crossed_below(aroon_up, aroon_down)) | self.op.crossed_below(abs(return_roll), self.return_threshold)) | self.op.crossed_below(adx, self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

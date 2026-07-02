@@ -1,18 +1,18 @@
 
 """
 name:    MFTVMid_30min
-summary: Trend+Vol: MFTrendVol(20) — 30min
+summary: Trend+Vol: MFTrendVol(26) — 30min
 thesis:  multifactor | 30min
 idea:    4-layer trend confirmation
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    mid_window = 20
+    mid_window = 26
     vol_window = 20
-    adx_window = 9
+    adx_window = 10
 
     return_window = 5
-    return_threshold = 0.0006
+    return_threshold = 0.0002
     position_close_after_n_candles = 12
 
     def __algorithm__(self):
@@ -40,7 +40,7 @@ class CustomStrategy(SimpleAlgorithm):
         weak_long = core_long & (adx > 18) & (adx < 45) & (return_roll > 0)
         strong_short = core_short & (adx > 22) & (adx < 45) & volume_ok & (return_roll < 0)
         weak_short = core_short & (adx > 18) & (adx < 45) & (return_roll < 0)
-        exit_setup = (self.op.crossed_below(close, ema) | (adx < 15)) | (abs(return_roll) < self.return_threshold)
+        exit_setup = (self.op.crossed_below(close, ema) | (adx < 15)) | self.op.crossed_below(abs(return_roll), self.return_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(weak_long, position=0.5)
