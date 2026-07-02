@@ -57,7 +57,7 @@ TEMPLATES = {}
 
 
 def inject_filters(code, fmt, thesis):
-    """Post-process rendered strategy: inject return_roll filter + session management."""
+    """Post-process rendered strategy: inject return_roll, ADX filter, session management."""
     if "return_window" not in fmt:
         return code
 
@@ -81,12 +81,19 @@ def inject_filters(code, fmt, thesis):
             f"    position_open_ranges = {OPEN_RANGES}\n"
             f"    position_close_ranges = {CLOSE_RANGES}\n"
         )
+
+    # Inject adx_window for templates that don't already have it
+    needs_adx = "self.feat.adx" not in code
+    if needs_adx:
+        aw = fmt.get("adx_window")
+        if aw is not None:
+            extra += f"    adx_window = {aw}\n"
     code = code.replace(
         "    def __algorithm__(self):",
         extra + "\n    def __algorithm__(self):"
     )
 
-    # 2. Inject return_roll computation after the last data variable assignment
+    # 2. Inject return_roll + ADX computation after the last data variable assignment
     lines = code.split("\n")
     last_data = -1
     for i in range(len(lines) - 1, -1, -1):
@@ -96,11 +103,28 @@ def inject_filters(code, fmt, thesis):
             break
 
     if last_data >= 0:
-        ret_block = [
-            "        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)",
-            "        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)",
-        ]
-        for j, line in enumerate(ret_block):
+        insert_blocks = []
+
+        # If ADX is needed and high/low not present, add them
+        if needs_adx:
+            has_high = any("self.data.pv_high" in line for line in lines)
+            has_low = any("self.data.pv_low" in line for line in lines)
+            if not has_high:
+                insert_blocks.append("        high = self.data.pv_high")
+            if not has_low:
+                insert_blocks.append("        low = self.data.pv_low")
+
+        # return_roll computation
+        insert_blocks.append("        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)")
+        insert_blocks.append("        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)")
+
+        # ADX computation
+        if needs_adx:
+            aw = fmt.get("adx_window")
+            if aw is not None:
+                insert_blocks.append(f"        adx = self.feat.adx(high, low, close, timeperiod={aw})")
+
+        for j, line in enumerate(insert_blocks):
             lines.insert(last_data + 1 + j, line)
 
     # 3. Modify long_setup / short_setup / exit_setup inside __algorithm__
@@ -126,12 +150,18 @@ def inject_filters(code, fmt, thesis):
             if s.startswith("long_setup = "):
                 expr = s[len("long_setup = "):]
                 lines[i] = indent + f"long_setup = ({expr}) & (return_roll > 0)"
+                if needs_adx:
+                    lines[i] = indent + f"long_setup = ({lines[i].strip()[len('long_setup = '):]}) & (adx > 22)"
             elif s.startswith("short_setup = "):
                 expr = s[len("short_setup = "):]
                 lines[i] = indent + f"short_setup = ({expr}) & (return_roll < 0)"
+                if needs_adx:
+                    lines[i] = indent + f"short_setup = ({lines[i].strip()[len('short_setup = '):]}) & (adx > 22)"
             elif s.startswith("exit_setup = "):
                 expr = s[len("exit_setup = "):]
                 lines[i] = indent + f"exit_setup = ({expr}) | (abs(return_roll) < self.return_threshold)"
+                if needs_adx:
+                    lines[i] = indent + f"exit_setup = ({lines[i].strip()[len('exit_setup = '):]}) | (adx < 15)"
 
     return "\n".join(lines)
 
@@ -1557,6 +1587,9 @@ def main():
         fmt["session_candles"] = SESSION_CANDLES[tf_min]
         fmt["open_ranges"] = str(OPEN_RANGES)
         fmt["close_ranges"] = str(CLOSE_RANGES)
+        # Ensure all templates have adx_window (for universal ADX filter)
+        if "adx_window" not in fmt:
+            fmt["adx_window"] = WINDOWS[tf_min]["adx"]
 
         thesis_dir = f"thesis_{t_id:02d}_{thesis}"
         filepath = os.path.join(OUTPUT_DIR, thesis_dir, tf_label, filename(alpha_id, name))

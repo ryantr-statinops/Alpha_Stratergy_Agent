@@ -145,19 +145,19 @@ def validate_file(filepath):
         check("R15", "Has position_close_ranges",
               has_line_containing(text, r"position_close_ranges\s*="), filepath)
 
-    # R16: Tiered ADX templates (thesis 02 + 08) must have strong/weak split
+    # R16: Tiered templates (thesis 02 + 08) must have strong/weak split
     if thesis_name in ("trend", "multifactor"):
         has_strong = has_line_containing(text, r"strong_long\s*=")
         has_weak = has_line_containing(text, r"weak_long\s*=")
-        # Some trend templates (ma_cross, aroon) are NOT tiered, only macd/quantile/ema_adx
-        # Check if the file uses ADX to determine if it should be tiered
-        uses_adx = has_line_containing(text, r"self\.feat\.adx\(")
-        if uses_adx:
-            check("R16", "ADX templates have strong_long position",
+        # Only check tiered sizing if the template already uses strong/weak pattern
+        # (original ADX templates like macd/quantile/ema_adx/zscore/momentum/trendvol)
+        # Non-tiered templates (ma_cross, aroon) should NOT be checked
+        if has_strong:
+            check("R16", "Tiered templates have strong_long position",
                   has_strong, filepath)
-            check("R16", "ADX templates have weak_long position",
+            check("R16", "Tiered templates have weak_long position",
                   has_weak, filepath)
-            check("R16", "ADX templates have tiered sizing (0.5/1.0)",
+            check("R16", "Tiered templates have 0.5 sizing",
                   has_line_containing(text, r"set_positions\(.*position\s*=\s*0\.5"), filepath)
 
     # ── Position Sizing Order ──
