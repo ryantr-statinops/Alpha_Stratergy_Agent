@@ -1,19 +1,19 @@
 
 """
 name:    MomVolVolMid_30min
-summary: Momentum+Volume: ROC(20) + volume surge — 30min
+summary: Momentum+Volume: ROC(26) + volume surge — 30min
 thesis:  momentum | 30min
 idea:    Momentum + volume confirmation
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    roc_window = 20
+    roc_window = 26
     vol_window = 20
 
     return_window = 5
-    return_threshold = 0.0006
+    return_threshold = 0.0002
     position_close_after_n_candles = 12
-    adx_window = 9
+    adx_window = 10
     adx_entry_threshold = 18
     adx_exit_threshold = 12
 
@@ -24,14 +24,14 @@ class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
-        adx = self.feat.adx(high, low, close, timeperiod=9)
+        adx = self.feat.adx(high, low, close, timeperiod=10)
 
         roc = self.feat.roc(close, timeperiod=self.roc_window)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
 
         long_setup = (((roc > 0) & (volume > vol_sma)) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
         short_setup = (((roc < 0) & (volume > vol_sma)) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
-        exit_setup = ((self.op.crossed_below(roc, 0) | self.op.crossed_above(roc, 0)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
+        exit_setup = ((self.op.crossed_below(roc, 0) | self.op.crossed_above(roc, 0)) | self.op.crossed_below(abs(return_roll), self.return_threshold)) | self.op.crossed_below(adx, self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

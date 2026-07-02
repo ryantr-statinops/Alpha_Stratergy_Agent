@@ -7,16 +7,16 @@ idea:    Volume climax reversal
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    vol_window = 30
-    rsi_window = 12
+    vol_window = 14
+    rsi_window = 7
     vol_mult = 1.2
     rsi_low = 35
     rsi_high = 65
 
-    return_window = 8
-    return_threshold = 0.001
+    return_window = 3
+    return_threshold = 0.0001
     position_close_after_n_candles = 6
-    adx_window = 12
+    adx_window = 7
     adx_entry_threshold = 16
     adx_exit_threshold = 10
 
@@ -27,7 +27,7 @@ class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
-        adx = self.feat.adx(high, low, close, timeperiod=12)
+        adx = self.feat.adx(high, low, close, timeperiod=7)
 
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
         rsi = self.feat.rsi(close, timeperiod=self.rsi_window)
@@ -38,7 +38,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = ((downside_climax) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
         short_setup = ((upside_climax) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
-        exit_setup = ((self.op.crossed_above(rsi, 50) | self.op.crossed_below(rsi, 50)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
+        exit_setup = ((self.op.crossed_above(rsi, 50) | self.op.crossed_below(rsi, 50)) | self.op.crossed_below(abs(return_roll), self.return_threshold)) | self.op.crossed_below(adx, self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

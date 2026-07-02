@@ -7,10 +7,10 @@ idea:    MACD + ADX trend strength
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    adx_window = 9
+    adx_window = 10
 
     return_window = 5
-    return_threshold = 0.0006
+    return_threshold = 0.0002
     position_close_after_n_candles = 12
 
     def __algorithm__(self):
@@ -32,7 +32,7 @@ class CustomStrategy(SimpleAlgorithm):
         weak_long = trend_long & (adx > 18) & (return_roll > 0)
         strong_short = trend_short & (adx > 25) & (return_roll < 0)
         weak_short = trend_short & (adx > 18) & (return_roll < 0)
-        exit_setup = (self.op.crossed_below(macd_line, signal_line) | self.op.crossed_above(macd_line, signal_line)) | (abs(return_roll) < self.return_threshold)
+        exit_setup = (self.op.crossed_below(macd_line, signal_line) | self.op.crossed_above(macd_line, signal_line)) | self.op.crossed_below(abs(return_roll), self.return_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(weak_long, position=0.5)

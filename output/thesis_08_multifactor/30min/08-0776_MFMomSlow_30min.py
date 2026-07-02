@@ -1,18 +1,18 @@
 
 """
 name:    MFMomSlow_30min
-summary: Momentum MF: MFMom(18) — 30min
+summary: Momentum MF: MFMom(20) — 30min
 thesis:  multifactor | 30min
 idea:    Multi-layer momentum
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    rsi_window = 18
+    rsi_window = 20
     roc_window = 13
-    adx_window = 9
+    adx_window = 10
 
     return_window = 5
-    return_threshold = 0.0006
+    return_threshold = 0.0002
     position_close_after_n_candles = 12
 
     def __algorithm__(self):
@@ -38,7 +38,7 @@ class CustomStrategy(SimpleAlgorithm):
         weak_long = core_long & (adx > 18) & (return_roll > 0)
         strong_short = core_short & volume_confirm & (adx > 22) & (return_roll < 0)
         weak_short = core_short & (adx > 18) & (return_roll < 0)
-        exit_setup = (self.op.crossed_below(rsi, 50) | self.op.crossed_above(rsi, 50)) | (abs(return_roll) < self.return_threshold)
+        exit_setup = (self.op.crossed_below(rsi, 50) | self.op.crossed_above(rsi, 50)) | self.op.crossed_below(abs(return_roll), self.return_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(weak_long, position=0.5)

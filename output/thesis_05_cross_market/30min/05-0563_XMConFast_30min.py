@@ -1,18 +1,18 @@
 
 """
 name:    XMConFast_30min
-summary: Consensus: Consensus(9) — 30min
+summary: Consensus: Consensus(10) — 30min
 thesis:  cross_market | 30min
 idea:    3-market consensus signal
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    roc_window = 9
+    roc_window = 10
 
     return_window = 5
-    return_threshold = 0.0006
+    return_threshold = 0.0002
     position_close_after_n_candles = 12
-    adx_window = 9
+    adx_window = 10
     adx_entry_threshold = 18
     adx_exit_threshold = 12
 
@@ -24,7 +24,7 @@ class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
-        adx = self.feat.adx(high, low, close, timeperiod=9)
+        adx = self.feat.adx(high, low, close, timeperiod=10)
 
         fut_roc = self.feat.roc(close, timeperiod=self.roc_window)
         vn30_roc = self.feat.roc(vn30_close, timeperiod=self.roc_window)
@@ -35,7 +35,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = ((bullish) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
         short_setup = ((bearish) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
-        exit_setup = (((~bullish) & (~bearish)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
+        exit_setup = (((~bullish) & (~bearish)) | self.op.crossed_below(abs(return_roll), self.return_threshold)) | self.op.crossed_below(adx, self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

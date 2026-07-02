@@ -132,9 +132,13 @@ def validate_file(filepath):
     check("R13", "Long entry includes return_roll > 0", has_ret_long, filepath)
     check("R13", "Short entry includes return_roll < 0", has_ret_short, filepath)
 
-    # R14: Exit includes abs(return_roll) < threshold
-    check("R14", "Exit includes abs(return_roll) < self.return_threshold",
-          "abs(return_roll) < self.return_threshold" in text, filepath)
+    # R14: Exit includes return_roll-based exit (level check or crossed_below)
+    has_return_roll_exit = (
+        "abs(return_roll) < self.return_threshold" in text
+        or "self.op.crossed_below(abs(return_roll), self.return_threshold)" in text
+    )
+    check("R14", "Exit includes return_roll-based exit",
+          has_return_roll_exit, filepath)
 
     # ── Thesis-Specific Checks ──
 

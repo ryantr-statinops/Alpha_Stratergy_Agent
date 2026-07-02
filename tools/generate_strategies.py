@@ -20,23 +20,22 @@ TIMEFRAMES = [
     ("60min", 60),
 ]
 
-# Window sizing by timeframe — empirical scaling from backtest results:
-# Current 5min values work well on 15min, current 15min values work on 30min
-# => higher TFs need proportionally smaller windows than before
+# Window sizing by timeframe — empirical scaling from user backtest results:
+# 5min params work well on 15min → 30min uses old 15min params, 60min uses old 5min params
 WINDOWS = {
-    5:  {"fast": 5,  "mid": 10, "slow": 14, "rsi": 5,  "adx": 5,  "vol": 10},
-    15: {"fast": 8,  "mid": 14, "slow": 20, "rsi": 7,  "adx": 7,  "vol": 14},
-    30: {"fast": 13, "mid": 20, "slow": 30, "rsi": 9,  "adx": 9,  "vol": 20},
-    60: {"fast": 20, "mid": 30, "slow": 40, "rsi": 12, "adx": 12, "vol": 30},
+    5:  {"fast": 8,  "mid": 14, "slow": 20, "rsi": 7,  "adx": 7,  "vol": 14},
+    15: {"fast": 13, "mid": 26, "slow": 34, "rsi": 10, "adx": 10, "vol": 20},
+    30: {"fast": 13, "mid": 26, "slow": 34, "rsi": 10, "adx": 10, "vol": 20},
+    60: {"fast": 8,  "mid": 14, "slow": 20, "rsi": 7,  "adx": 7,  "vol": 14},
 }
 
-# return_roll windows by timeframe
-RETURN_WINDOWS = {5: 2, 15: 3, 30: 5, 60: 8}
-# return_threshold scales with per-candle return magnitude (higher TF = bigger moves)
-RETURN_THRESH = {5: 0.0001, 15: 0.0003, 30: 0.0006, 60: 0.0010}
-# ADX thresholds relax at higher TFs (fewer candles, lower ADX readings)
-ADX_ENTRY = {5: 22, 15: 20, 30: 18, 60: 16}
-ADX_EXIT = {5: 15, 15: 14, 30: 12, 60: 10}
+# return_roll windows — 5min/15min restored, 30min=15min, 60min=5min
+RETURN_WINDOWS = {5: 3, 15: 5, 30: 5, 60: 3}
+# return_threshold — restore original values across all TFs
+RETURN_THRESH = {5: 0.0001, 15: 0.0002, 30: 0.0002, 60: 0.0001}
+# ADX thresholds relax at higher TFs
+ADX_ENTRY = {5: 22, 15: 22, 30: 18, 60: 16}
+ADX_EXIT = {5: 15, 15: 15, 30: 12, 60: 10}
 
 # Max candles to hold a position before forced close
 SESSION_CANDLES = {5: 72, 15: 24, 30: 12, 60: 6}
@@ -171,9 +170,11 @@ def inject_filters(code, fmt, thesis):
                     lines[i] = indent + f"short_setup = ({lines[i].strip()[len('short_setup = '):]}) & (adx > self.adx_entry_threshold)"
             elif s.startswith("exit_setup = "):
                 expr = s[len("exit_setup = "):]
-                lines[i] = indent + f"exit_setup = ({expr}) | (abs(return_roll) < self.return_threshold)"
+                # Use crossed_below for return_roll exit (trigger once, avoid re-trigger)
+                lines[i] = indent + f"exit_setup = ({expr}) | self.op.crossed_below(abs(return_roll), self.return_threshold)"
                 if needs_adx:
-                    lines[i] = indent + f"exit_setup = ({lines[i].strip()[len('exit_setup = '):]}) | (adx < self.adx_exit_threshold)"
+                    # Use crossed_below for ADX exit too
+                    lines[i] = indent + f"exit_setup = ({lines[i].strip()[len('exit_setup = '):]}) | self.op.crossed_below(adx, self.adx_exit_threshold)"
 
     return "\n".join(lines)
 
