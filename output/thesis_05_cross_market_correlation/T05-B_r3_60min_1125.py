@@ -5,7 +5,7 @@ idea:    Require both futures and VN30 index momentum in the same direction for 
 """
 class CustomStrategy(SimpleAlgorithm):
     roc_window = 3
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

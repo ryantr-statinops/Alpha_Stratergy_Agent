@@ -5,7 +5,7 @@ idea:    Track smart money flow via OI change + avg trade size; long on accumula
 """
 class CustomStrategy(SimpleAlgorithm):
     imbalance_window = 34
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

@@ -5,7 +5,7 @@ idea:    Trade breakouts beyond rolling quantile bands at multiple quantile thre
 """
 class CustomStrategy(SimpleAlgorithm):
     q_window = 30
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

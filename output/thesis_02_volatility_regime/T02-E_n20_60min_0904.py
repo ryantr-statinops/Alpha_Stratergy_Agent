@@ -5,7 +5,7 @@ idea:    Normalized ATR regime detection; trade trend during high vol, mean-reve
 """
 class CustomStrategy(SimpleAlgorithm):
     natr_window = 20
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

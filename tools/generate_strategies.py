@@ -111,7 +111,7 @@ _PRICE_SOURCES = [
 # T01-A: Price vs Rolling Mean (Level)
 T01_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     mean_window = {mean_window}
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -151,7 +151,7 @@ for ps_name, ps_def, ps_series in _PRICE_SOURCES:
 T01_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     fast_window = {fast_window}
     slow_window = {slow_window}
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -184,7 +184,7 @@ TEMPLATES.append({
 # T01-C: Mean + Confirmation
 T01_C_CODE = """class CustomStrategy(SimpleAlgorithm):
     mean_window = {mean_window}
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -220,7 +220,7 @@ for mw in [10, 20, 34]:
 # T01-D: Price vs Rolling Quantile (Breakout)
 T01_D_CODE = """class CustomStrategy(SimpleAlgorithm):
     q_window = {q_window}
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -255,7 +255,7 @@ for qh, ql in _QUANTILE_PAIRS:
 T01_E_CODE = """class CustomStrategy(SimpleAlgorithm):
     mean_window = {mean_window}
     q_window = {q_window}
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -287,7 +287,7 @@ for mw, qw in [(10, 10), (20, 14), (34, 20), (50, 30)]:
 # T01-F: Rolling Z-Score Mean Reversion
 T01_F_CODE = """class CustomStrategy(SimpleAlgorithm):
     z_window = {z_window}
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -317,7 +317,7 @@ for zw, ze in product([10, 14, 20, 34], [1.5, 2.0, 2.5, 3.0]):
 # T01-G: Adaptive MA (KAMA/MAMA)
 T01_G_CODE = """class CustomStrategy(SimpleAlgorithm):
     kama_window = {kama_window}
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -352,7 +352,7 @@ for kw in [10, 20, 30, 50]:
 # T02-A: Volatility Breakout
 T02_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     vol_window = {vol_window}
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -389,7 +389,7 @@ for vw, ve in product([10, 14, 20, 34], [1.3, 1.5, 2.0]):
 # T02-B: Low Vol Mean Reversion
 T02_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     vol_window = {vol_window}
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -426,7 +426,7 @@ for vw, vc, rw in product([10, 14, 20, 34], [0.5, 0.7], [14, 21]):
 T02_C_CODE = """class CustomStrategy(SimpleAlgorithm):
     adx_window = {adx_window}
     vol_window = {vol_window}
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -479,7 +479,7 @@ for aw, vw in product([10, 14, 20, 34], [10, 14, 20, 34]):
 T02_D_CODE = """class CustomStrategy(SimpleAlgorithm):
     atr_window = {atr_window}
     atr_mult = {atr_mult}
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -513,7 +513,7 @@ for atw, atm, ew in product([10, 14, 20, 34], [2, 3], [13, 26]):
 # T02-E: NATR Regime Switching
 T02_E_CODE = """class CustomStrategy(SimpleAlgorithm):
     natr_window = {natr_window}
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -558,7 +558,7 @@ for nw in [10, 14, 20, 34]:
 # T02-F: Adaptive KAMA Trend
 T02_F_CODE = """class CustomStrategy(SimpleAlgorithm):
     kama_window = {kama_window}
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -594,7 +594,7 @@ for kw in [10, 20, 30, 50]:
 
 # T03-A: Hilbert Trendline + Sine Cycle
 T03_A_CODE = """class CustomStrategy(SimpleAlgorithm):
-    thesis_group = "03"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -635,7 +635,7 @@ TEMPLATES.append({
 # T03-B: DCPeriod Adaptive Sizing
 T03_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     base_window = {base_window}
-    thesis_group = "03"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -674,7 +674,7 @@ for bw, mc in product([14, 20, 26], [30, 50]):
 # T03-C: LinReg Slope Trend
 T03_C_CODE = """class CustomStrategy(SimpleAlgorithm):
     lr_window = {lr_window}
-    thesis_group = "03"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -709,7 +709,7 @@ for lw in [10, 14, 20]:
 # T03-D: Sine Crossover
 T03_D_CODE = """class CustomStrategy(SimpleAlgorithm):
     rsi_window = {rsi_window}
-    thesis_group = "03"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -747,7 +747,7 @@ for rw in [10, 14, 21]:
 # T03-E: Dispersion Entropy Proxy
 T03_E_CODE = """class CustomStrategy(SimpleAlgorithm):
     mad_window = {mad_window}
-    thesis_group = "03"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -792,7 +792,7 @@ for mw, ew in product([14, 20, 34], [13, 26, 50]):
 # T04-A: BOP + CMF Flow Detection
 T04_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     cmf_window = {cmf_window}
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -832,7 +832,7 @@ for cw in [10, 20, 34]:
 # T04-B: MFI Volume-Weighted Reversal
 T04_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     mfi_window = {mfi_window}
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -868,7 +868,7 @@ for mw in [10, 14, 21]:
 T04_C_CODE = """class CustomStrategy(SimpleAlgorithm):
     oi_window = {oi_window}
     vol_window_val = {vol_window_val}
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -924,7 +924,7 @@ for ov_name, oi_drop, vol_spike, price_fall in _OI_VARIANTS:
 # T04-D: Whale Footprint
 T04_D_CODE = """class CustomStrategy(SimpleAlgorithm):
     whale_window = {whale_window}
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -967,7 +967,7 @@ for ww, ws in product([10, 20, 34], [1.5, 2.0, 2.5]):
 T04_E_CODE = """class CustomStrategy(SimpleAlgorithm):
     adosc_fast = {adosc_fast}
     adosc_slow = {adosc_slow}
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1008,7 +1008,7 @@ for af, as_val in [(3, 10), (5, 14)]:
 # T04-F: OBV Trend Confirmation
 T04_F_CODE = """class CustomStrategy(SimpleAlgorithm):
     obv_window = {obv_window}
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1044,7 +1044,7 @@ for ow in [10, 20, 34]:
 # T04-G: Volume Flow Imbalance
 T04_G_CODE = """class CustomStrategy(SimpleAlgorithm):
     imbalance_window = {imbalance_window}
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1089,7 +1089,7 @@ for iw in [10, 20, 34]:
 # T05-A: Futures-VN30 Spread Reversion
 T05_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     beta_window = {beta_window}
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1128,7 +1128,7 @@ for bw, ze in product([10, 20, 34], [2.0, 2.5, 3.0]):
 # T05-B: VN30 Momentum Confirmation
 T05_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     roc_window = {roc_window}
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1160,7 +1160,7 @@ for rw in [3, 5, 8]:
 # T05-C: Futures-Cash Basis Extreme
 T05_C_CODE = """class CustomStrategy(SimpleAlgorithm):
     basis_window = {basis_window}
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1197,7 +1197,7 @@ for bw, be in product([10, 20, 34], [2.0, 2.5]):
 # T05-D: DJI Global Spillover
 T05_D_CODE = """class CustomStrategy(SimpleAlgorithm):
     roc_window = {roc_window}
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1234,7 +1234,7 @@ for rw in [3, 5, 8]:
 # T05-E: Rolling Correlation Trend Filter
 T05_E_CODE = """class CustomStrategy(SimpleAlgorithm):
     correl_window = {correl_window}
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1275,7 +1275,7 @@ for cw in [10, 20, 34]:
 # T05-F: Relative Strength Ratio
 T05_F_CODE = """class CustomStrategy(SimpleAlgorithm):
     rs_window = {rs_window}
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1309,7 +1309,7 @@ for rw in [10, 20, 34]:
 # T05-G: Correlation Breakdown Detection
 T05_G_CODE = """class CustomStrategy(SimpleAlgorithm):
     correl_window = {correl_window}
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1356,7 +1356,7 @@ for cw in [10, 20, 34]:
 T06_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     z_window = {z_window}
     z_threshold = {z_threshold}
-    thesis_group = "06"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1410,7 +1410,7 @@ for zw, zt in product([10, 20, 34], [2.0, 3.0]):
 T06_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     z_window = {z_window}
     z_threshold = {z_threshold}
-    thesis_group = "06"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1464,7 +1464,7 @@ for zw, zt in product([10, 20, 34], [2.0, 3.0, 4.0]):
 T06_C_CODE = """class CustomStrategy(SimpleAlgorithm):
     mid_window = {mid_window}
     vol_window = {vol_window}
-    thesis_group = "06"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1522,7 +1522,7 @@ for mw, vw, rw in product([13, 26, 40], [10, 20, 34], [5, 8]):
 # T06-D: Z-Score + Candlestick Confirmation
 T06_D_CODE = """class CustomStrategy(SimpleAlgorithm):
     z_window = {z_window}
-    thesis_group = "06"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -1573,7 +1573,7 @@ for zw in [10, 20, 34]:
 # T06-E: Adaptive Regime-Weighted Composite
 T06_E_CODE = """class CustomStrategy(SimpleAlgorithm):
     z_window = {z_window}
-    thesis_group = "06"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

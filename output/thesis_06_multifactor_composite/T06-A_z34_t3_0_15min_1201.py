@@ -6,7 +6,7 @@ idea:    Composite z-score of price, momentum, and volume; strong/weak position 
 class CustomStrategy(SimpleAlgorithm):
     z_window = 34
     z_threshold = 3.0
-    thesis_group = "06"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

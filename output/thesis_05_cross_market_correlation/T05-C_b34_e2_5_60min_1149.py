@@ -5,7 +5,7 @@ idea:    Trade basis extreme z-score deviations; entry when basis diverges from 
 """
 class CustomStrategy(SimpleAlgorithm):
     basis_window = 34
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

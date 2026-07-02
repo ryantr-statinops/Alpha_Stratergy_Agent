@@ -5,7 +5,7 @@ idea:    Trade mean reversion during volatility compression (ATR < SMA × 0.7) w
 """
 class CustomStrategy(SimpleAlgorithm):
     vol_window = 34
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

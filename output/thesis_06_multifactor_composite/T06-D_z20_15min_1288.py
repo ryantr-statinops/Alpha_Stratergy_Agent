@@ -5,7 +5,7 @@ idea:    Combine candlestick patterns (hammer, engulfing, morning/evening star) 
 """
 class CustomStrategy(SimpleAlgorithm):
     z_window = 20
-    thesis_group = "06"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

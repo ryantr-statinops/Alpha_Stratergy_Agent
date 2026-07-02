@@ -5,7 +5,7 @@ idea:    Trade sine/leadsine crossovers as cycle entry signals, filtered by RSI 
 """
 class CustomStrategy(SimpleAlgorithm):
     rsi_window = 10
-    thesis_group = "03"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

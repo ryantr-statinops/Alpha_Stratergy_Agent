@@ -6,7 +6,7 @@ idea:    Capture directional moves via SMA crossover; long on fast crossing abov
 class CustomStrategy(SimpleAlgorithm):
     fast_window = 5
     slow_window = 20
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

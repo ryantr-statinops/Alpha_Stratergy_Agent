@@ -5,7 +5,7 @@ idea:    Trade futures-to-VN30 ratio trend via SMA, ROC, and linear regression s
 """
 class CustomStrategy(SimpleAlgorithm):
     rs_window = 34
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

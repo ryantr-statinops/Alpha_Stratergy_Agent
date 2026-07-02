@@ -5,7 +5,7 @@ idea:    Use MAD/STD ratio to distinguish structured vs chaotic markets; trade o
 """
 class CustomStrategy(SimpleAlgorithm):
     mad_window = 20
-    thesis_group = "03"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

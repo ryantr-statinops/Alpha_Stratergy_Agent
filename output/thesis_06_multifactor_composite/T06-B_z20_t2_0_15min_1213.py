@@ -6,7 +6,7 @@ idea:    Extended composite adding volatility and cross-market ratio z-scores fo
 class CustomStrategy(SimpleAlgorithm):
     z_window = 20
     z_threshold = 2.0
-    thesis_group = "06"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

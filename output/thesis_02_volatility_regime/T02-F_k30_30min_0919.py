@@ -5,7 +5,7 @@ idea:    Adaptive trend following with Kaufman MA and ADX confirmation; exit on 
 """
 class CustomStrategy(SimpleAlgorithm):
     kama_window = 30
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

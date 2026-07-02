@@ -6,7 +6,7 @@ idea:    Bullish/bearish divergence between price and Accumulation/Distribution 
 class CustomStrategy(SimpleAlgorithm):
     adosc_fast = 3
     adosc_slow = 10
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

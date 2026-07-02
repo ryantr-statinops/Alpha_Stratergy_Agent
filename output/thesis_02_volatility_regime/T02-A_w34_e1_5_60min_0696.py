@@ -5,7 +5,7 @@ idea:    Enter on volatility expansion (ATR > SMA × multiplier) confirmed by RO
 """
 class CustomStrategy(SimpleAlgorithm):
     vol_window = 34
-    thesis_group = "02"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

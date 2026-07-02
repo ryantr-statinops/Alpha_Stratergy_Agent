@@ -5,7 +5,7 @@ idea:    Trade futures vs VN30 basis via beta-adjusted spread z-score; mean-reve
 """
 class CustomStrategy(SimpleAlgorithm):
     beta_window = 34
-    thesis_group = "05"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

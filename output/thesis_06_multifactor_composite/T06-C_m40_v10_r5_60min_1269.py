@@ -6,7 +6,7 @@ idea:    Stack trend, momentum, volume, volatility, and cross-market filters wit
 class CustomStrategy(SimpleAlgorithm):
     mid_window = 40
     vol_window = 10
-    thesis_group = "06"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

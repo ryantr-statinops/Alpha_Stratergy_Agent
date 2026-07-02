@@ -5,7 +5,7 @@ idea:    Enhanced mean reversion with RSI, volume, and ADX confirmation for high
 """
 class CustomStrategy(SimpleAlgorithm):
     mean_window = 10
-    thesis_group = "01"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

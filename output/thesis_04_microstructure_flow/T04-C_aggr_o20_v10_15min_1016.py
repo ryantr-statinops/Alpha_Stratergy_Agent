@@ -6,7 +6,7 @@ idea:    Detect margin-call cascades via OI drop + volume spike + price fall; co
 class CustomStrategy(SimpleAlgorithm):
     oi_window = 20
     vol_window_val = 10
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

@@ -5,7 +5,7 @@ idea:    Detect buying/selling pressure with Balance of Power and Chaikin Money 
 """
 class CustomStrategy(SimpleAlgorithm):
     cmf_window = 20
-    thesis_group = "04"
+
 
     def __algorithm__(self):
         close = self.data.pv_close

@@ -5,7 +5,7 @@ idea:    Use Dominant Cycle Period to scale position sizes dynamically; larger c
 """
 class CustomStrategy(SimpleAlgorithm):
     base_window = 26
-    thesis_group = "03"
+
 
     def __algorithm__(self):
         close = self.data.pv_close
