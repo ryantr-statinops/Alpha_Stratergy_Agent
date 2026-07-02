@@ -9,10 +9,12 @@ class CustomStrategy(SimpleAlgorithm):
 
     aroon_window = 3
 
-    return_window = 3
+    return_window = 2
     return_threshold = 0.0001
     position_close_after_n_candles = 72
     adx_window = 3
+    adx_entry_threshold = 22
+    adx_exit_threshold = 15
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -24,9 +26,9 @@ class CustomStrategy(SimpleAlgorithm):
 
         aroon_up, aroon_down = self.feat.aroon(close, timeperiod=self.aroon_window)
 
-        long_setup = (((aroon_up > 70) & (aroon_up > aroon_down)) & (return_roll > 0)) & (adx > 22)
-        short_setup = (((aroon_down > 70) & (aroon_down > aroon_up)) & (return_roll < 0)) & (adx > 22)
-        exit_setup = (((aroon_up < 30) | (aroon_down < 30) | self.op.crossed_below(aroon_up, aroon_down)) | (abs(return_roll) < self.return_threshold)) | (adx < 15)
+        long_setup = (((aroon_up > 70) & (aroon_up > aroon_down)) & (return_roll > 0)) & (adx > self.adx_entry_threshold)
+        short_setup = (((aroon_down > 70) & (aroon_down > aroon_up)) & (return_roll < 0)) & (adx > self.adx_entry_threshold)
+        exit_setup = (((aroon_up < 30) | (aroon_down < 30) | self.op.crossed_below(aroon_up, aroon_down)) | (abs(return_roll) < self.return_threshold)) | (adx < self.adx_exit_threshold)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

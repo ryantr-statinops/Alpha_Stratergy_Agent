@@ -1,146 +1,146 @@
 alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
-01-0001,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0001_MomFast_5min.py,MomFast_5min,Momentum: ROC(8) — 5min
-01-0002,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0002_MomMid_5min.py,MomMid_5min,Momentum: ROC(14) — 5min
-01-0003,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0003_MomSlow_5min.py,MomSlow_5min,Momentum: ROC(20) — 5min
-01-0004,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0004_MomFast2_5min.py,MomFast2_5min,Momentum: ROC(8) strength-2 — 5min
-01-0005,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0005_MomMid2_5min.py,MomMid2_5min,Momentum: ROC(14) strength-2 — 5min
+01-0001,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0001_MomFast_5min.py,MomFast_5min,Momentum: ROC(5) — 5min
+01-0002,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0002_MomMid_5min.py,MomMid_5min,Momentum: ROC(10) — 5min
+01-0003,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0003_MomSlow_5min.py,MomSlow_5min,Momentum: ROC(14) — 5min
+01-0004,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0004_MomFast2_5min.py,MomFast2_5min,Momentum: ROC(5) strength-2 — 5min
+01-0005,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0005_MomMid2_5min.py,MomMid2_5min,Momentum: ROC(10) strength-2 — 5min
 01-0006,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0006_MomXSlow_5min.py,MomXSlow_5min,Momentum: ROC(ultra-slow) — 5min
 01-0007,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0007_MomXFast_5min.py,MomXFast_5min,Momentum: ROC(ultra-fast) — 5min
 01-0008,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0008_MomRSig_5min.py,MomRSig_5min,Momentum: ROC with rising strength — 5min
-01-0009,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0009_MomVolVolFast_5min.py,MomVolVolFast_5min,Momentum+Volume: ROC(8) + volume surge — 5min
-01-0010,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0010_MomVolVQFast_5min.py,MomVolVQFast_5min,Momentum+Volume: ROC(8) + volume Q80 — 5min
-01-0011,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0011_MomVolVolMid_5min.py,MomVolVolMid_5min,Momentum+Volume: ROC(14) + volume surge — 5min
-01-0012,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0012_MomVolVQMid_5min.py,MomVolVQMid_5min,Momentum+Volume: ROC(14) + volume Q80 — 5min
+01-0009,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0009_MomVolVolFast_5min.py,MomVolVolFast_5min,Momentum+Volume: ROC(5) + volume surge — 5min
+01-0010,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0010_MomVolVQFast_5min.py,MomVolVQFast_5min,Momentum+Volume: ROC(5) + volume Q80 — 5min
+01-0011,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0011_MomVolVolMid_5min.py,MomVolVolMid_5min,Momentum+Volume: ROC(10) + volume surge — 5min
+01-0012,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0012_MomVolVQMid_5min.py,MomVolVQMid_5min,Momentum+Volume: ROC(10) + volume Q80 — 5min
 01-0013,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0013_MomVolVolSlow_5min.py,MomVolVolSlow_5min,Momentum+Volume: ROC(slow) + volume — 5min
-01-0014,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0014_MomVN30Fast_5min.py,MomVN30Fast_5min,Momentum+VN30: ROC(8) + VN30 — 5min
-01-0015,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0015_MomVN30Mid_5min.py,MomVN30Mid_5min,Momentum+VN30: ROC(14) + VN30 — 5min
-01-0016,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0016_MomVN30Slow_5min.py,MomVN30Slow_5min,Momentum+VN30: ROC(20) + VN30 — 5min
+01-0014,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0014_MomVN30Fast_5min.py,MomVN30Fast_5min,Momentum+VN30: ROC(5) + VN30 — 5min
+01-0015,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0015_MomVN30Mid_5min.py,MomVN30Mid_5min,Momentum+VN30: ROC(10) + VN30 — 5min
+01-0016,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0016_MomVN30Slow_5min.py,MomVN30Slow_5min,Momentum+VN30: ROC(14) + VN30 — 5min
 01-0017,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0017_MomVN30Fast2_5min.py,MomVN30Fast2_5min,Momentum+VN30: ROC(fastx2) + VN30 lag — 5min
 01-0018,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0018_MomVN30Slow2_5min.py,MomVN30Slow2_5min,Momentum+VN30: ROC(slow) + VN30 slow — 5min
 01-0019,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0019_MomVN30XFast_5min.py,MomVN30XFast_5min,Momentum+VN30: ROC(ultra)+VN30 — 5min
 01-0020,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0020_MomVN30Catch_5min.py,MomVN30Catch_5min,Momentum+VN30: ROC(mid)+VN30 catch — 5min
-01-0021,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0021_MomCascF8M14S20_5min.py,MomCascF8M14S20_5min,Cascade: ROC(8)>ROC(14)>ROC(20) — 5min
-01-0022,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0022_MomCascF4M8S14_5min.py,MomCascF4M8S14_5min,Cascade: ROC(4)>ROC(8)>ROC(14) — 5min
-01-0023,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0023_MomCascF14M20S40_5min.py,MomCascF14M20S40_5min,Cascade: ROC(14)>ROC(20)>ROC(40) — 5min
-01-0024,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0024_MomCascF7M14S20_5min.py,MomCascF7M14S20_5min,Cascade: ROC(7)>ROC(14)>ROC(20) — 5min
-01-0025,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0025_MomCascF14M20S28_5min.py,MomCascF14M20S28_5min,Cascade: ROC(14)>ROC(20)>ROC(28) — 5min
-01-0026,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0026_MomCascF3M4S8_5min.py,MomCascF3M4S8_5min,Cascade: ROC(3)>ROC(4)>ROC(8) — 5min
-01-0027,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0027_MomCMOStd_5min.py,MomCMOStd_5min,CMO: CMO(7) — 5min
-01-0028,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0028_MomCMOFast_5min.py,MomCMOFast_5min,CMO: CMO(8) — 5min
-01-0029,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0029_MomCMOMid_5min.py,MomCMOMid_5min,CMO: CMO(14) — 5min
-01-0030,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0030_MomCMOSlow_5min.py,MomCMOSlow_5min,CMO: CMO(20) — 5min
+01-0021,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0021_MomCascF5M10S14_5min.py,MomCascF5M10S14_5min,Cascade: ROC(5)>ROC(10)>ROC(14) — 5min
+01-0022,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0022_MomCascF3M5S10_5min.py,MomCascF3M5S10_5min,Cascade: ROC(3)>ROC(5)>ROC(10) — 5min
+01-0023,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0023_MomCascF10M14S28_5min.py,MomCascF10M14S28_5min,Cascade: ROC(10)>ROC(14)>ROC(28) — 5min
+01-0024,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0024_MomCascF5M10S14_5min.py,MomCascF5M10S14_5min,Cascade: ROC(5)>ROC(10)>ROC(14) — 5min
+01-0025,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0025_MomCascF10M14S19_5min.py,MomCascF10M14S19_5min,Cascade: ROC(10)>ROC(14)>ROC(19) — 5min
+01-0026,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0026_MomCascF3M3S5_5min.py,MomCascF3M3S5_5min,Cascade: ROC(3)>ROC(3)>ROC(5) — 5min
+01-0027,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0027_MomCMOStd_5min.py,MomCMOStd_5min,CMO: CMO(5) — 5min
+01-0028,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0028_MomCMOFast_5min.py,MomCMOFast_5min,CMO: CMO(5) — 5min
+01-0029,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0029_MomCMOMid_5min.py,MomCMOMid_5min,CMO: CMO(10) — 5min
+01-0030,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0030_MomCMOSlow_5min.py,MomCMOSlow_5min,CMO: CMO(14) — 5min
 01-0031,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0031_MomCMOUltra_5min.py,MomCMOUltra_5min,CMO: CMO(3) — 5min
-01-0032,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0032_MomCMOSlow2_5min.py,MomCMOSlow2_5min,CMO: CMO(14) — 5min
+01-0032,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0032_MomCMOSlow2_5min.py,MomCMOSlow2_5min,CMO: CMO(10) — 5min
 01-0033,thesis_01_momentum,5min,BOTH,1,thesis_01_momentum\5min\01-0033_MomCMOXUltra_5min.py,MomCMOXUltra_5min,CMO: CMO(3) — 5min
-01-0034,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0034_MomFast_15min.py,MomFast_15min,Momentum: ROC(13) — 15min
-01-0035,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0035_MomMid_15min.py,MomMid_15min,Momentum: ROC(26) — 15min
-01-0036,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0036_MomSlow_15min.py,MomSlow_15min,Momentum: ROC(34) — 15min
-01-0037,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0037_MomFast2_15min.py,MomFast2_15min,Momentum: ROC(13) strength-2 — 15min
-01-0038,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0038_MomMid2_15min.py,MomMid2_15min,Momentum: ROC(26) strength-2 — 15min
+01-0034,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0034_MomFast_15min.py,MomFast_15min,Momentum: ROC(8) — 15min
+01-0035,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0035_MomMid_15min.py,MomMid_15min,Momentum: ROC(14) — 15min
+01-0036,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0036_MomSlow_15min.py,MomSlow_15min,Momentum: ROC(20) — 15min
+01-0037,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0037_MomFast2_15min.py,MomFast2_15min,Momentum: ROC(8) strength-2 — 15min
+01-0038,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0038_MomMid2_15min.py,MomMid2_15min,Momentum: ROC(14) strength-2 — 15min
 01-0039,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0039_MomXSlow_15min.py,MomXSlow_15min,Momentum: ROC(ultra-slow) — 15min
 01-0040,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0040_MomXFast_15min.py,MomXFast_15min,Momentum: ROC(ultra-fast) — 15min
 01-0041,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0041_MomRSig_15min.py,MomRSig_15min,Momentum: ROC with rising strength — 15min
-01-0042,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0042_MomVolVolFast_15min.py,MomVolVolFast_15min,Momentum+Volume: ROC(13) + volume surge — 15min
-01-0043,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0043_MomVolVQFast_15min.py,MomVolVQFast_15min,Momentum+Volume: ROC(13) + volume Q80 — 15min
-01-0044,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0044_MomVolVolMid_15min.py,MomVolVolMid_15min,Momentum+Volume: ROC(26) + volume surge — 15min
-01-0045,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0045_MomVolVQMid_15min.py,MomVolVQMid_15min,Momentum+Volume: ROC(26) + volume Q80 — 15min
+01-0042,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0042_MomVolVolFast_15min.py,MomVolVolFast_15min,Momentum+Volume: ROC(8) + volume surge — 15min
+01-0043,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0043_MomVolVQFast_15min.py,MomVolVQFast_15min,Momentum+Volume: ROC(8) + volume Q80 — 15min
+01-0044,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0044_MomVolVolMid_15min.py,MomVolVolMid_15min,Momentum+Volume: ROC(14) + volume surge — 15min
+01-0045,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0045_MomVolVQMid_15min.py,MomVolVQMid_15min,Momentum+Volume: ROC(14) + volume Q80 — 15min
 01-0046,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0046_MomVolVolSlow_15min.py,MomVolVolSlow_15min,Momentum+Volume: ROC(slow) + volume — 15min
-01-0047,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0047_MomVN30Fast_15min.py,MomVN30Fast_15min,Momentum+VN30: ROC(13) + VN30 — 15min
-01-0048,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0048_MomVN30Mid_15min.py,MomVN30Mid_15min,Momentum+VN30: ROC(26) + VN30 — 15min
-01-0049,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0049_MomVN30Slow_15min.py,MomVN30Slow_15min,Momentum+VN30: ROC(34) + VN30 — 15min
+01-0047,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0047_MomVN30Fast_15min.py,MomVN30Fast_15min,Momentum+VN30: ROC(8) + VN30 — 15min
+01-0048,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0048_MomVN30Mid_15min.py,MomVN30Mid_15min,Momentum+VN30: ROC(14) + VN30 — 15min
+01-0049,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0049_MomVN30Slow_15min.py,MomVN30Slow_15min,Momentum+VN30: ROC(20) + VN30 — 15min
 01-0050,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0050_MomVN30Fast2_15min.py,MomVN30Fast2_15min,Momentum+VN30: ROC(fastx2) + VN30 lag — 15min
 01-0051,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0051_MomVN30Slow2_15min.py,MomVN30Slow2_15min,Momentum+VN30: ROC(slow) + VN30 slow — 15min
 01-0052,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0052_MomVN30XFast_15min.py,MomVN30XFast_15min,Momentum+VN30: ROC(ultra)+VN30 — 15min
 01-0053,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0053_MomVN30Catch_15min.py,MomVN30Catch_15min,Momentum+VN30: ROC(mid)+VN30 catch — 15min
-01-0054,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0054_MomCascF13M26S34_15min.py,MomCascF13M26S34_15min,Cascade: ROC(13)>ROC(26)>ROC(34) — 15min
-01-0055,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0055_MomCascF6M13S26_15min.py,MomCascF6M13S26_15min,Cascade: ROC(6)>ROC(13)>ROC(26) — 15min
-01-0056,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0056_MomCascF26M34S68_15min.py,MomCascF26M34S68_15min,Cascade: ROC(26)>ROC(34)>ROC(68) — 15min
-01-0057,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0057_MomCascF13M26S34_15min.py,MomCascF13M26S34_15min,Cascade: ROC(13)>ROC(26)>ROC(34) — 15min
-01-0058,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0058_MomCascF26M34S47_15min.py,MomCascF26M34S47_15min,Cascade: ROC(26)>ROC(34)>ROC(47) — 15min
-01-0059,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0059_MomCascF4M6S13_15min.py,MomCascF4M6S13_15min,Cascade: ROC(4)>ROC(6)>ROC(13) — 15min
-01-0060,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0060_MomCMOStd_15min.py,MomCMOStd_15min,CMO: CMO(10) — 15min
-01-0061,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0061_MomCMOFast_15min.py,MomCMOFast_15min,CMO: CMO(13) — 15min
-01-0062,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0062_MomCMOMid_15min.py,MomCMOMid_15min,CMO: CMO(26) — 15min
-01-0063,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0063_MomCMOSlow_15min.py,MomCMOSlow_15min,CMO: CMO(34) — 15min
-01-0064,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0064_MomCMOUltra_15min.py,MomCMOUltra_15min,CMO: CMO(5) — 15min
-01-0065,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0065_MomCMOSlow2_15min.py,MomCMOSlow2_15min,CMO: CMO(20) — 15min
+01-0054,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0054_MomCascF8M14S20_15min.py,MomCascF8M14S20_15min,Cascade: ROC(8)>ROC(14)>ROC(20) — 15min
+01-0055,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0055_MomCascF4M8S14_15min.py,MomCascF4M8S14_15min,Cascade: ROC(4)>ROC(8)>ROC(14) — 15min
+01-0056,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0056_MomCascF14M20S40_15min.py,MomCascF14M20S40_15min,Cascade: ROC(14)>ROC(20)>ROC(40) — 15min
+01-0057,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0057_MomCascF7M14S20_15min.py,MomCascF7M14S20_15min,Cascade: ROC(7)>ROC(14)>ROC(20) — 15min
+01-0058,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0058_MomCascF14M20S28_15min.py,MomCascF14M20S28_15min,Cascade: ROC(14)>ROC(20)>ROC(28) — 15min
+01-0059,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0059_MomCascF3M4S8_15min.py,MomCascF3M4S8_15min,Cascade: ROC(3)>ROC(4)>ROC(8) — 15min
+01-0060,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0060_MomCMOStd_15min.py,MomCMOStd_15min,CMO: CMO(7) — 15min
+01-0061,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0061_MomCMOFast_15min.py,MomCMOFast_15min,CMO: CMO(8) — 15min
+01-0062,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0062_MomCMOMid_15min.py,MomCMOMid_15min,CMO: CMO(14) — 15min
+01-0063,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0063_MomCMOSlow_15min.py,MomCMOSlow_15min,CMO: CMO(20) — 15min
+01-0064,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0064_MomCMOUltra_15min.py,MomCMOUltra_15min,CMO: CMO(3) — 15min
+01-0065,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0065_MomCMOSlow2_15min.py,MomCMOSlow2_15min,CMO: CMO(14) — 15min
 01-0066,thesis_01_momentum,15min,BOTH,1,thesis_01_momentum\15min\01-0066_MomCMOXUltra_15min.py,MomCMOXUltra_15min,CMO: CMO(3) — 15min
-01-0067,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0067_MomFast_30min.py,MomFast_30min,Momentum: ROC(20) — 30min
-01-0068,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0068_MomMid_30min.py,MomMid_30min,Momentum: ROC(40) — 30min
-01-0069,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0069_MomSlow_30min.py,MomSlow_30min,Momentum: ROC(50) — 30min
-01-0070,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0070_MomFast2_30min.py,MomFast2_30min,Momentum: ROC(20) strength-2 — 30min
-01-0071,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0071_MomMid2_30min.py,MomMid2_30min,Momentum: ROC(40) strength-2 — 30min
+01-0067,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0067_MomFast_30min.py,MomFast_30min,Momentum: ROC(13) — 30min
+01-0068,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0068_MomMid_30min.py,MomMid_30min,Momentum: ROC(20) — 30min
+01-0069,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0069_MomSlow_30min.py,MomSlow_30min,Momentum: ROC(30) — 30min
+01-0070,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0070_MomFast2_30min.py,MomFast2_30min,Momentum: ROC(13) strength-2 — 30min
+01-0071,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0071_MomMid2_30min.py,MomMid2_30min,Momentum: ROC(20) strength-2 — 30min
 01-0072,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0072_MomXSlow_30min.py,MomXSlow_30min,Momentum: ROC(ultra-slow) — 30min
 01-0073,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0073_MomXFast_30min.py,MomXFast_30min,Momentum: ROC(ultra-fast) — 30min
 01-0074,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0074_MomRSig_30min.py,MomRSig_30min,Momentum: ROC with rising strength — 30min
-01-0075,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0075_MomVolVolFast_30min.py,MomVolVolFast_30min,Momentum+Volume: ROC(20) + volume surge — 30min
-01-0076,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0076_MomVolVQFast_30min.py,MomVolVQFast_30min,Momentum+Volume: ROC(20) + volume Q80 — 30min
-01-0077,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0077_MomVolVolMid_30min.py,MomVolVolMid_30min,Momentum+Volume: ROC(40) + volume surge — 30min
-01-0078,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0078_MomVolVQMid_30min.py,MomVolVQMid_30min,Momentum+Volume: ROC(40) + volume Q80 — 30min
+01-0075,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0075_MomVolVolFast_30min.py,MomVolVolFast_30min,Momentum+Volume: ROC(13) + volume surge — 30min
+01-0076,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0076_MomVolVQFast_30min.py,MomVolVQFast_30min,Momentum+Volume: ROC(13) + volume Q80 — 30min
+01-0077,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0077_MomVolVolMid_30min.py,MomVolVolMid_30min,Momentum+Volume: ROC(20) + volume surge — 30min
+01-0078,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0078_MomVolVQMid_30min.py,MomVolVQMid_30min,Momentum+Volume: ROC(20) + volume Q80 — 30min
 01-0079,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0079_MomVolVolSlow_30min.py,MomVolVolSlow_30min,Momentum+Volume: ROC(slow) + volume — 30min
-01-0080,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0080_MomVN30Fast_30min.py,MomVN30Fast_30min,Momentum+VN30: ROC(20) + VN30 — 30min
-01-0081,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0081_MomVN30Mid_30min.py,MomVN30Mid_30min,Momentum+VN30: ROC(40) + VN30 — 30min
-01-0082,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0082_MomVN30Slow_30min.py,MomVN30Slow_30min,Momentum+VN30: ROC(50) + VN30 — 30min
+01-0080,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0080_MomVN30Fast_30min.py,MomVN30Fast_30min,Momentum+VN30: ROC(13) + VN30 — 30min
+01-0081,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0081_MomVN30Mid_30min.py,MomVN30Mid_30min,Momentum+VN30: ROC(20) + VN30 — 30min
+01-0082,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0082_MomVN30Slow_30min.py,MomVN30Slow_30min,Momentum+VN30: ROC(30) + VN30 — 30min
 01-0083,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0083_MomVN30Fast2_30min.py,MomVN30Fast2_30min,Momentum+VN30: ROC(fastx2) + VN30 lag — 30min
 01-0084,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0084_MomVN30Slow2_30min.py,MomVN30Slow2_30min,Momentum+VN30: ROC(slow) + VN30 slow — 30min
 01-0085,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0085_MomVN30XFast_30min.py,MomVN30XFast_30min,Momentum+VN30: ROC(ultra)+VN30 — 30min
 01-0086,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0086_MomVN30Catch_30min.py,MomVN30Catch_30min,Momentum+VN30: ROC(mid)+VN30 catch — 30min
-01-0087,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0087_MomCascF20M40S50_30min.py,MomCascF20M40S50_30min,Cascade: ROC(20)>ROC(40)>ROC(50) — 30min
-01-0088,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0088_MomCascF10M20S40_30min.py,MomCascF10M20S40_30min,Cascade: ROC(10)>ROC(20)>ROC(40) — 30min
-01-0089,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0089_MomCascF40M50S100_30min.py,MomCascF40M50S100_30min,Cascade: ROC(40)>ROC(50)>ROC(100) — 30min
-01-0090,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0090_MomCascF20M40S50_30min.py,MomCascF20M40S50_30min,Cascade: ROC(20)>ROC(40)>ROC(50) — 30min
-01-0091,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0091_MomCascF40M50S70_30min.py,MomCascF40M50S70_30min,Cascade: ROC(40)>ROC(50)>ROC(70) — 30min
-01-0092,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0092_MomCascF6M10S20_30min.py,MomCascF6M10S20_30min,Cascade: ROC(6)>ROC(10)>ROC(20) — 30min
-01-0093,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0093_MomCMOStd_30min.py,MomCMOStd_30min,CMO: CMO(14) — 30min
-01-0094,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0094_MomCMOFast_30min.py,MomCMOFast_30min,CMO: CMO(20) — 30min
-01-0095,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0095_MomCMOMid_30min.py,MomCMOMid_30min,CMO: CMO(40) — 30min
-01-0096,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0096_MomCMOSlow_30min.py,MomCMOSlow_30min,CMO: CMO(50) — 30min
-01-0097,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0097_MomCMOUltra_30min.py,MomCMOUltra_30min,CMO: CMO(7) — 30min
-01-0098,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0098_MomCMOSlow2_30min.py,MomCMOSlow2_30min,CMO: CMO(28) — 30min
-01-0099,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0099_MomCMOXUltra_30min.py,MomCMOXUltra_30min,CMO: CMO(4) — 30min
-01-0100,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0100_MomFast_60min.py,MomFast_60min,Momentum: ROC(30) — 60min
-01-0101,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0101_MomMid_60min.py,MomMid_60min,Momentum: ROC(60) — 60min
-01-0102,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0102_MomSlow_60min.py,MomSlow_60min,Momentum: ROC(100) — 60min
-01-0103,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0103_MomFast2_60min.py,MomFast2_60min,Momentum: ROC(30) strength-2 — 60min
-01-0104,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0104_MomMid2_60min.py,MomMid2_60min,Momentum: ROC(60) strength-2 — 60min
+01-0087,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0087_MomCascF13M20S30_30min.py,MomCascF13M20S30_30min,Cascade: ROC(13)>ROC(20)>ROC(30) — 30min
+01-0088,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0088_MomCascF6M13S20_30min.py,MomCascF6M13S20_30min,Cascade: ROC(6)>ROC(13)>ROC(20) — 30min
+01-0089,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0089_MomCascF20M30S60_30min.py,MomCascF20M30S60_30min,Cascade: ROC(20)>ROC(30)>ROC(60) — 30min
+01-0090,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0090_MomCascF10M20S30_30min.py,MomCascF10M20S30_30min,Cascade: ROC(10)>ROC(20)>ROC(30) — 30min
+01-0091,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0091_MomCascF20M30S43_30min.py,MomCascF20M30S43_30min,Cascade: ROC(20)>ROC(30)>ROC(43) — 30min
+01-0092,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0092_MomCascF4M6S13_30min.py,MomCascF4M6S13_30min,Cascade: ROC(4)>ROC(6)>ROC(13) — 30min
+01-0093,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0093_MomCMOStd_30min.py,MomCMOStd_30min,CMO: CMO(9) — 30min
+01-0094,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0094_MomCMOFast_30min.py,MomCMOFast_30min,CMO: CMO(13) — 30min
+01-0095,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0095_MomCMOMid_30min.py,MomCMOMid_30min,CMO: CMO(20) — 30min
+01-0096,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0096_MomCMOSlow_30min.py,MomCMOSlow_30min,CMO: CMO(30) — 30min
+01-0097,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0097_MomCMOUltra_30min.py,MomCMOUltra_30min,CMO: CMO(4) — 30min
+01-0098,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0098_MomCMOSlow2_30min.py,MomCMOSlow2_30min,CMO: CMO(18) — 30min
+01-0099,thesis_01_momentum,30min,BOTH,1,thesis_01_momentum\30min\01-0099_MomCMOXUltra_30min.py,MomCMOXUltra_30min,CMO: CMO(3) — 30min
+01-0100,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0100_MomFast_60min.py,MomFast_60min,Momentum: ROC(20) — 60min
+01-0101,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0101_MomMid_60min.py,MomMid_60min,Momentum: ROC(30) — 60min
+01-0102,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0102_MomSlow_60min.py,MomSlow_60min,Momentum: ROC(40) — 60min
+01-0103,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0103_MomFast2_60min.py,MomFast2_60min,Momentum: ROC(20) strength-2 — 60min
+01-0104,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0104_MomMid2_60min.py,MomMid2_60min,Momentum: ROC(30) strength-2 — 60min
 01-0105,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0105_MomXSlow_60min.py,MomXSlow_60min,Momentum: ROC(ultra-slow) — 60min
 01-0106,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0106_MomXFast_60min.py,MomXFast_60min,Momentum: ROC(ultra-fast) — 60min
 01-0107,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0107_MomRSig_60min.py,MomRSig_60min,Momentum: ROC with rising strength — 60min
-01-0108,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0108_MomVolVolFast_60min.py,MomVolVolFast_60min,Momentum+Volume: ROC(30) + volume surge — 60min
-01-0109,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0109_MomVolVQFast_60min.py,MomVolVQFast_60min,Momentum+Volume: ROC(30) + volume Q80 — 60min
-01-0110,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0110_MomVolVolMid_60min.py,MomVolVolMid_60min,Momentum+Volume: ROC(60) + volume surge — 60min
-01-0111,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0111_MomVolVQMid_60min.py,MomVolVQMid_60min,Momentum+Volume: ROC(60) + volume Q80 — 60min
+01-0108,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0108_MomVolVolFast_60min.py,MomVolVolFast_60min,Momentum+Volume: ROC(20) + volume surge — 60min
+01-0109,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0109_MomVolVQFast_60min.py,MomVolVQFast_60min,Momentum+Volume: ROC(20) + volume Q80 — 60min
+01-0110,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0110_MomVolVolMid_60min.py,MomVolVolMid_60min,Momentum+Volume: ROC(30) + volume surge — 60min
+01-0111,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0111_MomVolVQMid_60min.py,MomVolVQMid_60min,Momentum+Volume: ROC(30) + volume Q80 — 60min
 01-0112,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0112_MomVolVolSlow_60min.py,MomVolVolSlow_60min,Momentum+Volume: ROC(slow) + volume — 60min
-01-0113,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0113_MomVN30Fast_60min.py,MomVN30Fast_60min,Momentum+VN30: ROC(30) + VN30 — 60min
-01-0114,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0114_MomVN30Mid_60min.py,MomVN30Mid_60min,Momentum+VN30: ROC(60) + VN30 — 60min
-01-0115,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0115_MomVN30Slow_60min.py,MomVN30Slow_60min,Momentum+VN30: ROC(100) + VN30 — 60min
+01-0113,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0113_MomVN30Fast_60min.py,MomVN30Fast_60min,Momentum+VN30: ROC(20) + VN30 — 60min
+01-0114,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0114_MomVN30Mid_60min.py,MomVN30Mid_60min,Momentum+VN30: ROC(30) + VN30 — 60min
+01-0115,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0115_MomVN30Slow_60min.py,MomVN30Slow_60min,Momentum+VN30: ROC(40) + VN30 — 60min
 01-0116,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0116_MomVN30Fast2_60min.py,MomVN30Fast2_60min,Momentum+VN30: ROC(fastx2) + VN30 lag — 60min
 01-0117,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0117_MomVN30Slow2_60min.py,MomVN30Slow2_60min,Momentum+VN30: ROC(slow) + VN30 slow — 60min
 01-0118,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0118_MomVN30XFast_60min.py,MomVN30XFast_60min,Momentum+VN30: ROC(ultra)+VN30 — 60min
 01-0119,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0119_MomVN30Catch_60min.py,MomVN30Catch_60min,Momentum+VN30: ROC(mid)+VN30 catch — 60min
-01-0120,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0120_MomCascF30M60S100_60min.py,MomCascF30M60S100_60min,Cascade: ROC(30)>ROC(60)>ROC(100) — 60min
-01-0121,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0121_MomCascF15M30S60_60min.py,MomCascF15M30S60_60min,Cascade: ROC(15)>ROC(30)>ROC(60) — 60min
-01-0122,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0122_MomCascF60M100S200_60min.py,MomCascF60M100S200_60min,Cascade: ROC(60)>ROC(100)>ROC(200) — 60min
-01-0123,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0123_MomCascF30M60S100_60min.py,MomCascF30M60S100_60min,Cascade: ROC(30)>ROC(60)>ROC(100) — 60min
-01-0124,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0124_MomCascF60M100S130_60min.py,MomCascF60M100S130_60min,Cascade: ROC(60)>ROC(100)>ROC(130) — 60min
-01-0125,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0125_MomCascF10M15S30_60min.py,MomCascF10M15S30_60min,Cascade: ROC(10)>ROC(15)>ROC(30) — 60min
-01-0126,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0126_MomCMOStd_60min.py,MomCMOStd_60min,CMO: CMO(21) — 60min
-01-0127,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0127_MomCMOFast_60min.py,MomCMOFast_60min,CMO: CMO(30) — 60min
-01-0128,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0128_MomCMOMid_60min.py,MomCMOMid_60min,CMO: CMO(60) — 60min
-01-0129,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0129_MomCMOSlow_60min.py,MomCMOSlow_60min,CMO: CMO(100) — 60min
-01-0130,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0130_MomCMOUltra_60min.py,MomCMOUltra_60min,CMO: CMO(10) — 60min
-01-0131,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0131_MomCMOSlow2_60min.py,MomCMOSlow2_60min,CMO: CMO(42) — 60min
-01-0132,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0132_MomCMOXUltra_60min.py,MomCMOXUltra_60min,CMO: CMO(7) — 60min
-02-0133,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0133_TrendMACMA8x20_5min.py,TrendMACMA8x20_5min,MA Cross: MA(8)/MA(20) cross — 5min
-02-0134,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0134_TrendMACMA8x14_5min.py,TrendMACMA8x14_5min,MA Cross: MA(8)/MA(14) cross — 5min
-02-0135,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0135_TrendMACMA14x20_5min.py,TrendMACMA14x20_5min,MA Cross: MA(14)/MA(20) cross — 5min
-02-0136,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0136_TrendMACMA8x40_5min.py,TrendMACMA8x40_5min,MA Cross: MA(8)/MA(40) cross — 5min
-02-0137,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0137_TrendMACMA4x8_5min.py,TrendMACMA4x8_5min,MA Cross: MA(4)/MA(8) cross — 5min
-02-0138,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0138_TrendMACMA20x40_5min.py,TrendMACMA20x40_5min,MA Cross: MA(20)/MA(40) cross — 5min
-02-0139,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0139_TrendMACMA14x28_5min.py,TrendMACMA14x28_5min,MA Cross: MA(14)/MA(28) cross — 5min
-02-0140,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0140_TrendMACMA16x20_5min.py,TrendMACMA16x20_5min,MA Cross: MA(16)/MA(20) cross — 5min
-02-0141,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0141_TrendMACMA7x14_5min.py,TrendMACMA7x14_5min,MA Cross: MA(7)/MA(14) cross — 5min
-02-0142,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0142_TrendMACMA8x32_5min.py,TrendMACMA8x32_5min,MA Cross: MA(8)/MA(32) cross — 5min
+01-0120,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0120_MomCascF20M30S40_60min.py,MomCascF20M30S40_60min,Cascade: ROC(20)>ROC(30)>ROC(40) — 60min
+01-0121,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0121_MomCascF10M20S30_60min.py,MomCascF10M20S30_60min,Cascade: ROC(10)>ROC(20)>ROC(30) — 60min
+01-0122,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0122_MomCascF30M40S80_60min.py,MomCascF30M40S80_60min,Cascade: ROC(30)>ROC(40)>ROC(80) — 60min
+01-0123,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0123_MomCascF15M30S40_60min.py,MomCascF15M30S40_60min,Cascade: ROC(15)>ROC(30)>ROC(40) — 60min
+01-0124,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0124_MomCascF30M40S60_60min.py,MomCascF30M40S60_60min,Cascade: ROC(30)>ROC(40)>ROC(60) — 60min
+01-0125,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0125_MomCascF6M10S20_60min.py,MomCascF6M10S20_60min,Cascade: ROC(6)>ROC(10)>ROC(20) — 60min
+01-0126,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0126_MomCMOStd_60min.py,MomCMOStd_60min,CMO: CMO(12) — 60min
+01-0127,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0127_MomCMOFast_60min.py,MomCMOFast_60min,CMO: CMO(20) — 60min
+01-0128,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0128_MomCMOMid_60min.py,MomCMOMid_60min,CMO: CMO(30) — 60min
+01-0129,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0129_MomCMOSlow_60min.py,MomCMOSlow_60min,CMO: CMO(40) — 60min
+01-0130,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0130_MomCMOUltra_60min.py,MomCMOUltra_60min,CMO: CMO(6) — 60min
+01-0131,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0131_MomCMOSlow2_60min.py,MomCMOSlow2_60min,CMO: CMO(24) — 60min
+01-0132,thesis_01_momentum,60min,BOTH,1,thesis_01_momentum\60min\01-0132_MomCMOXUltra_60min.py,MomCMOXUltra_60min,CMO: CMO(4) — 60min
+02-0133,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0133_TrendMACMA5x14_5min.py,TrendMACMA5x14_5min,MA Cross: MA(5)/MA(14) cross — 5min
+02-0134,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0134_TrendMACMA5x10_5min.py,TrendMACMA5x10_5min,MA Cross: MA(5)/MA(10) cross — 5min
+02-0135,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0135_TrendMACMA10x14_5min.py,TrendMACMA10x14_5min,MA Cross: MA(10)/MA(14) cross — 5min
+02-0136,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0136_TrendMACMA5x28_5min.py,TrendMACMA5x28_5min,MA Cross: MA(5)/MA(28) cross — 5min
+02-0137,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0137_TrendMACMA3x5_5min.py,TrendMACMA3x5_5min,MA Cross: MA(3)/MA(5) cross — 5min
+02-0138,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0138_TrendMACMA14x28_5min.py,TrendMACMA14x28_5min,MA Cross: MA(14)/MA(28) cross — 5min
+02-0139,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0139_TrendMACMA10x20_5min.py,TrendMACMA10x20_5min,MA Cross: MA(10)/MA(20) cross — 5min
+02-0140,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0140_TrendMACMA10x14_5min.py,TrendMACMA10x14_5min,MA Cross: MA(10)/MA(14) cross — 5min
+02-0141,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0141_TrendMACMA5x10_5min.py,TrendMACMA5x10_5min,MA Cross: MA(5)/MA(10) cross — 5min
+02-0142,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0142_TrendMACMA5x20_5min.py,TrendMACMA5x20_5min,MA Cross: MA(5)/MA(20) cross — 5min
 02-0143,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0143_TrendMACDStd_5min.py,TrendMACDStd_5min,MACD: MACD + ADX(20) — 5min
 02-0144,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0144_TrendMACDStrict_5min.py,TrendMACDStrict_5min,MACD: MACD + ADX(25) — 5min
 02-0145,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0145_TrendMACDMild_5min.py,TrendMACDMild_5min,MACD: MACD + ADX(15) — 5min
@@ -155,28 +155,28 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 02-0154,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0154_TrendQXExtreme_5min.py,TrendQXExtreme_5min,Quantile Trend: Q95%/Q5% + ADX — 5min
 02-0155,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0155_TrendQQSlow_5min.py,TrendQQSlow_5min,Quantile Trend: Q75/Q25 slow + ADX — 5min
 02-0156,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0156_TrendQQFast_5min.py,TrendQQFast_5min,Quantile Trend: Q75/Q25 fast + ADX — 5min
-02-0157,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0157_TrendEMAFast_5min.py,TrendEMAFast_5min,EMA Trend: EMA(8) + ADX — 5min
-02-0158,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0158_TrendEMAMid_5min.py,TrendEMAMid_5min,EMA Trend: EMA(14) + ADX — 5min
-02-0159,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0159_TrendEMASlow_5min.py,TrendEMASlow_5min,EMA Trend: EMA(20) + ADX — 5min
+02-0157,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0157_TrendEMAFast_5min.py,TrendEMAFast_5min,EMA Trend: EMA(5) + ADX — 5min
+02-0158,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0158_TrendEMAMid_5min.py,TrendEMAMid_5min,EMA Trend: EMA(10) + ADX — 5min
+02-0159,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0159_TrendEMASlow_5min.py,TrendEMASlow_5min,EMA Trend: EMA(14) + ADX — 5min
 02-0160,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0160_TrendEMAF2_5min.py,TrendEMAF2_5min,EMA Trend: EMA(fastx2) + ADX — 5min
 02-0161,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0161_TrendEMAF05_5min.py,TrendEMAF05_5min,EMA Trend: EMA(fast/2) + ADX — 5min
 02-0162,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0162_TrendEMAS2_5min.py,TrendEMAS2_5min,EMA Trend: EMA(slowx2) + ADX — 5min
-02-0163,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0163_TrendAroonStd_5min.py,TrendAroonStd_5min,Aroon: Aroon(7) — 5min
-02-0164,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0164_TrendAroonFast_5min.py,TrendAroonFast_5min,Aroon: Aroon(8) — 5min
-02-0165,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0165_TrendAroonMid_5min.py,TrendAroonMid_5min,Aroon: Aroon(14) — 5min
-02-0166,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0166_TrendAroonSlow_5min.py,TrendAroonSlow_5min,Aroon: Aroon(20) — 5min
-02-0167,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0167_TrendAroonSlow2_5min.py,TrendAroonSlow2_5min,Aroon: Aroon(14) — 5min
+02-0163,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0163_TrendAroonStd_5min.py,TrendAroonStd_5min,Aroon: Aroon(5) — 5min
+02-0164,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0164_TrendAroonFast_5min.py,TrendAroonFast_5min,Aroon: Aroon(5) — 5min
+02-0165,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0165_TrendAroonMid_5min.py,TrendAroonMid_5min,Aroon: Aroon(10) — 5min
+02-0166,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0166_TrendAroonSlow_5min.py,TrendAroonSlow_5min,Aroon: Aroon(14) — 5min
+02-0167,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0167_TrendAroonSlow2_5min.py,TrendAroonSlow2_5min,Aroon: Aroon(10) — 5min
 02-0168,thesis_02_trend,5min,BOTH,2,thesis_02_trend\5min\02-0168_TrendAroonUltra_5min.py,TrendAroonUltra_5min,Aroon: Aroon(3) — 5min
-02-0169,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0169_TrendMACMA13x34_15min.py,TrendMACMA13x34_15min,MA Cross: MA(13)/MA(34) cross — 15min
-02-0170,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0170_TrendMACMA13x26_15min.py,TrendMACMA13x26_15min,MA Cross: MA(13)/MA(26) cross — 15min
-02-0171,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0171_TrendMACMA26x34_15min.py,TrendMACMA26x34_15min,MA Cross: MA(26)/MA(34) cross — 15min
-02-0172,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0172_TrendMACMA13x68_15min.py,TrendMACMA13x68_15min,MA Cross: MA(13)/MA(68) cross — 15min
-02-0173,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0173_TrendMACMA6x13_15min.py,TrendMACMA6x13_15min,MA Cross: MA(6)/MA(13) cross — 15min
-02-0174,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0174_TrendMACMA34x68_15min.py,TrendMACMA34x68_15min,MA Cross: MA(34)/MA(68) cross — 15min
-02-0175,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0175_TrendMACMA26x52_15min.py,TrendMACMA26x52_15min,MA Cross: MA(26)/MA(52) cross — 15min
-02-0176,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0176_TrendMACMA26x34_15min.py,TrendMACMA26x34_15min,MA Cross: MA(26)/MA(34) cross — 15min
-02-0177,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0177_TrendMACMA13x26_15min.py,TrendMACMA13x26_15min,MA Cross: MA(13)/MA(26) cross — 15min
-02-0178,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0178_TrendMACMA13x52_15min.py,TrendMACMA13x52_15min,MA Cross: MA(13)/MA(52) cross — 15min
+02-0169,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0169_TrendMACMA8x20_15min.py,TrendMACMA8x20_15min,MA Cross: MA(8)/MA(20) cross — 15min
+02-0170,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0170_TrendMACMA8x14_15min.py,TrendMACMA8x14_15min,MA Cross: MA(8)/MA(14) cross — 15min
+02-0171,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0171_TrendMACMA14x20_15min.py,TrendMACMA14x20_15min,MA Cross: MA(14)/MA(20) cross — 15min
+02-0172,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0172_TrendMACMA8x40_15min.py,TrendMACMA8x40_15min,MA Cross: MA(8)/MA(40) cross — 15min
+02-0173,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0173_TrendMACMA4x8_15min.py,TrendMACMA4x8_15min,MA Cross: MA(4)/MA(8) cross — 15min
+02-0174,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0174_TrendMACMA20x40_15min.py,TrendMACMA20x40_15min,MA Cross: MA(20)/MA(40) cross — 15min
+02-0175,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0175_TrendMACMA14x28_15min.py,TrendMACMA14x28_15min,MA Cross: MA(14)/MA(28) cross — 15min
+02-0176,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0176_TrendMACMA16x20_15min.py,TrendMACMA16x20_15min,MA Cross: MA(16)/MA(20) cross — 15min
+02-0177,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0177_TrendMACMA7x14_15min.py,TrendMACMA7x14_15min,MA Cross: MA(7)/MA(14) cross — 15min
+02-0178,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0178_TrendMACMA8x32_15min.py,TrendMACMA8x32_15min,MA Cross: MA(8)/MA(32) cross — 15min
 02-0179,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0179_TrendMACDStd_15min.py,TrendMACDStd_15min,MACD: MACD + ADX(20) — 15min
 02-0180,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0180_TrendMACDStrict_15min.py,TrendMACDStrict_15min,MACD: MACD + ADX(25) — 15min
 02-0181,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0181_TrendMACDMild_15min.py,TrendMACDMild_15min,MACD: MACD + ADX(15) — 15min
@@ -191,28 +191,28 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 02-0190,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0190_TrendQXExtreme_15min.py,TrendQXExtreme_15min,Quantile Trend: Q95%/Q5% + ADX — 15min
 02-0191,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0191_TrendQQSlow_15min.py,TrendQQSlow_15min,Quantile Trend: Q75/Q25 slow + ADX — 15min
 02-0192,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0192_TrendQQFast_15min.py,TrendQQFast_15min,Quantile Trend: Q75/Q25 fast + ADX — 15min
-02-0193,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0193_TrendEMAFast_15min.py,TrendEMAFast_15min,EMA Trend: EMA(13) + ADX — 15min
-02-0194,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0194_TrendEMAMid_15min.py,TrendEMAMid_15min,EMA Trend: EMA(26) + ADX — 15min
-02-0195,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0195_TrendEMASlow_15min.py,TrendEMASlow_15min,EMA Trend: EMA(34) + ADX — 15min
+02-0193,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0193_TrendEMAFast_15min.py,TrendEMAFast_15min,EMA Trend: EMA(8) + ADX — 15min
+02-0194,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0194_TrendEMAMid_15min.py,TrendEMAMid_15min,EMA Trend: EMA(14) + ADX — 15min
+02-0195,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0195_TrendEMASlow_15min.py,TrendEMASlow_15min,EMA Trend: EMA(20) + ADX — 15min
 02-0196,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0196_TrendEMAF2_15min.py,TrendEMAF2_15min,EMA Trend: EMA(fastx2) + ADX — 15min
 02-0197,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0197_TrendEMAF05_15min.py,TrendEMAF05_15min,EMA Trend: EMA(fast/2) + ADX — 15min
 02-0198,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0198_TrendEMAS2_15min.py,TrendEMAS2_15min,EMA Trend: EMA(slowx2) + ADX — 15min
-02-0199,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0199_TrendAroonStd_15min.py,TrendAroonStd_15min,Aroon: Aroon(10) — 15min
-02-0200,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0200_TrendAroonFast_15min.py,TrendAroonFast_15min,Aroon: Aroon(13) — 15min
-02-0201,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0201_TrendAroonMid_15min.py,TrendAroonMid_15min,Aroon: Aroon(26) — 15min
-02-0202,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0202_TrendAroonSlow_15min.py,TrendAroonSlow_15min,Aroon: Aroon(34) — 15min
-02-0203,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0203_TrendAroonSlow2_15min.py,TrendAroonSlow2_15min,Aroon: Aroon(20) — 15min
-02-0204,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0204_TrendAroonUltra_15min.py,TrendAroonUltra_15min,Aroon: Aroon(5) — 15min
-02-0205,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0205_TrendMACMA20x50_30min.py,TrendMACMA20x50_30min,MA Cross: MA(20)/MA(50) cross — 30min
-02-0206,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0206_TrendMACMA20x40_30min.py,TrendMACMA20x40_30min,MA Cross: MA(20)/MA(40) cross — 30min
-02-0207,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0207_TrendMACMA40x50_30min.py,TrendMACMA40x50_30min,MA Cross: MA(40)/MA(50) cross — 30min
-02-0208,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0208_TrendMACMA20x100_30min.py,TrendMACMA20x100_30min,MA Cross: MA(20)/MA(100) cross — 30min
-02-0209,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0209_TrendMACMA10x20_30min.py,TrendMACMA10x20_30min,MA Cross: MA(10)/MA(20) cross — 30min
-02-0210,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0210_TrendMACMA50x100_30min.py,TrendMACMA50x100_30min,MA Cross: MA(50)/MA(100) cross — 30min
-02-0211,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0211_TrendMACMA40x80_30min.py,TrendMACMA40x80_30min,MA Cross: MA(40)/MA(80) cross — 30min
-02-0212,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0212_TrendMACMA40x50_30min.py,TrendMACMA40x50_30min,MA Cross: MA(40)/MA(50) cross — 30min
-02-0213,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0213_TrendMACMA20x40_30min.py,TrendMACMA20x40_30min,MA Cross: MA(20)/MA(40) cross — 30min
-02-0214,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0214_TrendMACMA20x80_30min.py,TrendMACMA20x80_30min,MA Cross: MA(20)/MA(80) cross — 30min
+02-0199,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0199_TrendAroonStd_15min.py,TrendAroonStd_15min,Aroon: Aroon(7) — 15min
+02-0200,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0200_TrendAroonFast_15min.py,TrendAroonFast_15min,Aroon: Aroon(8) — 15min
+02-0201,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0201_TrendAroonMid_15min.py,TrendAroonMid_15min,Aroon: Aroon(14) — 15min
+02-0202,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0202_TrendAroonSlow_15min.py,TrendAroonSlow_15min,Aroon: Aroon(20) — 15min
+02-0203,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0203_TrendAroonSlow2_15min.py,TrendAroonSlow2_15min,Aroon: Aroon(14) — 15min
+02-0204,thesis_02_trend,15min,BOTH,2,thesis_02_trend\15min\02-0204_TrendAroonUltra_15min.py,TrendAroonUltra_15min,Aroon: Aroon(3) — 15min
+02-0205,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0205_TrendMACMA13x30_30min.py,TrendMACMA13x30_30min,MA Cross: MA(13)/MA(30) cross — 30min
+02-0206,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0206_TrendMACMA13x20_30min.py,TrendMACMA13x20_30min,MA Cross: MA(13)/MA(20) cross — 30min
+02-0207,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0207_TrendMACMA20x30_30min.py,TrendMACMA20x30_30min,MA Cross: MA(20)/MA(30) cross — 30min
+02-0208,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0208_TrendMACMA13x60_30min.py,TrendMACMA13x60_30min,MA Cross: MA(13)/MA(60) cross — 30min
+02-0209,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0209_TrendMACMA6x13_30min.py,TrendMACMA6x13_30min,MA Cross: MA(6)/MA(13) cross — 30min
+02-0210,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0210_TrendMACMA30x60_30min.py,TrendMACMA30x60_30min,MA Cross: MA(30)/MA(60) cross — 30min
+02-0211,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0211_TrendMACMA20x40_30min.py,TrendMACMA20x40_30min,MA Cross: MA(20)/MA(40) cross — 30min
+02-0212,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0212_TrendMACMA26x30_30min.py,TrendMACMA26x30_30min,MA Cross: MA(26)/MA(30) cross — 30min
+02-0213,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0213_TrendMACMA10x20_30min.py,TrendMACMA10x20_30min,MA Cross: MA(10)/MA(20) cross — 30min
+02-0214,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0214_TrendMACMA13x52_30min.py,TrendMACMA13x52_30min,MA Cross: MA(13)/MA(52) cross — 30min
 02-0215,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0215_TrendMACDStd_30min.py,TrendMACDStd_30min,MACD: MACD + ADX(20) — 30min
 02-0216,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0216_TrendMACDStrict_30min.py,TrendMACDStrict_30min,MACD: MACD + ADX(25) — 30min
 02-0217,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0217_TrendMACDMild_30min.py,TrendMACDMild_30min,MACD: MACD + ADX(15) — 30min
@@ -227,28 +227,28 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 02-0226,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0226_TrendQXExtreme_30min.py,TrendQXExtreme_30min,Quantile Trend: Q95%/Q5% + ADX — 30min
 02-0227,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0227_TrendQQSlow_30min.py,TrendQQSlow_30min,Quantile Trend: Q75/Q25 slow + ADX — 30min
 02-0228,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0228_TrendQQFast_30min.py,TrendQQFast_30min,Quantile Trend: Q75/Q25 fast + ADX — 30min
-02-0229,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0229_TrendEMAFast_30min.py,TrendEMAFast_30min,EMA Trend: EMA(20) + ADX — 30min
-02-0230,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0230_TrendEMAMid_30min.py,TrendEMAMid_30min,EMA Trend: EMA(40) + ADX — 30min
-02-0231,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0231_TrendEMASlow_30min.py,TrendEMASlow_30min,EMA Trend: EMA(50) + ADX — 30min
+02-0229,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0229_TrendEMAFast_30min.py,TrendEMAFast_30min,EMA Trend: EMA(13) + ADX — 30min
+02-0230,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0230_TrendEMAMid_30min.py,TrendEMAMid_30min,EMA Trend: EMA(20) + ADX — 30min
+02-0231,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0231_TrendEMASlow_30min.py,TrendEMASlow_30min,EMA Trend: EMA(30) + ADX — 30min
 02-0232,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0232_TrendEMAF2_30min.py,TrendEMAF2_30min,EMA Trend: EMA(fastx2) + ADX — 30min
 02-0233,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0233_TrendEMAF05_30min.py,TrendEMAF05_30min,EMA Trend: EMA(fast/2) + ADX — 30min
 02-0234,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0234_TrendEMAS2_30min.py,TrendEMAS2_30min,EMA Trend: EMA(slowx2) + ADX — 30min
-02-0235,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0235_TrendAroonStd_30min.py,TrendAroonStd_30min,Aroon: Aroon(14) — 30min
-02-0236,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0236_TrendAroonFast_30min.py,TrendAroonFast_30min,Aroon: Aroon(20) — 30min
-02-0237,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0237_TrendAroonMid_30min.py,TrendAroonMid_30min,Aroon: Aroon(40) — 30min
-02-0238,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0238_TrendAroonSlow_30min.py,TrendAroonSlow_30min,Aroon: Aroon(50) — 30min
-02-0239,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0239_TrendAroonSlow2_30min.py,TrendAroonSlow2_30min,Aroon: Aroon(28) — 30min
-02-0240,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0240_TrendAroonUltra_30min.py,TrendAroonUltra_30min,Aroon: Aroon(7) — 30min
-02-0241,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0241_TrendMACMA30x100_60min.py,TrendMACMA30x100_60min,MA Cross: MA(30)/MA(100) cross — 60min
-02-0242,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0242_TrendMACMA30x60_60min.py,TrendMACMA30x60_60min,MA Cross: MA(30)/MA(60) cross — 60min
-02-0243,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0243_TrendMACMA60x100_60min.py,TrendMACMA60x100_60min,MA Cross: MA(60)/MA(100) cross — 60min
-02-0244,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0244_TrendMACMA30x200_60min.py,TrendMACMA30x200_60min,MA Cross: MA(30)/MA(200) cross — 60min
-02-0245,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0245_TrendMACMA15x30_60min.py,TrendMACMA15x30_60min,MA Cross: MA(15)/MA(30) cross — 60min
-02-0246,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0246_TrendMACMA100x200_60min.py,TrendMACMA100x200_60min,MA Cross: MA(100)/MA(200) cross — 60min
-02-0247,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0247_TrendMACMA60x120_60min.py,TrendMACMA60x120_60min,MA Cross: MA(60)/MA(120) cross — 60min
-02-0248,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0248_TrendMACMA60x100_60min.py,TrendMACMA60x100_60min,MA Cross: MA(60)/MA(100) cross — 60min
-02-0249,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0249_TrendMACMA30x60_60min.py,TrendMACMA30x60_60min,MA Cross: MA(30)/MA(60) cross — 60min
-02-0250,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0250_TrendMACMA30x120_60min.py,TrendMACMA30x120_60min,MA Cross: MA(30)/MA(120) cross — 60min
+02-0235,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0235_TrendAroonStd_30min.py,TrendAroonStd_30min,Aroon: Aroon(9) — 30min
+02-0236,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0236_TrendAroonFast_30min.py,TrendAroonFast_30min,Aroon: Aroon(13) — 30min
+02-0237,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0237_TrendAroonMid_30min.py,TrendAroonMid_30min,Aroon: Aroon(20) — 30min
+02-0238,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0238_TrendAroonSlow_30min.py,TrendAroonSlow_30min,Aroon: Aroon(30) — 30min
+02-0239,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0239_TrendAroonSlow2_30min.py,TrendAroonSlow2_30min,Aroon: Aroon(18) — 30min
+02-0240,thesis_02_trend,30min,BOTH,2,thesis_02_trend\30min\02-0240_TrendAroonUltra_30min.py,TrendAroonUltra_30min,Aroon: Aroon(4) — 30min
+02-0241,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0241_TrendMACMA20x40_60min.py,TrendMACMA20x40_60min,MA Cross: MA(20)/MA(40) cross — 60min
+02-0242,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0242_TrendMACMA20x30_60min.py,TrendMACMA20x30_60min,MA Cross: MA(20)/MA(30) cross — 60min
+02-0243,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0243_TrendMACMA30x40_60min.py,TrendMACMA30x40_60min,MA Cross: MA(30)/MA(40) cross — 60min
+02-0244,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0244_TrendMACMA20x80_60min.py,TrendMACMA20x80_60min,MA Cross: MA(20)/MA(80) cross — 60min
+02-0245,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0245_TrendMACMA10x20_60min.py,TrendMACMA10x20_60min,MA Cross: MA(10)/MA(20) cross — 60min
+02-0246,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0246_TrendMACMA40x80_60min.py,TrendMACMA40x80_60min,MA Cross: MA(40)/MA(80) cross — 60min
+02-0247,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0247_TrendMACMA30x60_60min.py,TrendMACMA30x60_60min,MA Cross: MA(30)/MA(60) cross — 60min
+02-0248,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0248_TrendMACMA40x40_60min.py,TrendMACMA40x40_60min,MA Cross: MA(40)/MA(40) cross — 60min
+02-0249,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0249_TrendMACMA15x30_60min.py,TrendMACMA15x30_60min,MA Cross: MA(15)/MA(30) cross — 60min
+02-0250,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0250_TrendMACMA20x80_60min.py,TrendMACMA20x80_60min,MA Cross: MA(20)/MA(80) cross — 60min
 02-0251,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0251_TrendMACDStd_60min.py,TrendMACDStd_60min,MACD: MACD + ADX(20) — 60min
 02-0252,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0252_TrendMACDStrict_60min.py,TrendMACDStrict_60min,MACD: MACD + ADX(25) — 60min
 02-0253,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0253_TrendMACDMild_60min.py,TrendMACDMild_60min,MACD: MACD + ADX(15) — 60min
@@ -263,26 +263,26 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 02-0262,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0262_TrendQXExtreme_60min.py,TrendQXExtreme_60min,Quantile Trend: Q95%/Q5% + ADX — 60min
 02-0263,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0263_TrendQQSlow_60min.py,TrendQQSlow_60min,Quantile Trend: Q75/Q25 slow + ADX — 60min
 02-0264,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0264_TrendQQFast_60min.py,TrendQQFast_60min,Quantile Trend: Q75/Q25 fast + ADX — 60min
-02-0265,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0265_TrendEMAFast_60min.py,TrendEMAFast_60min,EMA Trend: EMA(30) + ADX — 60min
-02-0266,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0266_TrendEMAMid_60min.py,TrendEMAMid_60min,EMA Trend: EMA(60) + ADX — 60min
-02-0267,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0267_TrendEMASlow_60min.py,TrendEMASlow_60min,EMA Trend: EMA(100) + ADX — 60min
+02-0265,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0265_TrendEMAFast_60min.py,TrendEMAFast_60min,EMA Trend: EMA(20) + ADX — 60min
+02-0266,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0266_TrendEMAMid_60min.py,TrendEMAMid_60min,EMA Trend: EMA(30) + ADX — 60min
+02-0267,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0267_TrendEMASlow_60min.py,TrendEMASlow_60min,EMA Trend: EMA(40) + ADX — 60min
 02-0268,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0268_TrendEMAF2_60min.py,TrendEMAF2_60min,EMA Trend: EMA(fastx2) + ADX — 60min
 02-0269,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0269_TrendEMAF05_60min.py,TrendEMAF05_60min,EMA Trend: EMA(fast/2) + ADX — 60min
 02-0270,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0270_TrendEMAS2_60min.py,TrendEMAS2_60min,EMA Trend: EMA(slowx2) + ADX — 60min
-02-0271,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0271_TrendAroonStd_60min.py,TrendAroonStd_60min,Aroon: Aroon(21) — 60min
-02-0272,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0272_TrendAroonFast_60min.py,TrendAroonFast_60min,Aroon: Aroon(30) — 60min
-02-0273,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0273_TrendAroonMid_60min.py,TrendAroonMid_60min,Aroon: Aroon(60) — 60min
-02-0274,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0274_TrendAroonSlow_60min.py,TrendAroonSlow_60min,Aroon: Aroon(100) — 60min
-02-0275,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0275_TrendAroonSlow2_60min.py,TrendAroonSlow2_60min,Aroon: Aroon(42) — 60min
-02-0276,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0276_TrendAroonUltra_60min.py,TrendAroonUltra_60min,Aroon: Aroon(10) — 60min
-03-0277,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0277_MRQStd_5min.py,MRQStd_5min,Quantile Rev: Q90%/Q10%(14) — 5min
-03-0278,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0278_MRQTight_5min.py,MRQTight_5min,Quantile Rev: Q95%/Q5%(14) — 5min
-03-0279,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0279_MRQSlow_5min.py,MRQSlow_5min,Quantile Rev: Q90%/Q10%(20) — 5min
-03-0280,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0280_MRQFast_5min.py,MRQFast_5min,Quantile Rev: Q90%/Q10%(8) — 5min
-03-0281,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0281_MRQMild_5min.py,MRQMild_5min,Quantile Rev: Q85%/Q15%(14) — 5min
-03-0282,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0282_MRQFT_5min.py,MRQFT_5min,Quantile Rev: Q95%/Q5%(8) — 5min
-03-0283,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0283_MRQXExtreme_5min.py,MRQXExtreme_5min,Quantile Rev: Q98%/Q2%(14) — 5min
-03-0284,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0284_MRQSlowMild_5min.py,MRQSlowMild_5min,Quantile Rev: Q85%/Q15%(20) — 5min
+02-0271,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0271_TrendAroonStd_60min.py,TrendAroonStd_60min,Aroon: Aroon(12) — 60min
+02-0272,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0272_TrendAroonFast_60min.py,TrendAroonFast_60min,Aroon: Aroon(20) — 60min
+02-0273,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0273_TrendAroonMid_60min.py,TrendAroonMid_60min,Aroon: Aroon(30) — 60min
+02-0274,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0274_TrendAroonSlow_60min.py,TrendAroonSlow_60min,Aroon: Aroon(40) — 60min
+02-0275,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0275_TrendAroonSlow2_60min.py,TrendAroonSlow2_60min,Aroon: Aroon(24) — 60min
+02-0276,thesis_02_trend,60min,BOTH,2,thesis_02_trend\60min\02-0276_TrendAroonUltra_60min.py,TrendAroonUltra_60min,Aroon: Aroon(6) — 60min
+03-0277,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0277_MRQStd_5min.py,MRQStd_5min,Quantile Rev: Q90%/Q10%(10) — 5min
+03-0278,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0278_MRQTight_5min.py,MRQTight_5min,Quantile Rev: Q95%/Q5%(10) — 5min
+03-0279,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0279_MRQSlow_5min.py,MRQSlow_5min,Quantile Rev: Q90%/Q10%(14) — 5min
+03-0280,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0280_MRQFast_5min.py,MRQFast_5min,Quantile Rev: Q90%/Q10%(5) — 5min
+03-0281,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0281_MRQMild_5min.py,MRQMild_5min,Quantile Rev: Q85%/Q15%(10) — 5min
+03-0282,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0282_MRQFT_5min.py,MRQFT_5min,Quantile Rev: Q95%/Q5%(5) — 5min
+03-0283,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0283_MRQXExtreme_5min.py,MRQXExtreme_5min,Quantile Rev: Q98%/Q2%(10) — 5min
+03-0284,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0284_MRQSlowMild_5min.py,MRQSlowMild_5min,Quantile Rev: Q85%/Q15%(14) — 5min
 03-0285,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0285_MRRSIStd_5min.py,MRRSIStd_5min,RSI Rev: RSI(30/70) — 5min
 03-0286,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0286_MRRSITight_5min.py,MRRSITight_5min,RSI Rev: RSI(25/75) — 5min
 03-0287,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0287_MRRSIMild_5min.py,MRRSIMild_5min,RSI Rev: RSI(35/65) — 5min
@@ -302,21 +302,21 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 03-0301,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0301_MRVCMed_5min.py,MRVCMed_5min,"Vol Climax: VolClimax(1.8x,RSI<22) — 5min"
 03-0302,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0302_MRVCAggr_5min.py,MRVCAggr_5min,"Vol Climax: VolClimax(2.5x,RSI<18) — 5min"
 03-0303,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0303_MRVCGentle_5min.py,MRVCGentle_5min,"Vol Climax: VolClimax(1.2x,RSI<35) — 5min"
-03-0304,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0304_MRCCIStd_5min.py,MRCCIStd_5min,CCI: CCI(14) — 5min
-03-0305,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0305_MRCCIFast_5min.py,MRCCIFast_5min,CCI: CCI(8) — 5min
-03-0306,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0306_MRCCISlow_5min.py,MRCCISlow_5min,CCI: CCI(20) — 5min
-03-0307,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0307_MRCCIUltra_5min.py,MRCCIUltra_5min,CCI: CCI(7) — 5min
-03-0308,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0308_MRCCIXSlow_5min.py,MRCCIXSlow_5min,CCI: CCI(28) — 5min
-03-0309,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0309_MRCCIVSlow_5min.py,MRCCIVSlow_5min,CCI: CCI(42) — 5min
-03-0310,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0310_MRCCIXUltra_5min.py,MRCCIXUltra_5min,CCI: CCI(4) — 5min
-03-0311,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0311_MRQStd_15min.py,MRQStd_15min,Quantile Rev: Q90%/Q10%(26) — 15min
-03-0312,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0312_MRQTight_15min.py,MRQTight_15min,Quantile Rev: Q95%/Q5%(26) — 15min
-03-0313,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0313_MRQSlow_15min.py,MRQSlow_15min,Quantile Rev: Q90%/Q10%(34) — 15min
-03-0314,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0314_MRQFast_15min.py,MRQFast_15min,Quantile Rev: Q90%/Q10%(13) — 15min
-03-0315,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0315_MRQMild_15min.py,MRQMild_15min,Quantile Rev: Q85%/Q15%(26) — 15min
-03-0316,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0316_MRQFT_15min.py,MRQFT_15min,Quantile Rev: Q95%/Q5%(13) — 15min
-03-0317,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0317_MRQXExtreme_15min.py,MRQXExtreme_15min,Quantile Rev: Q98%/Q2%(26) — 15min
-03-0318,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0318_MRQSlowMild_15min.py,MRQSlowMild_15min,Quantile Rev: Q85%/Q15%(34) — 15min
+03-0304,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0304_MRCCIStd_5min.py,MRCCIStd_5min,CCI: CCI(10) — 5min
+03-0305,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0305_MRCCIFast_5min.py,MRCCIFast_5min,CCI: CCI(5) — 5min
+03-0306,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0306_MRCCISlow_5min.py,MRCCISlow_5min,CCI: CCI(14) — 5min
+03-0307,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0307_MRCCIUltra_5min.py,MRCCIUltra_5min,CCI: CCI(5) — 5min
+03-0308,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0308_MRCCIXSlow_5min.py,MRCCIXSlow_5min,CCI: CCI(20) — 5min
+03-0309,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0309_MRCCIVSlow_5min.py,MRCCIVSlow_5min,CCI: CCI(30) — 5min
+03-0310,thesis_03_mean_reversion,5min,BOTH,3,thesis_03_mean_reversion\5min\03-0310_MRCCIXUltra_5min.py,MRCCIXUltra_5min,CCI: CCI(3) — 5min
+03-0311,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0311_MRQStd_15min.py,MRQStd_15min,Quantile Rev: Q90%/Q10%(14) — 15min
+03-0312,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0312_MRQTight_15min.py,MRQTight_15min,Quantile Rev: Q95%/Q5%(14) — 15min
+03-0313,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0313_MRQSlow_15min.py,MRQSlow_15min,Quantile Rev: Q90%/Q10%(20) — 15min
+03-0314,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0314_MRQFast_15min.py,MRQFast_15min,Quantile Rev: Q90%/Q10%(8) — 15min
+03-0315,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0315_MRQMild_15min.py,MRQMild_15min,Quantile Rev: Q85%/Q15%(14) — 15min
+03-0316,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0316_MRQFT_15min.py,MRQFT_15min,Quantile Rev: Q95%/Q5%(8) — 15min
+03-0317,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0317_MRQXExtreme_15min.py,MRQXExtreme_15min,Quantile Rev: Q98%/Q2%(14) — 15min
+03-0318,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0318_MRQSlowMild_15min.py,MRQSlowMild_15min,Quantile Rev: Q85%/Q15%(20) — 15min
 03-0319,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0319_MRRSIStd_15min.py,MRRSIStd_15min,RSI Rev: RSI(30/70) — 15min
 03-0320,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0320_MRRSITight_15min.py,MRRSITight_15min,RSI Rev: RSI(25/75) — 15min
 03-0321,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0321_MRRSIMild_15min.py,MRRSIMild_15min,RSI Rev: RSI(35/65) — 15min
@@ -336,21 +336,21 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 03-0335,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0335_MRVCMed_15min.py,MRVCMed_15min,"Vol Climax: VolClimax(1.8x,RSI<22) — 15min"
 03-0336,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0336_MRVCAggr_15min.py,MRVCAggr_15min,"Vol Climax: VolClimax(2.5x,RSI<18) — 15min"
 03-0337,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0337_MRVCGentle_15min.py,MRVCGentle_15min,"Vol Climax: VolClimax(1.2x,RSI<35) — 15min"
-03-0338,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0338_MRCCIStd_15min.py,MRCCIStd_15min,CCI: CCI(26) — 15min
-03-0339,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0339_MRCCIFast_15min.py,MRCCIFast_15min,CCI: CCI(13) — 15min
-03-0340,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0340_MRCCISlow_15min.py,MRCCISlow_15min,CCI: CCI(34) — 15min
-03-0341,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0341_MRCCIUltra_15min.py,MRCCIUltra_15min,CCI: CCI(13) — 15min
-03-0342,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0342_MRCCIXSlow_15min.py,MRCCIXSlow_15min,CCI: CCI(52) — 15min
-03-0343,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0343_MRCCIVSlow_15min.py,MRCCIVSlow_15min,CCI: CCI(78) — 15min
-03-0344,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0344_MRCCIXUltra_15min.py,MRCCIXUltra_15min,CCI: CCI(8) — 15min
-03-0345,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0345_MRQStd_30min.py,MRQStd_30min,Quantile Rev: Q90%/Q10%(40) — 30min
-03-0346,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0346_MRQTight_30min.py,MRQTight_30min,Quantile Rev: Q95%/Q5%(40) — 30min
-03-0347,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0347_MRQSlow_30min.py,MRQSlow_30min,Quantile Rev: Q90%/Q10%(50) — 30min
-03-0348,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0348_MRQFast_30min.py,MRQFast_30min,Quantile Rev: Q90%/Q10%(20) — 30min
-03-0349,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0349_MRQMild_30min.py,MRQMild_30min,Quantile Rev: Q85%/Q15%(40) — 30min
-03-0350,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0350_MRQFT_30min.py,MRQFT_30min,Quantile Rev: Q95%/Q5%(20) — 30min
-03-0351,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0351_MRQXExtreme_30min.py,MRQXExtreme_30min,Quantile Rev: Q98%/Q2%(40) — 30min
-03-0352,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0352_MRQSlowMild_30min.py,MRQSlowMild_30min,Quantile Rev: Q85%/Q15%(50) — 30min
+03-0338,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0338_MRCCIStd_15min.py,MRCCIStd_15min,CCI: CCI(14) — 15min
+03-0339,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0339_MRCCIFast_15min.py,MRCCIFast_15min,CCI: CCI(8) — 15min
+03-0340,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0340_MRCCISlow_15min.py,MRCCISlow_15min,CCI: CCI(20) — 15min
+03-0341,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0341_MRCCIUltra_15min.py,MRCCIUltra_15min,CCI: CCI(7) — 15min
+03-0342,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0342_MRCCIXSlow_15min.py,MRCCIXSlow_15min,CCI: CCI(28) — 15min
+03-0343,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0343_MRCCIVSlow_15min.py,MRCCIVSlow_15min,CCI: CCI(42) — 15min
+03-0344,thesis_03_mean_reversion,15min,BOTH,3,thesis_03_mean_reversion\15min\03-0344_MRCCIXUltra_15min.py,MRCCIXUltra_15min,CCI: CCI(4) — 15min
+03-0345,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0345_MRQStd_30min.py,MRQStd_30min,Quantile Rev: Q90%/Q10%(20) — 30min
+03-0346,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0346_MRQTight_30min.py,MRQTight_30min,Quantile Rev: Q95%/Q5%(20) — 30min
+03-0347,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0347_MRQSlow_30min.py,MRQSlow_30min,Quantile Rev: Q90%/Q10%(30) — 30min
+03-0348,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0348_MRQFast_30min.py,MRQFast_30min,Quantile Rev: Q90%/Q10%(13) — 30min
+03-0349,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0349_MRQMild_30min.py,MRQMild_30min,Quantile Rev: Q85%/Q15%(20) — 30min
+03-0350,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0350_MRQFT_30min.py,MRQFT_30min,Quantile Rev: Q95%/Q5%(13) — 30min
+03-0351,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0351_MRQXExtreme_30min.py,MRQXExtreme_30min,Quantile Rev: Q98%/Q2%(20) — 30min
+03-0352,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0352_MRQSlowMild_30min.py,MRQSlowMild_30min,Quantile Rev: Q85%/Q15%(30) — 30min
 03-0353,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0353_MRRSIStd_30min.py,MRRSIStd_30min,RSI Rev: RSI(30/70) — 30min
 03-0354,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0354_MRRSITight_30min.py,MRRSITight_30min,RSI Rev: RSI(25/75) — 30min
 03-0355,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0355_MRRSIMild_30min.py,MRRSIMild_30min,RSI Rev: RSI(35/65) — 30min
@@ -370,21 +370,21 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 03-0369,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0369_MRVCMed_30min.py,MRVCMed_30min,"Vol Climax: VolClimax(1.8x,RSI<22) — 30min"
 03-0370,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0370_MRVCAggr_30min.py,MRVCAggr_30min,"Vol Climax: VolClimax(2.5x,RSI<18) — 30min"
 03-0371,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0371_MRVCGentle_30min.py,MRVCGentle_30min,"Vol Climax: VolClimax(1.2x,RSI<35) — 30min"
-03-0372,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0372_MRCCIStd_30min.py,MRCCIStd_30min,CCI: CCI(40) — 30min
-03-0373,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0373_MRCCIFast_30min.py,MRCCIFast_30min,CCI: CCI(20) — 30min
-03-0374,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0374_MRCCISlow_30min.py,MRCCISlow_30min,CCI: CCI(50) — 30min
-03-0375,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0375_MRCCIUltra_30min.py,MRCCIUltra_30min,CCI: CCI(20) — 30min
-03-0376,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0376_MRCCIXSlow_30min.py,MRCCIXSlow_30min,CCI: CCI(80) — 30min
-03-0377,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0377_MRCCIVSlow_30min.py,MRCCIVSlow_30min,CCI: CCI(120) — 30min
-03-0378,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0378_MRCCIXUltra_30min.py,MRCCIXUltra_30min,CCI: CCI(13) — 30min
-03-0379,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0379_MRQStd_60min.py,MRQStd_60min,Quantile Rev: Q90%/Q10%(60) — 60min
-03-0380,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0380_MRQTight_60min.py,MRQTight_60min,Quantile Rev: Q95%/Q5%(60) — 60min
-03-0381,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0381_MRQSlow_60min.py,MRQSlow_60min,Quantile Rev: Q90%/Q10%(100) — 60min
-03-0382,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0382_MRQFast_60min.py,MRQFast_60min,Quantile Rev: Q90%/Q10%(30) — 60min
-03-0383,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0383_MRQMild_60min.py,MRQMild_60min,Quantile Rev: Q85%/Q15%(60) — 60min
-03-0384,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0384_MRQFT_60min.py,MRQFT_60min,Quantile Rev: Q95%/Q5%(30) — 60min
-03-0385,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0385_MRQXExtreme_60min.py,MRQXExtreme_60min,Quantile Rev: Q98%/Q2%(60) — 60min
-03-0386,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0386_MRQSlowMild_60min.py,MRQSlowMild_60min,Quantile Rev: Q85%/Q15%(100) — 60min
+03-0372,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0372_MRCCIStd_30min.py,MRCCIStd_30min,CCI: CCI(20) — 30min
+03-0373,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0373_MRCCIFast_30min.py,MRCCIFast_30min,CCI: CCI(13) — 30min
+03-0374,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0374_MRCCISlow_30min.py,MRCCISlow_30min,CCI: CCI(30) — 30min
+03-0375,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0375_MRCCIUltra_30min.py,MRCCIUltra_30min,CCI: CCI(10) — 30min
+03-0376,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0376_MRCCIXSlow_30min.py,MRCCIXSlow_30min,CCI: CCI(40) — 30min
+03-0377,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0377_MRCCIVSlow_30min.py,MRCCIVSlow_30min,CCI: CCI(60) — 30min
+03-0378,thesis_03_mean_reversion,30min,BOTH,3,thesis_03_mean_reversion\30min\03-0378_MRCCIXUltra_30min.py,MRCCIXUltra_30min,CCI: CCI(6) — 30min
+03-0379,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0379_MRQStd_60min.py,MRQStd_60min,Quantile Rev: Q90%/Q10%(30) — 60min
+03-0380,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0380_MRQTight_60min.py,MRQTight_60min,Quantile Rev: Q95%/Q5%(30) — 60min
+03-0381,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0381_MRQSlow_60min.py,MRQSlow_60min,Quantile Rev: Q90%/Q10%(40) — 60min
+03-0382,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0382_MRQFast_60min.py,MRQFast_60min,Quantile Rev: Q90%/Q10%(20) — 60min
+03-0383,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0383_MRQMild_60min.py,MRQMild_60min,Quantile Rev: Q85%/Q15%(30) — 60min
+03-0384,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0384_MRQFT_60min.py,MRQFT_60min,Quantile Rev: Q95%/Q5%(20) — 60min
+03-0385,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0385_MRQXExtreme_60min.py,MRQXExtreme_60min,Quantile Rev: Q98%/Q2%(30) — 60min
+03-0386,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0386_MRQSlowMild_60min.py,MRQSlowMild_60min,Quantile Rev: Q85%/Q15%(40) — 60min
 03-0387,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0387_MRRSIStd_60min.py,MRRSIStd_60min,RSI Rev: RSI(30/70) — 60min
 03-0388,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0388_MRRSITight_60min.py,MRRSITight_60min,RSI Rev: RSI(25/75) — 60min
 03-0389,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0389_MRRSIMild_60min.py,MRRSIMild_60min,RSI Rev: RSI(35/65) — 60min
@@ -404,27 +404,27 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 03-0403,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0403_MRVCMed_60min.py,MRVCMed_60min,"Vol Climax: VolClimax(1.8x,RSI<22) — 60min"
 03-0404,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0404_MRVCAggr_60min.py,MRVCAggr_60min,"Vol Climax: VolClimax(2.5x,RSI<18) — 60min"
 03-0405,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0405_MRVCGentle_60min.py,MRVCGentle_60min,"Vol Climax: VolClimax(1.2x,RSI<35) — 60min"
-03-0406,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0406_MRCCIStd_60min.py,MRCCIStd_60min,CCI: CCI(60) — 60min
-03-0407,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0407_MRCCIFast_60min.py,MRCCIFast_60min,CCI: CCI(30) — 60min
-03-0408,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0408_MRCCISlow_60min.py,MRCCISlow_60min,CCI: CCI(100) — 60min
-03-0409,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0409_MRCCIUltra_60min.py,MRCCIUltra_60min,CCI: CCI(30) — 60min
-03-0410,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0410_MRCCIXSlow_60min.py,MRCCIXSlow_60min,CCI: CCI(120) — 60min
-03-0411,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0411_MRCCIVSlow_60min.py,MRCCIVSlow_60min,CCI: CCI(180) — 60min
-03-0412,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0412_MRCCIXUltra_60min.py,MRCCIXUltra_60min,CCI: CCI(20) — 60min
-04-0413,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0413_BOQStd_5min.py,BOQStd_5min,Quantile BO: Q80%(8) + volume — 5min
-04-0414,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0414_BOQTight_5min.py,BOQTight_5min,Quantile BO: Q90%(8) + volume — 5min
-04-0415,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0415_BOQSlow_5min.py,BOQSlow_5min,Quantile BO: Q80%(14) + volume — 5min
-04-0416,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0416_BOQSlow75_5min.py,BOQSlow75_5min,Quantile BO: Q75%(20) + volume — 5min
-04-0417,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0417_BOQAggr_5min.py,BOQAggr_5min,Quantile BO: Q85%(8) + volume — 5min
-04-0418,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0418_BOQMid90_5min.py,BOQMid90_5min,Quantile BO: Q90%(14) + volume — 5min
-04-0419,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0419_BOQXExtreme_5min.py,BOQXExtreme_5min,Quantile BO: Q95%(8) + volume — 5min
-04-0420,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0420_BOQMid85_5min.py,BOQMid85_5min,Quantile BO: Q85%(14) + volume — 5min
-04-0421,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0421_BODonFast_5min.py,BODonFast_5min,Donchian: Donchian(8) — 5min
-04-0422,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0422_BODonMid_5min.py,BODonMid_5min,Donchian: Donchian(14) — 5min
-04-0423,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0423_BODonSlow_5min.py,BODonSlow_5min,Donchian: Donchian(20) — 5min
-04-0424,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0424_BODonUltra_5min.py,BODonUltra_5min,Donchian: Donchian(4) — 5min
-04-0425,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0425_BODonXSlow_5min.py,BODonXSlow_5min,Donchian: Donchian(28) — 5min
-04-0426,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0426_BODonVSlow_5min.py,BODonVSlow_5min,Donchian: Donchian(24) — 5min
+03-0406,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0406_MRCCIStd_60min.py,MRCCIStd_60min,CCI: CCI(30) — 60min
+03-0407,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0407_MRCCIFast_60min.py,MRCCIFast_60min,CCI: CCI(20) — 60min
+03-0408,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0408_MRCCISlow_60min.py,MRCCISlow_60min,CCI: CCI(40) — 60min
+03-0409,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0409_MRCCIUltra_60min.py,MRCCIUltra_60min,CCI: CCI(15) — 60min
+03-0410,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0410_MRCCIXSlow_60min.py,MRCCIXSlow_60min,CCI: CCI(60) — 60min
+03-0411,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0411_MRCCIVSlow_60min.py,MRCCIVSlow_60min,CCI: CCI(90) — 60min
+03-0412,thesis_03_mean_reversion,60min,BOTH,3,thesis_03_mean_reversion\60min\03-0412_MRCCIXUltra_60min.py,MRCCIXUltra_60min,CCI: CCI(10) — 60min
+04-0413,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0413_BOQStd_5min.py,BOQStd_5min,Quantile BO: Q80%(5) + volume — 5min
+04-0414,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0414_BOQTight_5min.py,BOQTight_5min,Quantile BO: Q90%(5) + volume — 5min
+04-0415,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0415_BOQSlow_5min.py,BOQSlow_5min,Quantile BO: Q80%(10) + volume — 5min
+04-0416,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0416_BOQSlow75_5min.py,BOQSlow75_5min,Quantile BO: Q75%(14) + volume — 5min
+04-0417,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0417_BOQAggr_5min.py,BOQAggr_5min,Quantile BO: Q85%(5) + volume — 5min
+04-0418,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0418_BOQMid90_5min.py,BOQMid90_5min,Quantile BO: Q90%(10) + volume — 5min
+04-0419,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0419_BOQXExtreme_5min.py,BOQXExtreme_5min,Quantile BO: Q95%(5) + volume — 5min
+04-0420,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0420_BOQMid85_5min.py,BOQMid85_5min,Quantile BO: Q85%(10) + volume — 5min
+04-0421,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0421_BODonFast_5min.py,BODonFast_5min,Donchian: Donchian(5) — 5min
+04-0422,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0422_BODonMid_5min.py,BODonMid_5min,Donchian: Donchian(10) — 5min
+04-0423,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0423_BODonSlow_5min.py,BODonSlow_5min,Donchian: Donchian(14) — 5min
+04-0424,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0424_BODonUltra_5min.py,BODonUltra_5min,Donchian: Donchian(3) — 5min
+04-0425,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0425_BODonXSlow_5min.py,BODonXSlow_5min,Donchian: Donchian(20) — 5min
+04-0426,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0426_BODonVSlow_5min.py,BODonVSlow_5min,Donchian: Donchian(15) — 5min
 04-0427,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0427_BORngStd_5min.py,BORngStd_5min,Range Exp: Range(1.5x) — 5min
 04-0428,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0428_BORngTight_5min.py,BORngTight_5min,Range Exp: Range(2.0x) — 5min
 04-0429,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0429_BORngMild_5min.py,BORngMild_5min,Range Exp: Range(1.3x) — 5min
@@ -432,26 +432,26 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 04-0431,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0431_BORngAggr_5min.py,BORngAggr_5min,Range Exp: Range(2.5x) — 5min
 04-0432,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0432_BORngXAggr_5min.py,BORngXAggr_5min,Range Exp: Range(3.0x) — 5min
 04-0433,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0433_BORngGentle_5min.py,BORngGentle_5min,Range Exp: Range(1.1x) — 5min
-04-0434,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0434_BOVN30Fast_5min.py,BOVN30Fast_5min,VN30 BO: BO(VN30+8) — 5min
-04-0435,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0435_BOVN30Mid_5min.py,BOVN30Mid_5min,VN30 BO: BO(VN30+14) — 5min
-04-0436,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0436_BOVN30Slow_5min.py,BOVN30Slow_5min,VN30 BO: BO(VN30+20) — 5min
-04-0437,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0437_BOVN30Ultra_5min.py,BOVN30Ultra_5min,VN30 BO: BO(VN30+4) — 5min
-04-0438,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0438_BOVN30XSlow_5min.py,BOVN30XSlow_5min,VN30 BO: BO(VN30+28) — 5min
-04-0439,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0439_BOVN30VSlow_5min.py,BOVN30VSlow_5min,VN30 BO: BO(VN30+40) — 5min
-04-0440,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0440_BOQStd_15min.py,BOQStd_15min,Quantile BO: Q80%(13) + volume — 15min
-04-0441,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0441_BOQTight_15min.py,BOQTight_15min,Quantile BO: Q90%(13) + volume — 15min
-04-0442,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0442_BOQSlow_15min.py,BOQSlow_15min,Quantile BO: Q80%(26) + volume — 15min
-04-0443,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0443_BOQSlow75_15min.py,BOQSlow75_15min,Quantile BO: Q75%(34) + volume — 15min
-04-0444,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0444_BOQAggr_15min.py,BOQAggr_15min,Quantile BO: Q85%(13) + volume — 15min
-04-0445,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0445_BOQMid90_15min.py,BOQMid90_15min,Quantile BO: Q90%(26) + volume — 15min
-04-0446,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0446_BOQXExtreme_15min.py,BOQXExtreme_15min,Quantile BO: Q95%(13) + volume — 15min
-04-0447,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0447_BOQMid85_15min.py,BOQMid85_15min,Quantile BO: Q85%(26) + volume — 15min
-04-0448,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0448_BODonFast_15min.py,BODonFast_15min,Donchian: Donchian(13) — 15min
-04-0449,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0449_BODonMid_15min.py,BODonMid_15min,Donchian: Donchian(26) — 15min
-04-0450,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0450_BODonSlow_15min.py,BODonSlow_15min,Donchian: Donchian(34) — 15min
-04-0451,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0451_BODonUltra_15min.py,BODonUltra_15min,Donchian: Donchian(6) — 15min
-04-0452,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0452_BODonXSlow_15min.py,BODonXSlow_15min,Donchian: Donchian(52) — 15min
-04-0453,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0453_BODonVSlow_15min.py,BODonVSlow_15min,Donchian: Donchian(39) — 15min
+04-0434,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0434_BOVN30Fast_5min.py,BOVN30Fast_5min,VN30 BO: BO(VN30+5) — 5min
+04-0435,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0435_BOVN30Mid_5min.py,BOVN30Mid_5min,VN30 BO: BO(VN30+10) — 5min
+04-0436,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0436_BOVN30Slow_5min.py,BOVN30Slow_5min,VN30 BO: BO(VN30+14) — 5min
+04-0437,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0437_BOVN30Ultra_5min.py,BOVN30Ultra_5min,VN30 BO: BO(VN30+3) — 5min
+04-0438,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0438_BOVN30XSlow_5min.py,BOVN30XSlow_5min,VN30 BO: BO(VN30+20) — 5min
+04-0439,thesis_04_breakout,5min,BOTH,4,thesis_04_breakout\5min\04-0439_BOVN30VSlow_5min.py,BOVN30VSlow_5min,VN30 BO: BO(VN30+28) — 5min
+04-0440,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0440_BOQStd_15min.py,BOQStd_15min,Quantile BO: Q80%(8) + volume — 15min
+04-0441,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0441_BOQTight_15min.py,BOQTight_15min,Quantile BO: Q90%(8) + volume — 15min
+04-0442,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0442_BOQSlow_15min.py,BOQSlow_15min,Quantile BO: Q80%(14) + volume — 15min
+04-0443,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0443_BOQSlow75_15min.py,BOQSlow75_15min,Quantile BO: Q75%(20) + volume — 15min
+04-0444,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0444_BOQAggr_15min.py,BOQAggr_15min,Quantile BO: Q85%(8) + volume — 15min
+04-0445,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0445_BOQMid90_15min.py,BOQMid90_15min,Quantile BO: Q90%(14) + volume — 15min
+04-0446,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0446_BOQXExtreme_15min.py,BOQXExtreme_15min,Quantile BO: Q95%(8) + volume — 15min
+04-0447,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0447_BOQMid85_15min.py,BOQMid85_15min,Quantile BO: Q85%(14) + volume — 15min
+04-0448,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0448_BODonFast_15min.py,BODonFast_15min,Donchian: Donchian(8) — 15min
+04-0449,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0449_BODonMid_15min.py,BODonMid_15min,Donchian: Donchian(14) — 15min
+04-0450,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0450_BODonSlow_15min.py,BODonSlow_15min,Donchian: Donchian(20) — 15min
+04-0451,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0451_BODonUltra_15min.py,BODonUltra_15min,Donchian: Donchian(4) — 15min
+04-0452,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0452_BODonXSlow_15min.py,BODonXSlow_15min,Donchian: Donchian(28) — 15min
+04-0453,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0453_BODonVSlow_15min.py,BODonVSlow_15min,Donchian: Donchian(24) — 15min
 04-0454,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0454_BORngStd_15min.py,BORngStd_15min,Range Exp: Range(1.5x) — 15min
 04-0455,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0455_BORngTight_15min.py,BORngTight_15min,Range Exp: Range(2.0x) — 15min
 04-0456,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0456_BORngMild_15min.py,BORngMild_15min,Range Exp: Range(1.3x) — 15min
@@ -459,26 +459,26 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 04-0458,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0458_BORngAggr_15min.py,BORngAggr_15min,Range Exp: Range(2.5x) — 15min
 04-0459,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0459_BORngXAggr_15min.py,BORngXAggr_15min,Range Exp: Range(3.0x) — 15min
 04-0460,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0460_BORngGentle_15min.py,BORngGentle_15min,Range Exp: Range(1.1x) — 15min
-04-0461,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0461_BOVN30Fast_15min.py,BOVN30Fast_15min,VN30 BO: BO(VN30+13) — 15min
-04-0462,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0462_BOVN30Mid_15min.py,BOVN30Mid_15min,VN30 BO: BO(VN30+26) — 15min
-04-0463,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0463_BOVN30Slow_15min.py,BOVN30Slow_15min,VN30 BO: BO(VN30+34) — 15min
-04-0464,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0464_BOVN30Ultra_15min.py,BOVN30Ultra_15min,VN30 BO: BO(VN30+6) — 15min
-04-0465,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0465_BOVN30XSlow_15min.py,BOVN30XSlow_15min,VN30 BO: BO(VN30+52) — 15min
-04-0466,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0466_BOVN30VSlow_15min.py,BOVN30VSlow_15min,VN30 BO: BO(VN30+68) — 15min
-04-0467,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0467_BOQStd_30min.py,BOQStd_30min,Quantile BO: Q80%(20) + volume — 30min
-04-0468,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0468_BOQTight_30min.py,BOQTight_30min,Quantile BO: Q90%(20) + volume — 30min
-04-0469,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0469_BOQSlow_30min.py,BOQSlow_30min,Quantile BO: Q80%(40) + volume — 30min
-04-0470,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0470_BOQSlow75_30min.py,BOQSlow75_30min,Quantile BO: Q75%(50) + volume — 30min
-04-0471,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0471_BOQAggr_30min.py,BOQAggr_30min,Quantile BO: Q85%(20) + volume — 30min
-04-0472,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0472_BOQMid90_30min.py,BOQMid90_30min,Quantile BO: Q90%(40) + volume — 30min
-04-0473,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0473_BOQXExtreme_30min.py,BOQXExtreme_30min,Quantile BO: Q95%(20) + volume — 30min
-04-0474,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0474_BOQMid85_30min.py,BOQMid85_30min,Quantile BO: Q85%(40) + volume — 30min
-04-0475,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0475_BODonFast_30min.py,BODonFast_30min,Donchian: Donchian(20) — 30min
-04-0476,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0476_BODonMid_30min.py,BODonMid_30min,Donchian: Donchian(40) — 30min
-04-0477,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0477_BODonSlow_30min.py,BODonSlow_30min,Donchian: Donchian(50) — 30min
-04-0478,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0478_BODonUltra_30min.py,BODonUltra_30min,Donchian: Donchian(10) — 30min
-04-0479,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0479_BODonXSlow_30min.py,BODonXSlow_30min,Donchian: Donchian(80) — 30min
-04-0480,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0480_BODonVSlow_30min.py,BODonVSlow_30min,Donchian: Donchian(60) — 30min
+04-0461,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0461_BOVN30Fast_15min.py,BOVN30Fast_15min,VN30 BO: BO(VN30+8) — 15min
+04-0462,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0462_BOVN30Mid_15min.py,BOVN30Mid_15min,VN30 BO: BO(VN30+14) — 15min
+04-0463,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0463_BOVN30Slow_15min.py,BOVN30Slow_15min,VN30 BO: BO(VN30+20) — 15min
+04-0464,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0464_BOVN30Ultra_15min.py,BOVN30Ultra_15min,VN30 BO: BO(VN30+4) — 15min
+04-0465,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0465_BOVN30XSlow_15min.py,BOVN30XSlow_15min,VN30 BO: BO(VN30+28) — 15min
+04-0466,thesis_04_breakout,15min,BOTH,4,thesis_04_breakout\15min\04-0466_BOVN30VSlow_15min.py,BOVN30VSlow_15min,VN30 BO: BO(VN30+40) — 15min
+04-0467,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0467_BOQStd_30min.py,BOQStd_30min,Quantile BO: Q80%(13) + volume — 30min
+04-0468,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0468_BOQTight_30min.py,BOQTight_30min,Quantile BO: Q90%(13) + volume — 30min
+04-0469,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0469_BOQSlow_30min.py,BOQSlow_30min,Quantile BO: Q80%(20) + volume — 30min
+04-0470,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0470_BOQSlow75_30min.py,BOQSlow75_30min,Quantile BO: Q75%(30) + volume — 30min
+04-0471,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0471_BOQAggr_30min.py,BOQAggr_30min,Quantile BO: Q85%(13) + volume — 30min
+04-0472,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0472_BOQMid90_30min.py,BOQMid90_30min,Quantile BO: Q90%(20) + volume — 30min
+04-0473,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0473_BOQXExtreme_30min.py,BOQXExtreme_30min,Quantile BO: Q95%(13) + volume — 30min
+04-0474,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0474_BOQMid85_30min.py,BOQMid85_30min,Quantile BO: Q85%(20) + volume — 30min
+04-0475,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0475_BODonFast_30min.py,BODonFast_30min,Donchian: Donchian(13) — 30min
+04-0476,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0476_BODonMid_30min.py,BODonMid_30min,Donchian: Donchian(20) — 30min
+04-0477,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0477_BODonSlow_30min.py,BODonSlow_30min,Donchian: Donchian(30) — 30min
+04-0478,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0478_BODonUltra_30min.py,BODonUltra_30min,Donchian: Donchian(6) — 30min
+04-0479,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0479_BODonXSlow_30min.py,BODonXSlow_30min,Donchian: Donchian(40) — 30min
+04-0480,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0480_BODonVSlow_30min.py,BODonVSlow_30min,Donchian: Donchian(39) — 30min
 04-0481,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0481_BORngStd_30min.py,BORngStd_30min,Range Exp: Range(1.5x) — 30min
 04-0482,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0482_BORngTight_30min.py,BORngTight_30min,Range Exp: Range(2.0x) — 30min
 04-0483,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0483_BORngMild_30min.py,BORngMild_30min,Range Exp: Range(1.3x) — 30min
@@ -486,26 +486,26 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 04-0485,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0485_BORngAggr_30min.py,BORngAggr_30min,Range Exp: Range(2.5x) — 30min
 04-0486,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0486_BORngXAggr_30min.py,BORngXAggr_30min,Range Exp: Range(3.0x) — 30min
 04-0487,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0487_BORngGentle_30min.py,BORngGentle_30min,Range Exp: Range(1.1x) — 30min
-04-0488,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0488_BOVN30Fast_30min.py,BOVN30Fast_30min,VN30 BO: BO(VN30+20) — 30min
-04-0489,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0489_BOVN30Mid_30min.py,BOVN30Mid_30min,VN30 BO: BO(VN30+40) — 30min
-04-0490,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0490_BOVN30Slow_30min.py,BOVN30Slow_30min,VN30 BO: BO(VN30+50) — 30min
-04-0491,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0491_BOVN30Ultra_30min.py,BOVN30Ultra_30min,VN30 BO: BO(VN30+10) — 30min
-04-0492,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0492_BOVN30XSlow_30min.py,BOVN30XSlow_30min,VN30 BO: BO(VN30+80) — 30min
-04-0493,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0493_BOVN30VSlow_30min.py,BOVN30VSlow_30min,VN30 BO: BO(VN30+100) — 30min
-04-0494,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0494_BOQStd_60min.py,BOQStd_60min,Quantile BO: Q80%(30) + volume — 60min
-04-0495,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0495_BOQTight_60min.py,BOQTight_60min,Quantile BO: Q90%(30) + volume — 60min
-04-0496,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0496_BOQSlow_60min.py,BOQSlow_60min,Quantile BO: Q80%(60) + volume — 60min
-04-0497,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0497_BOQSlow75_60min.py,BOQSlow75_60min,Quantile BO: Q75%(100) + volume — 60min
-04-0498,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0498_BOQAggr_60min.py,BOQAggr_60min,Quantile BO: Q85%(30) + volume — 60min
-04-0499,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0499_BOQMid90_60min.py,BOQMid90_60min,Quantile BO: Q90%(60) + volume — 60min
-04-0500,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0500_BOQXExtreme_60min.py,BOQXExtreme_60min,Quantile BO: Q95%(30) + volume — 60min
-04-0501,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0501_BOQMid85_60min.py,BOQMid85_60min,Quantile BO: Q85%(60) + volume — 60min
-04-0502,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0502_BODonFast_60min.py,BODonFast_60min,Donchian: Donchian(30) — 60min
-04-0503,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0503_BODonMid_60min.py,BODonMid_60min,Donchian: Donchian(60) — 60min
-04-0504,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0504_BODonSlow_60min.py,BODonSlow_60min,Donchian: Donchian(100) — 60min
-04-0505,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0505_BODonUltra_60min.py,BODonUltra_60min,Donchian: Donchian(15) — 60min
-04-0506,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0506_BODonXSlow_60min.py,BODonXSlow_60min,Donchian: Donchian(120) — 60min
-04-0507,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0507_BODonVSlow_60min.py,BODonVSlow_60min,Donchian: Donchian(90) — 60min
+04-0488,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0488_BOVN30Fast_30min.py,BOVN30Fast_30min,VN30 BO: BO(VN30+13) — 30min
+04-0489,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0489_BOVN30Mid_30min.py,BOVN30Mid_30min,VN30 BO: BO(VN30+20) — 30min
+04-0490,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0490_BOVN30Slow_30min.py,BOVN30Slow_30min,VN30 BO: BO(VN30+30) — 30min
+04-0491,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0491_BOVN30Ultra_30min.py,BOVN30Ultra_30min,VN30 BO: BO(VN30+6) — 30min
+04-0492,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0492_BOVN30XSlow_30min.py,BOVN30XSlow_30min,VN30 BO: BO(VN30+40) — 30min
+04-0493,thesis_04_breakout,30min,BOTH,4,thesis_04_breakout\30min\04-0493_BOVN30VSlow_30min.py,BOVN30VSlow_30min,VN30 BO: BO(VN30+60) — 30min
+04-0494,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0494_BOQStd_60min.py,BOQStd_60min,Quantile BO: Q80%(20) + volume — 60min
+04-0495,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0495_BOQTight_60min.py,BOQTight_60min,Quantile BO: Q90%(20) + volume — 60min
+04-0496,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0496_BOQSlow_60min.py,BOQSlow_60min,Quantile BO: Q80%(30) + volume — 60min
+04-0497,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0497_BOQSlow75_60min.py,BOQSlow75_60min,Quantile BO: Q75%(40) + volume — 60min
+04-0498,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0498_BOQAggr_60min.py,BOQAggr_60min,Quantile BO: Q85%(20) + volume — 60min
+04-0499,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0499_BOQMid90_60min.py,BOQMid90_60min,Quantile BO: Q90%(30) + volume — 60min
+04-0500,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0500_BOQXExtreme_60min.py,BOQXExtreme_60min,Quantile BO: Q95%(20) + volume — 60min
+04-0501,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0501_BOQMid85_60min.py,BOQMid85_60min,Quantile BO: Q85%(30) + volume — 60min
+04-0502,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0502_BODonFast_60min.py,BODonFast_60min,Donchian: Donchian(20) — 60min
+04-0503,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0503_BODonMid_60min.py,BODonMid_60min,Donchian: Donchian(30) — 60min
+04-0504,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0504_BODonSlow_60min.py,BODonSlow_60min,Donchian: Donchian(40) — 60min
+04-0505,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0505_BODonUltra_60min.py,BODonUltra_60min,Donchian: Donchian(10) — 60min
+04-0506,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0506_BODonXSlow_60min.py,BODonXSlow_60min,Donchian: Donchian(60) — 60min
+04-0507,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0507_BODonVSlow_60min.py,BODonVSlow_60min,Donchian: Donchian(60) — 60min
 04-0508,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0508_BORngStd_60min.py,BORngStd_60min,Range Exp: Range(1.5x) — 60min
 04-0509,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0509_BORngTight_60min.py,BORngTight_60min,Range Exp: Range(2.0x) — 60min
 04-0510,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0510_BORngMild_60min.py,BORngMild_60min,Range Exp: Range(1.3x) — 60min
@@ -513,99 +513,99 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 04-0512,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0512_BORngAggr_60min.py,BORngAggr_60min,Range Exp: Range(2.5x) — 60min
 04-0513,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0513_BORngXAggr_60min.py,BORngXAggr_60min,Range Exp: Range(3.0x) — 60min
 04-0514,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0514_BORngGentle_60min.py,BORngGentle_60min,Range Exp: Range(1.1x) — 60min
-04-0515,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0515_BOVN30Fast_60min.py,BOVN30Fast_60min,VN30 BO: BO(VN30+30) — 60min
-04-0516,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0516_BOVN30Mid_60min.py,BOVN30Mid_60min,VN30 BO: BO(VN30+60) — 60min
-04-0517,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0517_BOVN30Slow_60min.py,BOVN30Slow_60min,VN30 BO: BO(VN30+100) — 60min
-04-0518,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0518_BOVN30Ultra_60min.py,BOVN30Ultra_60min,VN30 BO: BO(VN30+15) — 60min
-04-0519,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0519_BOVN30XSlow_60min.py,BOVN30XSlow_60min,VN30 BO: BO(VN30+120) — 60min
-04-0520,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0520_BOVN30VSlow_60min.py,BOVN30VSlow_60min,VN30 BO: BO(VN30+200) — 60min
-05-0521,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0521_XMRelFast_15min.py,XMRelFast_15min,Relative: Ratio(10/26) — 15min
-05-0522,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0522_XMRelMid_15min.py,XMRelMid_15min,Relative: Ratio(26/34) — 15min
-05-0523,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0523_XMRelFastSlow_15min.py,XMRelFastSlow_15min,Relative: Ratio(10/34) — 15min
-05-0524,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0524_XMRelUltra_15min.py,XMRelUltra_15min,Relative: Ratio(5/26) — 15min
-05-0525,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0525_XMRelHalf_15min.py,XMRelHalf_15min,Relative: Ratio(13/26) — 15min
+04-0515,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0515_BOVN30Fast_60min.py,BOVN30Fast_60min,VN30 BO: BO(VN30+20) — 60min
+04-0516,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0516_BOVN30Mid_60min.py,BOVN30Mid_60min,VN30 BO: BO(VN30+30) — 60min
+04-0517,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0517_BOVN30Slow_60min.py,BOVN30Slow_60min,VN30 BO: BO(VN30+40) — 60min
+04-0518,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0518_BOVN30Ultra_60min.py,BOVN30Ultra_60min,VN30 BO: BO(VN30+10) — 60min
+04-0519,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0519_BOVN30XSlow_60min.py,BOVN30XSlow_60min,VN30 BO: BO(VN30+60) — 60min
+04-0520,thesis_04_breakout,60min,BOTH,4,thesis_04_breakout\60min\04-0520_BOVN30VSlow_60min.py,BOVN30VSlow_60min,VN30 BO: BO(VN30+80) — 60min
+05-0521,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0521_XMRelFast_15min.py,XMRelFast_15min,Relative: Ratio(7/14) — 15min
+05-0522,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0522_XMRelMid_15min.py,XMRelMid_15min,Relative: Ratio(14/20) — 15min
+05-0523,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0523_XMRelFastSlow_15min.py,XMRelFastSlow_15min,Relative: Ratio(7/20) — 15min
+05-0524,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0524_XMRelUltra_15min.py,XMRelUltra_15min,Relative: Ratio(3/14) — 15min
+05-0525,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0525_XMRelHalf_15min.py,XMRelHalf_15min,Relative: Ratio(7/14) — 15min
 05-0526,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0526_XMRelSlow_15min.py,XMRelSlow_15min,Relative: Ratio(Mid+Slow) — 15min
 05-0527,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0527_XMRelXSlow_15min.py,XMRelXSlow_15min,Relative: Ratio(Slow+XSlow) — 15min
-05-0528,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0528_XMDJIFast_15min.py,XMDJIFast_15min,DJI: DJI(10) — 15min
-05-0529,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0529_XMDJIMid_15min.py,XMDJIMid_15min,DJI: DJI(26) — 15min
-05-0530,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0530_XMDJISlow_15min.py,XMDJISlow_15min,DJI: DJI(34) — 15min
-05-0531,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0531_XMDJIUltra_15min.py,XMDJIUltra_15min,DJI: DJI(5) — 15min
-05-0532,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0532_XMDJISlow2_15min.py,XMDJISlow2_15min,DJI: DJI(20) — 15min
-05-0533,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0533_XMDJIXSlow_15min.py,XMDJIXSlow_15min,DJI: DJI(52) — 15min
-05-0534,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0534_XMDJIVSlow_15min.py,XMDJIVSlow_15min,DJI: DJI(68) — 15min
+05-0528,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0528_XMDJIFast_15min.py,XMDJIFast_15min,DJI: DJI(7) — 15min
+05-0529,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0529_XMDJIMid_15min.py,XMDJIMid_15min,DJI: DJI(14) — 15min
+05-0530,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0530_XMDJISlow_15min.py,XMDJISlow_15min,DJI: DJI(20) — 15min
+05-0531,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0531_XMDJIUltra_15min.py,XMDJIUltra_15min,DJI: DJI(3) — 15min
+05-0532,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0532_XMDJISlow2_15min.py,XMDJISlow2_15min,DJI: DJI(14) — 15min
+05-0533,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0533_XMDJIXSlow_15min.py,XMDJIXSlow_15min,DJI: DJI(28) — 15min
+05-0534,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0534_XMDJIVSlow_15min.py,XMDJIVSlow_15min,DJI: DJI(40) — 15min
 05-0535,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0535_XMDJIXUltra_15min.py,XMDJIXUltra_15min,DJI: DJI(3) — 15min
-05-0536,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0536_XMConFast_15min.py,XMConFast_15min,Consensus: Consensus(10) — 15min
-05-0537,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0537_XMConMid_15min.py,XMConMid_15min,Consensus: Consensus(26) — 15min
-05-0538,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0538_XMConSlow_15min.py,XMConSlow_15min,Consensus: Consensus(34) — 15min
-05-0539,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0539_XMConUltra_15min.py,XMConUltra_15min,Consensus: Consensus(5) — 15min
-05-0540,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0540_XMConSlow2_15min.py,XMConSlow2_15min,Consensus: Consensus(20) — 15min
-05-0541,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0541_XMConXSlow_15min.py,XMConXSlow_15min,Consensus: Consensus(52) — 15min
-05-0542,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0542_XMConVSlow_15min.py,XMConVSlow_15min,Consensus: Consensus(68) — 15min
-05-0543,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0543_XMGapStd_15min.py,XMGapStd_15min,Gap: Gap(10) — 15min
-05-0544,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0544_XMGapSlow_15min.py,XMGapSlow_15min,Gap: Gap(26) — 15min
+05-0536,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0536_XMConFast_15min.py,XMConFast_15min,Consensus: Consensus(7) — 15min
+05-0537,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0537_XMConMid_15min.py,XMConMid_15min,Consensus: Consensus(14) — 15min
+05-0538,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0538_XMConSlow_15min.py,XMConSlow_15min,Consensus: Consensus(20) — 15min
+05-0539,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0539_XMConUltra_15min.py,XMConUltra_15min,Consensus: Consensus(3) — 15min
+05-0540,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0540_XMConSlow2_15min.py,XMConSlow2_15min,Consensus: Consensus(14) — 15min
+05-0541,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0541_XMConXSlow_15min.py,XMConXSlow_15min,Consensus: Consensus(28) — 15min
+05-0542,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0542_XMConVSlow_15min.py,XMConVSlow_15min,Consensus: Consensus(40) — 15min
+05-0543,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0543_XMGapStd_15min.py,XMGapStd_15min,Gap: Gap(7) — 15min
+05-0544,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0544_XMGapSlow_15min.py,XMGapSlow_15min,Gap: Gap(14) — 15min
 05-0545,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0545_XMGapMild_15min.py,XMGapMild_15min,Gap: Gap(Mild+0.5%) — 15min
 05-0546,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0546_XMGapFast_15min.py,XMGapFast_15min,Gap: Gap(Fast+0.2%) — 15min
 05-0547,thesis_05_cross_market,15min,BOTH,5,thesis_05_cross_market\15min\05-0547_XMGapXSlow_15min.py,XMGapXSlow_15min,Gap: Gap(VSlow+1%) — 15min
-05-0548,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0548_XMRelFast_30min.py,XMRelFast_30min,Relative: Ratio(14/40) — 30min
-05-0549,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0549_XMRelMid_30min.py,XMRelMid_30min,Relative: Ratio(40/50) — 30min
-05-0550,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0550_XMRelFastSlow_30min.py,XMRelFastSlow_30min,Relative: Ratio(14/50) — 30min
-05-0551,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0551_XMRelUltra_30min.py,XMRelUltra_30min,Relative: Ratio(7/40) — 30min
-05-0552,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0552_XMRelHalf_30min.py,XMRelHalf_30min,Relative: Ratio(20/40) — 30min
+05-0548,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0548_XMRelFast_30min.py,XMRelFast_30min,Relative: Ratio(9/20) — 30min
+05-0549,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0549_XMRelMid_30min.py,XMRelMid_30min,Relative: Ratio(20/30) — 30min
+05-0550,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0550_XMRelFastSlow_30min.py,XMRelFastSlow_30min,Relative: Ratio(9/30) — 30min
+05-0551,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0551_XMRelUltra_30min.py,XMRelUltra_30min,Relative: Ratio(4/20) — 30min
+05-0552,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0552_XMRelHalf_30min.py,XMRelHalf_30min,Relative: Ratio(10/20) — 30min
 05-0553,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0553_XMRelSlow_30min.py,XMRelSlow_30min,Relative: Ratio(Mid+Slow) — 30min
 05-0554,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0554_XMRelXSlow_30min.py,XMRelXSlow_30min,Relative: Ratio(Slow+XSlow) — 30min
-05-0555,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0555_XMDJIFast_30min.py,XMDJIFast_30min,DJI: DJI(14) — 30min
-05-0556,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0556_XMDJIMid_30min.py,XMDJIMid_30min,DJI: DJI(40) — 30min
-05-0557,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0557_XMDJISlow_30min.py,XMDJISlow_30min,DJI: DJI(50) — 30min
-05-0558,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0558_XMDJIUltra_30min.py,XMDJIUltra_30min,DJI: DJI(7) — 30min
-05-0559,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0559_XMDJISlow2_30min.py,XMDJISlow2_30min,DJI: DJI(28) — 30min
-05-0560,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0560_XMDJIXSlow_30min.py,XMDJIXSlow_30min,DJI: DJI(80) — 30min
-05-0561,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0561_XMDJIVSlow_30min.py,XMDJIVSlow_30min,DJI: DJI(100) — 30min
+05-0555,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0555_XMDJIFast_30min.py,XMDJIFast_30min,DJI: DJI(9) — 30min
+05-0556,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0556_XMDJIMid_30min.py,XMDJIMid_30min,DJI: DJI(20) — 30min
+05-0557,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0557_XMDJISlow_30min.py,XMDJISlow_30min,DJI: DJI(30) — 30min
+05-0558,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0558_XMDJIUltra_30min.py,XMDJIUltra_30min,DJI: DJI(4) — 30min
+05-0559,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0559_XMDJISlow2_30min.py,XMDJISlow2_30min,DJI: DJI(18) — 30min
+05-0560,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0560_XMDJIXSlow_30min.py,XMDJIXSlow_30min,DJI: DJI(40) — 30min
+05-0561,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0561_XMDJIVSlow_30min.py,XMDJIVSlow_30min,DJI: DJI(60) — 30min
 05-0562,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0562_XMDJIXUltra_30min.py,XMDJIXUltra_30min,DJI: DJI(3) — 30min
-05-0563,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0563_XMConFast_30min.py,XMConFast_30min,Consensus: Consensus(14) — 30min
-05-0564,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0564_XMConMid_30min.py,XMConMid_30min,Consensus: Consensus(40) — 30min
-05-0565,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0565_XMConSlow_30min.py,XMConSlow_30min,Consensus: Consensus(50) — 30min
-05-0566,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0566_XMConUltra_30min.py,XMConUltra_30min,Consensus: Consensus(7) — 30min
-05-0567,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0567_XMConSlow2_30min.py,XMConSlow2_30min,Consensus: Consensus(28) — 30min
-05-0568,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0568_XMConXSlow_30min.py,XMConXSlow_30min,Consensus: Consensus(80) — 30min
-05-0569,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0569_XMConVSlow_30min.py,XMConVSlow_30min,Consensus: Consensus(100) — 30min
-05-0570,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0570_XMGapStd_30min.py,XMGapStd_30min,Gap: Gap(14) — 30min
-05-0571,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0571_XMGapSlow_30min.py,XMGapSlow_30min,Gap: Gap(40) — 30min
+05-0563,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0563_XMConFast_30min.py,XMConFast_30min,Consensus: Consensus(9) — 30min
+05-0564,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0564_XMConMid_30min.py,XMConMid_30min,Consensus: Consensus(20) — 30min
+05-0565,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0565_XMConSlow_30min.py,XMConSlow_30min,Consensus: Consensus(30) — 30min
+05-0566,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0566_XMConUltra_30min.py,XMConUltra_30min,Consensus: Consensus(4) — 30min
+05-0567,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0567_XMConSlow2_30min.py,XMConSlow2_30min,Consensus: Consensus(18) — 30min
+05-0568,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0568_XMConXSlow_30min.py,XMConXSlow_30min,Consensus: Consensus(40) — 30min
+05-0569,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0569_XMConVSlow_30min.py,XMConVSlow_30min,Consensus: Consensus(60) — 30min
+05-0570,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0570_XMGapStd_30min.py,XMGapStd_30min,Gap: Gap(9) — 30min
+05-0571,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0571_XMGapSlow_30min.py,XMGapSlow_30min,Gap: Gap(20) — 30min
 05-0572,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0572_XMGapMild_30min.py,XMGapMild_30min,Gap: Gap(Mild+0.5%) — 30min
 05-0573,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0573_XMGapFast_30min.py,XMGapFast_30min,Gap: Gap(Fast+0.2%) — 30min
 05-0574,thesis_05_cross_market,30min,BOTH,5,thesis_05_cross_market\30min\05-0574_XMGapXSlow_30min.py,XMGapXSlow_30min,Gap: Gap(VSlow+1%) — 30min
-05-0575,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0575_XMRelFast_60min.py,XMRelFast_60min,Relative: Ratio(21/60) — 60min
-05-0576,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0576_XMRelMid_60min.py,XMRelMid_60min,Relative: Ratio(60/100) — 60min
-05-0577,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0577_XMRelFastSlow_60min.py,XMRelFastSlow_60min,Relative: Ratio(21/100) — 60min
-05-0578,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0578_XMRelUltra_60min.py,XMRelUltra_60min,Relative: Ratio(10/60) — 60min
-05-0579,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0579_XMRelHalf_60min.py,XMRelHalf_60min,Relative: Ratio(30/60) — 60min
+05-0575,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0575_XMRelFast_60min.py,XMRelFast_60min,Relative: Ratio(12/30) — 60min
+05-0576,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0576_XMRelMid_60min.py,XMRelMid_60min,Relative: Ratio(30/40) — 60min
+05-0577,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0577_XMRelFastSlow_60min.py,XMRelFastSlow_60min,Relative: Ratio(12/40) — 60min
+05-0578,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0578_XMRelUltra_60min.py,XMRelUltra_60min,Relative: Ratio(6/30) — 60min
+05-0579,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0579_XMRelHalf_60min.py,XMRelHalf_60min,Relative: Ratio(15/30) — 60min
 05-0580,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0580_XMRelSlow_60min.py,XMRelSlow_60min,Relative: Ratio(Mid+Slow) — 60min
 05-0581,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0581_XMRelXSlow_60min.py,XMRelXSlow_60min,Relative: Ratio(Slow+XSlow) — 60min
-05-0582,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0582_XMDJIFast_60min.py,XMDJIFast_60min,DJI: DJI(21) — 60min
-05-0583,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0583_XMDJIMid_60min.py,XMDJIMid_60min,DJI: DJI(60) — 60min
-05-0584,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0584_XMDJISlow_60min.py,XMDJISlow_60min,DJI: DJI(100) — 60min
-05-0585,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0585_XMDJIUltra_60min.py,XMDJIUltra_60min,DJI: DJI(10) — 60min
-05-0586,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0586_XMDJISlow2_60min.py,XMDJISlow2_60min,DJI: DJI(42) — 60min
-05-0587,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0587_XMDJIXSlow_60min.py,XMDJIXSlow_60min,DJI: DJI(120) — 60min
-05-0588,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0588_XMDJIVSlow_60min.py,XMDJIVSlow_60min,DJI: DJI(200) — 60min
-05-0589,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0589_XMDJIXUltra_60min.py,XMDJIXUltra_60min,DJI: DJI(5) — 60min
-05-0590,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0590_XMConFast_60min.py,XMConFast_60min,Consensus: Consensus(21) — 60min
-05-0591,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0591_XMConMid_60min.py,XMConMid_60min,Consensus: Consensus(60) — 60min
-05-0592,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0592_XMConSlow_60min.py,XMConSlow_60min,Consensus: Consensus(100) — 60min
-05-0593,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0593_XMConUltra_60min.py,XMConUltra_60min,Consensus: Consensus(10) — 60min
-05-0594,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0594_XMConSlow2_60min.py,XMConSlow2_60min,Consensus: Consensus(42) — 60min
-05-0595,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0595_XMConXSlow_60min.py,XMConXSlow_60min,Consensus: Consensus(120) — 60min
-05-0596,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0596_XMConVSlow_60min.py,XMConVSlow_60min,Consensus: Consensus(200) — 60min
-05-0597,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0597_XMGapStd_60min.py,XMGapStd_60min,Gap: Gap(21) — 60min
-05-0598,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0598_XMGapSlow_60min.py,XMGapSlow_60min,Gap: Gap(60) — 60min
+05-0582,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0582_XMDJIFast_60min.py,XMDJIFast_60min,DJI: DJI(12) — 60min
+05-0583,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0583_XMDJIMid_60min.py,XMDJIMid_60min,DJI: DJI(30) — 60min
+05-0584,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0584_XMDJISlow_60min.py,XMDJISlow_60min,DJI: DJI(40) — 60min
+05-0585,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0585_XMDJIUltra_60min.py,XMDJIUltra_60min,DJI: DJI(6) — 60min
+05-0586,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0586_XMDJISlow2_60min.py,XMDJISlow2_60min,DJI: DJI(24) — 60min
+05-0587,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0587_XMDJIXSlow_60min.py,XMDJIXSlow_60min,DJI: DJI(60) — 60min
+05-0588,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0588_XMDJIVSlow_60min.py,XMDJIVSlow_60min,DJI: DJI(80) — 60min
+05-0589,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0589_XMDJIXUltra_60min.py,XMDJIXUltra_60min,DJI: DJI(3) — 60min
+05-0590,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0590_XMConFast_60min.py,XMConFast_60min,Consensus: Consensus(12) — 60min
+05-0591,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0591_XMConMid_60min.py,XMConMid_60min,Consensus: Consensus(30) — 60min
+05-0592,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0592_XMConSlow_60min.py,XMConSlow_60min,Consensus: Consensus(40) — 60min
+05-0593,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0593_XMConUltra_60min.py,XMConUltra_60min,Consensus: Consensus(6) — 60min
+05-0594,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0594_XMConSlow2_60min.py,XMConSlow2_60min,Consensus: Consensus(24) — 60min
+05-0595,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0595_XMConXSlow_60min.py,XMConXSlow_60min,Consensus: Consensus(60) — 60min
+05-0596,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0596_XMConVSlow_60min.py,XMConVSlow_60min,Consensus: Consensus(80) — 60min
+05-0597,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0597_XMGapStd_60min.py,XMGapStd_60min,Gap: Gap(12) — 60min
+05-0598,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0598_XMGapSlow_60min.py,XMGapSlow_60min,Gap: Gap(30) — 60min
 05-0599,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0599_XMGapMild_60min.py,XMGapMild_60min,Gap: Gap(Mild+0.5%) — 60min
 05-0600,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0600_XMGapFast_60min.py,XMGapFast_60min,Gap: Gap(Fast+0.2%) — 60min
 05-0601,thesis_05_cross_market,60min,BOTH,5,thesis_05_cross_market\60min\05-0601_XMGapXSlow_60min.py,XMGapXSlow_60min,Gap: Gap(VSlow+1%) — 60min
-06-0602,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0602_VFOISlow_15min.py,VFOISlow_15min,OI Trend: OI(34) — 15min
-06-0603,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0603_VFOIMid_15min.py,VFOIMid_15min,OI Trend: OI(26) — 15min
-06-0604,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0604_VFOIXSlow_15min.py,VFOIXSlow_15min,OI Trend: OI(52) — 15min
-06-0605,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0605_VFOIFast_15min.py,VFOIFast_15min,OI Trend: OI(13) — 15min
-06-0606,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0606_VFOIVSlow_15min.py,VFOIVSlow_15min,OI Trend: OI(68) — 15min
-06-0607,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0607_VFOIUltra_15min.py,VFOIUltra_15min,OI Trend: OI(6) — 15min
+06-0602,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0602_VFOISlow_15min.py,VFOISlow_15min,OI Trend: OI(20) — 15min
+06-0603,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0603_VFOIMid_15min.py,VFOIMid_15min,OI Trend: OI(14) — 15min
+06-0604,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0604_VFOIXSlow_15min.py,VFOIXSlow_15min,OI Trend: OI(28) — 15min
+06-0605,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0605_VFOIFast_15min.py,VFOIFast_15min,OI Trend: OI(8) — 15min
+06-0606,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0606_VFOIVSlow_15min.py,VFOIVSlow_15min,OI Trend: OI(40) — 15min
+06-0607,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0607_VFOIUltra_15min.py,VFOIUltra_15min,OI Trend: OI(4) — 15min
 06-0608,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0608_VFVolStd_15min.py,VFVolStd_15min,Vol Surge: VolSurge(1.5x) — 15min
 06-0609,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0609_VFVolTight_15min.py,VFVolTight_15min,Vol Surge: VolSurge(2.0x) — 15min
 06-0610,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0610_VFVolMild_15min.py,VFVolMild_15min,Vol Surge: VolSurge(1.3x) — 15min
@@ -619,25 +619,25 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 06-0618,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0618_VFValMild_15min.py,VFValMild_15min,Val Spike: ValSpike(1.2x) — 15min
 06-0619,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0619_VFValXAggr_15min.py,VFValXAggr_15min,Val Spike: ValSpike(2.5x) — 15min
 06-0620,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0620_VFValMed_15min.py,VFValMed_15min,Val Spike: ValSpike(1.8x) — 15min
-06-0621,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0621_VFOBVMid_15min.py,VFOBVMid_15min,OBV Flow: OBV(26) — 15min
-06-0622,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0622_VFOBVSlow_15min.py,VFOBVSlow_15min,OBV Flow: OBV(34) — 15min
-06-0623,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0623_VFOBVFast_15min.py,VFOBVFast_15min,OBV Flow: OBV(13) — 15min
-06-0624,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0624_VFOBVUltra_15min.py,VFOBVUltra_15min,OBV Flow: OBV(13) — 15min
-06-0625,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0625_VFOBVXSlow_15min.py,VFOBVXSlow_15min,OBV Flow: OBV(52) — 15min
-06-0626,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0626_VFOBVVSlow_15min.py,VFOBVVSlow_15min,OBV Flow: OBV(68) — 15min
-06-0627,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0627_VFMFIStd_15min.py,VFMFIStd_15min,MFI: MFI(20) — 15min
-06-0628,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0628_VFMFIFast_15min.py,VFMFIFast_15min,MFI: MFI(13) — 15min
-06-0629,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0629_VFMFIMid_15min.py,VFMFIMid_15min,MFI: MFI(26) — 15min
-06-0630,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0630_VFMFIUltra_15min.py,VFMFIUltra_15min,MFI: MFI(10) — 15min
-06-0631,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0631_VFMFISlow_15min.py,VFMFISlow_15min,MFI: MFI(40) — 15min
-06-0632,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0632_VFMFIVSlow_15min.py,VFMFIVSlow_15min,MFI: MFI(60) — 15min
-06-0633,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0633_VFMFIXUltra_15min.py,VFMFIXUltra_15min,MFI: MFI(6) — 15min
-06-0634,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0634_VFOISlow_30min.py,VFOISlow_30min,OI Trend: OI(50) — 30min
-06-0635,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0635_VFOIMid_30min.py,VFOIMid_30min,OI Trend: OI(40) — 30min
-06-0636,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0636_VFOIXSlow_30min.py,VFOIXSlow_30min,OI Trend: OI(80) — 30min
-06-0637,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0637_VFOIFast_30min.py,VFOIFast_30min,OI Trend: OI(20) — 30min
-06-0638,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0638_VFOIVSlow_30min.py,VFOIVSlow_30min,OI Trend: OI(100) — 30min
-06-0639,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0639_VFOIUltra_30min.py,VFOIUltra_30min,OI Trend: OI(10) — 30min
+06-0621,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0621_VFOBVMid_15min.py,VFOBVMid_15min,OBV Flow: OBV(14) — 15min
+06-0622,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0622_VFOBVSlow_15min.py,VFOBVSlow_15min,OBV Flow: OBV(20) — 15min
+06-0623,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0623_VFOBVFast_15min.py,VFOBVFast_15min,OBV Flow: OBV(8) — 15min
+06-0624,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0624_VFOBVUltra_15min.py,VFOBVUltra_15min,OBV Flow: OBV(7) — 15min
+06-0625,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0625_VFOBVXSlow_15min.py,VFOBVXSlow_15min,OBV Flow: OBV(28) — 15min
+06-0626,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0626_VFOBVVSlow_15min.py,VFOBVVSlow_15min,OBV Flow: OBV(40) — 15min
+06-0627,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0627_VFMFIStd_15min.py,VFMFIStd_15min,MFI: MFI(14) — 15min
+06-0628,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0628_VFMFIFast_15min.py,VFMFIFast_15min,MFI: MFI(8) — 15min
+06-0629,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0629_VFMFIMid_15min.py,VFMFIMid_15min,MFI: MFI(14) — 15min
+06-0630,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0630_VFMFIUltra_15min.py,VFMFIUltra_15min,MFI: MFI(7) — 15min
+06-0631,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0631_VFMFISlow_15min.py,VFMFISlow_15min,MFI: MFI(28) — 15min
+06-0632,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0632_VFMFIVSlow_15min.py,VFMFIVSlow_15min,MFI: MFI(42) — 15min
+06-0633,thesis_06_volume_flow,15min,BOTH,6,thesis_06_volume_flow\15min\06-0633_VFMFIXUltra_15min.py,VFMFIXUltra_15min,MFI: MFI(4) — 15min
+06-0634,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0634_VFOISlow_30min.py,VFOISlow_30min,OI Trend: OI(30) — 30min
+06-0635,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0635_VFOIMid_30min.py,VFOIMid_30min,OI Trend: OI(20) — 30min
+06-0636,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0636_VFOIXSlow_30min.py,VFOIXSlow_30min,OI Trend: OI(40) — 30min
+06-0637,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0637_VFOIFast_30min.py,VFOIFast_30min,OI Trend: OI(13) — 30min
+06-0638,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0638_VFOIVSlow_30min.py,VFOIVSlow_30min,OI Trend: OI(60) — 30min
+06-0639,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0639_VFOIUltra_30min.py,VFOIUltra_30min,OI Trend: OI(6) — 30min
 06-0640,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0640_VFVolStd_30min.py,VFVolStd_30min,Vol Surge: VolSurge(1.5x) — 30min
 06-0641,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0641_VFVolTight_30min.py,VFVolTight_30min,Vol Surge: VolSurge(2.0x) — 30min
 06-0642,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0642_VFVolMild_30min.py,VFVolMild_30min,Vol Surge: VolSurge(1.3x) — 30min
@@ -651,25 +651,25 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 06-0650,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0650_VFValMild_30min.py,VFValMild_30min,Val Spike: ValSpike(1.2x) — 30min
 06-0651,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0651_VFValXAggr_30min.py,VFValXAggr_30min,Val Spike: ValSpike(2.5x) — 30min
 06-0652,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0652_VFValMed_30min.py,VFValMed_30min,Val Spike: ValSpike(1.8x) — 30min
-06-0653,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0653_VFOBVMid_30min.py,VFOBVMid_30min,OBV Flow: OBV(40) — 30min
-06-0654,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0654_VFOBVSlow_30min.py,VFOBVSlow_30min,OBV Flow: OBV(50) — 30min
-06-0655,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0655_VFOBVFast_30min.py,VFOBVFast_30min,OBV Flow: OBV(20) — 30min
-06-0656,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0656_VFOBVUltra_30min.py,VFOBVUltra_30min,OBV Flow: OBV(20) — 30min
-06-0657,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0657_VFOBVXSlow_30min.py,VFOBVXSlow_30min,OBV Flow: OBV(80) — 30min
-06-0658,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0658_VFOBVVSlow_30min.py,VFOBVVSlow_30min,OBV Flow: OBV(100) — 30min
-06-0659,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0659_VFMFIStd_30min.py,VFMFIStd_30min,MFI: MFI(26) — 30min
-06-0660,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0660_VFMFIFast_30min.py,VFMFIFast_30min,MFI: MFI(20) — 30min
-06-0661,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0661_VFMFIMid_30min.py,VFMFIMid_30min,MFI: MFI(40) — 30min
-06-0662,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0662_VFMFIUltra_30min.py,VFMFIUltra_30min,MFI: MFI(13) — 30min
-06-0663,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0663_VFMFISlow_30min.py,VFMFISlow_30min,MFI: MFI(52) — 30min
-06-0664,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0664_VFMFIVSlow_30min.py,VFMFIVSlow_30min,MFI: MFI(78) — 30min
-06-0665,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0665_VFMFIXUltra_30min.py,VFMFIXUltra_30min,MFI: MFI(8) — 30min
-06-0666,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0666_VFOISlow_60min.py,VFOISlow_60min,OI Trend: OI(100) — 60min
-06-0667,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0667_VFOIMid_60min.py,VFOIMid_60min,OI Trend: OI(60) — 60min
-06-0668,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0668_VFOIXSlow_60min.py,VFOIXSlow_60min,OI Trend: OI(120) — 60min
-06-0669,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0669_VFOIFast_60min.py,VFOIFast_60min,OI Trend: OI(30) — 60min
-06-0670,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0670_VFOIVSlow_60min.py,VFOIVSlow_60min,OI Trend: OI(200) — 60min
-06-0671,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0671_VFOIUltra_60min.py,VFOIUltra_60min,OI Trend: OI(15) — 60min
+06-0653,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0653_VFOBVMid_30min.py,VFOBVMid_30min,OBV Flow: OBV(20) — 30min
+06-0654,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0654_VFOBVSlow_30min.py,VFOBVSlow_30min,OBV Flow: OBV(30) — 30min
+06-0655,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0655_VFOBVFast_30min.py,VFOBVFast_30min,OBV Flow: OBV(13) — 30min
+06-0656,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0656_VFOBVUltra_30min.py,VFOBVUltra_30min,OBV Flow: OBV(10) — 30min
+06-0657,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0657_VFOBVXSlow_30min.py,VFOBVXSlow_30min,OBV Flow: OBV(40) — 30min
+06-0658,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0658_VFOBVVSlow_30min.py,VFOBVVSlow_30min,OBV Flow: OBV(60) — 30min
+06-0659,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0659_VFMFIStd_30min.py,VFMFIStd_30min,MFI: MFI(20) — 30min
+06-0660,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0660_VFMFIFast_30min.py,VFMFIFast_30min,MFI: MFI(13) — 30min
+06-0661,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0661_VFMFIMid_30min.py,VFMFIMid_30min,MFI: MFI(20) — 30min
+06-0662,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0662_VFMFIUltra_30min.py,VFMFIUltra_30min,MFI: MFI(10) — 30min
+06-0663,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0663_VFMFISlow_30min.py,VFMFISlow_30min,MFI: MFI(40) — 30min
+06-0664,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0664_VFMFIVSlow_30min.py,VFMFIVSlow_30min,MFI: MFI(60) — 30min
+06-0665,thesis_06_volume_flow,30min,BOTH,6,thesis_06_volume_flow\30min\06-0665_VFMFIXUltra_30min.py,VFMFIXUltra_30min,MFI: MFI(6) — 30min
+06-0666,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0666_VFOISlow_60min.py,VFOISlow_60min,OI Trend: OI(40) — 60min
+06-0667,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0667_VFOIMid_60min.py,VFOIMid_60min,OI Trend: OI(30) — 60min
+06-0668,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0668_VFOIXSlow_60min.py,VFOIXSlow_60min,OI Trend: OI(60) — 60min
+06-0669,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0669_VFOIFast_60min.py,VFOIFast_60min,OI Trend: OI(20) — 60min
+06-0670,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0670_VFOIVSlow_60min.py,VFOIVSlow_60min,OI Trend: OI(80) — 60min
+06-0671,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0671_VFOIUltra_60min.py,VFOIUltra_60min,OI Trend: OI(10) — 60min
 06-0672,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0672_VFVolStd_60min.py,VFVolStd_60min,Vol Surge: VolSurge(1.5x) — 60min
 06-0673,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0673_VFVolTight_60min.py,VFVolTight_60min,Vol Surge: VolSurge(2.0x) — 60min
 06-0674,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0674_VFVolMild_60min.py,VFVolMild_60min,Vol Surge: VolSurge(1.3x) — 60min
@@ -683,66 +683,66 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 06-0682,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0682_VFValMild_60min.py,VFValMild_60min,Val Spike: ValSpike(1.2x) — 60min
 06-0683,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0683_VFValXAggr_60min.py,VFValXAggr_60min,Val Spike: ValSpike(2.5x) — 60min
 06-0684,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0684_VFValMed_60min.py,VFValMed_60min,Val Spike: ValSpike(1.8x) — 60min
-06-0685,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0685_VFOBVMid_60min.py,VFOBVMid_60min,OBV Flow: OBV(60) — 60min
-06-0686,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0686_VFOBVSlow_60min.py,VFOBVSlow_60min,OBV Flow: OBV(100) — 60min
-06-0687,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0687_VFOBVFast_60min.py,VFOBVFast_60min,OBV Flow: OBV(30) — 60min
-06-0688,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0688_VFOBVUltra_60min.py,VFOBVUltra_60min,OBV Flow: OBV(30) — 60min
-06-0689,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0689_VFOBVXSlow_60min.py,VFOBVXSlow_60min,OBV Flow: OBV(120) — 60min
-06-0690,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0690_VFOBVVSlow_60min.py,VFOBVVSlow_60min,OBV Flow: OBV(200) — 60min
-06-0691,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0691_VFMFIStd_60min.py,VFMFIStd_60min,MFI: MFI(34) — 60min
-06-0692,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0692_VFMFIFast_60min.py,VFMFIFast_60min,MFI: MFI(30) — 60min
-06-0693,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0693_VFMFIMid_60min.py,VFMFIMid_60min,MFI: MFI(60) — 60min
-06-0694,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0694_VFMFIUltra_60min.py,VFMFIUltra_60min,MFI: MFI(17) — 60min
-06-0695,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0695_VFMFISlow_60min.py,VFMFISlow_60min,MFI: MFI(68) — 60min
-06-0696,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0696_VFMFIVSlow_60min.py,VFMFIVSlow_60min,MFI: MFI(102) — 60min
-06-0697,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0697_VFMFIXUltra_60min.py,VFMFIXUltra_60min,MFI: MFI(11) — 60min
-07-0698,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0698_ISMOpnStd_5min.py,ISMOpnStd_5min,Open Drive: OpenDrive(7) — 5min
+06-0685,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0685_VFOBVMid_60min.py,VFOBVMid_60min,OBV Flow: OBV(30) — 60min
+06-0686,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0686_VFOBVSlow_60min.py,VFOBVSlow_60min,OBV Flow: OBV(40) — 60min
+06-0687,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0687_VFOBVFast_60min.py,VFOBVFast_60min,OBV Flow: OBV(20) — 60min
+06-0688,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0688_VFOBVUltra_60min.py,VFOBVUltra_60min,OBV Flow: OBV(15) — 60min
+06-0689,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0689_VFOBVXSlow_60min.py,VFOBVXSlow_60min,OBV Flow: OBV(60) — 60min
+06-0690,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0690_VFOBVVSlow_60min.py,VFOBVVSlow_60min,OBV Flow: OBV(80) — 60min
+06-0691,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0691_VFMFIStd_60min.py,VFMFIStd_60min,MFI: MFI(30) — 60min
+06-0692,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0692_VFMFIFast_60min.py,VFMFIFast_60min,MFI: MFI(20) — 60min
+06-0693,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0693_VFMFIMid_60min.py,VFMFIMid_60min,MFI: MFI(30) — 60min
+06-0694,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0694_VFMFIUltra_60min.py,VFMFIUltra_60min,MFI: MFI(15) — 60min
+06-0695,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0695_VFMFISlow_60min.py,VFMFISlow_60min,MFI: MFI(60) — 60min
+06-0696,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0696_VFMFIVSlow_60min.py,VFMFIVSlow_60min,MFI: MFI(90) — 60min
+06-0697,thesis_06_volume_flow,60min,BOTH,6,thesis_06_volume_flow\60min\06-0697_VFMFIXUltra_60min.py,VFMFIXUltra_60min,MFI: MFI(10) — 60min
+07-0698,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0698_ISMOpnStd_5min.py,ISMOpnStd_5min,Open Drive: OpenDrive(5) — 5min
 07-0699,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0699_ISMOpnFast_5min.py,ISMOpnFast_5min,Open Drive: OpenDrive(3) — 5min
-07-0700,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0700_ISMOpnSlow_5min.py,ISMOpnSlow_5min,Open Drive: OpenDrive(14) — 5min
+07-0700,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0700_ISMOpnSlow_5min.py,ISMOpnSlow_5min,Open Drive: OpenDrive(10) — 5min
 07-0701,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0701_ISMOpnUltra_5min.py,ISMOpnUltra_5min,Open Drive: OpenDrive(3) — 5min
-07-0702,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0702_ISMOpnVSlow_5min.py,ISMOpnVSlow_5min,Open Drive: OpenDrive(21) — 5min
+07-0702,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0702_ISMOpnVSlow_5min.py,ISMOpnVSlow_5min,Open Drive: OpenDrive(15) — 5min
 07-0703,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0703_ISMOpnXUltra_5min.py,ISMOpnXUltra_5min,Open Drive: OpenDrive(3) — 5min
-07-0704,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0704_ISMLunStd_5min.py,ISMLunStd_5min,Lunch Rev: LunchRev(7) — 5min
+07-0704,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0704_ISMLunStd_5min.py,ISMLunStd_5min,Lunch Rev: LunchRev(5) — 5min
 07-0705,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0705_ISMLunFast_5min.py,ISMLunFast_5min,Lunch Rev: LunchRev(3) — 5min
-07-0706,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0706_ISMLunSlow_5min.py,ISMLunSlow_5min,Lunch Rev: LunchRev(14) — 5min
+07-0706,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0706_ISMLunSlow_5min.py,ISMLunSlow_5min,Lunch Rev: LunchRev(10) — 5min
 07-0707,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0707_ISMLunUltra_5min.py,ISMLunUltra_5min,Lunch Rev: LunchRev(3) — 5min
-07-0708,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0708_ISMLunVSlow_5min.py,ISMLunVSlow_5min,Lunch Rev: LunchRev(21) — 5min
+07-0708,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0708_ISMLunVSlow_5min.py,ISMLunVSlow_5min,Lunch Rev: LunchRev(15) — 5min
 07-0709,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0709_ISMLunXUltra_5min.py,ISMLunXUltra_5min,Lunch Rev: LunchRev(3) — 5min
-07-0710,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0710_ISMClsStd_5min.py,ISMClsStd_5min,Close Sq: CloseSqz(7) — 5min
+07-0710,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0710_ISMClsStd_5min.py,ISMClsStd_5min,Close Sq: CloseSqz(5) — 5min
 07-0711,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0711_ISMClsFast_5min.py,ISMClsFast_5min,Close Sq: CloseSqz(3) — 5min
-07-0712,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0712_ISMClsSlow_5min.py,ISMClsSlow_5min,Close Sq: CloseSqz(14) — 5min
+07-0712,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0712_ISMClsSlow_5min.py,ISMClsSlow_5min,Close Sq: CloseSqz(10) — 5min
 07-0713,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0713_ISMClsUltra_5min.py,ISMClsUltra_5min,Close Sq: CloseSqz(3) — 5min
-07-0714,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0714_ISMClsVSlow_5min.py,ISMClsVSlow_5min,Close Sq: CloseSqz(21) — 5min
+07-0714,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0714_ISMClsVSlow_5min.py,ISMClsVSlow_5min,Close Sq: CloseSqz(15) — 5min
 07-0715,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0715_ISMClsXUltra_5min.py,ISMClsXUltra_5min,Close Sq: CloseSqz(3) — 5min
-07-0716,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0716_ISMGapStd_5min.py,ISMGapStd_5min,Gap Fill: GapFill(7) — 5min
+07-0716,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0716_ISMGapStd_5min.py,ISMGapStd_5min,Gap Fill: GapFill(5) — 5min
 07-0717,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0717_ISMGapFast_5min.py,ISMGapFast_5min,Gap Fill: GapFill(3) — 5min
-07-0718,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0718_ISMGapSlow_5min.py,ISMGapSlow_5min,Gap Fill: GapFill(14) — 5min
+07-0718,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0718_ISMGapSlow_5min.py,ISMGapSlow_5min,Gap Fill: GapFill(10) — 5min
 07-0719,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0719_ISMGapUltra_5min.py,ISMGapUltra_5min,Gap Fill: GapFill(3) — 5min
-07-0720,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0720_ISMGapVSlow_5min.py,ISMGapVSlow_5min,Gap Fill: GapFill(21) — 5min
+07-0720,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0720_ISMGapVSlow_5min.py,ISMGapVSlow_5min,Gap Fill: GapFill(15) — 5min
 07-0721,thesis_07_intraday_session,5min,BOTH,7,thesis_07_intraday_session\5min\07-0721_ISMGapXUltra_5min.py,ISMGapXUltra_5min,Gap Fill: GapFill(3) — 5min
-07-0722,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0722_ISMOpnStd_15min.py,ISMOpnStd_15min,Open Drive: OpenDrive(10) — 15min
-07-0723,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0723_ISMOpnFast_15min.py,ISMOpnFast_15min,Open Drive: OpenDrive(5) — 15min
-07-0724,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0724_ISMOpnSlow_15min.py,ISMOpnSlow_15min,Open Drive: OpenDrive(20) — 15min
+07-0722,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0722_ISMOpnStd_15min.py,ISMOpnStd_15min,Open Drive: OpenDrive(7) — 15min
+07-0723,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0723_ISMOpnFast_15min.py,ISMOpnFast_15min,Open Drive: OpenDrive(3) — 15min
+07-0724,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0724_ISMOpnSlow_15min.py,ISMOpnSlow_15min,Open Drive: OpenDrive(14) — 15min
 07-0725,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0725_ISMOpnUltra_15min.py,ISMOpnUltra_15min,Open Drive: OpenDrive(3) — 15min
-07-0726,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0726_ISMOpnVSlow_15min.py,ISMOpnVSlow_15min,Open Drive: OpenDrive(30) — 15min
+07-0726,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0726_ISMOpnVSlow_15min.py,ISMOpnVSlow_15min,Open Drive: OpenDrive(21) — 15min
 07-0727,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0727_ISMOpnXUltra_15min.py,ISMOpnXUltra_15min,Open Drive: OpenDrive(3) — 15min
-07-0728,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0728_ISMLunStd_15min.py,ISMLunStd_15min,Lunch Rev: LunchRev(10) — 15min
-07-0729,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0729_ISMLunFast_15min.py,ISMLunFast_15min,Lunch Rev: LunchRev(5) — 15min
-07-0730,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0730_ISMLunSlow_15min.py,ISMLunSlow_15min,Lunch Rev: LunchRev(20) — 15min
+07-0728,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0728_ISMLunStd_15min.py,ISMLunStd_15min,Lunch Rev: LunchRev(7) — 15min
+07-0729,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0729_ISMLunFast_15min.py,ISMLunFast_15min,Lunch Rev: LunchRev(3) — 15min
+07-0730,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0730_ISMLunSlow_15min.py,ISMLunSlow_15min,Lunch Rev: LunchRev(14) — 15min
 07-0731,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0731_ISMLunUltra_15min.py,ISMLunUltra_15min,Lunch Rev: LunchRev(3) — 15min
-07-0732,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0732_ISMLunVSlow_15min.py,ISMLunVSlow_15min,Lunch Rev: LunchRev(30) — 15min
+07-0732,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0732_ISMLunVSlow_15min.py,ISMLunVSlow_15min,Lunch Rev: LunchRev(21) — 15min
 07-0733,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0733_ISMLunXUltra_15min.py,ISMLunXUltra_15min,Lunch Rev: LunchRev(3) — 15min
-07-0734,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0734_ISMClsStd_15min.py,ISMClsStd_15min,Close Sq: CloseSqz(10) — 15min
-07-0735,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0735_ISMClsFast_15min.py,ISMClsFast_15min,Close Sq: CloseSqz(5) — 15min
-07-0736,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0736_ISMClsSlow_15min.py,ISMClsSlow_15min,Close Sq: CloseSqz(20) — 15min
+07-0734,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0734_ISMClsStd_15min.py,ISMClsStd_15min,Close Sq: CloseSqz(7) — 15min
+07-0735,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0735_ISMClsFast_15min.py,ISMClsFast_15min,Close Sq: CloseSqz(3) — 15min
+07-0736,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0736_ISMClsSlow_15min.py,ISMClsSlow_15min,Close Sq: CloseSqz(14) — 15min
 07-0737,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0737_ISMClsUltra_15min.py,ISMClsUltra_15min,Close Sq: CloseSqz(3) — 15min
-07-0738,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0738_ISMClsVSlow_15min.py,ISMClsVSlow_15min,Close Sq: CloseSqz(30) — 15min
+07-0738,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0738_ISMClsVSlow_15min.py,ISMClsVSlow_15min,Close Sq: CloseSqz(21) — 15min
 07-0739,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0739_ISMClsXUltra_15min.py,ISMClsXUltra_15min,Close Sq: CloseSqz(3) — 15min
-07-0740,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0740_ISMGapStd_15min.py,ISMGapStd_15min,Gap Fill: GapFill(10) — 15min
-07-0741,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0741_ISMGapFast_15min.py,ISMGapFast_15min,Gap Fill: GapFill(5) — 15min
-07-0742,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0742_ISMGapSlow_15min.py,ISMGapSlow_15min,Gap Fill: GapFill(20) — 15min
+07-0740,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0740_ISMGapStd_15min.py,ISMGapStd_15min,Gap Fill: GapFill(7) — 15min
+07-0741,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0741_ISMGapFast_15min.py,ISMGapFast_15min,Gap Fill: GapFill(3) — 15min
+07-0742,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0742_ISMGapSlow_15min.py,ISMGapSlow_15min,Gap Fill: GapFill(14) — 15min
 07-0743,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0743_ISMGapUltra_15min.py,ISMGapUltra_15min,Gap Fill: GapFill(3) — 15min
-07-0744,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0744_ISMGapVSlow_15min.py,ISMGapVSlow_15min,Gap Fill: GapFill(30) — 15min
+07-0744,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0744_ISMGapVSlow_15min.py,ISMGapVSlow_15min,Gap Fill: GapFill(21) — 15min
 07-0745,thesis_07_intraday_session,15min,BOTH,7,thesis_07_intraday_session\15min\07-0745_ISMGapXUltra_15min.py,ISMGapXUltra_15min,Gap Fill: GapFill(3) — 15min
 08-0746,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0746_MFZStd_15min.py,MFZStd_15min,Z-Score: ZScore(1.5) — 15min
 08-0747,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0747_MFZTight_15min.py,MFZTight_15min,Z-Score: ZScore(2.0) — 15min
@@ -752,18 +752,18 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 08-0751,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0751_MFZXAggr_15min.py,MFZXAggr_15min,Z-Score: ZScore(3.0) — 15min
 08-0752,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0752_MFZGentle_15min.py,MFZGentle_15min,Z-Score: ZScore(0.8) — 15min
 08-0753,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0753_MFZXXAggr_15min.py,MFZXXAggr_15min,Z-Score: ZScore(4.0) — 15min
-08-0754,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0754_MFMomStd_15min.py,MFMomStd_15min,Momentum MF: MFMom(10) — 15min
-08-0755,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0755_MFMomFast_15min.py,MFMomFast_15min,Momentum MF: MFMom(5) — 15min
-08-0756,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0756_MFMomSlow_15min.py,MFMomSlow_15min,Momentum MF: MFMom(20) — 15min
+08-0754,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0754_MFMomStd_15min.py,MFMomStd_15min,Momentum MF: MFMom(7) — 15min
+08-0755,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0755_MFMomFast_15min.py,MFMomFast_15min,Momentum MF: MFMom(3) — 15min
+08-0756,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0756_MFMomSlow_15min.py,MFMomSlow_15min,Momentum MF: MFMom(14) — 15min
 08-0757,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0757_MFMomUltra_15min.py,MFMomUltra_15min,Momentum MF: MFMom(3) — 15min
-08-0758,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0758_MFMomVSlow_15min.py,MFMomVSlow_15min,Momentum MF: MFMom(30) — 15min
+08-0758,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0758_MFMomVSlow_15min.py,MFMomVSlow_15min,Momentum MF: MFMom(21) — 15min
 08-0759,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0759_MFMomXUltra_15min.py,MFMomXUltra_15min,Momentum MF: MFMom(3) — 15min
-08-0760,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0760_MFTVMid_15min.py,MFTVMid_15min,Trend+Vol: MFTrendVol(26) — 15min
-08-0761,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0761_MFTVSlow_15min.py,MFTVSlow_15min,Trend+Vol: MFTrendVol(34) — 15min
-08-0762,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0762_MFTVFast_15min.py,MFTVFast_15min,Trend+Vol: MFTrendVol(13) — 15min
-08-0763,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0763_MFTVXSlow_15min.py,MFTVXSlow_15min,Trend+Vol: MFTrendVol(52) — 15min
-08-0764,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0764_MFTVVSlow_15min.py,MFTVVSlow_15min,Trend+Vol: MFTrendVol(68) — 15min
-08-0765,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0765_MFTVUltra_15min.py,MFTVUltra_15min,Trend+Vol: MFTrendVol(6) — 15min
+08-0760,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0760_MFTVMid_15min.py,MFTVMid_15min,Trend+Vol: MFTrendVol(14) — 15min
+08-0761,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0761_MFTVSlow_15min.py,MFTVSlow_15min,Trend+Vol: MFTrendVol(20) — 15min
+08-0762,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0762_MFTVFast_15min.py,MFTVFast_15min,Trend+Vol: MFTrendVol(8) — 15min
+08-0763,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0763_MFTVXSlow_15min.py,MFTVXSlow_15min,Trend+Vol: MFTrendVol(28) — 15min
+08-0764,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0764_MFTVVSlow_15min.py,MFTVVSlow_15min,Trend+Vol: MFTrendVol(40) — 15min
+08-0765,thesis_08_multifactor,15min,BOTH,8,thesis_08_multifactor\15min\08-0765_MFTVUltra_15min.py,MFTVUltra_15min,Trend+Vol: MFTrendVol(4) — 15min
 08-0766,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0766_MFZStd_30min.py,MFZStd_30min,Z-Score: ZScore(1.5) — 30min
 08-0767,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0767_MFZTight_30min.py,MFZTight_30min,Z-Score: ZScore(2.0) — 30min
 08-0768,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0768_MFZMild_30min.py,MFZMild_30min,Z-Score: ZScore(1.0) — 30min
@@ -772,18 +772,18 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 08-0771,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0771_MFZXAggr_30min.py,MFZXAggr_30min,Z-Score: ZScore(3.0) — 30min
 08-0772,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0772_MFZGentle_30min.py,MFZGentle_30min,Z-Score: ZScore(0.8) — 30min
 08-0773,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0773_MFZXXAggr_30min.py,MFZXXAggr_30min,Z-Score: ZScore(4.0) — 30min
-08-0774,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0774_MFMomStd_30min.py,MFMomStd_30min,Momentum MF: MFMom(14) — 30min
-08-0775,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0775_MFMomFast_30min.py,MFMomFast_30min,Momentum MF: MFMom(7) — 30min
-08-0776,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0776_MFMomSlow_30min.py,MFMomSlow_30min,Momentum MF: MFMom(28) — 30min
-08-0777,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0777_MFMomUltra_30min.py,MFMomUltra_30min,Momentum MF: MFMom(4) — 30min
-08-0778,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0778_MFMomVSlow_30min.py,MFMomVSlow_30min,Momentum MF: MFMom(42) — 30min
+08-0774,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0774_MFMomStd_30min.py,MFMomStd_30min,Momentum MF: MFMom(9) — 30min
+08-0775,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0775_MFMomFast_30min.py,MFMomFast_30min,Momentum MF: MFMom(4) — 30min
+08-0776,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0776_MFMomSlow_30min.py,MFMomSlow_30min,Momentum MF: MFMom(18) — 30min
+08-0777,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0777_MFMomUltra_30min.py,MFMomUltra_30min,Momentum MF: MFMom(3) — 30min
+08-0778,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0778_MFMomVSlow_30min.py,MFMomVSlow_30min,Momentum MF: MFMom(27) — 30min
 08-0779,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0779_MFMomXUltra_30min.py,MFMomXUltra_30min,Momentum MF: MFMom(3) — 30min
-08-0780,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0780_MFTVMid_30min.py,MFTVMid_30min,Trend+Vol: MFTrendVol(40) — 30min
-08-0781,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0781_MFTVSlow_30min.py,MFTVSlow_30min,Trend+Vol: MFTrendVol(50) — 30min
-08-0782,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0782_MFTVFast_30min.py,MFTVFast_30min,Trend+Vol: MFTrendVol(20) — 30min
-08-0783,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0783_MFTVXSlow_30min.py,MFTVXSlow_30min,Trend+Vol: MFTrendVol(80) — 30min
-08-0784,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0784_MFTVVSlow_30min.py,MFTVVSlow_30min,Trend+Vol: MFTrendVol(100) — 30min
-08-0785,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0785_MFTVUltra_30min.py,MFTVUltra_30min,Trend+Vol: MFTrendVol(10) — 30min
+08-0780,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0780_MFTVMid_30min.py,MFTVMid_30min,Trend+Vol: MFTrendVol(20) — 30min
+08-0781,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0781_MFTVSlow_30min.py,MFTVSlow_30min,Trend+Vol: MFTrendVol(30) — 30min
+08-0782,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0782_MFTVFast_30min.py,MFTVFast_30min,Trend+Vol: MFTrendVol(13) — 30min
+08-0783,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0783_MFTVXSlow_30min.py,MFTVXSlow_30min,Trend+Vol: MFTrendVol(40) — 30min
+08-0784,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0784_MFTVVSlow_30min.py,MFTVVSlow_30min,Trend+Vol: MFTrendVol(60) — 30min
+08-0785,thesis_08_multifactor,30min,BOTH,8,thesis_08_multifactor\30min\08-0785_MFTVUltra_30min.py,MFTVUltra_30min,Trend+Vol: MFTrendVol(6) — 30min
 08-0786,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0786_MFZStd_60min.py,MFZStd_60min,Z-Score: ZScore(1.5) — 60min
 08-0787,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0787_MFZTight_60min.py,MFZTight_60min,Z-Score: ZScore(2.0) — 60min
 08-0788,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0788_MFZMild_60min.py,MFZMild_60min,Z-Score: ZScore(1.0) — 60min
@@ -792,15 +792,15 @@ alpha_id,thesis_group,timeframe,direction,thesis_id,file,name,summary
 08-0791,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0791_MFZXAggr_60min.py,MFZXAggr_60min,Z-Score: ZScore(3.0) — 60min
 08-0792,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0792_MFZGentle_60min.py,MFZGentle_60min,Z-Score: ZScore(0.8) — 60min
 08-0793,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0793_MFZXXAggr_60min.py,MFZXXAggr_60min,Z-Score: ZScore(4.0) — 60min
-08-0794,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0794_MFMomStd_60min.py,MFMomStd_60min,Momentum MF: MFMom(21) — 60min
-08-0795,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0795_MFMomFast_60min.py,MFMomFast_60min,Momentum MF: MFMom(10) — 60min
-08-0796,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0796_MFMomSlow_60min.py,MFMomSlow_60min,Momentum MF: MFMom(42) — 60min
-08-0797,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0797_MFMomUltra_60min.py,MFMomUltra_60min,Momentum MF: MFMom(7) — 60min
-08-0798,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0798_MFMomVSlow_60min.py,MFMomVSlow_60min,Momentum MF: MFMom(63) — 60min
-08-0799,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0799_MFMomXUltra_60min.py,MFMomXUltra_60min,Momentum MF: MFMom(5) — 60min
-08-0800,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0800_MFTVMid_60min.py,MFTVMid_60min,Trend+Vol: MFTrendVol(60) — 60min
-08-0801,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0801_MFTVSlow_60min.py,MFTVSlow_60min,Trend+Vol: MFTrendVol(100) — 60min
-08-0802,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0802_MFTVFast_60min.py,MFTVFast_60min,Trend+Vol: MFTrendVol(30) — 60min
-08-0803,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0803_MFTVXSlow_60min.py,MFTVXSlow_60min,Trend+Vol: MFTrendVol(120) — 60min
-08-0804,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0804_MFTVVSlow_60min.py,MFTVVSlow_60min,Trend+Vol: MFTrendVol(200) — 60min
-08-0805,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0805_MFTVUltra_60min.py,MFTVUltra_60min,Trend+Vol: MFTrendVol(15) — 60min
+08-0794,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0794_MFMomStd_60min.py,MFMomStd_60min,Momentum MF: MFMom(12) — 60min
+08-0795,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0795_MFMomFast_60min.py,MFMomFast_60min,Momentum MF: MFMom(6) — 60min
+08-0796,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0796_MFMomSlow_60min.py,MFMomSlow_60min,Momentum MF: MFMom(24) — 60min
+08-0797,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0797_MFMomUltra_60min.py,MFMomUltra_60min,Momentum MF: MFMom(4) — 60min
+08-0798,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0798_MFMomVSlow_60min.py,MFMomVSlow_60min,Momentum MF: MFMom(36) — 60min
+08-0799,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0799_MFMomXUltra_60min.py,MFMomXUltra_60min,Momentum MF: MFMom(3) — 60min
+08-0800,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0800_MFTVMid_60min.py,MFTVMid_60min,Trend+Vol: MFTrendVol(30) — 60min
+08-0801,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0801_MFTVSlow_60min.py,MFTVSlow_60min,Trend+Vol: MFTrendVol(40) — 60min
+08-0802,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0802_MFTVFast_60min.py,MFTVFast_60min,Trend+Vol: MFTrendVol(20) — 60min
+08-0803,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0803_MFTVXSlow_60min.py,MFTVXSlow_60min,Trend+Vol: MFTrendVol(60) — 60min
+08-0804,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0804_MFTVVSlow_60min.py,MFTVVSlow_60min,Trend+Vol: MFTrendVol(80) — 60min
+08-0805,thesis_08_multifactor,60min,BOTH,8,thesis_08_multifactor\60min\08-0805_MFTVUltra_60min.py,MFTVUltra_60min,Trend+Vol: MFTrendVol(10) — 60min

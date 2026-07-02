@@ -7,13 +7,13 @@ idea:    Multi-factor z-score
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    z_window = 40
+    z_window = 20
     z_threshold = 1.2
-    rsi_window = 14
-    adx_window = 14
+    rsi_window = 9
+    adx_window = 9
 
-    return_window = 8
-    return_threshold = 0.0003
+    return_window = 5
+    return_threshold = 0.0006
     position_close_after_n_candles = 12
 
     def __algorithm__(self):

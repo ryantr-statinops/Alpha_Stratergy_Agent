@@ -7,11 +7,11 @@ idea:    Double EMA + ADX trend
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    fast_window = 40
-    adx_window = 14
+    fast_window = 26
+    adx_window = 9
 
-    return_window = 8
-    return_threshold = 0.0003
+    return_window = 5
+    return_threshold = 0.0006
     position_close_after_n_candles = 12
 
     def __algorithm__(self):

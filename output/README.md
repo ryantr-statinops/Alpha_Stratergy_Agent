@@ -14,8 +14,8 @@
 | Thesis groups | 8 |
 | Timeframes | 5min / 15min / 30min / 60min |
 | Templates | 38 (in generator) |
-| Entry filters | ADX > 22, return_roll > 0, volume confirm (per template) |
-| Exit filters | ADX < 15, abs(return_roll) < threshold, signal reversal |
+| Entry filters | ADX > entry_threshold (TF-dependent: 22/20/18/16), return_roll > 0, volume confirm |
+| Exit filters | ADX < exit_threshold (TF-dependent: 15/14/12/10), abs(return_roll) < threshold, signal reversal |
 | Direction | All BOTH long + short |
 | Validation | 24 rules, 100% pass |
 
@@ -72,6 +72,20 @@ class CustomStrategy(SimpleAlgorithm):
         self.set_positions(long_setup, position=1)
         self.set_positions(short_setup, position=-1)
 ```
+
+### Timeframe-Dependent Parameters
+
+| Param | 5min | 15min | 30min | 60min |
+|-------|:----:|:-----:|:-----:|:-----:|
+| ROC (fast) | 5 | 8 | 13 | 20 |
+| ROC (mid) | 10 | 14 | 20 | 30 |
+| ROC (slow) | 14 | 20 | 30 | 40 |
+| return_window | 2 | 3 | 5 | 8 |
+| return_threshold | 0.01% | 0.03% | 0.06% | 0.10% |
+| ADX window | 5 | 7 | 9 | 12 |
+| ADX entry threshold | > 22 | > 20 | > 18 | > 16 |
+| ADX exit threshold | < 15 | < 14 | < 12 | < 10 |
+| Max hold (candles) | 72 | 24 | 12 | 6 |
 
 ### 6 Tiered Templates (thesis 02 + 08)
 

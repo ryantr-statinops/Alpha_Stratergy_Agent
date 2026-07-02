@@ -1,17 +1,17 @@
 
 """
 name:    TrendEMAMid_15min
-summary: EMA Trend: EMA(26) + ADX — 15min
+summary: EMA Trend: EMA(14) + ADX — 15min
 thesis:  trend | 15min
 idea:    EMA trend with ADX strength
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    fast_window = 26
-    adx_window = 10
+    fast_window = 14
+    adx_window = 7
 
-    return_window = 5
-    return_threshold = 0.0002
+    return_window = 3
+    return_threshold = 0.0003
     position_close_after_n_candles = 24
 
     def __algorithm__(self):

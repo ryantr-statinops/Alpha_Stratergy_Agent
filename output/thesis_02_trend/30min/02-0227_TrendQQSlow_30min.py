@@ -7,13 +7,13 @@ idea:    Slow quantile trend
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    q_window = 50
-    adx_window = 14
+    q_window = 30
+    adx_window = 9
     q_high = 0.75
     q_low = 0.25
 
-    return_window = 8
-    return_threshold = 0.0003
+    return_window = 5
+    return_threshold = 0.0006
     position_close_after_n_candles = 12
 
     def __algorithm__(self):

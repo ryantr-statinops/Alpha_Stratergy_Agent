@@ -8,11 +8,11 @@ idea:    Multi-layer momentum
 class CustomStrategy(SimpleAlgorithm):
 
     rsi_window = 3
-    roc_window = 13
-    adx_window = 10
+    roc_window = 8
+    adx_window = 7
 
-    return_window = 5
-    return_threshold = 0.0002
+    return_window = 3
+    return_threshold = 0.0003
     position_close_after_n_candles = 24
 
     def __algorithm__(self):

@@ -1,18 +1,18 @@
 
 """
 name:    MFTVFast_15min
-summary: Trend+Vol: MFTrendVol(13) — 15min
+summary: Trend+Vol: MFTrendVol(8) — 15min
 thesis:  multifactor | 15min
 idea:    4-layer trend confirmation
 """
 class CustomStrategy(SimpleAlgorithm):
 
-    mid_window = 13
-    vol_window = 20
-    adx_window = 10
+    mid_window = 8
+    vol_window = 14
+    adx_window = 7
 
-    return_window = 5
-    return_threshold = 0.0002
+    return_window = 3
+    return_threshold = 0.0003
     position_close_after_n_candles = 24
 
     def __algorithm__(self):

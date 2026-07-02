@@ -20,17 +20,23 @@ TIMEFRAMES = [
     ("60min", 60),
 ]
 
-# Window sizing by timeframe
+# Window sizing by timeframe — empirical scaling from backtest results:
+# Current 5min values work well on 15min, current 15min values work on 30min
+# => higher TFs need proportionally smaller windows than before
 WINDOWS = {
-    5:  {"fast": 8, "mid": 14, "slow": 20, "rsi": 7,  "adx": 7,  "vol": 14},
-    15: {"fast": 13, "mid": 26, "slow": 34, "rsi": 10, "adx": 10, "vol": 20},
-    30: {"fast": 20, "mid": 40, "slow": 50, "rsi": 14, "adx": 14, "vol": 26},
-    60: {"fast": 30, "mid": 60, "slow": 100, "rsi": 21, "adx": 21, "vol": 34},
+    5:  {"fast": 5,  "mid": 10, "slow": 14, "rsi": 5,  "adx": 5,  "vol": 10},
+    15: {"fast": 8,  "mid": 14, "slow": 20, "rsi": 7,  "adx": 7,  "vol": 14},
+    30: {"fast": 13, "mid": 20, "slow": 30, "rsi": 9,  "adx": 9,  "vol": 20},
+    60: {"fast": 20, "mid": 30, "slow": 40, "rsi": 12, "adx": 12, "vol": 30},
 }
 
-# return_roll windows by timeframe (for momentum confirmation filter)
-RETURN_WINDOWS = {5: 3, 15: 5, 30: 8, 60: 14}
-RETURN_THRESH = {5: 0.0001, 15: 0.0002, 30: 0.0003, 60: 0.0005}
+# return_roll windows by timeframe
+RETURN_WINDOWS = {5: 2, 15: 3, 30: 5, 60: 8}
+# return_threshold scales with per-candle return magnitude (higher TF = bigger moves)
+RETURN_THRESH = {5: 0.0001, 15: 0.0003, 30: 0.0006, 60: 0.0010}
+# ADX thresholds relax at higher TFs (fewer candles, lower ADX readings)
+ADX_ENTRY = {5: 22, 15: 20, 30: 18, 60: 16}
+ADX_EXIT = {5: 15, 15: 14, 30: 12, 60: 10}
 
 # Max candles to hold a position before forced close
 SESSION_CANDLES = {5: 72, 15: 24, 30: 12, 60: 6}
@@ -82,12 +88,18 @@ def inject_filters(code, fmt, thesis):
             f"    position_close_ranges = {CLOSE_RANGES}\n"
         )
 
+    # Get ADX thresholds from fmt (timeframe-dependent)
+    adx_entry = fmt.get("adx_entry_threshold", 22)
+    adx_exit = fmt.get("adx_exit_threshold", 15)
+
     # Inject adx_window for templates that don't already have it
     needs_adx = "self.feat.adx" not in code
     if needs_adx:
         aw = fmt.get("adx_window")
         if aw is not None:
             extra += f"    adx_window = {aw}\n"
+            extra += f"    adx_entry_threshold = {adx_entry}\n"
+            extra += f"    adx_exit_threshold = {adx_exit}\n"
     code = code.replace(
         "    def __algorithm__(self):",
         extra + "\n    def __algorithm__(self):"
@@ -151,17 +163,17 @@ def inject_filters(code, fmt, thesis):
                 expr = s[len("long_setup = "):]
                 lines[i] = indent + f"long_setup = ({expr}) & (return_roll > 0)"
                 if needs_adx:
-                    lines[i] = indent + f"long_setup = ({lines[i].strip()[len('long_setup = '):]}) & (adx > 22)"
+                    lines[i] = indent + f"long_setup = ({lines[i].strip()[len('long_setup = '):]}) & (adx > self.adx_entry_threshold)"
             elif s.startswith("short_setup = "):
                 expr = s[len("short_setup = "):]
                 lines[i] = indent + f"short_setup = ({expr}) & (return_roll < 0)"
                 if needs_adx:
-                    lines[i] = indent + f"short_setup = ({lines[i].strip()[len('short_setup = '):]}) & (adx > 22)"
+                    lines[i] = indent + f"short_setup = ({lines[i].strip()[len('short_setup = '):]}) & (adx > self.adx_entry_threshold)"
             elif s.startswith("exit_setup = "):
                 expr = s[len("exit_setup = "):]
                 lines[i] = indent + f"exit_setup = ({expr}) | (abs(return_roll) < self.return_threshold)"
                 if needs_adx:
-                    lines[i] = indent + f"exit_setup = ({lines[i].strip()[len('exit_setup = '):]}) | (adx < 15)"
+                    lines[i] = indent + f"exit_setup = ({lines[i].strip()[len('exit_setup = '):]}) | (adx < self.adx_exit_threshold)"
 
     return "\n".join(lines)
 
@@ -1587,9 +1599,12 @@ def main():
         fmt["session_candles"] = SESSION_CANDLES[tf_min]
         fmt["open_ranges"] = str(OPEN_RANGES)
         fmt["close_ranges"] = str(CLOSE_RANGES)
-        # Ensure all templates have adx_window (for universal ADX filter)
+        # Ensure all templates have ADX params (for universal ADX filter)
         if "adx_window" not in fmt:
             fmt["adx_window"] = WINDOWS[tf_min]["adx"]
+        # Timeframe-dependent ADX entry/exit thresholds
+        fmt["adx_entry_threshold"] = ADX_ENTRY[tf_min]
+        fmt["adx_exit_threshold"] = ADX_EXIT[tf_min]
 
         thesis_dir = f"thesis_{t_id:02d}_{thesis}"
         filepath = os.path.join(OUTPUT_DIR, thesis_dir, tf_label, filename(alpha_id, name))
