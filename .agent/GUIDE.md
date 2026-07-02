@@ -150,6 +150,18 @@ output/
 
 ---
 
+## Commit Rule
+
+Sau **mỗi lần thực thi** (sửa code, tạo file, update doc, validate pass), phải:
+
+1. **Commit ngay** — mỗi task một commit, không gộp task không liên quan
+2. **Push ngay** — `git push`
+3. **Commit message** phải mô tả rõ thay đổi và lý do
+
+Nguyên tắc: commit nhỏ, commit thường xuyên → dễ rollback, dễ review, dễ quản lý.
+
+---
+
 ## Important Files
 
 | File | When to reference | 
