@@ -77,12 +77,12 @@ TEMPLATE_META = {
     "T07-C": ("Close Squeeze", "Afternoon breakout: ROC > 0 + volume × mult spike + ADX > entry; exit before ATC."),
     "T07-D": ("Pre-ATC Mean Rev", "Late afternoon BBands extreme touch + volume confirm; mean revert before ATC close."),
     "T07-E": ("Session VWAP Bounce", "Price deviates ±z% from VWAP then bounces back with return_roll confirmation; exit on VWAP cross."),
-    # Thesis 08: Order Book Shadowing
-    "T08-A": ("OI Wall Detection", "Spot resistance/support walls via OI divergence: OI drops at key levels = spoof orders unwinding → breakout imminent."),
-    "T08-B": ("Volume Absorption", "Detect liquidity absorption via matched volume spike + narrow range at key levels; trade post-absorption breakout."),
-    "T08-C": ("Agreed Volume Footprint", "Follow institutional positioning via agreed volume z-score spike; direction confirmation via ROC and volume."),
-    "T08-D": ("Large Lot Ratio", "Detect institutional-size trades via matched value/volume ratio; combine with basis premium for direction."),
-    "T08-E": ("Composite Shadow", "Multi-proxy composite (OI, matched, agreed, ratio, basis) for high-conviction institutional flow detection."),
+    # Thesis 08: Key Level Absorption (OHLCV-only)
+    "T08-A": ("Key Level Wick Rejection", "Detect rejection at resistance/support via candle midpoint; when close is in opposite half at key level = absorption, trade reversal."),
+    "T08-B": ("Volume Climax Absorption", "Volume spike + tight range at key level + close in rejection half = climax absorption; trade the reversal with ADX + return_roll exit."),
+    "T08-C": ("Range Compression Absorption", "Narrow range (NATR < SMA × 0.8) at key level = absorption complete, trade the impending breakout direction via return_roll."),
+    "T08-D": ("VWAP Divergence at Key Level", "Price at key level AND beyond VWAP band = divergence from fair value; trade mean reversion with between-exit on VWAP cross."),
+    "T08-E": ("Multi-Confirmation Composite", "OHLCV-only composite of price_z + vol_z + (-range_z) + mom_z; exit when composite decays or ADX fades."),
 }
 
 def _base_template_name(name):
@@ -1845,9 +1845,8 @@ for vw, ze in product([14, 20], [1.0, 2.0]):
 # ============================================================
 
 T08_A_CODE = """class CustomStrategy(SimpleAlgorithm):
-    oi_window = {oi_window}
+    level_window = {level_window}
     vol_window = {vol_window}
-    return_window = {return_window}
 
 
     def __algorithm__(self):
@@ -1855,24 +1854,27 @@ T08_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         high = self.data.pv_high
         low = self.data.pv_low
         volume = self.data.pv_volume
-        oi = self.data.fut_open_interest_vn30f1m_1d
 
-        oi_z = self.feat.rolling_zscore(oi, window=self.oi_window)
+        res_level = self.feat.rolling_max(close, window=self.level_window)
+        sup_level = self.feat.rolling_min(close, window=self.level_window)
+        midpoint = (high + low) * 0.5
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
-        res_level = self.feat.rolling_max(close, window=self.oi_window)
-        sup_level = self.feat.rolling_min(close, window=self.oi_window)
         adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
-        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
+        return_roll = self.feat.rolling_mean(return_1, window={return_window})
 
         at_resistance = close >= res_level * 0.995
         at_support = close <= sup_level * 1.005
-        oi_collapse = oi_z < -1.0
+        close_lower_half = close < midpoint
+        close_upper_half = close > midpoint
 
-        long_setup = at_support & oi_collapse & (volume > vol_sma) & (adx_val > {adx_entry_weak})
-        short_setup = at_resistance & oi_collapse & (volume > vol_sma) & (adx_val > {adx_entry_weak})
-        exit_setup = (oi_z > 0) | (adx_val < {adx_exit})
+        rejected_resistance = at_resistance & close_lower_half
+        rejected_support = at_support & close_upper_half
+
+        long_setup = rejected_support & (volume > vol_sma) & (adx_val > {adx_entry_weak}) & (return_roll > 0)
+        short_setup = rejected_resistance & (volume > vol_sma) & (adx_val > {adx_entry_weak}) & (return_roll < 0)
+        exit_setup = (adx_val < {adx_exit})
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)
@@ -1880,8 +1882,8 @@ T08_A_CODE = """class CustomStrategy(SimpleAlgorithm):
 """
 
 T08_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    level_window = {level_window}
     vol_window = {vol_window}
-    return_window = {return_window}
 
 
     def __algorithm__(self):
@@ -1889,27 +1891,27 @@ T08_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         high = self.data.pv_high
         low = self.data.pv_low
         volume = self.data.pv_volume
-        matched_vol = self.data.fut_matched_volume_vn30f1m_1d
 
-        vol_ma = self.feat.sma(matched_vol, timeperiod=self.vol_window)
-        vol_ratio = matched_vol / vol_ma
-        range_pct = (high - low) / close
-        range_ma = self.feat.sma(range_pct, timeperiod=20)
+        res_level = self.feat.rolling_max(close, window=self.level_window)
+        sup_level = self.feat.rolling_min(close, window=self.level_window)
+        midpoint = (high + low) * 0.5
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
         adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+        natr_val = self.feat.natr(high, low, close, timeperiod=14)
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
-        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
-
-        absorption = (vol_ratio > 1.5) & (range_pct < range_ma * 0.7)
-        res_level = self.feat.rolling_max(close, window=20)
-        sup_level = self.feat.rolling_min(close, window=20)
+        return_roll = self.feat.rolling_mean(return_1, window={return_window})
 
         at_resistance = close >= res_level * 0.995
         at_support = close <= sup_level * 1.005
+        close_lower_half = close < midpoint
+        close_upper_half = close > midpoint
+        vol_spike = volume > vol_sma * 1.5
+        tight_range = (high - low) < natr_val * 0.8
 
-        long_setup = at_support & absorption & (adx_val > {adx_entry_weak}) & (return_roll > 0)
-        short_setup = at_resistance & absorption & (adx_val > {adx_entry_weak}) & (return_roll < 0)
-        exit_setup = (vol_ratio < 1.0) | (adx_val < {adx_exit}) | (return_roll == 0)
+        short_setup = at_resistance & vol_spike & tight_range & close_lower_half & (adx_val > {adx_entry_weak}) & (return_roll < 0)
+        long_setup = at_support & vol_spike & tight_range & close_upper_half & (adx_val > {adx_entry_weak}) & (return_roll > 0)
+        exit_setup = (adx_val < {adx_exit})
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)
@@ -1917,9 +1919,8 @@ T08_B_CODE = """class CustomStrategy(SimpleAlgorithm):
 """
 
 T08_C_CODE = """class CustomStrategy(SimpleAlgorithm):
-    agree_window = {agree_window}
-    vol_window = {vol_window}
-    return_window = {return_window}
+    natr_window = {natr_window}
+    level_window = {level_window}
 
 
     def __algorithm__(self):
@@ -1927,21 +1928,24 @@ T08_C_CODE = """class CustomStrategy(SimpleAlgorithm):
         high = self.data.pv_high
         low = self.data.pv_low
         volume = self.data.pv_volume
-        agreed_vol = self.data.fut_agreed_volume_vn30f1m_1d
 
-        agree_z = self.feat.rolling_zscore(agreed_vol, window=self.agree_window)
-        vol_ma = self.feat.sma(volume, timeperiod=self.vol_window)
+        res_level = self.feat.rolling_max(close, window=self.level_window)
+        sup_level = self.feat.rolling_min(close, window=self.level_window)
+        natr_val = self.feat.natr(high, low, close, timeperiod=self.natr_window)
+        natr_sma = self.feat.sma(natr_val, timeperiod=self.natr_window)
+        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
         adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
-        roc_val = self.feat.roc(close, timeperiod={roc_window})
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
-        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
+        return_roll = self.feat.rolling_mean(return_1, window={return_window})
 
-        institutional_activity = agree_z > {agree_entry}
+        at_resistance = close >= res_level * 0.995
+        at_support = close <= sup_level * 1.005
+        tight_range = natr_val < natr_sma * 0.8
 
-        long_setup = institutional_activity & (roc_val > 0) & (volume > vol_ma) & (adx_val > {adx_entry_weak}) & (return_roll > 0)
-        short_setup = institutional_activity & (roc_val < 0) & (volume > vol_ma) & (adx_val > {adx_entry_weak}) & (return_roll < 0)
-        exit_setup = (agree_z < 0.5) | (adx_val < {adx_exit})
+        short_setup = at_resistance & tight_range & (volume > vol_sma) & (adx_val > {adx_entry_weak}) & (return_roll < 0)
+        long_setup = at_support & tight_range & (volume > vol_sma) & (adx_val > {adx_entry_weak}) & (return_roll > 0)
+        exit_setup = (adx_val < {adx_exit})
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)
@@ -1949,9 +1953,9 @@ T08_C_CODE = """class CustomStrategy(SimpleAlgorithm):
 """
 
 T08_D_CODE = """class CustomStrategy(SimpleAlgorithm):
-    ratio_window = {ratio_window}
-    vol_window = {vol_window}
-    return_window = {return_window}
+    level_window = {level_window}
+    vwap_window = {vwap_window}
+    vwap_mult = {vwap_mult}
 
 
     def __algorithm__(self):
@@ -1959,25 +1963,24 @@ T08_D_CODE = """class CustomStrategy(SimpleAlgorithm):
         high = self.data.pv_high
         low = self.data.pv_low
         volume = self.data.pv_volume
-        matched_vol = self.data.fut_matched_volume_vn30f1m_1d
-        matched_val = self.data.fut_matched_value_vn30f1m_1d
-        vn30_close = self.data.pv_vn30_close
 
-        lot_ratio = matched_val / matched_vol
-        ratio_z = self.feat.rolling_zscore(lot_ratio, window=self.ratio_window)
-        vol_ma = self.feat.sma(volume, timeperiod=self.vol_window)
+        res_level = self.feat.rolling_max(close, window=self.level_window)
+        sup_level = self.feat.rolling_min(close, window=self.level_window)
+        vwap_val = self.feat.rolling_vwap(high, low, close, volume, window=self.vwap_window)
+        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
         adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
-        premium = close / vn30_close
-        premium_z = self.feat.rolling_zscore(premium, window=self.ratio_window)
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
-        return_roll = self.feat.rolling_mean(return_1, window=self.return_window)
+        return_roll = self.feat.rolling_mean(return_1, window={return_window})
 
-        large_lots = ratio_z > {ratio_entry}
+        at_resistance = close >= res_level * 0.995
+        at_support = close <= sup_level * 1.005
+        over_extended_short = at_resistance & (close > vwap_val * (1 + self.vwap_mult / 100))
+        over_extended_long = at_support & (close < vwap_val * (1 - self.vwap_mult / 100))
 
-        long_setup = large_lots & (premium_z > 0) & (volume > vol_ma) & (adx_val > {adx_entry_weak}) & (return_roll > 0)
-        short_setup = large_lots & (premium_z < 0) & (volume > vol_ma) & (adx_val > {adx_entry_weak}) & (return_roll < 0)
-        exit_setup = (ratio_z < 0) | (adx_val < {adx_exit})
+        short_setup = over_extended_short & (volume > vol_sma) & (adx_val > {adx_entry_weak}) & (return_roll < 0)
+        long_setup = over_extended_long & (volume > vol_sma) & (adx_val > {adx_entry_weak}) & (return_roll > 0)
+        exit_setup = (self.op.between(close, vwap_val * 0.999, vwap_val * 1.001)) | (adx_val < {adx_exit})
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)
@@ -1986,7 +1989,6 @@ T08_D_CODE = """class CustomStrategy(SimpleAlgorithm):
 
 T08_E_CODE = """class CustomStrategy(SimpleAlgorithm):
     composite_window = {composite_window}
-    vol_window = {vol_window}
 
 
     def __algorithm__(self):
@@ -1994,91 +1996,85 @@ T08_E_CODE = """class CustomStrategy(SimpleAlgorithm):
         high = self.data.pv_high
         low = self.data.pv_low
         volume = self.data.pv_volume
-        oi = self.data.fut_open_interest_vn30f1m_1d
-        matched_vol = self.data.fut_matched_volume_vn30f1m_1d
-        matched_val = self.data.fut_matched_value_vn30f1m_1d
-        agreed_vol = self.data.fut_agreed_volume_vn30f1m_1d
-        vn30_close = self.data.pv_vn30_close
 
-        oi_z = self.feat.rolling_zscore(oi, window=self.composite_window)
-        matched_z = self.feat.rolling_zscore(matched_vol, window=self.composite_window)
-        agree_z = self.feat.rolling_zscore(agreed_vol, window=self.composite_window)
-        lot_ratio = matched_val / matched_vol
-        ratio_z = self.feat.rolling_zscore(lot_ratio, window=self.composite_window)
-        premium = close / vn30_close
-        premium_z = self.feat.rolling_zscore(premium, window=self.composite_window)
+        price_z = self.feat.rolling_zscore(close, window=self.composite_window)
+        vol_z = self.feat.volume_z(volume, timeperiod=self.composite_window)
+        natr_val = self.feat.natr(high, low, close, timeperiod=14)
+        range_z = self.feat.rolling_zscore(natr_val, window=self.composite_window)
+        mom = self.feat.roc(close, timeperiod={roc_window})
+        mom_z = self.feat.rolling_zscore(mom, window=self.composite_window)
 
-        shadow_composite = (-oi_z) + matched_z + agree_z + ratio_z + premium_z
+        composite = price_z + vol_z + (-range_z) + mom_z
 
-        vol_ma = self.feat.sma(volume, timeperiod=self.vol_window)
+        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
         adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
-        return_roll = self.feat.rolling_mean(return_1, window=3)
+        return_roll = self.feat.rolling_mean(return_1, window={return_window})
 
-        long_setup = (shadow_composite > {composite_entry}) & (volume > vol_ma) & (adx_val > {adx_entry}) & (return_roll > 0)
-        short_setup = (shadow_composite < -{composite_entry}) & (volume > vol_ma) & (adx_val > {adx_entry}) & (return_roll < 0)
-        exit_setup = (self.op.abs(shadow_composite) < 0.5) | (adx_val < {adx_exit})
+        long_setup = (composite > {composite_entry}) & (volume > vol_sma) & (adx_val > {adx_entry}) & (return_roll > 0)
+        short_setup = (composite < -{composite_entry}) & (volume > vol_sma) & (adx_val > {adx_entry}) & (return_roll < 0)
+        exit_setup = (self.op.abs(composite) < 0.5) | (adx_val < {adx_exit})
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)
         self.set_positions(short_setup, position=-1)
 """
 
-# --- T08-A: OI Wall Detection ---
-for ow, vw in product([14, 20, 34], [14, 20]):
+# --- T08-A: Key Level Wick Rejection ---
+for lw, vw in product([14, 20, 34], [14, 20]):
     TEMPLATES.append({
-        "name":       f"T08-A_oi{ow}_v{vw}",
+        "name":       f"T08-A_l{lw}_v{vw}",
         "thesis":     "08",
-        "descr":      f"OI Wall Detection (oi={ow}, vol={vw})",
+        "descr":      f"Key Level Wick Rejection (level={lw}, vol={vw})",
         "timeframes": [15, 30, 60],
         "code":       T08_A_CODE,
-        "fixed":      {"oi_window": ow, "vol_window": vw},
+        "fixed":      {"level_window": lw, "vol_window": vw},
         "params":     {},
     })
 
-# --- T08-B: Volume Absorption ---
-for vw in [14, 20, 34]:
+# --- T08-B: Volume Climax Absorption ---
+for lw, vw in product([14, 20], [14, 20]):
     TEMPLATES.append({
-        "name":       f"T08-B_v{vw}",
+        "name":       f"T08-B_l{lw}_v{vw}",
         "thesis":     "08",
-        "descr":      f"Volume Absorption (vol={vw})",
+        "descr":      f"Volume Climax Absorption (level={lw}, vol={vw})",
         "timeframes": [15, 30, 60],
         "code":       T08_B_CODE,
-        "fixed":      {"vol_window": vw},
+        "fixed":      {"level_window": lw, "vol_window": vw},
         "params":     {},
     })
 
-# --- T08-C: Agreed Volume Footprint ---
-for aw, ae in product([14, 20, 34], [1.5, 2.0]):
+# --- T08-C: Range Compression Absorption ---
+for nw, lw in product([10, 14], [14, 20]):
     TEMPLATES.append({
-        "name":       f"T08-C_a{aw}_e{ae}",
+        "name":       f"T08-C_n{nw}_l{lw}",
         "thesis":     "08",
-        "descr":      f"Agreed Vol Footprint (agree={aw}, entry={ae})",
+        "descr":      f"Range Compression Absorption (natr={nw}, level={lw})",
         "timeframes": [15, 30, 60],
         "code":       T08_C_CODE,
-        "fixed":      {"agree_window": aw, "agree_entry": ae},
+        "fixed":      {"natr_window": nw, "level_window": lw},
         "params":     {},
     })
 
-# --- T08-D: Large Lot Ratio ---
-for rw, re_val in product([14, 20, 34], [1.5, 2.0]):
+# --- T08-D: VWAP Divergence at Key Level ---
+for lw, vw, vm in product([14, 20], [14, 20], [1.0, 2.0]):
     TEMPLATES.append({
-        "name":       f"T08-D_r{rw}_e{re_val}",
+        "name":       f"T08-D_l{lw}_vw{vw}_m{vm}",
         "thesis":     "08",
-        "descr":      f"Large Lot Ratio (ratio={rw}, entry={re_val})",
+        "descr":      f"VWAP Divergence (level={lw}, vwap={vw}, mult={vm})",
         "timeframes": [15, 30, 60],
         "code":       T08_D_CODE,
-        "fixed":      {"ratio_window": rw, "ratio_entry": re_val},
+        "fixed":      {"level_window": lw, "vwap_window": vw, "vwap_mult": vm},
         "params":     {},
     })
 
-# --- T08-E: Composite Shadow ---
+# --- T08-E: Multi-Confirmation Composite ---
 for cw, ce in product([14, 20], [2.0, 3.0, 4.0]):
     TEMPLATES.append({
         "name":       f"T08-E_c{cw}_e{ce}",
         "thesis":     "08",
-        "descr":      f"Composite Shadow (comp={cw}, entry={ce})",
+        "descr":      f"Multi-Confirmation Composite (comp={cw}, entry={ce})",
         "timeframes": [15, 30, 60],
         "code":       T08_E_CODE,
         "fixed":      {"composite_window": cw, "composite_entry": ce},
