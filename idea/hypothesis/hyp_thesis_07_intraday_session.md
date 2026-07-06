@@ -1,4 +1,4 @@
-# Hypothesis — Thesis 07: Intraday Session
+# Hypothesis — Thesis 07: Intraday Session Microstructure
 
 ## Thông tin chung
 
@@ -6,100 +6,94 @@
 |-------|-------|
 | Thesis Group | 07 — Intraday Session |
 | Timeframes | 5, 15 min |
-| Core Indicators | Open drive, lunch revert, close squeeze, gap fill |
-| Templates | intraday_open_drive, intraday_revert, intraday_close, intraday_gapfill |
-| Status | TODO |
+| Core Indicators | SMA, ROC, volume, RSI, BBands, rolling_vwap, ADX |
+| Templates | T07-A Open Drive, T07-B Lunch Revert, T07-C Close Squeeze, T07-D Pre-ATC Rev, T07-E VWAP Bounce |
+| Total Variants | 64 |
+| Status | READY FOR GENERATION |
 
 ---
 
-## HYP-SES-01: Session Window Selection
+## HYP-SES-01: Session Window Optimality
 
-**Tên:** Cửa sổ giao dịch nào optimal cho từng session strategy?
+**Tên:** Cửa sổ session nào optimal cho từng template?
 
-**Null Hypothesis:** Window size không ảnh hưởng.
+**Null Hypothesis:** Session windows như thiết kế là optimal.
 
-**Alternative Hypothesis:** Short window (RSI=7) cho open drive, medium (RSI=14) cho close squeeze.
+**Alternative Hypothesis:** Mở rộng/cắt ngắn window 15 phút có thể cải thiện Sharpe 10-15%.
 
 **Logic test:**
-- Compare 6 RSI window variants cho từng template
-- Đo Sharpe, Win Rate riêng cho từng variant
+- So sánh 3 phiên bản window cho mỗi template
+- Đo Sharpe, Win Rate riêng
 
 **Metric:** Sharpe, Win Rate, Signal Count
 
-**Data Range:** 6 tháng, 5min và 15min
-
 **Status:** TODO
 
 ---
 
-## HYP-SES-02: Open Drive Threshold Sensitivity
+## HYP-SES-02: Volume Threshold Sensitivity
 
-**Tên:** Ngưỡng open_range nào optimal cho open drive strategy?
+**Tên:** Volume multiplier nào optimal cho T07-C Close Squeeze?
 
-**Null Hypothesis:** open_range > 0.3% là optimal.
+**Null Hypothesis:** vol_mult = 1.5 là optimal.
 
-**Alternative Hypothesis:** open_range > 0.5% cho Win Rate cao hơn 8%, open_range > 0.2% cho nhiều tín hiệu hơn 60%.
+**Alternative Hypothesis:** vol_mult = 2.0 cho Win Rate cao hơn 12%, vol_mult = 1.2 cho nhiều tín hiệu hơn 40%.
 
 **Logic test:**
-- Template: `intraday_open_drive` — thay đổi open_range threshold
-- So sánh 0.2%, 0.3%, 0.5%, 0.7%
+- Template T07-C — thay đổi vol_mult [1.2, 1.5, 2.0, 3.0]
+- Đo Sharpe, Win Rate, Signal Count
 
-**Metric:** Win Rate, Signal Count, Profit Factor
-
-**Data Range:** 6 tháng
+**Metric:** Sharpe, Win Rate, Signal Count
 
 **Status:** TODO
 
 ---
 
-## HYP-SES-03: position_close_ranges Impact
+## HYP-SES-03: BBands Width Impact on T07-D
 
-**Tên:** Thêm position_close_ranges có giảm drawdown không?
+**Tên:** BBands multiplier nào optimal cho Pre-ATC mean reversion?
 
-**Null Hypothesis:** position_close_ranges không ảnh hưởng.
+**Null Hypothesis:** BBands 2.0 là optimal.
 
-**Alternative Hypothesis:** position_close_ranges ["04:20-04:30", "07:30-07:45"] giảm 20% Max DD.
+**Alternative Hypothesis:** BBands 2.5 cho ít tín hiệu hơn 40% nhưng Win Rate cao hơn 15%.
 
 **Logic test:**
-- Baseline: intraday session strategy không có close range
-- V1: + position_close_ranges (lunch + end forced flat)
-- Đo Max DD, Sharpe
+- Template T07-D — thay đổi bb_mult [1.5, 2.0, 2.5, 3.0]
+- Đo Sharpe, Win Rate
 
-**Metric:** Max DD, Sharpe, Win Rate
-
-**Data Range:** 6 tháng
+**Metric:** Sharpe, Win Rate, Max DD
 
 **Status:** TODO
 
 ---
 
-## HYP-SES-04: Gap Fill Success Rate
+## HYP-SES-04: VWAP Z-score Entry
 
-**Tên:** Gap fill strategy có thành công trong thị trường VN30F1M không?
+**Tên:** Z-score nào optimal cho VWAP bounce?
 
-**Null Hypothesis:** Gap không được fill trong intraday, strategy không có alpha.
+**Null Hypothesis:** z = 1.0% là optimal.
 
-**Alternative Hypothesis:** Gap fill thành công ≥ 55% intraday, đặc biệt gap < 0.5%.
+**Alternative Hypothesis:** z = 1.5% cho Sharpe cao hơn 20% (tránh noise), z = 2.0% cho Win Rate > 65%.
 
 **Logic test:**
-- Template: `intraday_gapfill` — measure gap fill rate
-- Phân loại gap size: < 0.3%, 0.3-0.5%, > 0.5%
+- Template T07-E — thay đổi z_entry [0.5, 1.0, 1.5, 2.0, 3.0]
+- Đo Sharpe, Win Rate
 
-**Metric:** Gap Fill Rate, Win Rate, Profit Factor
-
-**Data Range:** 6 tháng
+**Metric:** Sharpe, Win Rate, Signal Count
 
 **Status:** TODO
 
 ---
 
-## Scorecard Target (Intraday Session Thesis)
+## Acceptance Criteria
 
-| Metric | Target | Pass? |
-|--------|--------|-------|
-| Sharpe Ratio | ≥ 1.0 | □ |
-| Win Rate | ≥ 55% | □ |
-| Profit Factor | ≥ 1.5 | □ |
-| Max Drawdown | ≤ -20% | □ |
-| Gap Fill Rate | ≥ 55% | □ |
-| Open Drive Success | ≥ 58% | □ |
+| Metric | Target | Must-pass |
+|--------|:------:|:---------:|
+| Sharpe Ratio | ≥ 2.0 | ✅ |
+| CAGR | ≥ 20% | ✅ |
+| Max Drawdown | ≥ -20% | ✅ |
+| Sortino Ratio | ≥ 1.5 | |
+| Calmar Ratio | ≥ 1.1 | |
+| Profit Factor | ≥ 1.3 | |
+| Win Rate | ≥ 55% | |
+| Signal Count | ≥ 30/năm | |
