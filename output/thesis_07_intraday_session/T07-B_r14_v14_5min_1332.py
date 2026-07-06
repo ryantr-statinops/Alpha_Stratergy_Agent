@@ -4,8 +4,8 @@ summary: Lunch Revert
 idea:    Pre-lunch mean reversion: RSI > 70 (short) or RSI < 30 (long) before lunch close.
 """
 class CustomStrategy(SimpleAlgorithm):
-    position_open_ranges = ["03:30-04:15"]
-    position_close_ranges = ["04:20-04:30"]
+    position_open_ranges = ["10:30-11:15"]
+    position_close_ranges = ["11:20-11:30"]
 
 
     def __algorithm__(self):

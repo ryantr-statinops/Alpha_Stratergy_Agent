@@ -4,8 +4,8 @@ summary: Open Drive
 idea:    Morning momentum continuation: close > SMA + volume spike + return_roll > 0 in first 30 min of session.
 """
 class CustomStrategy(SimpleAlgorithm):
-    position_open_ranges = ["02:00-02:30"]
-    position_close_ranges = ["04:20-04:30"]
+    position_open_ranges = ["09:00-09:30"]
+    position_close_ranges = ["11:20-11:30"]
 
 
     def __algorithm__(self):

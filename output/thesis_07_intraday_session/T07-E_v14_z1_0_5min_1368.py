@@ -4,8 +4,8 @@ summary: Session VWAP Bounce
 idea:    Price deviates ±z% from VWAP then bounces back with return_roll confirmation; exit on VWAP cross.
 """
 class CustomStrategy(SimpleAlgorithm):
-    position_open_ranges = ["02:00-04:30", "06:00-07:15"]
-    position_close_ranges = ["04:20-04:30", "07:30-07:45"]
+    position_open_ranges = ["09:00-11:30", "13:00-14:15"]
+    position_close_ranges = ["11:20-11:30", "14:30-14:45"]
 
 
     def __algorithm__(self):

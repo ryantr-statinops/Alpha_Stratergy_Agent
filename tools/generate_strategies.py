@@ -1650,8 +1650,8 @@ for zw, ze in product([10, 20, 34], [2.0, 3.0]):
 # ============================================================
 
 T07_A_CODE = """class CustomStrategy(SimpleAlgorithm):
-    position_open_ranges = ["02:00-02:30"]
-    position_close_ranges = ["04:20-04:30"]
+    position_open_ranges = ["09:00-09:30"]
+    position_close_ranges = ["11:20-11:30"]
 
 
     def __algorithm__(self):
@@ -1673,8 +1673,8 @@ T07_A_CODE = """class CustomStrategy(SimpleAlgorithm):
 """
 
 T07_B_CODE = """class CustomStrategy(SimpleAlgorithm):
-    position_open_ranges = ["03:30-04:15"]
-    position_close_ranges = ["04:20-04:30"]
+    position_open_ranges = ["10:30-11:15"]
+    position_close_ranges = ["11:20-11:30"]
 
 
     def __algorithm__(self):
@@ -1697,8 +1697,8 @@ T07_B_CODE = """class CustomStrategy(SimpleAlgorithm):
 """
 
 T07_C_CODE = """class CustomStrategy(SimpleAlgorithm):
-    position_open_ranges = ["06:00-07:15"]
-    position_close_ranges = ["07:30-07:45"]
+    position_open_ranges = ["13:00-14:15"]
+    position_close_ranges = ["14:30-14:45"]
 
 
     def __algorithm__(self):
@@ -1721,8 +1721,8 @@ T07_C_CODE = """class CustomStrategy(SimpleAlgorithm):
 """
 
 T07_D_CODE = """class CustomStrategy(SimpleAlgorithm):
-    position_open_ranges = ["06:45-07:20"]
-    position_close_ranges = ["07:20-07:45"]
+    position_open_ranges = ["13:45-14:20"]
+    position_close_ranges = ["14:20-14:45"]
 
 
     def __algorithm__(self):
@@ -1746,8 +1746,8 @@ T07_D_CODE = """class CustomStrategy(SimpleAlgorithm):
 """
 
 T07_E_CODE = """class CustomStrategy(SimpleAlgorithm):
-    position_open_ranges = ["02:00-04:30", "06:00-07:15"]
-    position_close_ranges = ["04:20-04:30", "07:30-07:45"]
+    position_open_ranges = ["09:00-11:30", "13:00-14:15"]
+    position_close_ranges = ["11:20-11:30", "14:30-14:45"]
 
 
     def __algorithm__(self):
