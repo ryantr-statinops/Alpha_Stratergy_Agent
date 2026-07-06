@@ -20,6 +20,7 @@ class CustomStrategy(SimpleAlgorithm):
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
         adx_val = self.feat.adx(high, low, close, timeperiod=14)
         natr_val = self.feat.natr(high, low, close, timeperiod=14)
+        natr_ma = self.feat.sma(natr_val, timeperiod=14)
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=8)
@@ -33,7 +34,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         short_setup = at_resistance & vol_spike & tight_range & close_lower_half & (adx_val > 15) & (return_roll < 0)
         long_setup = at_support & vol_spike & tight_range & close_upper_half & (adx_val > 15) & (return_roll > 0)
-        exit_setup = (adx_val < 12)
+        exit_setup = (adx_val < 12) | (return_roll < -0.001) | (return_roll > 0.001) | (natr_val > natr_ma * 2.0)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)
