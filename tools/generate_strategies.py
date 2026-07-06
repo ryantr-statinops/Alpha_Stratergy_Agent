@@ -9,6 +9,16 @@ from itertools import product
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "output")
 INDEX_PATH = os.path.join(OUTPUT_DIR, "index.csv")
+
+THESIS_FOLDERS = {
+    "01": "thesis_01_rolling_mean_quantile",
+    "02": "thesis_02_volatility_regime",
+    "03": "thesis_03_time_series_decomp",
+    "04": "thesis_04_microstructure_flow",
+    "05": "thesis_05_cross_market_correlation",
+    "06": "thesis_06_multifactor_composite",
+    "07": "thesis_07_intraday_session",
+}
 HEADER = '''"""
 name:    {name}
 summary: {summary}
@@ -60,6 +70,12 @@ TEMPLATE_META = {
     "T06-C": ("Multi-Layer Confirmation", "Stack trend, momentum, volume, volatility, and cross-market filters with graduated position sizing."),
     "T06-D": ("Candlestick + Z-Score", "Combine candlestick patterns (hammer, engulfing, morning/evening star) with z-score composite for reversal entries."),
     "T06-E": ("Adaptive Regime-Weighted", "Dynamically weight z-score factors based on ADX/ATR regime; trend weights momentum, high-vol weights volume."),
+    # Thesis 07: Intraday Session Microstructure
+    "T07-A": ("Open Drive", "Morning momentum continuation: close > SMA + volume spike + return_roll > 0 in first 30 min of session."),
+    "T07-B": ("Lunch Revert", "Pre-lunch mean reversion: RSI > 70 (short) or RSI < 30 (long) before lunch close."),
+    "T07-C": ("Close Squeeze", "Afternoon breakout: ROC > 0 + volume × mult spike + ADX > entry; exit before ATC."),
+    "T07-D": ("Pre-ATC Mean Rev", "Late afternoon BBands extreme touch + volume confirm; mean revert before ATC close."),
+    "T07-E": ("Session VWAP Bounce", "Price deviates ±z% from VWAP then bounces back with return_roll confirmation; exit on VWAP cross."),
 }
 
 def _base_template_name(name):
@@ -646,9 +662,6 @@ T03_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         trend = self.feat.ht_trendline(close)
         adx_val = self.feat.adx(high, low, close, timeperiod=self.base_window)
 
-        cycle_ma = self.feat.sma(cycle_period, timeperiod=10)
-        vol_scale = self.op.clip(cycle_ma / {max_cycle}, 0.3, 1.0)
-
         roc_val = self.feat.roc(close, timeperiod={roc_window})
 
         long_setup = (close > trend) & (roc_val > 0) & (adx_val > {adx_entry})
@@ -656,8 +669,8 @@ T03_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         exit_setup = self.op.crossed_below(close, trend) | self.op.crossed_above(close, trend) | (adx_val < {adx_exit})
 
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=vol_scale)
-        self.set_positions(short_setup, position=-vol_scale)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
 """
 
 for bw, mc in product([14, 20, 26], [30, 50]):
@@ -1632,6 +1645,194 @@ for zw, ze in product([10, 20, 34], [2.0, 3.0]):
         "params":     {},
     })
 
+# ============================================================
+# THESIS 07: Intraday Session Microstructure
+# ============================================================
+
+T07_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    position_open_ranges = ["02:00-02:30"]
+    position_close_ranges = ["04:20-04:30"]
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        volume = self.data.pv_volume
+
+        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
+        mean_val = self.feat.sma(close, timeperiod={fast_window})
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window={return_window})
+
+        long_setup = (close > mean_val) & (volume > vol_sma) & (return_roll > 0)
+        short_setup = (close < mean_val) & (volume > vol_sma) & (return_roll < 0)
+        exit_setup = (return_roll < 0) | (return_roll > 0)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+T07_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    position_open_ranges = ["03:30-04:15"]
+    position_close_ranges = ["04:20-04:30"]
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+
+        long_setup = (rsi_val < 30) & (volume > vol_sma * 0.7) & (adx_val < 20)
+        short_setup = (rsi_val > 70) & (volume > vol_sma * 0.7) & (adx_val < 20)
+        exit_setup = self.op.crossed_above(rsi_val, 50) | self.op.crossed_below(rsi_val, 50) | (adx_val > 25)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+T07_C_CODE = """class CustomStrategy(SimpleAlgorithm):
+    position_open_ranges = ["06:00-07:15"]
+    position_close_ranges = ["07:30-07:45"]
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        roc_val = self.feat.roc(close, timeperiod={roc_window})
+        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+
+        long_setup = (roc_val > 0) & (volume > vol_sma * {vol_mult}) & (adx_val > {adx_entry})
+        short_setup = (roc_val < 0) & (volume > vol_sma * {vol_mult}) & (adx_val > {adx_entry})
+        exit_setup = (roc_val < 0) | (roc_val > 0) | (adx_val < {adx_exit})
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+T07_D_CODE = """class CustomStrategy(SimpleAlgorithm):
+    position_open_ranges = ["06:45-07:20"]
+    position_close_ranges = ["07:20-07:45"]
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        upper, mid, lower = self.feat.bbands(close, timeperiod={bb_window}, nbdevup={bb_mult}, nbdevdn={bb_mult})
+        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
+        mean_val = self.feat.sma(close, timeperiod={ema_window})
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+
+        long_setup = (close < lower) & (volume > vol_sma) & (adx_val < 20)
+        short_setup = (close > upper) & (volume > vol_sma) & (adx_val < 20)
+        exit_setup = self.op.crossed_above(close, mean_val) | self.op.crossed_below(close, mean_val) | (adx_val > 25)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+T07_E_CODE = """class CustomStrategy(SimpleAlgorithm):
+    position_open_ranges = ["02:00-04:30", "06:00-07:15"]
+    position_close_ranges = ["04:20-04:30", "07:30-07:45"]
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        vwap_val = self.feat.rolling_vwap(high, low, close, volume, window={vwap_window})
+        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window={return_window})
+
+        upper_band = vwap_val * (1 + {z_entry} / 100)
+        lower_band = vwap_val * (1 - {z_entry} / 100)
+
+        long_setup = (close < lower_band) & (return_roll > 0) & (volume > vol_sma * 0.7)
+        short_setup = (close > upper_band) & (return_roll < 0) & (volume > vol_sma * 0.7)
+        exit_setup = self.op.crossed_above(close, vwap_val) | self.op.crossed_below(close, vwap_val)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+# --- T07-A: Open Drive ---
+for fw, vw in product([8, 13, 20], [14, 20]):
+    TEMPLATES.append({
+        "name":       f"T07-A_f{fw}_v{vw}",
+        "thesis":     "07",
+        "descr":      f"Open Drive (fast={fw}, vol={vw})",
+        "timeframes": [5, 15],
+        "code":       T07_A_CODE,
+        "fixed":      {"fast_window": fw, "vol_window": vw},
+        "params":     {},
+    })
+
+# --- T07-B: Lunch Revert ---
+for rw, vw in product([7, 10, 14], [14, 20]):
+    TEMPLATES.append({
+        "name":       f"T07-B_r{rw}_v{vw}",
+        "thesis":     "07",
+        "descr":      f"Lunch Revert (rsi={rw}, vol={vw})",
+        "timeframes": [5, 15],
+        "code":       T07_B_CODE,
+        "fixed":      {"rsi_window": rw, "vol_window": vw},
+        "params":     {},
+    })
+
+# --- T07-C: Close Squeeze ---
+for rw, vw, vm in product([3, 5], [14, 20], [1.5, 2.0]):
+    TEMPLATES.append({
+        "name":       f"T07-C_r{rw}_v{vw}_m{vm}",
+        "thesis":     "07",
+        "descr":      f"Close Squeeze (roc={rw}, vol={vw}, mult={vm})",
+        "timeframes": [5, 15],
+        "code":       T07_C_CODE,
+        "fixed":      {"roc_window": rw, "vol_window": vw, "vol_mult": vm},
+        "params":     {},
+    })
+
+# --- T07-D: Pre-ATC Mean Rev ---
+for bw, bm, vw in product([14, 20], [2.0, 2.5], [14, 20]):
+    TEMPLATES.append({
+        "name":       f"T07-D_b{bw}_m{bm}_v{vw}",
+        "thesis":     "07",
+        "descr":      f"Pre-ATC Mean Rev (bb={bw}, mult={bm}, vol={vw})",
+        "timeframes": [5, 15],
+        "code":       T07_D_CODE,
+        "fixed":      {"bb_window": bw, "bb_mult": bm, "vol_window": vw},
+        "params":     {},
+    })
+
+# --- T07-E: VWAP Bounce ---
+for vw, ze in product([14, 20], [1.0, 2.0]):
+    TEMPLATES.append({
+        "name":       f"T07-E_v{vw}_z{ze}",
+        "thesis":     "07",
+        "descr":      f"VWAP Bounce (vwap={vw}, z={ze})",
+        "timeframes": [5, 15],
+        "code":       T07_E_CODE,
+        "fixed":      {"vwap_window": vw, "z_entry": ze, "vol_window": 14},
+        "params":     {},
+    })
+
 print(f"  OK Registered {len(TEMPLATES)} template definitions")
 
 
@@ -1710,9 +1911,11 @@ def generate():
                 base = _base_template_name(name)
                 summary, idea = TEMPLATE_META.get(base, (descr, descr))
 
-                # Write file
+                # Write file into thesis subfolder
+                folder = THESIS_FOLDERS.get(thesis, "other")
+                os.makedirs(os.path.join(OUTPUT_DIR, folder), exist_ok=True)
                 fname = f"{_safe_name(name)}_{tf}min_{seq:04d}.py"
-                fpath = os.path.join(OUTPUT_DIR, fname)
+                fpath = os.path.join(OUTPUT_DIR, folder, fname)
 
                 with open(fpath, "w", encoding="utf-8") as f:
                     f.write(HEADER.format(name=name, summary=summary, idea=idea))
@@ -1723,7 +1926,7 @@ def generate():
                 param_str = ";".join(f"{k}={v}" for k, v in sorted(params.items()))
 
                 rows.append({
-                    "filepath":     fname,
+                    "filepath":     f"{folder}/{fname}",
                     "thesis_group": thesis,
                     "template":     name,
                     "timeframe":    f"{tf}min",
