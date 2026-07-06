@@ -4,8 +4,8 @@ summary: Close Squeeze
 idea:    Afternoon breakout: ROC > 0 + volume × mult spike + ADX > entry; exit before ATC.
 """
 class CustomStrategy(SimpleAlgorithm):
-    position_open_ranges = ["06:00-07:15"]
-    position_close_ranges = ["07:30-07:45"]
+    position_open_ranges = ["13:00-14:15"]
+    position_close_ranges = ["14:30-14:45"]
 
 
     def __algorithm__(self):

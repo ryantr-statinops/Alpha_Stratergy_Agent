@@ -4,8 +4,8 @@ summary: Pre-ATC Mean Rev
 idea:    Late afternoon BBands extreme touch + volume confirm; mean revert before ATC close.
 """
 class CustomStrategy(SimpleAlgorithm):
-    position_open_ranges = ["06:45-07:20"]
-    position_close_ranges = ["07:20-07:45"]
+    position_open_ranges = ["13:45-14:20"]
+    position_close_ranges = ["14:20-14:45"]
 
 
     def __algorithm__(self):
