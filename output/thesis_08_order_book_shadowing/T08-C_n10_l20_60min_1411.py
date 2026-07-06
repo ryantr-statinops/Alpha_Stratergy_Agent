@@ -30,7 +30,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         short_setup = at_resistance & tight_range & (volume > vol_sma) & (adx_val > 14) & (return_roll < 0)
         long_setup = at_support & tight_range & (volume > vol_sma) & (adx_val > 14) & (return_roll > 0)
-        exit_setup = (adx_val < 10)
+        exit_setup = (adx_val < 10) | (return_roll < -0.001) | (return_roll > 0.001) | (natr_val > natr_sma * 2.0)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

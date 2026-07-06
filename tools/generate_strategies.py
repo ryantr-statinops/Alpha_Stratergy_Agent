@@ -1874,7 +1874,7 @@ T08_A_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         long_setup = rejected_support & (volume > vol_sma) & (adx_val > {adx_entry_weak}) & (return_roll > 0)
         short_setup = rejected_resistance & (volume > vol_sma) & (adx_val > {adx_entry_weak}) & (return_roll < 0)
-        exit_setup = (adx_val < {adx_exit})
+        exit_setup = (adx_val < {adx_exit}) | (return_roll < -0.001) | (return_roll > 0.001)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)
@@ -1898,6 +1898,7 @@ T08_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
         adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
         natr_val = self.feat.natr(high, low, close, timeperiod=14)
+        natr_ma = self.feat.sma(natr_val, timeperiod=14)
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window={return_window})
@@ -1911,7 +1912,7 @@ T08_B_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         short_setup = at_resistance & vol_spike & tight_range & close_lower_half & (adx_val > {adx_entry_weak}) & (return_roll < 0)
         long_setup = at_support & vol_spike & tight_range & close_upper_half & (adx_val > {adx_entry_weak}) & (return_roll > 0)
-        exit_setup = (adx_val < {adx_exit})
+        exit_setup = (adx_val < {adx_exit}) | (return_roll < -0.001) | (return_roll > 0.001) | (natr_val > natr_ma * 2.0)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)
@@ -1945,7 +1946,7 @@ T08_C_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         short_setup = at_resistance & tight_range & (volume > vol_sma) & (adx_val > {adx_entry_weak}) & (return_roll < 0)
         long_setup = at_support & tight_range & (volume > vol_sma) & (adx_val > {adx_entry_weak}) & (return_roll > 0)
-        exit_setup = (adx_val < {adx_exit})
+        exit_setup = (adx_val < {adx_exit}) | (return_roll < -0.001) | (return_roll > 0.001) | (natr_val > natr_sma * 2.0)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

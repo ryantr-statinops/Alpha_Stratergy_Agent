@@ -95,6 +95,8 @@ def ohlc4(open_price, high, low, close):
     return (open_price + high + low + close) / 4.0
 
 
-def vwap(high, low, close, volume):
+def vwap(high, low, close, volume, window=20):
     tp = typprice(high, low, close)
-    return (tp * volume).rolling(20).sum() / volume.rolling(20).sum()
+    tp = pd.Series(tp) if not isinstance(tp, pd.Series) else tp
+    vol = pd.Series(volume) if not isinstance(volume, pd.Series) else volume
+    return (tp * vol).rolling(window).sum() / vol.rolling(window).sum()

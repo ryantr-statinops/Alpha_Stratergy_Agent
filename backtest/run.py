@@ -8,7 +8,8 @@ from itertools import product
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from backtest.data.fetch_data import fetch_5m, fetch_daily, resample
-from backtest.evaluate import evaluate
+from backtest.backtest import run_strategy
+from backtest.regime import detect_regime, strategy_allowed, regime_label
 
 # Import generator configs for exact parameter mirroring
 from tools.generate_strategies import TEMPLATES as GEN_TEMPLATES, TF_WINDOWS, ADX_ENTRY, ADX_EXIT, ADX_ENTRY_WEAK
@@ -20,6 +21,8 @@ from backtest.runners import thesis_03 as th03
 from backtest.runners import thesis_04 as th04
 from backtest.runners import thesis_05 as th05
 from backtest.runners import thesis_06 as th06
+from backtest.runners import thesis_07 as th07
+from backtest.runners import thesis_08 as th08
 
 # ---------------------------------------------------------------------------
 # Map template base name → backtest function
@@ -68,6 +71,18 @@ FUNC_MAP = {
     "T06-C": th06.T06_C,
     "T06-D": th06.T06_D,
     "T06-E": th06.T06_E,
+    # Thesis 07
+    "T07-A": th07.T07_A,
+    "T07-B": th07.T07_B,
+    "T07-C": th07.T07_C,
+    "T07-D": th07.T07_D,
+    "T07-E": th07.T07_E,
+    # Thesis 08
+    "T08-A": th08.T08_A,
+    "T08-B": th08.T08_B,
+    "T08-C": th08.T08_C,
+    "T08-D": th08.T08_D,
+    "T08-E": th08.T08_E,
 }
 
 TF_LOOKUP = {5: "5min", 15: "15min", 30: "30min", 60: "60min"}
@@ -105,7 +120,12 @@ def run_all():
             pv = list(tmpl["params"].values())
             n_total *= len(pv[0]) if pv else 1
 
-    print(f"\n[2/4] Running {n_total} variants from {len(GEN_TEMPLATES)} template configs...")
+    # Detect market regime from daily data
+    df_daily = data_cache.get("1D", next(iter(data_cache.values())))
+    regime = detect_regime(df_daily, "1D")
+    rlabel = regime_label(regime)
+    print(f"\n[2/4] Market regime: {rlabel} (score={regime['regime_score']})")
+    print(f"  Running {n_total} variants from {len(GEN_TEMPLATES)} template configs...")
 
     results = []
     seq = 0
@@ -121,11 +141,14 @@ def run_all():
 
         # Resolve function
         base = name.split("_")[0] if "_" in name else name
-        # Special cases: T01-A_close → T01-A, T01-A_typical → T01-A, etc.
-        # The base is always TX-Y where X=thesis, Y=letter
         import re
         m = re.match(r"(T\d\d-[A-Z])", name)
         base = m.group(1) if m else name
+
+        # Regime filter
+        if not strategy_allowed(regime, base):
+            continue
+
         func = FUNC_MAP.get(base)
         if func is None:
             print(f"  Skipping {name}: no backtest function for base '{base}'")
@@ -154,6 +177,8 @@ def run_all():
                 "adx_entry":     ADX_ENTRY[tf],
                 "adx_exit":      ADX_EXIT[tf],
                 "adx_entry_weak": ADX_ENTRY_WEAK[tf],
+                "return_exit_threshold": 0.0002,
+                "vol_exit_mult": 2.0,
             }
 
             for combo in combos:
@@ -161,16 +186,17 @@ def run_all():
                 params = dict(fixed)
                 for i, k in enumerate(param_keys):
                     params[k] = combo[i]
-                # Inject TF defaults (not overriding explicit params)
                 for k, v in tf_defaults.items():
                     if k not in params:
                         params[k] = v
 
                 try:
-                    pos = func(df_tf, **params)
-                    result_df = df_tf.copy()
-                    result_df["position"] = pos
-                    metrics = evaluate(result_df, timeframe=TF_LABEL.get(tf, "5m"))
+                    metrics = run_strategy(
+                        df_tf, func, params,
+                        timeframe=TF_LABEL.get(tf, "5m"),
+                        enable_exit_enhance=True,
+                        enable_freeze=True,
+                    )
                     metrics["seq"] = seq
                     metrics["template"] = name
                     metrics["thesis"] = thesis

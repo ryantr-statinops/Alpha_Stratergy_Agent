@@ -33,7 +33,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = rejected_support & (volume > vol_sma) & (adx_val > 14) & (return_roll > 0)
         short_setup = rejected_resistance & (volume > vol_sma) & (adx_val > 14) & (return_roll < 0)
-        exit_setup = (adx_val < 10)
+        exit_setup = (adx_val < 10) | (return_roll < -0.001) | (return_roll > 0.001)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)
