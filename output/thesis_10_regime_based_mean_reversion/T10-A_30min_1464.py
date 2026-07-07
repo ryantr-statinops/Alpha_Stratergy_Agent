@@ -30,17 +30,19 @@ class CustomStrategy(SimpleAlgorithm):
         adx_val = self.feat.adx(high, low, close, timeperiod=14)
         atr = self.feat.atr(high, low, close, timeperiod=14)
 
-        no_long_stop = close >= ma20 - self.atr_stop_mult * atr
-        no_short_stop = close <= ma20 + self.atr_stop_mult * atr
+        no_long_trend = close >= ma20 - self.atr_stop_mult * atr
+        no_short_trend = close <= ma20 + self.atr_stop_mult * atr
+        no_long_mr = close >= lower_q - self.atr_stop_mult * atr
+        no_short_mr = close <= upper_q + self.atr_stop_mult * atr
         atr_stop = (
             (close < ma20 - self.atr_stop_mult * atr) |
             (close > ma20 + self.atr_stop_mult * atr)
         )
 
-        dip_long = bull & (close < ma20) & (adx_val > self.adx_entry) & no_long_stop
-        rally_short = bear & (close > ma20) & (adx_val > self.adx_entry) & no_short_stop
-        mr_long = sideways & (close < lower_q) & (adx_val < self.adx_entry) & no_long_stop
-        mr_short = sideways & (close > upper_q) & (adx_val < self.adx_entry) & no_short_stop
+        dip_long = bull & (close < ma20) & (adx_val > self.adx_entry) & no_long_trend
+        rally_short = bear & (close > ma20) & (adx_val > self.adx_entry) & no_short_trend
+        mr_long = sideways & (close < lower_q) & (adx_val < self.adx_entry) & no_long_mr
+        mr_short = sideways & (close > upper_q) & (adx_val < self.adx_entry) & no_short_mr
 
         long_setup = dip_long | mr_long
         short_setup = rally_short | mr_short
