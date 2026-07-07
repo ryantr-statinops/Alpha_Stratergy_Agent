@@ -19,6 +19,8 @@ THESIS_FOLDERS = {
     "06": "thesis_06_multifactor_composite",
     "07": "thesis_07_intraday_session",
     "08": "thesis_08_order_book_shadowing",
+    "09": "thesis_09_institutional_flow_arbitrage",
+    "10": "thesis_10_regime_based_mean_reversion",
 }
 HEADER = '''"""
 name:    {name}
@@ -83,6 +85,14 @@ TEMPLATE_META = {
     "T08-C": ("Range Compression Absorption", "Narrow range (NATR < SMA × 0.8) at key level = absorption complete, trade the impending breakout direction via return_roll."),
     "T08-D": ("VWAP Divergence at Key Level", "Price at key level AND beyond VWAP band = divergence from fair value; trade mean reversion with between-exit on VWAP cross."),
     "T08-E": ("Multi-Confirmation Composite", "OHLCV-only composite of price_z + vol_z + (-range_z) + mom_z; exit when composite decays or ADX fades."),
+    # Thesis 09: Institutional Flow Arbitrage
+    "T09-A": ("OI Confirmation", "Compare OI change direction vs futures return; genuine when aligned, fade when OI drops (weak conviction)."),
+    "T09-B": ("Flow Divergence", "Matched value flow + VN30 alignment + volume filter to detect institutional participation vs retail noise."),
+    "T09-C": ("Composite Flow", "OHLCV-based z-score composite (price+vn30+volume) + binary flow alignment (OI == matched volume direction)."),
+    # Thesis 10: Regime-based Mean Reversion
+    "T10-A": ("Regime Dip/Rally", "Bull (close>MA200): long on dips to MA20. Bear (close<MA200): short on rallies to MA20. Sideways: quantile mean reversion."),
+    "T10-B": ("Confirmed Regime Entries", "Same regime filter + ADX + volume confirmation for dip/rally entries; sideways uses RSI extremes with low volume."),
+    "T10-C": ("Regime Band Oscillator", "Same regime filter + Bollinger Bands; bull: buy lower band touch; bear: sell upper band touch; sideways: wider quantile extremes."),
 }
 
 def _base_template_name(name):
@@ -2081,6 +2091,405 @@ for cw, ce in product([14, 20], [2.0, 3.0, 4.0]):
         "fixed":      {"composite_window": cw, "composite_entry": ce},
         "params":     {},
     })
+
+# ============================================================
+# THESIS 09: Institutional Flow Arbitrage
+# ============================================================
+# Uses: pv_close, pv_high, pv_low, pv_volume (futures)
+#       fut_open_interest_vn30f1m_1d, fut_matched_volume_vn30f1m_1d
+#       fut_total_volume_vn30f1m_1d, fut_matched_value_vn30f1m_1d
+#       pv_vn30_close (VN30 index)
+
+# T09-A: OI Confirmation (continuous entry + ATR stop-loss + exit-called-last)
+T09_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    adx_entry = {adx_entry}
+    adx_exit = {adx_exit}
+    atr_stop_mult = {atr_stop_mult}
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        fut_oi = self.data.fut_open_interest_vn30f1m_1d
+        oi_change = self.op.fillna(self.op.pct_change(fut_oi, periods=1), value=0)
+        fut_ret = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+
+        fut_bull = fut_ret > 0
+        fut_bear = fut_ret < 0
+        oi_up = oi_change > 0
+        oi_down = oi_change < 0
+
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+        atr = self.feat.atr(high, low, close, timeperiod=14)
+        fast_ma = self.feat.sma(close, timeperiod=5)
+
+        # Genuine: price + OI same direction
+        genuine_long = fut_bull & oi_up & (adx_val > self.adx_entry)
+        genuine_short = fut_bear & oi_up & (adx_val > self.adx_entry)
+
+        # Fade: price moves but OI drops (weak conviction)
+        fade_long = fut_bear & oi_down & (adx_val > 18)
+        fade_short = fut_bull & oi_down & (adx_val > 18)
+
+        long_setup = genuine_long | fade_long
+        short_setup = genuine_short | fade_short
+        atr_stop = (
+            (close < fast_ma - self.atr_stop_mult * atr) |
+            (close > fast_ma + self.atr_stop_mult * atr)
+        )
+        exit_setup = (adx_val < self.adx_exit) | atr_stop
+
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+        self.set_positions(exit_setup, position=0)
+"""
+
+TEMPLATES.append({
+    "name":       "T09-A",
+    "thesis":     "09",
+    "descr":      "OI Confirmation",
+    "timeframes": [60],
+    "code":       T09_A_CODE,
+    "fixed":      {"adx_entry": 18, "adx_exit": 12, "atr_stop_mult": 4.0},
+    "params":     {},
+})
+
+# T09-B: Flow Divergence (continuous entry + ATR stop-loss + exit-called-last)
+T09_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    adx_entry = {adx_entry}
+    adx_exit = {adx_exit}
+    atr_stop_mult = {atr_stop_mult}
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        fut_matched = self.data.fut_matched_value_vn30f1m_1d
+        fut_total = self.data.fut_total_value_vn30f1m_1d
+        vn30_close = self.data.pv_vn30_close
+
+        matched_change = self.op.fillna(self.op.pct_change(fut_matched, periods=1), value=0)
+        total_change = self.op.fillna(self.op.pct_change(fut_total, periods=1), value=0)
+        fut_ret = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        vn30_ret = self.op.fillna(self.op.pct_change(vn30_close, periods=1), value=0)
+
+        flow_up = matched_change > 0
+        fut_bull = fut_ret > 0
+        fut_bear = fut_ret < 0
+        vn30_align = (fut_ret > 0) == (vn30_ret > 0)
+
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
+        volume_ok = volume > vol_sma
+        atr = self.feat.atr(high, low, close, timeperiod=14)
+        fast_ma = self.feat.sma(close, timeperiod=5)
+
+        # Strong flow: matched value rising + VN30 confirms → genuine
+        strong_long = fut_bull & flow_up & vn30_align & (adx_val > self.adx_entry) & volume_ok
+        strong_short = fut_bear & flow_up & vn30_align & (adx_val > self.adx_entry) & volume_ok
+
+        # Weak flow: matched value dropping → low conviction → fade
+        flow_down = matched_change < 0
+        fade_long = fut_bear & flow_down & (adx_val > 18)
+        fade_short = fut_bull & flow_down & (adx_val > 18)
+
+        long_setup = strong_long | fade_long
+        short_setup = strong_short | fade_short
+        atr_stop = (
+            (close < fast_ma - self.atr_stop_mult * atr) |
+            (close > fast_ma + self.atr_stop_mult * atr)
+        )
+        exit_setup = (adx_val < self.adx_exit) | atr_stop
+
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+        self.set_positions(exit_setup, position=0)
+"""
+
+TEMPLATES.append({
+    "name":       "T09-B",
+    "thesis":     "09",
+    "descr":      "Flow Divergence",
+    "timeframes": [60],
+    "code":       T09_B_CODE,
+    "fixed":      {"adx_entry": 18, "adx_exit": 12, "vol_window": 14, "atr_stop_mult": 4.0},
+    "params":     {},
+})
+
+# T09-C: Composite Flow (continuous entry + ATR stop-loss + exit-called-last)
+T09_C_CODE = """class CustomStrategy(SimpleAlgorithm):
+    window = {window}
+    entry = {entry}
+    adx_entry = {adx_entry}
+    adx_exit = {adx_exit}
+    atr_stop_mult = {atr_stop_mult}
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        fut_oi = self.data.fut_open_interest_vn30f1m_1d
+        fut_matched = self.data.fut_matched_volume_vn30f1m_1d
+        vn30_close = self.data.pv_vn30_close
+
+        price_z = self.feat.rolling_zscore(close, window=self.window)
+        vn30_z = self.feat.rolling_zscore(vn30_close, window=self.window)
+        vol_z = self.feat.rolling_zscore(volume, window=self.window)
+
+        oi_change = self.op.fillna(self.op.pct_change(fut_oi, periods=1), value=0)
+        matched_change = self.op.fillna(self.op.pct_change(fut_matched, periods=1), value=0)
+
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+        atr = self.feat.atr(high, low, close, timeperiod=14)
+        fast_ma = self.feat.sma(close, timeperiod=5)
+
+        # Binary flow signals (safe: using pct_change, not z-score on daily fields)
+        oi_flow_up = oi_change > 0
+        matched_flow_up = matched_change > 0
+        flow_align = oi_flow_up == matched_flow_up
+
+        composite = price_z + vn30_z + vol_z
+
+        long_setup = (composite > self.entry) & flow_align & (adx_val > self.adx_entry)
+        short_setup = (composite < -self.entry) & flow_align & (adx_val > self.adx_entry)
+        atr_stop = (
+            (close < fast_ma - self.atr_stop_mult * atr) |
+            (close > fast_ma + self.atr_stop_mult * atr)
+        )
+        exit_setup = (self.op.abs(composite) < 0.5) | (adx_val < self.adx_exit) | atr_stop
+
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+        self.set_positions(exit_setup, position=0)
+"""
+
+TEMPLATES.append({
+    "name":       "T09-C",
+    "thesis":     "09",
+    "descr":      "Composite Flow",
+    "timeframes": [60],
+    "code":       T09_C_CODE,
+    "fixed":      {"window": 20, "entry": 2.0, "adx_entry": 18, "adx_exit": 12, "atr_stop_mult": 4.0},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 10: Regime-based Mean Reversion
+# ============================================================
+
+# T10-A: Simple Regime Dip/Rally (mutually exclusive entry/exit conditions)
+T10_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    sideways_buffer = {sideways_buffer}
+    adx_exit = {adx_exit}
+    atr_stop_mult = {atr_stop_mult}
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        ma200 = self.feat.sma(close, timeperiod={ma200_window})
+        ma20 = self.feat.sma(close, timeperiod={ma20_window})
+        ratio = close / ma200
+        warmup = ma200 > 0
+
+        bull = warmup & (ratio > 1 + self.sideways_buffer)
+        bear = warmup & (ratio < 1 - self.sideways_buffer)
+        sideways = warmup & ~bull & ~bear
+
+        lower_q = self.feat.rolling_quantile(close, window=20, q=0.2)
+        upper_q = self.feat.rolling_quantile(close, window=20, q=0.8)
+
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+        atr = self.feat.atr(high, low, close, timeperiod=14)
+
+        trailing_high = self.feat.rolling_max(high, window=10)
+        trailing_low = self.feat.rolling_min(low, window=10)
+        no_long_stop = close >= trailing_high - self.atr_stop_mult * atr
+        no_short_stop = close <= trailing_low + self.atr_stop_mult * atr
+        trailing_stop = (
+            (close < trailing_high - self.atr_stop_mult * atr) |
+            (close > trailing_low + self.atr_stop_mult * atr)
+        )
+
+        dip_long = bull & (close < ma20) & (adx_val > self.adx_exit) & no_long_stop
+        rally_short = bear & (close > ma20) & (adx_val > self.adx_exit) & no_short_stop
+        mr_long = sideways & (close < lower_q) & (adx_val > self.adx_exit) & no_long_stop
+        mr_short = sideways & (close > upper_q) & (adx_val > self.adx_exit) & no_short_stop
+
+        long_setup = dip_long | mr_long
+        short_setup = rally_short | mr_short
+        exit_setup = (
+            self.op.crossed_above(close, ma20) |
+            self.op.crossed_below(close, ma20) |
+            self.op.crossed_above(close, lower_q) |
+            self.op.crossed_below(close, upper_q) |
+            (adx_val < self.adx_exit) |
+            trailing_stop
+        )
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T10-A",
+    "thesis":     "10",
+    "descr":      "Regime Dip/Rally",
+    "timeframes": [15, 30, 60],
+    "code":       T10_A_CODE,
+    "fixed":      {"ma200_window": 200, "ma20_window": 20, "sideways_buffer": 0.02, "adx_window": 14, "adx_exit": 12, "atr_stop_mult": 2.5},
+    "params":     {},
+})
+
+# T10-B: Confirmed Regime Entries (mutually exclusive entry/exit conditions)
+T10_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    sideways_buffer = {sideways_buffer}
+    adx_entry = {adx_entry}
+    adx_exit = {adx_exit}
+    atr_stop_mult = {atr_stop_mult}
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        ma200 = self.feat.sma(close, timeperiod={ma200_window})
+        ma20 = self.feat.sma(close, timeperiod={ma20_window})
+        ratio = close / ma200
+        warmup = ma200 > 0
+
+        bull = warmup & (ratio > 1 + self.sideways_buffer)
+        bear = warmup & (ratio < 1 - self.sideways_buffer)
+        sideways = warmup & ~bull & ~bear
+
+        lower_q = self.feat.rolling_quantile(close, window=20, q=0.2)
+        upper_q = self.feat.rolling_quantile(close, window=20, q=0.8)
+
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
+        volume_ok = volume > vol_sma
+        rsi = self.feat.rsi(close, timeperiod=14)
+        atr = self.feat.atr(high, low, close, timeperiod=14)
+
+        trailing_high = self.feat.rolling_max(high, window=10)
+        trailing_low = self.feat.rolling_min(low, window=10)
+        no_long_stop = close >= trailing_high - self.atr_stop_mult * atr
+        no_short_stop = close <= trailing_low + self.atr_stop_mult * atr
+        trailing_stop = (
+            (close < trailing_high - self.atr_stop_mult * atr) |
+            (close > trailing_low + self.atr_stop_mult * atr)
+        )
+
+        dip_long = bull & (close < ma20) & (adx_val > self.adx_entry) & volume_ok & no_long_stop
+        rally_short = bear & (close > ma20) & (adx_val > self.adx_entry) & volume_ok & no_short_stop
+        mr_long = sideways & (close < lower_q) & (rsi < 30) & (volume < vol_sma) & no_long_stop
+        mr_short = sideways & (close > upper_q) & (rsi > 70) & (volume < vol_sma) & no_short_stop
+
+        long_setup = dip_long | mr_long
+        short_setup = rally_short | mr_short
+        exit_setup = (
+            self.op.crossed_above(close, ma20) |
+            self.op.crossed_below(close, ma20) |
+            self.op.crossed_above(close, lower_q) |
+            self.op.crossed_below(close, upper_q) |
+            (adx_val < self.adx_exit) |
+            trailing_stop
+        )
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T10-B",
+    "thesis":     "10",
+    "descr":      "Confirmed Regime Entries",
+    "timeframes": [15, 30],
+    "code":       T10_B_CODE,
+    "fixed":      {"ma200_window": 200, "ma20_window": 20, "sideways_buffer": 0.02, "adx_window": 14, "adx_entry": 22, "adx_exit": 15, "vol_window": 14, "atr_stop_mult": 2.5},
+    "params":     {},
+})
+
+# T10-C: Regime Band Oscillator (mutually exclusive entry/exit conditions)
+T10_C_CODE = """class CustomStrategy(SimpleAlgorithm):
+    sideways_buffer = {sideways_buffer}
+    adx_exit = {adx_exit}
+    atr_stop_mult = {atr_stop_mult}
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        ma200 = self.feat.sma(close, timeperiod={ma200_window})
+        ratio = close / ma200
+        warmup = ma200 > 0
+
+        bull = warmup & (ratio > 1 + self.sideways_buffer)
+        bear = warmup & (ratio < 1 - self.sideways_buffer)
+        sideways = warmup & ~bull & ~bear
+
+        upper, mid, lower = self.feat.bbands(close, timeperiod={bb_window}, nbdevup={bb_mult}, nbdevdn={bb_mult})
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+        atr = self.feat.atr(high, low, close, timeperiod=14)
+
+        lower_q = self.feat.rolling_quantile(close, window=20, q=0.1)
+        upper_q = self.feat.rolling_quantile(close, window=20, q=0.9)
+
+        trailing_high = self.feat.rolling_max(high, window=10)
+        trailing_low = self.feat.rolling_min(low, window=10)
+        no_long_stop = close >= trailing_high - self.atr_stop_mult * atr
+        no_short_stop = close <= trailing_low + self.atr_stop_mult * atr
+        trailing_stop = (
+            (close < trailing_high - self.atr_stop_mult * atr) |
+            (close > trailing_low + self.atr_stop_mult * atr)
+        )
+
+        dip_long = bull & (close < lower) & (adx_val > self.adx_exit) & no_long_stop
+        rally_short = bear & (close > upper) & (adx_val > self.adx_exit) & no_short_stop
+        mr_long = sideways & (close < lower_q) & (adx_val > self.adx_exit) & no_long_stop
+        mr_short = sideways & (close > upper_q) & (adx_val > self.adx_exit) & no_short_stop
+
+        long_setup = dip_long | mr_long
+        short_setup = rally_short | mr_short
+        exit_setup = (
+            self.op.crossed_above(close, mid) |
+            self.op.crossed_below(close, mid) |
+            self.op.crossed_above(close, lower_q) |
+            self.op.crossed_below(close, upper_q) |
+            (adx_val < self.adx_exit) |
+            trailing_stop
+        )
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T10-C",
+    "thesis":     "10",
+    "descr":      "Regime Band Oscillator",
+    "timeframes": [30, 60],
+    "code":       T10_C_CODE,
+    "fixed":      {"ma200_window": 200, "bb_window": 20, "bb_mult": 2.0, "sideways_buffer": 0.02, "adx_window": 14, "adx_exit": 12, "atr_stop_mult": 2.5},
+    "params":     {},
+})
 
 print(f"  OK Registered {len(TEMPLATES)} template definitions")
 
