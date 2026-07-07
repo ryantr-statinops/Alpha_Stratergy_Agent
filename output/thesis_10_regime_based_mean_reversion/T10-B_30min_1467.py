@@ -34,29 +34,26 @@ class CustomStrategy(SimpleAlgorithm):
         rsi = self.feat.rsi(close, timeperiod=14)
         atr = self.feat.atr(high, low, close, timeperiod=14)
 
-        trailing_high = self.feat.rolling_max(high, window=10)
-        trailing_low = self.feat.rolling_min(low, window=10)
-        no_long_stop = close >= trailing_high - self.atr_stop_mult * atr
-        no_short_stop = close <= trailing_low + self.atr_stop_mult * atr
-        trailing_stop = (
-            (close < trailing_high - self.atr_stop_mult * atr) |
-            (close > trailing_low + self.atr_stop_mult * atr)
+        no_long_stop = close >= ma20 - self.atr_stop_mult * atr
+        no_short_stop = close <= ma20 + self.atr_stop_mult * atr
+        atr_stop = (
+            (close < ma20 - self.atr_stop_mult * atr) |
+            (close > ma20 + self.atr_stop_mult * atr)
         )
 
         dip_long = bull & (close < ma20) & (adx_val > self.adx_entry) & volume_ok & no_long_stop
         rally_short = bear & (close > ma20) & (adx_val > self.adx_entry) & volume_ok & no_short_stop
-        mr_long = sideways & (close < lower_q) & (rsi < 30) & (volume < vol_sma) & no_long_stop
-        mr_short = sideways & (close > upper_q) & (rsi > 70) & (volume < vol_sma) & no_short_stop
+        mr_long = sideways & (close < lower_q) & (rsi < 30) & (volume < vol_sma) & (adx_val < self.adx_entry) & no_long_stop
+        mr_short = sideways & (close > upper_q) & (rsi > 70) & (volume < vol_sma) & (adx_val < self.adx_entry) & no_short_stop
 
         long_setup = dip_long | mr_long
         short_setup = rally_short | mr_short
         exit_setup = (
             self.op.crossed_above(close, ma20) |
             self.op.crossed_below(close, ma20) |
-            self.op.crossed_above(close, lower_q) |
-            self.op.crossed_below(close, upper_q) |
             (adx_val < self.adx_exit) |
-            trailing_stop
+            (adx_val > self.adx_entry) |
+            atr_stop
         )
 
         self.set_positions(exit_setup, position=0)

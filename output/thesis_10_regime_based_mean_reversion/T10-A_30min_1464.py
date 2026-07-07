@@ -5,7 +5,8 @@ idea:    Bull (close>MA200): long on dips to MA20. Bear (close<MA200): short on 
 """
 class CustomStrategy(SimpleAlgorithm):
     sideways_buffer = 0.02
-    adx_exit = 12
+    adx_entry = 20
+    adx_exit = 15
     atr_stop_mult = 2.5
 
 
@@ -29,29 +30,26 @@ class CustomStrategy(SimpleAlgorithm):
         adx_val = self.feat.adx(high, low, close, timeperiod=14)
         atr = self.feat.atr(high, low, close, timeperiod=14)
 
-        trailing_high = self.feat.rolling_max(high, window=10)
-        trailing_low = self.feat.rolling_min(low, window=10)
-        no_long_stop = close >= trailing_high - self.atr_stop_mult * atr
-        no_short_stop = close <= trailing_low + self.atr_stop_mult * atr
-        trailing_stop = (
-            (close < trailing_high - self.atr_stop_mult * atr) |
-            (close > trailing_low + self.atr_stop_mult * atr)
+        no_long_stop = close >= ma20 - self.atr_stop_mult * atr
+        no_short_stop = close <= ma20 + self.atr_stop_mult * atr
+        atr_stop = (
+            (close < ma20 - self.atr_stop_mult * atr) |
+            (close > ma20 + self.atr_stop_mult * atr)
         )
 
-        dip_long = bull & (close < ma20) & (adx_val > self.adx_exit) & no_long_stop
-        rally_short = bear & (close > ma20) & (adx_val > self.adx_exit) & no_short_stop
-        mr_long = sideways & (close < lower_q) & (adx_val > self.adx_exit) & no_long_stop
-        mr_short = sideways & (close > upper_q) & (adx_val > self.adx_exit) & no_short_stop
+        dip_long = bull & (close < ma20) & (adx_val > self.adx_entry) & no_long_stop
+        rally_short = bear & (close > ma20) & (adx_val > self.adx_entry) & no_short_stop
+        mr_long = sideways & (close < lower_q) & (adx_val < self.adx_entry) & no_long_stop
+        mr_short = sideways & (close > upper_q) & (adx_val < self.adx_entry) & no_short_stop
 
         long_setup = dip_long | mr_long
         short_setup = rally_short | mr_short
         exit_setup = (
             self.op.crossed_above(close, ma20) |
             self.op.crossed_below(close, ma20) |
-            self.op.crossed_above(close, lower_q) |
-            self.op.crossed_below(close, upper_q) |
             (adx_val < self.adx_exit) |
-            trailing_stop
+            (adx_val > self.adx_entry) |
+            atr_stop
         )
 
         self.set_positions(exit_setup, position=0)
