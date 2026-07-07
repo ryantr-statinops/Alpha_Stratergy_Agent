@@ -2285,9 +2285,10 @@ TEMPLATES.append({
 # THESIS 10: Regime-based Mean Reversion
 # ============================================================
 
-# T10-A: Simple Regime Dip/Rally (mutually exclusive entry/exit conditions)
+# T10-A: Simple Regime Dip/Rally (ADX threshold separation + simplified exit)
 T10_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     sideways_buffer = {sideways_buffer}
+    adx_entry = {adx_entry}
     adx_exit = {adx_exit}
     atr_stop_mult = {atr_stop_mult}
 
@@ -2321,19 +2322,18 @@ T10_A_CODE = """class CustomStrategy(SimpleAlgorithm):
             (close > trailing_low + self.atr_stop_mult * atr)
         )
 
-        dip_long = bull & (close < ma20) & (adx_val > self.adx_exit) & no_long_stop
-        rally_short = bear & (close > ma20) & (adx_val > self.adx_exit) & no_short_stop
-        mr_long = sideways & (close < lower_q) & (adx_val > self.adx_exit) & no_long_stop
-        mr_short = sideways & (close > upper_q) & (adx_val > self.adx_exit) & no_short_stop
+        dip_long = bull & (close < ma20) & (adx_val > self.adx_entry) & no_long_stop
+        rally_short = bear & (close > ma20) & (adx_val > self.adx_entry) & no_short_stop
+        mr_long = sideways & (close < lower_q) & (adx_val < self.adx_entry) & no_long_stop
+        mr_short = sideways & (close > upper_q) & (adx_val < self.adx_entry) & no_short_stop
 
         long_setup = dip_long | mr_long
         short_setup = rally_short | mr_short
         exit_setup = (
             self.op.crossed_above(close, ma20) |
             self.op.crossed_below(close, ma20) |
-            self.op.crossed_above(close, lower_q) |
-            self.op.crossed_below(close, upper_q) |
             (adx_val < self.adx_exit) |
+            (adx_val > self.adx_entry) |
             trailing_stop
         )
 
@@ -2348,7 +2348,7 @@ TEMPLATES.append({
     "descr":      "Regime Dip/Rally",
     "timeframes": [15, 30, 60],
     "code":       T10_A_CODE,
-    "fixed":      {"ma200_window": 200, "ma20_window": 20, "sideways_buffer": 0.02, "adx_window": 14, "adx_exit": 12, "atr_stop_mult": 2.5},
+    "fixed":      {"ma200_window": 200, "ma20_window": 20, "sideways_buffer": 0.02, "adx_window": 14, "adx_entry": 20, "adx_exit": 15, "atr_stop_mult": 2.5},
     "params":     {},
 })
 
