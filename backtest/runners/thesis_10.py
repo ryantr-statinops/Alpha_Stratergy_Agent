@@ -34,9 +34,11 @@ def T10_A(df, ma200_window=200, ma20_window=20, sideways_buffer=0.02,
 
     long_setup = np.asarray(dip_long | mr_long)
     short_setup = np.asarray(rally_short | mr_short)
-    exit_setup = np.asarray(op.between(close, ma20 * 0.998, ma20 * 1.002) | (adx_val < adx_exit))
+    exit_setup = np.asarray(op.between(close, mid * 0.998, mid * 1.002) | (adx_val < adx_exit))
 
-    return compute_positions(df, long_setup, short_setup, exit_setup)
+    long_signal = long_setup & (~exit_setup)
+    short_signal = short_setup & (~exit_setup)
+    return compute_positions(df, long_signal, short_signal, exit_setup)
 
 
 def T10_B(df, ma200_window=200, ma20_window=20, sideways_buffer=0.02,
@@ -69,7 +71,9 @@ def T10_B(df, ma200_window=200, ma20_window=20, sideways_buffer=0.02,
     short_setup = np.asarray(rally_short | mr_short)
     exit_setup = np.asarray(op.between(close, ma20 * 0.998, ma20 * 1.002) | (adx_val < adx_exit))
 
-    return compute_positions(df, long_setup, short_setup, exit_setup)
+    long_signal = long_setup & (~exit_setup)
+    short_signal = short_setup & (~exit_setup)
+    return compute_positions(df, long_signal, short_signal, exit_setup)
 
 
 def T10_C(df, ma200_window=200, sideways_buffer=0.02, bb_window=20, bb_mult=2.0,
@@ -99,6 +103,8 @@ def T10_C(df, ma200_window=200, sideways_buffer=0.02, bb_window=20, bb_mult=2.0,
 
     long_setup = np.asarray(dip_long | mr_long)
     short_setup = np.asarray(rally_short | mr_short)
-    exit_setup = np.asarray(op.between(close, mid * 0.998, mid * 1.002) | (adx_val < adx_exit))
+    exit_setup = np.asarray(op.between(close, ma20 * 0.998, ma20 * 1.002) | (adx_val < adx_exit))
 
-    return compute_positions(df, long_setup, short_setup, exit_setup)
+    long_signal = long_setup & (~exit_setup)
+    short_signal = short_setup & (~exit_setup)
+    return compute_positions(df, long_signal, short_signal, exit_setup)
