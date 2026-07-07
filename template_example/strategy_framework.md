@@ -397,7 +397,57 @@ EMA(source)
 
 ---
 
-## 5.3 Position Order Priority
+## 5.3 Signal Masking — `& (~exit_setup)`
+
+Ngoài cơ chế Exit→Long→Short priority (section 5.3), một số chiến lược (đặc biệt thesis 10) dùng thêm **safety mask** để đảm bảo bar exit không bị entry override:
+
+```python
+exit_setup = (...)  # MA20 cross, ADX threshold, atr_stop
+long_setup = dip_long | mr_long
+short_setup = rally_short | mr_short
+
+long_signal = long_setup & (~exit_setup)
+short_signal = short_setup & (~exit_setup)
+
+self.set_positions(exit_setup, position=0)
+self.set_positions(long_signal, position=1)
+self.set_positions(short_signal, position=-1)
+```
+
+### Tại sao cần cả mask lẫn priority?
+
+Cơ chế priority (Exit→Long→Short) vốn đã xử lý overlap ở **layer position sizing**: gọi `set_positions(exit)` trước, `set_positions(long)` sau — Long override Exit. Nhưng điều này phụ thuộc vào thứ tự gọi, có thể gây bug nếu vô tình đổi thứ tự.
+
+`& (~exit_setup)` là **defense-in-depth ở layer trading logic**: chủ động loại bỏ bar exit khỏi entry signal ngay từ đầu. Điều này:
+
+- Không phụ thuộc vào thứ tự gọi `set_positions`
+- Dễ đọc, dễ maintain — intent rõ ràng: "nếu bar này exit thì không vào lệnh"
+- Quan trọng nhất với các chiến lược có **nhiều exit conditions OR nhau** (T10 có 5 conditions) — khó đảm bảo mutual exclusivity tuyệt đối
+
+### Khi nào dùng mask?
+
+- **Nên dùng**: chiến lược có exit_setup phức tạp (nhiều OR conditions), đặc biệt khi exit và entry dùng chung indicator reference (MA20, ATR, ADX)
+- **Không bắt buộc**: chiến lược đơn giản với 1-2 exit conditions, mutual exclusivity rõ ràng giữa entry và exit
+
+### Lưu ý
+
+```python
+# KHÔNG làm thế này — exit_setup bị biến đổi, làm mất intent gốc
+long_setup = long_setup & (~exit_setup)
+short_setup = short_setup & (~exit_setup)
+
+# LÀM thế này — giữ nguyên long_setup/short_setup gốc, tạo biến mới
+long_signal = long_setup & (~exit_setup)
+short_signal = short_setup & (~exit_setup)
+```
+
+Giữ `long_setup`/`short_setup` gốc giúp:
+- Dễ debug (có thể so sánh raw setup vs masked signal)
+- Dễ mở rộng (thêm position sizing filter mà không ảnh hưởng logic entry)
+
+---
+
+## 5.4 Position Order Priority
 
 Trong `__logic__`, thứ tự gọi `set_positions()` phải luôn là:
 

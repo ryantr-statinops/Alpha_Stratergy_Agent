@@ -22,6 +22,17 @@
 
 3. **Exit**: cross MA20 trở lại hoặc ADX yếu
 
+## Signal Masking — `& (~exit_setup)`
+
+T10 dùng `long_signal = long_setup & (~exit_setup)` và `short_signal = short_setup & (~exit_setup)` trước khi gọi `set_positions`. Đây là safety mask defense-in-depth — khác với mutual exclusivity (ngăn ở logic entry condition), mask này chủ động loại bar exit khỏi entry signal.
+
+Lý do T10 cần mask:
+- Exit có 5 conditions OR nhau (MA20 cross + ADX thấp + ADX cao + ATR stop) — khó đảm bảo từng condition riêng lẻ mutual exclusive hoàn toàn với entry
+- Entry có 4 sub-setups (dip_long, rally_short, mr_long, mr_short) — mỗi setup kiểm tra các điều kiện khác nhau
+- Mask đảm bảo: bar nào exit_setup = True → không vào lệnh mới, bất kể entry conditions có thỏa hay không
+
+Xem `template_example/strategy_framework.md` section 5.3 để biết thêm chi tiết về pattern này.
+
 ## Templates
 
 ### T10-A: Simple Regime Dip/Rally
