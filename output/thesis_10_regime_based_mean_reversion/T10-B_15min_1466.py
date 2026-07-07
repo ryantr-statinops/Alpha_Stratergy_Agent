@@ -56,7 +56,10 @@ class CustomStrategy(SimpleAlgorithm):
             atr_stop
         )
 
+        long_signal = long_setup & (~exit_setup)
+        short_signal = short_setup & (~exit_setup)
+
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
 
