@@ -165,6 +165,14 @@ STRATEGY_REGIME_MAP = {
     "T08-C": {"regimes": ["ranging", "weak"], "vol": ["low"]},
     "T08-D": {"regimes": ["weak", "ranging"], "vol": ["normal"]},
     "T08-E": {"regimes": ["trending", "weak"], "vol": ["normal"]},
+    # Thesis 09: Institutional Flow Arbitrage
+    "T09-A": {"regimes": ["weak", "ranging"], "vol": ["normal", "low"]},
+    "T09-B": {"regimes": ["trending", "weak"], "vol": ["normal", "high"]},
+    "T09-C": {"regimes": ["weak", "ranging"], "vol": ["normal", "low"]},
+    # Thesis 10: Regime-based Mean Reversion
+    "T10-A": {"regimes": ["trending", "weak"], "vol": ["normal", "low"]},
+    "T10-B": {"regimes": ["trending"], "vol": ["normal", "high"]},
+    "T10-C": {"regimes": ["weak", "ranging"], "vol": ["normal", "low"]},
 }
 
 

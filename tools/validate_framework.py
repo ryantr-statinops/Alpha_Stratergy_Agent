@@ -52,7 +52,9 @@ def _try_float(val):
 
 
 def check_order(code: str, filepath: str) -> list:
-    """Check that set_positions calls are in Exit → Long → Short order."""
+    """Check that set_positions calls are in either
+       Exit → Long → Short  (old convention) or
+       Long → Short → Exit  (new convention, XNOQuant: exit must beat entries)."""
     lines = code.splitlines()
     findings = []
     calls = []
@@ -68,23 +70,35 @@ def check_order(code: str, filepath: str) -> list:
     if not calls:
         return findings
 
-    # Check first call is exit
     first = calls[0]
-    first_is_exit = first[1] == "exit" or (first[2] is not None and first[2] == 0)
-    if not first_is_exit:
-        findings.append((
-            filepath, first[0],
-            f"First set_positions should be Exit (position=0), got '{first[3]}' pos={first[4]}"
-        ))
-
-    # Check last call is short
     last = calls[-1]
+    first_is_exit = first[1] == "exit" or (first[2] is not None and first[2] == 0)
+    last_is_exit = last[1] == "exit" or (last[2] is not None and last[2] == 0)
     last_is_short = last[1] == "short" or (last[2] is not None and last[2] < 0)
-    if not last_is_short:
-        findings.append((
-            filepath, last[0],
-            f"Last set_positions should be Short (position<0), got '{last[3]}' pos={last[4]}"
-        ))
+
+    # New convention: Exit is last (beats long/short)
+    if last_is_exit:
+        # Validate new convention: first must be long, second must be short
+        if len(calls) >= 2:
+            second = calls[1]
+            second_is_short = second[1] == "short" or (second[2] is not None and second[2] < 0)
+            if not second_is_short:
+                findings.append((
+                    filepath, second[0],
+                    f"Second set_positions (before exit) should be Short (position<0), got '{second[3]}' pos={second[4]}"
+                ))
+    # Old convention: Exit is first
+    else:
+        if not first_is_exit:
+            findings.append((
+                filepath, first[0],
+                f"First set_positions should be Exit (position=0), got '{first[3]}' pos={first[4]}"
+            ))
+        if not last_is_short:
+            findings.append((
+                filepath, last[0],
+                f"Last set_positions should be Short (position<0), got '{last[3]}' pos={last[4]}"
+            ))
 
     # Check numeric positions are valid
     for line_no, role, pos_val, var_name, raw_pos in calls:
