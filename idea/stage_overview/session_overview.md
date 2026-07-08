@@ -14,8 +14,8 @@
 | # | Thành phần | Nội dung |
 |---|-----------|----------|
 | 1 | `data/` | Hiểu dữ liệu VnFuture: `pv_close`, `pv_high`, `pv_low`, `pv_volume`, `fut_matched_volume_vn30f1m_1d`, `fut_open_interest_vn30f1m_1d`, ... |
-| 2 | `feature/` | 140+ indicators: EMA, SMA, MACD, ADX, RSI, BBands, candlestick patterns, rolling stats |
-| 3 | `operations/` | 30+ operators: crossed_above/below, bars_since, hold_for, fillna, and_, or_ |
+| 2 | `syntax/` | 140+ indicators + operators: EMA, SMA, MACD, ADX, RSI, BBands, crossed_above/below, bars_since, hold_for, fillna |
+| 3 | `template_example/` | 9 template files: pattern `CustomStrategy(SimpleAlgorithm)` + `self.set_positions()` |
 | 4 | `template_example/` | 9 template files: pattern `CustomStrategy(SimpleAlgorithm)` + `self.set_positions()` |
 
 ---
@@ -98,9 +98,9 @@ ALPHA_BOT/
 ├── README.md
 ├── data/
 │   └── VnFuture.md
-├── feature/
-│   └── feature_syntax.md
-├── operations/
+├── syntax/
+│   ├── syntax_guide.md
+│   ├── feature_syntax.md
 │   └── operations_syntax.md
 ├── template_example/
 │   ├── RangeOnlySessionMomentum.py

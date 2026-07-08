@@ -2,7 +2,7 @@
 
 > **Session:** 2026-07-03 — Fresh start, 6 new thesis groups
 > **Platform:** XNOQuant — `CustomStrategy(SimpleAlgorithm)`
-> **Core Reference:** `feature/feature_syntax.md` (140+ functions), `operations/operations_syntax.md` (30+ operators), `data/vietnam_market_characteristics.md`, `template_example/strategy_framework.md`
+> **Core Reference:** `syntax/syntax_guide.md`, `syntax/feature_syntax.md` (140+ functions), `syntax/operations_syntax.md` (30+ operators), `data/vietnam_market_characteristics.md`, `template_example/strategy_framework.md`
 > **Target:** Vietnam Quant Challenge 2026 — Sharpe ≥ 2.5, CAGR > 20%, Max DD > -20%
 
 ---

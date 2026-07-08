@@ -1,3 +1,27 @@
+## Operations Syntax Reference
+
+Use this file as the canonical catalog for `self.op.*`.
+
+### Quick Lookup
+
+| Group | Typical use | Representative functions |
+|---|---|---|
+| Cross / Event | detect signal transitions | `crossed`, `crossed_above`, `crossed_below`, `crossed_above_value`, `crossed_below_value` |
+| Lag / Time | compare against past bars | `previous`, `shift`, `diff`, `pct_change`, `bars_since` |
+| Missing Data | handle nulls safely | `fillna`, `ffill`, `zero_ifna`, `isna`, `notna`, `isfinite` |
+| Range / Filter | constrain values | `between`, `clip`, `replace`, `sign` |
+| Signal Persistence | keep or fetch prior events | `hold_for`, `value_when`, `current` |
+| Boolean Logic | combine conditions | `and_`, `or_`, `not_`, `where` |
+| Numeric Helpers | simple transforms | `abs` |
+
+### Reading Tips
+
+- Use the quick lookup to find the right primitive, then check the detailed signature.
+- Prefer `previous`, `shift`, `pct_change`, `bars_since`, and `hold_for` for causal logic.
+- Keep `fillna` causal by using a constant or forward-fill only.
+
+### Cross and Event Primitives
+
 crossed
 Returns: SeriesT
 self.op.crossed(series1: SeriesT, series2: SeriesT)
@@ -14,6 +38,9 @@ current
 Returns: SeriesT
 self.op.current(series: SeriesT)
 Get the current value of a series. Used for clarity when comparing current vs previous values.
+
+### Lag and Time Primitives
+
 previous
 Returns: SeriesT
 self.op.previous(series: SeriesT, periods: int = 1)
@@ -70,6 +97,9 @@ zero_ifna
 Returns: SeriesT
 self.op.zero_ifna(series: SeriesT)
 Convenience helper: replace NA values with 0.
+
+### Range, Mask, and Conditional Helpers
+
 sign
 Returns: SeriesT
 self.op.sign(series: SeriesT)
@@ -86,6 +116,9 @@ where
 Returns: SeriesT
 self.op.where(condition: SeriesT, x: SeriesOrFloatT, y: SeriesOrFloatT)
 Element-wise conditional selection. Returns `x` where condition is True, else `y`.
+
+### Signal Persistence
+
 value_when
 Returns: SeriesT
 self.op.value_when(condition: SeriesT, values: SeriesT, occurrence: int = 0)
@@ -106,6 +139,9 @@ crossed_below_value
 Returns: SeriesT
 self.op.crossed_below_value(series: SeriesT, value: float)
 Detect when a series crosses below a constant threshold. Equivalent to crossing below a constant series with the same threshold value. Example: `self.op.crossed_below_value(rsi, 30)`. Causal note: uses only current and previous values.
+
+### Boolean Logic
+
 and_
 Returns: SeriesT
 self.op.and_(*conditions: SeriesT)
@@ -118,3 +154,7 @@ not_
 Returns: SeriesT
 self.op.not_(series: SeriesT)
 Logical NOT operation. Inverts a boolean series. True becomes False and vice vers
+
+### Tutorial
+
+Use the operators above to assemble a causal signal pipeline: lag first, then filter, then combine, then size positions.

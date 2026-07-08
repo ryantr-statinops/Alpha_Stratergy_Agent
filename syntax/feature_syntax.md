@@ -1,3 +1,29 @@
+## Feature Syntax Reference
+
+Use this file as the canonical catalog for `self.feat.*`.
+
+### Quick Lookup
+
+| Group | Typical use | Representative functions |
+|---|---|---|
+| Trend | identify trend strength/direction | `adx`, `adxr`, `ema`, `ma`, `macd`, `sar`, `wma` |
+| Momentum | measure price impulse | `roc`, `rsi`, `cmo`, `momentum`, `stoch`, `stochrsi`, `trix` |
+| Volume / Flow | confirm participation and pressure | `obv`, `mfi`, `ad`, `adosc`, `cmf`, `volume_z` |
+| Volatility | detect expansion/contraction | `atr`, `natr`, `bbands`, `trange`, `stddev`, `price_z` |
+| Cycle | identify regime and turning points | `ht_trendline`, `dcperiod`, `sine`, `trendmode` |
+| Price Transforms | normalize price input | `hlc3`, `ohlc4`, `typprice`, `wclprice`, `avgprice` |
+| Statistics | rolling distribution helpers | `rolling_mean`, `rolling_quantile`, `rolling_zscore`, `correl`, `beta` |
+| Candles | candlestick pattern detection | `doji`, `hammer`, `engulfing_pattern`, `morning_star`, `shooting_star` |
+| Math / Helpers | transform series element-wise | `add`, `sub`, `mult`, `div`, `abs`, `clip`, `sign` |
+
+### Reading Tips
+
+- Prefer the quick lookup first, then scroll into the grouped catalog below.
+- Tuple-return functions are marked in-place in the detailed entries.
+- Parameter names are kept exactly as the platform expects; use `open_` rather than `open`.
+
+### Trend and Moving Average Family
+
 adx
 Returns: SeriesT
 self.feat.adx(high: SeriesT = None, low: SeriesT = None, close: SeriesT = None, timeperiod=14)
@@ -94,6 +120,9 @@ wma
 Returns: SeriesT
 self.feat.wma(series: SeriesT = None, timeperiod=30)
 Weighted Moving Average (WMA). A moving average that assigns linearly increasing weights to more recent data.
+
+### Directional / Oscillator Family
+
 adxr
 Returns: SeriesT
 self.feat.adxr(high: SeriesT = None, low: SeriesT = None, close: SeriesT = None, timeperiod=14)
@@ -198,6 +227,9 @@ willr
 Returns: SeriesT
 self.feat.willr(high: SeriesT = None, low: SeriesT = None, close: SeriesT = None, timeperiod=14)
 Williams %R. A momentum indicator measuring overbought/oversold levels. Range -100 to 0. Below -80 is oversold, above -20 is overbought.
+
+### Volume and Volatility Family
+
 ad
 Returns: SeriesT
 self.feat.ad(high: SeriesT = None, low: SeriesT = None, close: SeriesT = None, volume: SeriesT = None)
@@ -230,6 +262,9 @@ trendmode
 Returns: SeriesT
 self.feat.trendmode(close: SeriesT = None)
 Hilbert Transform - Trend vs Cycle Mode. Returns 1 for trend mode, 0 for cycle mode.
+
+### Price, Statistics, and Transforms
+
 avgprice
 Returns: SeriesT
 self.feat.avgprice(open_: SeriesT = None, high: SeriesT = None, low: SeriesT = None, close: SeriesT = None)
@@ -282,6 +317,9 @@ var
 Returns: SeriesT
 self.feat.var(s1: SeriesT, timeperiod=5, nbdev=1)
 Variance. Measures the squared deviation of values from their mean over a period.
+
+### Generic Math Helpers
+
 acos
 Returns: SeriesT
 self.feat.acos(s1: SeriesT)
@@ -386,6 +424,9 @@ sum
 Returns: SeriesT
 self.feat.sum(s1: SeriesT, timeperiod=30)
 Summation. Calculates the sum of values over a rolling window.
+
+### Rolling Statistics
+
 rolling_mean
 Returns: SeriesT
 self.feat.rolling_mean(s1: SeriesT, window=20)
@@ -450,6 +491,9 @@ rolling_argmin
 Returns: SeriesT
 self.feat.rolling_argmin(s1: SeriesT, window=20)
 Rolling Argmin. Returns bars since the most recent minimum within the trailing window. 0 means the current row is the minimum.
+
+### Candlestick Patterns
+
 two_crows
 Returns: SeriesT
 self.feat.two_crows(open_: SeriesT = None, high: SeriesT = None, low: SeriesT = None, close: SeriesT = None)
@@ -690,6 +734,9 @@ xside_gap_3methods
 Returns: SeriesT
 self.feat.xside_gap_3methods(open_: SeriesT = None, high: SeriesT = None, low: SeriesT = None, close: SeriesT = None)
 Upside/Downside Gap Three Methods. A continuation pattern with a gap followed by three candles filling the gap.
+
+### Price Normalization
+
 hlc3
 Returns: SeriesT
 self.feat.hlc3(high: SeriesT = None, low: SeriesT = None, close: SeriesT = None)
@@ -730,4 +777,7 @@ log_returns
 Returns: SeriesT
 self.feat.log_returns(series: SeriesT = None, periods=1)
 Calculate log-return from the input series
-Tutorial
+
+### Tutorial
+
+Use the tables above to pick a feature family first, then jump to the detailed entry for exact signatures.

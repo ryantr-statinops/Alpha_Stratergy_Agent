@@ -367,7 +367,7 @@ op_price = ...
 
 ## 5.2 Remove Documentation Type Hints
 
-Các tài liệu trong `feature/` và `operations/` có thể chứa:
+Các tài liệu trong `syntax/` có thể chứa:
 
 ```python
 SeriesT = None
@@ -482,8 +482,8 @@ Không được đảo thứ tự này nhằm tránh xung đột trạng thái t
 Trước khi sinh bất kỳ file `.py` nào, AI Agent phải xác nhận đã đáp ứng đầy đủ các điều kiện sau:
 
 - [ ] Đã đọc toàn bộ tài liệu trong `data/`
-- [ ] Đã đọc toàn bộ tài liệu trong `feature/`
-- [ ] Đã đọc toàn bộ tài liệu trong `operations/`
+- [ ] Đã đọc `syntax/syntax_guide.md`
+- [ ] Đã đọc các catalog trong `syntax/`
 - [ ] Đã tham khảo `template_example/`
 - [ ] Chỉ sử dụng API chính thức của XNOQuant
 - [ ] Không sử dụng thư viện hoặc framework ngoài nếu không được yêu cầu
