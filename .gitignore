@@ -23,3 +23,6 @@ venv/
 
 # Git
 *.orig
+
+# Output
+output/

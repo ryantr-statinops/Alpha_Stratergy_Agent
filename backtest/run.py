@@ -98,6 +98,7 @@ FUNC_MAP = {
     "T11-A": th11.T11_A,
     "T11-B": th11.T11_B,
     "T11-C": th11.T11_C,
+    "T11-D": th11.T11_D,
 }
 
 TF_LOOKUP = {5: "5min", 15: "15min", 30: "30min", 60: "60min"}

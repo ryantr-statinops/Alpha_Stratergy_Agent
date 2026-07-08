@@ -177,6 +177,7 @@ STRATEGY_REGIME_MAP = {
     "T11-A": {"regimes": ["ranging", "weak"], "vol": ["normal", "low"]},
     "T11-B": {"regimes": ["ranging", "weak"], "vol": ["normal", "low"]},
     "T11-C": {"regimes": ["ranging", "weak"], "vol": ["normal", "low"]},
+    "T11-D": {"regimes": ["trending", "weak", "ranging"], "vol": ["normal", "low", "high"]},
 }
 
 
