@@ -2533,9 +2533,12 @@ T11_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         short_setup = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry)
         exit_setup = (self.op.abs(vwap_dist_z) < self.z_exit) | (self.op.abs(basis_z) < self.z_exit)
 
+        long_signal = long_setup & (~exit_setup)
+        short_signal = short_setup & (~exit_setup)
+
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
 """
 
 for vw, ze in product([14, 20, 34], [1.5, 2.0, 2.5]):
@@ -2580,9 +2583,12 @@ T11_B_CODE = """class CustomStrategy(SimpleAlgorithm):
             (adx_val > {adx_exit})
         )
 
+        long_signal = long_setup & (~exit_setup)
+        short_signal = short_setup & (~exit_setup)
+
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
 """
 
 for vw, ze, am in product([14, 20], [1.5, 2.0], [18, 22]):
@@ -2632,9 +2638,12 @@ T11_C_CODE = """class CustomStrategy(SimpleAlgorithm):
             atr_stop
         )
 
+        long_signal = long_setup & (~exit_setup)
+        short_signal = short_setup & (~exit_setup)
+
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1)
-        self.set_positions(short_setup, position=-1)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
 """
 
 for vw, ze, am in product([14, 20], [1.5, 2.0], [2.0, 3.0]):
