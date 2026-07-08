@@ -98,6 +98,7 @@ TEMPLATE_META = {
     "T11-A": ("VWAP Basis Dual Z-Score", "Mean-revert on dual z-score of VWAP distance and VN30 basis; long when both oversold, short when both overbought; exit on neutral reversion."),
     "T11-B": ("VWAP Basis with ADX Filter", "Same dual z-score logic + ADX trending filter: only enter when ADX < threshold to avoid mean-reverting against strong trends."),
     "T11-C": ("VWAP Basis with ATR Stop", "Same dual z-score logic + ATR trailing stop for capital-preserving exits when price breaks away from the 20-period MA."),
+    "T11-D": ("VWAP Basis Regime Switching", "Dual-mode: mean-revert in ranging (ADX<exit) via dual z-score; trend-follow in trending (ADX>entry) via VWAP+basis+momentum alignment; regime crossover exits for clean transitions."),
 }
 
 def _base_template_name(name):
@@ -2654,6 +2655,78 @@ for vw, ze, am in product([14, 20], [1.5, 2.0], [2.0, 3.0]):
         "timeframes": [15, 30],
         "code":       T11_C_CODE,
         "fixed":      {"vwap_window": vw, "z_entry": ze, "z_exit": 1.0, "atr_stop_mult": am},
+        "params":     {},
+    })
+
+# T11-D: VWAP Basis Regime Switching (MR + Trend-follow)
+T11_D_CODE = """class CustomStrategy(SimpleAlgorithm):
+    z_entry = {z_entry}
+    z_exit = {z_exit}
+    atr_stop_mult = {atr_stop_mult}
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+        vn30_close = self.data.pv_vn30_close
+
+        vwap_val = self.feat.rolling_vwap(high, low, close, volume, window={vwap_window})
+        vwap_dist = close - vwap_val
+        vwap_dist_z = self.feat.rolling_zscore(vwap_dist, window={vwap_window})
+
+        basis = close - vn30_close
+        basis_z = self.feat.rolling_zscore(basis, window={vwap_window})
+
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+        ranging = adx_val < {adx_exit}
+        trending = adx_val > {adx_entry}
+
+        atr = self.feat.atr(high, low, close, timeperiod=14)
+        ma20 = self.feat.sma(close, timeperiod=20)
+        atr_stop = (
+            (close < ma20 - self.atr_stop_mult * atr) |
+            (close > ma20 + self.atr_stop_mult * atr)
+        )
+
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window={return_window})
+
+        range_to_trend = self.op.crossed_above(adx_val, {adx_entry})
+        trend_to_range = self.op.crossed_below(adx_val, {adx_exit})
+
+        mr_long = ranging & (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry)
+        mr_short = ranging & (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry)
+
+        tf_long = trending & (close > vwap_val) & (basis > 0) & (return_roll > 0)
+        tf_short = trending & (close < vwap_val) & (basis < 0) & (return_roll < 0)
+
+        exit_setup = (
+            (self.op.abs(vwap_dist_z) < self.z_exit) |
+            (self.op.abs(basis_z) < self.z_exit) |
+            range_to_trend | trend_to_range |
+            atr_stop
+        )
+
+        long_signal = (tf_long | (mr_long & (~trending))) & (~exit_setup)
+        short_signal = (tf_short | (mr_short & (~trending))) & (~exit_setup)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+for vw, ze, ae, ax, am in product([14, 20], [1.5, 2.0], [22, 25], [15, 18], [2.5, 3.5]):
+    TEMPLATES.append({
+        "name":       f"T11-D_v{vw}_z{ze}_ae{ae}_ax{ax}_m{am}",
+        "thesis":     "11",
+        "descr":      f"VWAP Basis Regime Switch (vwap={vw}, entry={ze}, adx_entry={ae}, adx_exit={ax}, atr={am})",
+        "timeframes": [15, 30],
+        "code":       T11_D_CODE,
+        "fixed":      {"vwap_window": vw, "z_entry": ze, "z_exit": 1.0,
+                       "adx_window": 14, "adx_entry": ae, "adx_exit": ax,
+                       "return_window": 5, "atr_stop_mult": am},
         "params":     {},
     })
 
