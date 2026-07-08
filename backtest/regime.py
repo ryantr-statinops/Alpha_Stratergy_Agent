@@ -173,6 +173,10 @@ STRATEGY_REGIME_MAP = {
     "T10-A": {"regimes": ["trending", "weak"], "vol": ["normal", "low"]},
     "T10-B": {"regimes": ["trending"], "vol": ["normal", "high"]},
     "T10-C": {"regimes": ["weak", "ranging"], "vol": ["normal", "low"]},
+    # Thesis 11: VWAP Basis Reversion
+    "T11-A": {"regimes": ["ranging", "weak"], "vol": ["normal", "low"]},
+    "T11-B": {"regimes": ["ranging", "weak"], "vol": ["normal", "low"]},
+    "T11-C": {"regimes": ["ranging", "weak"], "vol": ["normal", "low"]},
 }
 
 
