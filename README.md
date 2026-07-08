@@ -13,8 +13,7 @@ Mục đích cốt lõi của không gian làm việc này là giúp AI Agent đ
 ```text
 ALPHA_BOT/
 ├── data/                   # Tài liệu về dữ liệu đầu vào (OHLCV, Futures, VN30, DJI)
-├── feature/                # Danh mục chỉ báo kỹ thuật (EMA, RSI, BBands, Hikkake, ...)
-├── operations/             # Danh mục toán tử xử lý chuỗi thời gian (crossed_above, fillna, ...)
+├── syntax/                 # Catalog + usage guide cho feature/operations
 ├── template_example/       # Framework chuẩn + strategy mẫu chạy được trên XNOQuant
 │   └── strategy_framework.md   # **Master specification** — đọc đầu tiên
 ├── idea/                   # Nơi lưu trữ các ý tưởng nghiên cứu (.md)
@@ -114,14 +113,12 @@ Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_chara
 | `pv_dji_close` | DJI Close |
 | `pv_dji_volume` | DJI Volume |
 
-### `feature/`
+### `syntax/`
 
-- Tra cứu toàn bộ các chỉ báo kỹ thuật được nền tảng hỗ trợ.
-- Chỉ sử dụng các hàm có sẵn trong thư mục này khi xây dựng chiến lược.
-
-### `operations/`
-
-- Tra cứu các toán tử xử lý dữ liệu chuỗi thời gian.
+- Tra cứu các chỉ báo kỹ thuật và toán tử trong hai catalog:
+  - `syntax/feature_syntax.md`
+  - `syntax/operations_syntax.md`
+- Đọc `syntax/syntax_guide.md` trước khi code để biết cách chọn nhóm hàm/toán tử phù hợp.
 - Khi sinh mã nguồn, loại bỏ các khai báo kiểu dữ liệu nội bộ của hệ thống như:
 
 ```python
@@ -243,8 +240,8 @@ Sau khi được phê duyệt:
 
 - Chuyển logic thành mã Python.
 - Chỉ sử dụng:
-  - các hàm trong `feature/`
-  - các hàm trong `operations/`
+  - các hàm trong `syntax/feature_syntax.md`
+  - các hàm trong `syntax/operations_syntax.md`
 - Tuân thủ tuyệt đối cấu trúc trong [`template_example/strategy_framework.md`](template_example/strategy_framework.md):
   - Class `CustomStrategy(SimpleAlgorithm)`, method `__algorithm__`
   - Exit → Long → Short order
@@ -286,7 +283,7 @@ AI Agent **luôn phải**:
 1. Đọc `template_example/strategy_framework.md` trước khi code.
 2. Kiểm tra tính tương thích với `CustomStrategy`.
 3. Chỉ sử dụng các API chính thức của XNOQuant.
-4. Tuân thủ cú pháp của `feature/`, `operations/` và `template_example/`.
+4. Tuân thủ cú pháp của `syntax/` và `template_example/`.
 5. Tham chiếu acceptance criteria trong `idea/hypothesis/hypothesis_framework.md` khi thiết kế logic.
 6. Đảm bảo mã nguồn có thể chạy trực tiếp trên nền tảng.
 
@@ -302,8 +299,8 @@ AI Agent **luôn phải**:
 | **Master spec: class structure, compliance checklist** | `template_example/strategy_framework.md` |
 | **Đặc thù thị trường VN → thiết kế strategy** | `data/vietnam_market_characteristics.md` |
 | **Data fields (OHLCV, futures, VN30, DJI)** | `data/VnFuture.md` |
-| **Feature functions (140+ indicators)** | `feature/feature_syntax.md` |
-| **Operator functions (30+ operators)** | `operations/operations_syntax.md` |
+| **Feature functions (140+ indicators)** | `syntax/feature_syntax.md` |
+| **Operator functions (30+ operators)** | `syntax/operations_syntax.md` |
 | **Acceptance criteria, scorecard** | `idea/hypothesis/hypothesis_framework.md` |
 | **Hypothesis docs (30 hypotheses)** | `idea/hypothesis/hyp_thesis_01_momentum.md` → `08_multifactor.md` |
 | **Planning docs (enhancements, alpha ideas)** | `idea/planning_alpha/` |
