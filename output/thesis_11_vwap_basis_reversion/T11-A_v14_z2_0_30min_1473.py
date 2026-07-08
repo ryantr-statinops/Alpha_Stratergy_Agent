@@ -24,7 +24,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry)
         short_setup = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry)
-        exit_setup = (self.op.abs_op(vwap_dist_z) < self.z_exit) | (self.op.abs_op(basis_z) < self.z_exit)
+        exit_setup = (self.op.abs(vwap_dist_z) < self.z_exit) | (self.op.abs(basis_z) < self.z_exit)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_setup, position=1)

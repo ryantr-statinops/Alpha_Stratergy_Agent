@@ -28,8 +28,8 @@ class CustomStrategy(SimpleAlgorithm):
         long_setup = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry) & trend_ok
         short_setup = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry) & trend_ok
         exit_setup = (
-            (self.op.abs_op(vwap_dist_z) < self.z_exit) |
-            (self.op.abs_op(basis_z) < self.z_exit) |
+            (self.op.abs(vwap_dist_z) < self.z_exit) |
+            (self.op.abs(basis_z) < self.z_exit) |
             (adx_val > 15)
         )
 
