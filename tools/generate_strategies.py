@@ -21,6 +21,7 @@ THESIS_FOLDERS = {
     "08": "thesis_08_order_book_shadowing",
     "09": "thesis_09_institutional_flow_arbitrage",
     "10": "thesis_10_regime_based_mean_reversion",
+    "11": "thesis_11_vwap_basis_reversion",
 }
 HEADER = '''"""
 name:    {name}
@@ -93,6 +94,10 @@ TEMPLATE_META = {
     "T10-A": ("Regime Dip/Rally", "Bull (close>MA200): long on dips to MA20. Bear (close<MA200): short on rallies to MA20. Sideways: quantile mean reversion."),
     "T10-B": ("Confirmed Regime Entries", "Same regime filter + ADX + volume confirmation for dip/rally entries; sideways uses RSI extremes with low volume."),
     "T10-C": ("Regime Band Oscillator", "Same regime filter + Bollinger Bands; bull: buy lower band touch; bear: sell upper band touch; sideways: wider quantile extremes."),
+    # Thesis 11: VWAP Basis Reversion
+    "T11-A": ("VWAP Basis Dual Z-Score", "Mean-revert on dual z-score of VWAP distance and VN30 basis; long when both oversold, short when both overbought; exit on neutral reversion."),
+    "T11-B": ("VWAP Basis with ADX Filter", "Same dual z-score logic + ADX trending filter: only enter when ADX < threshold to avoid mean-reverting against strong trends."),
+    "T11-C": ("VWAP Basis with ATR Stop", "Same dual z-score logic + ATR trailing stop for capital-preserving exits when price breaks away from the 20-period MA."),
 }
 
 def _base_template_name(name):
@@ -2499,6 +2504,149 @@ TEMPLATES.append({
     "fixed":      {"ma200_window": 200, "bb_window": 20, "bb_mult": 2.0, "sideways_buffer": 0.02, "adx_window": 14, "adx_entry": 20, "adx_exit": 15, "atr_stop_mult": 2.5},
     "params":     {},
 })
+
+# ============================================================
+# THESIS 11: VWAP Basis Reversion
+# ============================================================
+
+# T11-A: VWAP Basis Dual Z-Score (Core)
+T11_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    z_entry = {z_entry}
+    z_exit = {z_exit}
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+        vn30_close = self.data.pv_vn30_close
+
+        vwap_val = self.feat.rolling_vwap(high, low, close, volume, window={vwap_window})
+        vwap_dist = close - vwap_val
+        vwap_dist_z = self.feat.rolling_zscore(vwap_dist, window={vwap_window})
+
+        basis = close - vn30_close
+        basis_z = self.feat.rolling_zscore(basis, window={vwap_window})
+
+        long_setup = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry)
+        short_setup = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry)
+        exit_setup = (self.op.abs_op(vwap_dist_z) < self.z_exit) | (self.op.abs_op(basis_z) < self.z_exit)
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+for vw, ze in product([14, 20, 34], [1.5, 2.0, 2.5]):
+    TEMPLATES.append({
+        "name":       f"T11-A_v{vw}_z{ze}",
+        "thesis":     "11",
+        "descr":      f"VWAP Basis Dual Z (vwap={vw}, entry={ze})",
+        "timeframes": [15, 30],
+        "code":       T11_A_CODE,
+        "fixed":      {"vwap_window": vw, "z_entry": ze, "z_exit": 1.0},
+        "params":     {},
+    })
+
+# T11-B: VWAP Basis with ADX Filter
+T11_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    z_entry = {z_entry}
+    z_exit = {z_exit}
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+        vn30_close = self.data.pv_vn30_close
+
+        vwap_val = self.feat.rolling_vwap(high, low, close, volume, window={vwap_window})
+        vwap_dist = close - vwap_val
+        vwap_dist_z = self.feat.rolling_zscore(vwap_dist, window={vwap_window})
+
+        basis = close - vn30_close
+        basis_z = self.feat.rolling_zscore(basis, window={vwap_window})
+
+        adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
+        trend_ok = adx_val < {adx_max}
+
+        long_setup = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry) & trend_ok
+        short_setup = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry) & trend_ok
+        exit_setup = (
+            (self.op.abs_op(vwap_dist_z) < self.z_exit) |
+            (self.op.abs_op(basis_z) < self.z_exit) |
+            (adx_val > {adx_exit})
+        )
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+for vw, ze, am in product([14, 20], [1.5, 2.0], [18, 22]):
+    TEMPLATES.append({
+        "name":       f"T11-B_v{vw}_z{ze}_a{am}",
+        "thesis":     "11",
+        "descr":      f"VWAP Basis + ADX (vwap={vw}, entry={ze}, adx_max={am})",
+        "timeframes": [15],
+        "code":       T11_B_CODE,
+        "fixed":      {"vwap_window": vw, "z_entry": ze, "z_exit": 1.0, "adx_window": 14, "adx_max": am, "adx_exit": 15},
+        "params":     {},
+    })
+
+# T11-C: VWAP Basis with ATR Stop
+T11_C_CODE = """class CustomStrategy(SimpleAlgorithm):
+    z_entry = {z_entry}
+    z_exit = {z_exit}
+    atr_stop_mult = {atr_stop_mult}
+
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+        vn30_close = self.data.pv_vn30_close
+
+        vwap_val = self.feat.rolling_vwap(high, low, close, volume, window={vwap_window})
+        vwap_dist = close - vwap_val
+        vwap_dist_z = self.feat.rolling_zscore(vwap_dist, window={vwap_window})
+
+        basis = close - vn30_close
+        basis_z = self.feat.rolling_zscore(basis, window={vwap_window})
+
+        atr = self.feat.atr(high, low, close, timeperiod=14)
+        ma20 = self.feat.sma(close, timeperiod=20)
+        atr_stop = (
+            (close < ma20 - self.atr_stop_mult * atr) |
+            (close > ma20 + self.atr_stop_mult * atr)
+        )
+
+        long_setup = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry)
+        short_setup = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry)
+        exit_setup = (
+            (self.op.abs_op(vwap_dist_z) < self.z_exit) |
+            (self.op.abs_op(basis_z) < self.z_exit) |
+            atr_stop
+        )
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_setup, position=1)
+        self.set_positions(short_setup, position=-1)
+"""
+
+for vw, ze, am in product([14, 20], [1.5, 2.0], [2.0, 3.0]):
+    TEMPLATES.append({
+        "name":       f"T11-C_v{vw}_z{ze}_m{am}",
+        "thesis":     "11",
+        "descr":      f"VWAP Basis + ATR Stop (vwap={vw}, entry={ze}, mult={am})",
+        "timeframes": [15, 30],
+        "code":       T11_C_CODE,
+        "fixed":      {"vwap_window": vw, "z_entry": ze, "z_exit": 1.0, "atr_stop_mult": am},
+        "params":     {},
+    })
 
 print(f"  OK Registered {len(TEMPLATES)} template definitions")
 

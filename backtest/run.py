@@ -25,6 +25,7 @@ from backtest.runners import thesis_07 as th07
 from backtest.runners import thesis_08 as th08
 from backtest.runners import thesis_09 as th09
 from backtest.runners import thesis_10 as th10
+from backtest.runners import thesis_11 as th11
 
 # ---------------------------------------------------------------------------
 # Map template base name → backtest function
@@ -93,6 +94,10 @@ FUNC_MAP = {
     "T10-A": th10.T10_A,
     "T10-B": th10.T10_B,
     "T10-C": th10.T10_C,
+    # Thesis 11
+    "T11-A": th11.T11_A,
+    "T11-B": th11.T11_B,
+    "T11-C": th11.T11_C,
 }
 
 TF_LOOKUP = {5: "5min", 15: "15min", 30: "30min", 60: "60min"}
