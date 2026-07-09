@@ -3,6 +3,14 @@ import numpy as np
 import pandas as pd
 
 
+def ensure_float(df):
+    """Cast all numeric columns to float64 to prevent TA-Lib dtype errors."""
+    for col in df.columns:
+        if np.issubdtype(df[col].dtype, np.number) and df[col].dtype != np.float64:
+            df[col] = df[col].astype(np.float64)
+    return df
+
+
 def compute_returns(df, position_col="position"):
     df = df.copy()
     df["returns"] = df["close"].pct_change().fillna(0)
@@ -64,6 +72,7 @@ def run_strategy(df, template_func, params=None):
     template_func: callable(df, **params) -> position array
     params: dict of parameters
     """
+    df = ensure_float(df)
     params = params or {}
     pos = template_func(df, **params)
     df = df.copy()

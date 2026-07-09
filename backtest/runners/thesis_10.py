@@ -2,7 +2,7 @@
 import warnings
 import numpy as np
 from backtest.features import ma, momentum, volatility, operators as op
-from backtest.runners.base import compute_positions
+from backtest.runners.base import compute_returns
 
 warnings.filterwarnings("ignore", "Mean of empty slice")
 
@@ -32,7 +32,8 @@ def T10_A(df, ma200_window=200, ma20_window=20, sideways_buffer=0.02,
     no_short_trend = close <= ma20 + atr_stop_mult * atr_val
     no_long_mr = close >= lower_q - atr_stop_mult * atr_val
     no_short_mr = close <= upper_q + atr_stop_mult * atr_val
-    atr_stop = (close < ma20 - atr_stop_mult * atr_val) | (close > ma20 + atr_stop_mult * atr_val)
+    atr_stop_long = close < ma20 - atr_stop_mult * atr_val
+    atr_stop_short = close > ma20 + atr_stop_mult * atr_val
 
     dip_long = bull & (close < ma20) & (adx_val > adx_entry) & no_long_trend
     rally_short = bear & (close > ma20) & (adx_val > adx_entry) & no_short_trend
@@ -41,14 +42,33 @@ def T10_A(df, ma200_window=200, ma20_window=20, sideways_buffer=0.02,
 
     long_setup = np.asarray(dip_long | mr_long)
     short_setup = np.asarray(rally_short | mr_short)
-    exit_setup = np.asarray(
-        op.crossed_above(close, ma20) | op.crossed_below(close, ma20) |
-        (adx_val < adx_exit) | (adx_val > adx_entry) | atr_stop
-    )
+    exit_long = np.asarray((adx_val < adx_exit) | atr_stop_long)
+    exit_short = np.asarray((adx_val < adx_exit) | atr_stop_short)
 
-    long_signal = long_setup & (~exit_setup)
-    short_signal = short_setup & (~exit_setup)
-    return compute_positions(df, long_signal, short_signal, exit_setup)
+    long_signal = long_setup
+    short_signal = short_setup
+
+    n = len(df)
+    pos = np.zeros(n, dtype=float)
+    last = 0.0
+    for i in range(n):
+        if last > 0:
+            if exit_long[i]:
+                last = 0.0
+            elif short_signal[i]:
+                last = -1.0
+        elif last < 0:
+            if exit_short[i]:
+                last = 0.0
+            elif long_signal[i]:
+                last = 1.0
+        else:
+            if long_signal[i]:
+                last = 1.0
+            elif short_signal[i]:
+                last = -1.0
+        pos[i] = last
+    return pos
 
 
 def T10_B(df, ma200_window=200, ma20_window=20, sideways_buffer=0.02,
@@ -81,23 +101,43 @@ def T10_B(df, ma200_window=200, ma20_window=20, sideways_buffer=0.02,
     no_short_trend = close <= ma20 + atr_stop_mult * atr_val
     no_long_mr = close >= lower_q - atr_stop_mult * atr_val
     no_short_mr = close <= upper_q + atr_stop_mult * atr_val
-    atr_stop = (close < ma20 - atr_stop_mult * atr_val) | (close > ma20 + atr_stop_mult * atr_val)
+    atr_stop_long = close < ma20 - atr_stop_mult * atr_val
+    atr_stop_short = close > ma20 + atr_stop_mult * atr_val
 
-    dip_long = bull & (close < ma20) & (adx_val > adx_entry) & volume_ok & no_long_trend
-    rally_short = bear & (close > ma20) & (adx_val > adx_entry) & volume_ok & no_short_trend
-    mr_long = sideways & (close < lower_q) & (rsi_val < 30) & (volume < vol_sma) & (adx_val < adx_entry) & no_long_mr
-    mr_short = sideways & (close > upper_q) & (rsi_val > 70) & (volume < vol_sma) & (adx_val < adx_entry) & no_short_mr
+    dip_long = bull & (close < ma20) & (adx_val > adx_entry) & no_long_trend
+    rally_short = bear & (close > ma20) & (adx_val > adx_entry) & no_short_trend
+    mr_long = sideways & (close < lower_q) & (adx_val < adx_entry) & no_long_mr
+    mr_short = sideways & (close > upper_q) & (adx_val < adx_entry) & no_short_mr
 
     long_setup = np.asarray(dip_long | mr_long)
     short_setup = np.asarray(rally_short | mr_short)
-    exit_setup = np.asarray(
-        op.crossed_above(close, ma20) | op.crossed_below(close, ma20) |
-        (adx_val < adx_exit) | (adx_val > adx_entry) | atr_stop
-    )
+    exit_long = np.asarray((adx_val < adx_exit) | atr_stop_long)
+    exit_short = np.asarray((adx_val < adx_exit) | atr_stop_short)
 
-    long_signal = long_setup & (~exit_setup)
-    short_signal = short_setup & (~exit_setup)
-    return compute_positions(df, long_signal, short_signal, exit_setup)
+    long_signal = long_setup
+    short_signal = short_setup
+
+    n = len(df)
+    pos = np.zeros(n, dtype=float)
+    last = 0.0
+    for i in range(n):
+        if last > 0:
+            if exit_long[i]:
+                last = 0.0
+            elif short_signal[i]:
+                last = -1.0
+        elif last < 0:
+            if exit_short[i]:
+                last = 0.0
+            elif long_signal[i]:
+                last = 1.0
+        else:
+            if long_signal[i]:
+                last = 1.0
+            elif short_signal[i]:
+                last = -1.0
+        pos[i] = last
+    return pos
 
 
 def T10_C(df, ma200_window=200, sideways_buffer=0.02, bb_window=20, bb_mult=2.0,
@@ -126,7 +166,8 @@ def T10_C(df, ma200_window=200, sideways_buffer=0.02, bb_window=20, bb_mult=2.0,
     no_short_trend = close <= ma20 + atr_stop_mult * atr_val
     no_long_mr = close >= lower_q - atr_stop_mult * atr_val
     no_short_mr = close <= upper_q + atr_stop_mult * atr_val
-    atr_stop = (close < ma20 - atr_stop_mult * atr_val) | (close > ma20 + atr_stop_mult * atr_val)
+    atr_stop_long = close < ma20 - atr_stop_mult * atr_val
+    atr_stop_short = close > ma20 + atr_stop_mult * atr_val
 
     dip_long = bull & (close < lower) & (adx_val > adx_entry) & no_long_trend
     rally_short = bear & (close > upper) & (adx_val > adx_entry) & no_short_trend
@@ -135,11 +176,30 @@ def T10_C(df, ma200_window=200, sideways_buffer=0.02, bb_window=20, bb_mult=2.0,
 
     long_setup = np.asarray(dip_long | mr_long)
     short_setup = np.asarray(rally_short | mr_short)
-    exit_setup = np.asarray(
-        op.crossed_above(close, mid) | op.crossed_below(close, mid) |
-        (adx_val < adx_exit) | (adx_val > adx_entry) | atr_stop
-    )
+    exit_long = np.asarray((adx_val < adx_exit) | atr_stop_long)
+    exit_short = np.asarray((adx_val < adx_exit) | atr_stop_short)
 
-    long_signal = long_setup & (~exit_setup)
-    short_signal = short_setup & (~exit_setup)
-    return compute_positions(df, long_signal, short_signal, exit_setup)
+    long_signal = long_setup
+    short_signal = short_setup
+
+    n = len(df)
+    pos = np.zeros(n, dtype=float)
+    last = 0.0
+    for i in range(n):
+        if last > 0:
+            if exit_long[i]:
+                last = 0.0
+            elif short_signal[i]:
+                last = -1.0
+        elif last < 0:
+            if exit_short[i]:
+                last = 0.0
+            elif long_signal[i]:
+                last = 1.0
+        else:
+            if long_signal[i]:
+                last = 1.0
+            elif short_signal[i]:
+                last = -1.0
+        pos[i] = last
+    return pos
