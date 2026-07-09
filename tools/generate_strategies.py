@@ -22,6 +22,12 @@ THESIS_FOLDERS = {
     "09": "thesis_09_institutional_flow_arbitrage",
     "10": "thesis_10_regime_based_mean_reversion",
     "11": "thesis_11_vwap_basis_reversion",
+    "12": "thesis_12_kalman_regime_switching",
+    "13": "thesis_13_cmf_squeeze_breakout",
+    "14": "thesis_14_bb_squeeze_reversal",
+    "15": "thesis_15_oi_divergence",
+    "16": "thesis_16_velocity_divergence",
+    "17": "thesis_17_vol_adjusted_momentum",
 }
 HEADER = '''"""
 name:    {name}
@@ -99,6 +105,23 @@ TEMPLATE_META = {
     "T11-B": ("VWAP Basis with ADX Filter", "Same dual z-score logic + ADX trending filter: only enter when ADX < threshold to avoid mean-reverting against strong trends."),
     "T11-C": ("VWAP Basis with ATR Stop", "Same dual z-score logic + ATR trailing stop for capital-preserving exits when price breaks away from the 20-period MA."),
     "T11-D": ("VWAP Basis Regime Switching", "Dual-mode: mean-revert in ranging (ADX<exit) via dual z-score; trend-follow in trending (ADX>entry) via VWAP+basis+momentum alignment; regime crossover exits for clean transitions."),
+    # Thesis 12: Kalman Filter Regime Switching
+    "T12-A": ("KF Dip/Rally", "Kalman proxy (SMA+residual) regime detection; trend-follow when KF deviates above entry band, mean-revert within band; exit via KF z-cross + ADX fade + ATR stop."),
+    "T12-B": ("KF Mean Reversion", "Kalman proxy with emphasis on sideways overshoot; higher MR threshold for high-conviction entries; same exit structure."),
+    "T12-C": ("KF + ADX Confirmed", "Kalman entries with ADX confirmation on both trend and MR modes; stricter filter for lower signal count but higher win rate."),
+    "T12-D": ("KF + Z Combo", "Kalman proxy with dual confirmation: KF z-score + residual z-score must both agree; requires deeper overshoot for entry."),
+    # Thesis 13: CMF + Bollinger Squeeze Breakout
+    "T13-A": ("CMF + Squeeze Breakout", "Bollinger squeeze (bb_width < SMA*0.8) + CMF directional flow + ADX trend filter + volume confirmation; exit via ADX fade + ATR stop only."),
+    # Thesis 14: BB Squeeze Reversal
+    "T14-A": ("BB Squeeze Reversal", "Bollinger squeeze reversal: trade when price touches outer band during/after squeeze + bb_width expanding + ADX confirming exit via ATR stop; no CMF needed."),
+    # Thesis 15: OI Divergence
+    "T15-A": ("OI Divergence Bearish", "Short when price rises but OI falls (longs closing weak trend); exit via ADX fade + ATR stop + trailing."),
+    # Thesis 16: Price-Volume Velocity Divergence
+    "T16-A": ("Velocity Divergence", "Compare price velocity (roc) vs volume velocity (volume_z). Volume surges before price moves = accumulation. Price surges on fading volume = fake breakout. Exit via ADX fade + ATR stop + trailing."),
+    # Thesis 17: Volatility-Adjusted Momentum
+    "T17-A": ("Vol-Adj Momentum Breakout", "ROC divided by ATR to normalize momentum by volatility; z-score extreme ±1.5 signals genuine breakout; exit via ADX fade + ATR stop + trailing."),
+    "T17-B": ("Vol-Adj Momentum + SMA Filter", "Same adj_mom_z logic with SMA13/SMA34 trend filter to avoid counter-trend entries; exit adds adj_mom_z < 0 for earlier profit protection."),
+    "T17-C": ("Vol-Adj Momentum Regime", "Adaptive adj_mom_z threshold (±2.0 in low vol, ±1.2 in high vol) and trailing mult (1.5/2.5) based on ATR ratio regime."),
 }
 
 def _base_template_name(name):
@@ -2323,10 +2346,8 @@ T10_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         no_short_trend = close <= ma20 + self.atr_stop_mult * atr
         no_long_mr = close >= lower_q - self.atr_stop_mult * atr
         no_short_mr = close <= upper_q + self.atr_stop_mult * atr
-        atr_stop = (
-            (close < ma20 - self.atr_stop_mult * atr) |
-            (close > ma20 + self.atr_stop_mult * atr)
-        )
+        atr_stop_long = close < ma20 - self.atr_stop_mult * atr
+        atr_stop_short = close > ma20 + self.atr_stop_mult * atr
 
         dip_long = bull & (close < ma20) & (adx_val > self.adx_entry) & no_long_trend
         rally_short = bear & (close > ma20) & (adx_val > self.adx_entry) & no_short_trend
@@ -2335,18 +2356,12 @@ T10_A_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         long_setup = dip_long | mr_long
         short_setup = rally_short | mr_short
-        exit_setup = (
-            self.op.crossed_above(close, ma20) |
-            self.op.crossed_below(close, ma20) |
-            (adx_val < self.adx_exit) |
-            (adx_val > self.adx_entry) |
-            atr_stop
-        )
+        exit_setup = (adx_val < self.adx_exit)
 
-        long_signal = long_setup & (~exit_setup)
-        short_signal = short_setup & (~exit_setup)
+        long_signal = long_setup & (~atr_stop_long)
+        short_signal = short_setup & (~atr_stop_short)
 
-        self.set_positions(exit_setup, position=0)
+        self.set_positions(exit_setup | atr_stop_long | atr_stop_short, position=0)
         self.set_positions(long_signal, position=1)
         self.set_positions(short_signal, position=-1)
 """
@@ -2373,7 +2388,6 @@ T10_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        volume = self.data.pv_volume
 
         ma200 = self.feat.sma(close, timeperiod={ma200_window})
         ma20 = self.feat.sma(close, timeperiod={ma20_window})
@@ -2388,39 +2402,28 @@ T10_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         upper_q = self.feat.rolling_quantile(close, window=20, q=0.8)
 
         adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
-        vol_sma = self.feat.sma(volume, timeperiod={vol_window})
-        volume_ok = volume > vol_sma
-        rsi = self.feat.rsi(close, timeperiod=14)
         atr = self.feat.atr(high, low, close, timeperiod=14)
 
         no_long_trend = close >= ma20 - self.atr_stop_mult * atr
         no_short_trend = close <= ma20 + self.atr_stop_mult * atr
         no_long_mr = close >= lower_q - self.atr_stop_mult * atr
         no_short_mr = close <= upper_q + self.atr_stop_mult * atr
-        atr_stop = (
-            (close < ma20 - self.atr_stop_mult * atr) |
-            (close > ma20 + self.atr_stop_mult * atr)
-        )
+        atr_stop_long = close < ma20 - self.atr_stop_mult * atr
+        atr_stop_short = close > ma20 + self.atr_stop_mult * atr
 
-        dip_long = bull & (close < ma20) & (adx_val > self.adx_entry) & volume_ok & no_long_trend
-        rally_short = bear & (close > ma20) & (adx_val > self.adx_entry) & volume_ok & no_short_trend
-        mr_long = sideways & (close < lower_q) & (rsi < 30) & (volume < vol_sma) & (adx_val < self.adx_entry) & no_long_mr
-        mr_short = sideways & (close > upper_q) & (rsi > 70) & (volume < vol_sma) & (adx_val < self.adx_entry) & no_short_mr
+        dip_long = bull & (close < ma20) & (adx_val > self.adx_entry) & no_long_trend
+        rally_short = bear & (close > ma20) & (adx_val > self.adx_entry) & no_short_trend
+        mr_long = sideways & (close < lower_q) & (adx_val < self.adx_entry) & no_long_mr
+        mr_short = sideways & (close > upper_q) & (adx_val < self.adx_entry) & no_short_mr
 
         long_setup = dip_long | mr_long
         short_setup = rally_short | mr_short
-        exit_setup = (
-            self.op.crossed_above(close, ma20) |
-            self.op.crossed_below(close, ma20) |
-            (adx_val < self.adx_exit) |
-            (adx_val > self.adx_entry) |
-            atr_stop
-        )
+        exit_setup = (adx_val < self.adx_exit)
 
-        long_signal = long_setup & (~exit_setup)
-        short_signal = short_setup & (~exit_setup)
+        long_signal = long_setup & (~atr_stop_long)
+        short_signal = short_setup & (~atr_stop_short)
 
-        self.set_positions(exit_setup, position=0)
+        self.set_positions(exit_setup | atr_stop_long | atr_stop_short, position=0)
         self.set_positions(long_signal, position=1)
         self.set_positions(short_signal, position=-1)
 """
@@ -2468,10 +2471,8 @@ T10_C_CODE = """class CustomStrategy(SimpleAlgorithm):
         no_short_trend = close <= ma20 + self.atr_stop_mult * atr
         no_long_mr = close >= lower_q - self.atr_stop_mult * atr
         no_short_mr = close <= upper_q + self.atr_stop_mult * atr
-        atr_stop = (
-            (close < ma20 - self.atr_stop_mult * atr) |
-            (close > ma20 + self.atr_stop_mult * atr)
-        )
+        atr_stop_long = close < ma20 - self.atr_stop_mult * atr
+        atr_stop_short = close > ma20 + self.atr_stop_mult * atr
 
         dip_long = bull & (close < lower) & (adx_val > self.adx_entry) & no_long_trend
         rally_short = bear & (close > upper) & (adx_val > self.adx_entry) & no_short_trend
@@ -2480,18 +2481,12 @@ T10_C_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         long_setup = dip_long | mr_long
         short_setup = rally_short | mr_short
-        exit_setup = (
-            self.op.crossed_above(close, mid) |
-            self.op.crossed_below(close, mid) |
-            (adx_val < self.adx_exit) |
-            (adx_val > self.adx_entry) |
-            atr_stop
-        )
+        exit_setup = (adx_val < self.adx_exit)
 
-        long_signal = long_setup & (~exit_setup)
-        short_signal = short_setup & (~exit_setup)
+        long_signal = long_setup & (~atr_stop_long)
+        short_signal = short_setup & (~atr_stop_short)
 
-        self.set_positions(exit_setup, position=0)
+        self.set_positions(exit_setup | atr_stop_long | atr_stop_short, position=0)
         self.set_positions(long_signal, position=1)
         self.set_positions(short_signal, position=-1)
 """
@@ -2510,10 +2505,11 @@ TEMPLATES.append({
 # THESIS 11: VWAP Basis Reversion
 # ============================================================
 
-# T11-A: VWAP Basis Dual Z-Score (Core)
+# T11-A: VWAP Basis Dual Z-Score + Regime Switching (MR | TF)
 T11_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     z_entry = {z_entry}
     z_exit = {z_exit}
+    atr_stop_mult = 2.5
 
 
     def __algorithm__(self):
@@ -2530,9 +2526,21 @@ T11_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         basis = close - vn30_close
         basis_z = self.feat.rolling_zscore(basis, window={vwap_window})
 
-        long_setup = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry)
-        short_setup = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry)
-        exit_setup = (self.op.abs(vwap_dist_z) < self.z_exit) | (self.op.abs(basis_z) < self.z_exit)
+        atr = self.feat.atr(high, low, close, timeperiod=14)
+        ma20 = self.feat.sma(close, timeperiod=20)
+        trend_up = close > ma20 + self.atr_stop_mult * atr
+        trend_down = close < ma20 - self.atr_stop_mult * atr
+
+        mr_long = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry) & (~trend_down)
+        mr_short = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry) & (~trend_up)
+        tf_long = trend_up
+        tf_short = trend_down
+
+        long_setup = mr_long | tf_long
+        short_setup = mr_short | tf_short
+
+        exit_reversion = (self.op.abs(vwap_dist_z) < self.z_exit) | (self.op.abs(basis_z) < self.z_exit)
+        exit_setup = exit_reversion & (~trend_up) & (~trend_down)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
@@ -2553,7 +2561,7 @@ for vw, ze in product([14, 20, 34], [1.5, 2.0, 2.5]):
         "params":     {},
     })
 
-# T11-B: VWAP Basis with ADX Filter
+# T11-B: VWAP Basis + ADX Filter + Regime Switching
 T11_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     z_entry = {z_entry}
     z_exit = {z_exit}
@@ -2574,15 +2582,23 @@ T11_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         basis_z = self.feat.rolling_zscore(basis, window={vwap_window})
 
         adx_val = self.feat.adx(high, low, close, timeperiod={adx_window})
-        trend_ok = adx_val < {adx_max}
 
-        long_setup = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry) & trend_ok
-        short_setup = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry) & trend_ok
-        exit_setup = (
-            (self.op.abs(vwap_dist_z) < self.z_exit) |
-            (self.op.abs(basis_z) < self.z_exit) |
-            (adx_val > {adx_exit})
-        )
+        atr = self.feat.atr(high, low, close, timeperiod=14)
+        ma20 = self.feat.sma(close, timeperiod=20)
+        trend_up = (close > ma20 + 2.5 * atr) & (adx_val < {adx_max})
+        trend_down = (close < ma20 - 2.5 * atr) & (adx_val < {adx_max})
+
+        mr_long = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry) & (adx_val < {adx_max}) & (~trend_down)
+        mr_short = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry) & (adx_val < {adx_max}) & (~trend_up)
+        tf_long = trend_up
+        tf_short = trend_down
+
+        long_setup = mr_long | tf_long
+        short_setup = mr_short | tf_short
+
+        exit_reversion = (self.op.abs(vwap_dist_z) < self.z_exit) | (self.op.abs(basis_z) < self.z_exit)
+        exit_adx = adx_val > {adx_exit}
+        exit_setup = (exit_reversion | exit_adx) & (~trend_up) & (~trend_down)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
@@ -2603,7 +2619,7 @@ for vw, ze, am in product([14, 20], [1.5, 2.0], [18, 22]):
         "params":     {},
     })
 
-# T11-C: VWAP Basis with ATR Stop
+# T11-C: VWAP Basis + ATR Regime Switching (MR | TF)
 T11_C_CODE = """class CustomStrategy(SimpleAlgorithm):
     z_entry = {z_entry}
     z_exit = {z_exit}
@@ -2626,18 +2642,19 @@ T11_C_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         atr = self.feat.atr(high, low, close, timeperiod=14)
         ma20 = self.feat.sma(close, timeperiod=20)
-        atr_stop = (
-            (close < ma20 - self.atr_stop_mult * atr) |
-            (close > ma20 + self.atr_stop_mult * atr)
-        )
+        trend_up = close > ma20 + self.atr_stop_mult * atr
+        trend_down = close < ma20 - self.atr_stop_mult * atr
 
-        long_setup = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry)
-        short_setup = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry)
-        exit_setup = (
-            (self.op.abs(vwap_dist_z) < self.z_exit) |
-            (self.op.abs(basis_z) < self.z_exit) |
-            atr_stop
-        )
+        mr_long = (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry) & (~trend_down)
+        mr_short = (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry) & (~trend_up)
+        tf_long = trend_up
+        tf_short = trend_down
+
+        long_setup = mr_long | tf_long
+        short_setup = mr_short | tf_short
+
+        exit_reversion = (self.op.abs(vwap_dist_z) < self.z_exit) | (self.op.abs(basis_z) < self.z_exit)
+        exit_setup = exit_reversion & (~trend_up) & (~trend_down)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
@@ -2658,7 +2675,7 @@ for vw, ze, am in product([14, 20], [1.5, 2.0], [2.0, 3.0]):
         "params":     {},
     })
 
-# T11-D: VWAP Basis Regime Switching (MR + Trend-follow)
+# T11-D: VWAP Basis Regime Switching (ADX-based MR | TF)
 T11_D_CODE = """class CustomStrategy(SimpleAlgorithm):
     z_entry = {z_entry}
     z_exit = {z_exit}
@@ -2685,10 +2702,8 @@ T11_D_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         atr = self.feat.atr(high, low, close, timeperiod=14)
         ma20 = self.feat.sma(close, timeperiod=20)
-        atr_stop = (
-            (close < ma20 - self.atr_stop_mult * atr) |
-            (close > ma20 + self.atr_stop_mult * atr)
-        )
+        trend_up = close > ma20 + self.atr_stop_mult * atr
+        trend_down = close < ma20 - self.atr_stop_mult * atr
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window={return_window})
@@ -2696,21 +2711,21 @@ T11_D_CODE = """class CustomStrategy(SimpleAlgorithm):
         range_to_trend = self.op.crossed_above(adx_val, {adx_entry})
         trend_to_range = self.op.crossed_below(adx_val, {adx_exit})
 
-        mr_long = ranging & (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry)
-        mr_short = ranging & (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry)
+        mr_long = ranging & (vwap_dist_z < -self.z_entry) & (basis_z < -self.z_entry) & (~trend_down)
+        mr_short = ranging & (vwap_dist_z > self.z_entry) & (basis_z > self.z_entry) & (~trend_up)
 
-        tf_long = trending & (close > vwap_val) & (basis > 0) & (return_roll > 0)
-        tf_short = trending & (close < vwap_val) & (basis < 0) & (return_roll < 0)
+        tf_long = trending & (close > vwap_val) & (basis > 0) & (return_roll > 0) & trend_up
+        tf_short = trending & (close < vwap_val) & (basis < 0) & (return_roll < 0) & trend_down
 
-        exit_setup = (
-            (self.op.abs(vwap_dist_z) < self.z_exit) |
-            (self.op.abs(basis_z) < self.z_exit) |
-            range_to_trend | trend_to_range |
-            atr_stop
-        )
+        long_setup = mr_long | tf_long
+        short_setup = mr_short | tf_short
 
-        long_signal = (tf_long | (mr_long & (~trending))) & (~exit_setup)
-        short_signal = (tf_short | (mr_short & (~trending))) & (~exit_setup)
+        exit_reversion = (self.op.abs(vwap_dist_z) < self.z_exit) | (self.op.abs(basis_z) < self.z_exit)
+        exit_regime = range_to_trend | trend_to_range
+        exit_setup = (exit_reversion | exit_regime) & (~trend_up) & (~trend_down)
+
+        long_signal = long_setup & (~exit_setup)
+        short_signal = short_setup & (~exit_setup)
 
         self.set_positions(exit_setup, position=0)
         self.set_positions(long_signal, position=1)
@@ -2842,6 +2857,670 @@ def generate():
     print(f"  Index:  {INDEX_PATH}")
 
     return rows
+
+
+# ============================================================
+# THESIS 12: Kalman Filter Regime Switching
+# ============================================================
+
+# T12-A: KF Dip/Rally — standard KF regime + ATR stop
+T12_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    sideways_entry = {sideways_buffer}
+    kf_z_entry = {kf_z_entry}
+    kf_z_mr_entry = {kf_z_mr_entry}
+    atr_stop_mult = {atr_stop_mult}
+    adx_entry = {adx_entry}
+    adx_exit = {adx_exit}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        kalman_state = self.feat.sma(close, timeperiod=10)
+        kf_residual = close - kalman_state
+        kf_dev = close / kalman_state - 1
+        residual_std = self.feat.rolling_std(kf_residual, 20)
+        kf_z = kf_residual / self.op.fillna(residual_std, 1.0)
+
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        kf_trend_up = kf_dev > self.sideways_entry
+        kf_trend_down = kf_dev < -self.sideways_entry
+        kf_sideways = ~kf_trend_up & ~kf_trend_down
+
+        atr_stop_long = close < kalman_state - self.atr_stop_mult * atr_val
+        atr_stop_short = close > kalman_state + self.atr_stop_mult * atr_val
+
+        dip_long = kf_trend_up & (kf_z < -self.kf_z_entry) & (adx_val > self.adx_entry)
+        rally_short = kf_trend_down & (kf_z > self.kf_z_entry) & (adx_val > self.adx_entry)
+        mr_long = kf_sideways & (kf_z < -self.kf_z_mr_entry)
+        mr_short = kf_sideways & (kf_z > self.kf_z_mr_entry)
+
+        long_setup = dip_long | mr_long
+        short_setup = rally_short | mr_short
+
+        exit_long = (kf_z > 0.2) | (adx_val < self.adx_exit) | atr_stop_long
+        exit_short = (kf_z < -0.2) | (adx_val < self.adx_exit) | atr_stop_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T12-A",
+    "thesis":     "12",
+    "descr":      "KF Dip/Rally",
+    "timeframes": [15, 30, 60],
+    "code":       T12_A_CODE,
+    "fixed":      {"sideways_buffer": 0.02, "kf_z_entry": 1.5, "kf_z_mr_entry": 2.0, "atr_stop_mult": 2.5, "adx_entry": 20, "adx_exit": 15},
+    "params":     {},
+})
+
+# T12-B: KF Mean Reversion
+T12_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    sideways_entry = {sideways_buffer}
+    kf_z_mr_entry = {kf_z_mr_entry}
+    atr_stop_mult = {atr_stop_mult}
+    adx_entry = {adx_entry}
+    adx_exit = {adx_exit}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        kalman_state = self.feat.sma(close, timeperiod=10)
+        kf_residual = close - kalman_state
+        kf_dev = close / kalman_state - 1
+        residual_std = self.feat.rolling_std(kf_residual, 20)
+        kf_z = kf_residual / self.op.fillna(residual_std, 1.0)
+
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        kf_trend_up = kf_dev > self.sideways_entry
+        kf_trend_down = kf_dev < -self.sideways_entry
+        kf_sideways = ~kf_trend_up & ~kf_trend_down
+
+        atr_stop_long = close < kalman_state - self.atr_stop_mult * atr_val
+        atr_stop_short = close > kalman_state + self.atr_stop_mult * atr_val
+
+        dip_long = kf_trend_up & (kf_z < -1.0) & (adx_val > self.adx_entry)
+        rally_short = kf_trend_down & (kf_z > 1.0) & (adx_val > self.adx_entry)
+        mr_long = kf_sideways & (kf_z < -self.kf_z_mr_entry)
+        mr_short = kf_sideways & (kf_z > self.kf_z_mr_entry)
+
+        long_setup = dip_long | mr_long
+        short_setup = rally_short | mr_short
+
+        exit_long = (kf_z > 0.2) | (adx_val < self.adx_exit) | atr_stop_long
+        exit_short = (kf_z < -0.2) | (adx_val < self.adx_exit) | atr_stop_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T12-B",
+    "thesis":     "12",
+    "descr":      "KF Mean Reversion",
+    "timeframes": [15, 30],
+    "code":       T12_B_CODE,
+    "fixed":      {"sideways_buffer": 0.02, "kf_z_mr_entry": 2.0, "atr_stop_mult": 2.5, "adx_entry": 20, "adx_exit": 15},
+    "params":     {},
+})
+
+# T12-C: KF + ADX Confirmed
+T12_C_CODE = """class CustomStrategy(SimpleAlgorithm):
+    sideways_entry = {sideways_buffer}
+    kf_z_entry = {kf_z_entry}
+    kf_z_mr_entry = {kf_z_mr_entry}
+    atr_stop_mult = {atr_stop_mult}
+    adx_entry = {adx_entry}
+    adx_exit = {adx_exit}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        kalman_state = self.feat.sma(close, timeperiod=10)
+        kf_residual = close - kalman_state
+        kf_dev = close / kalman_state - 1
+        residual_std = self.feat.rolling_std(kf_residual, 20)
+        kf_z = kf_residual / self.op.fillna(residual_std, 1.0)
+
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        kf_trend_up = kf_dev > self.sideways_entry
+        kf_trend_down = kf_dev < -self.sideways_entry
+        kf_sideways = ~kf_trend_up & ~kf_trend_down
+
+        atr_stop_long = close < kalman_state - self.atr_stop_mult * atr_val
+        atr_stop_short = close > kalman_state + self.atr_stop_mult * atr_val
+
+        dip_long = kf_trend_up & (kf_z < -self.kf_z_entry) & (adx_val > self.adx_entry)
+        rally_short = kf_trend_down & (kf_z > self.kf_z_entry) & (adx_val > self.adx_entry)
+        mr_long = kf_sideways & (kf_z < -self.kf_z_mr_entry) & (adx_val < self.adx_entry)
+        mr_short = kf_sideways & (kf_z > self.kf_z_mr_entry) & (adx_val < self.adx_entry)
+
+        long_setup = dip_long | mr_long
+        short_setup = rally_short | mr_short
+
+        exit_long = (kf_z > 0.2) | (adx_val < self.adx_exit) | atr_stop_long
+        exit_short = (kf_z < -0.2) | (adx_val < self.adx_exit) | atr_stop_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T12-C",
+    "thesis":     "12",
+    "descr":      "KF + ADX Confirmed",
+    "timeframes": [30, 60],
+    "code":       T12_C_CODE,
+    "fixed":      {"sideways_buffer": 0.02, "kf_z_entry": 1.5, "kf_z_mr_entry": 2.0, "atr_stop_mult": 2.5, "adx_entry": 20, "adx_exit": 15},
+    "params":     {},
+})
+
+# T12-D: KF + Z Combo
+T12_D_CODE = """class CustomStrategy(SimpleAlgorithm):
+    sideways_entry = {sideways_buffer}
+    kf_z_entry = {kf_z_entry}
+    kf_z_mr_entry = {kf_z_mr_entry}
+    atr_stop_mult = {atr_stop_mult}
+    adx_entry = {adx_entry}
+    adx_exit = {adx_exit}
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        kalman_state = self.feat.sma(close, timeperiod=10)
+        kf_residual = close - kalman_state
+        kf_dev = close / kalman_state - 1
+        residual_std = self.feat.rolling_std(kf_residual, 20)
+        kf_z = kf_residual / self.op.fillna(residual_std, 1.0)
+        residual_z = self.feat.rolling_zscore(kf_residual, 20)
+
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        kf_trend_up = kf_dev > self.sideways_entry
+        kf_trend_down = kf_dev < -self.sideways_entry
+        kf_sideways = ~kf_trend_up & ~kf_trend_down
+
+        atr_stop_long = close < kalman_state - self.atr_stop_mult * atr_val
+        atr_stop_short = close > kalman_state + self.atr_stop_mult * atr_val
+
+        dip_long = kf_trend_up & (kf_z < -self.kf_z_entry) & (residual_z < -1.0) & (adx_val > self.adx_entry)
+        rally_short = kf_trend_down & (kf_z > self.kf_z_entry) & (residual_z > 1.0) & (adx_val > self.adx_entry)
+        mr_long = kf_sideways & (kf_z < -self.kf_z_mr_entry) & (residual_z < -1.5)
+        mr_short = kf_sideways & (kf_z > self.kf_z_mr_entry) & (residual_z > 1.5)
+
+        long_setup = dip_long | mr_long
+        short_setup = rally_short | mr_short
+
+        exit_long = (kf_z > 0.2) | (adx_val < self.adx_exit) | atr_stop_long
+        exit_short = (kf_z < -0.2) | (adx_val < self.adx_exit) | atr_stop_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T12-D",
+    "thesis":     "12",
+    "descr":      "KF + Z Combo",
+    "timeframes": [15, 30, 60],
+    "code":       T12_D_CODE,
+    "fixed":      {"sideways_buffer": 0.02, "kf_z_entry": 1.5, "kf_z_mr_entry": 2.0, "atr_stop_mult": 2.5, "adx_entry": 20, "adx_exit": 15},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 13: CMF + Bollinger Squeeze Breakout
+# ============================================================
+
+T13_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    cmf_window = 20
+    adx_exit = 14
+    atr_mult = 2.5
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+
+        cmf_val = self.feat.cmf(high, low, close, volume, timeperiod=self.cmf_window)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        dip_long = (close > bb_upper) & (cmf_val > 0) & (volume > vol_sma)
+        rally_short = (close < bb_lower) & (cmf_val < 0) & (volume > vol_sma)
+
+        long_signal = dip_long
+        short_signal = rally_short
+
+        exit_setup = (adx_val < self.adx_exit) | atr_stop_long | atr_stop_short | trailing_long | trailing_short
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T13-A",
+    "thesis":     "13",
+    "descr":      "CMF + Squeeze Breakout",
+    "timeframes": [15, 30, 60],
+    "code":       T13_A_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "cmf_window": 20, "adx_exit": 14, "atr_mult": 2.5, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 14: BB Squeeze Reversal
+# ============================================================
+
+T14_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    atr_mult = 2.0
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+
+        atr_val = self.feat.atr(high, low, close, timeperiod=self.bb_window)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        dip_long = (close > bb_upper) & (volume > vol_sma)
+        rally_short = (close < bb_lower) & (volume > vol_sma)
+
+        long_signal = dip_long
+        short_signal = rally_short
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(long_signal, position=1)
+
+        self.set_positions(exit_short, position=0)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T14-A",
+    "thesis":     "14",
+    "descr":      "BB Squeeze Reversal",
+    "timeframes": [15, 30, 60],
+    "code":       T14_A_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "atr_mult": 2.0, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 15: OI Divergence
+# ============================================================
+
+T15_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    adx_entry = 22
+    adx_exit = 18
+    atr_mult = 2.0
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+        oi = self.data.fut_open_interest_vn30f1m_1d
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+        oi_change = self.op.fillna(self.op.pct_change(oi, periods=1), value=0)
+
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        # --- BEARISH OI DIVERGENCE (short entry) ---
+        # Price above mid BB + OI decreasing + volume confirmed + ADX trending
+        bearish_oi = (close > bb_mid) & (oi_change < -0.01) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        short_signal = bearish_oi
+
+        exit_setup = (adx_val < self.adx_exit) | atr_stop_long | atr_stop_short | trailing_long | trailing_short
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T15-A",
+    "thesis":     "15",
+    "descr":      "OI Divergence Bearish",
+    "timeframes": [15, 30, 60],
+    "code":       T15_A_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "adx_entry": 22, "adx_exit": 18, "atr_mult": 2.0, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 16: Price-Volume Velocity Divergence
+# ============================================================
+
+T16_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    atr_mult = 2.0
+    vol_window = 20
+    adx_entry = 15
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+
+        volume_z = self.feat.rolling_zscore(volume, window=self.vol_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        vol_push = (volume_z > 0.5) & (close > bb_mid) & (adx_val > self.adx_entry)
+        price_fade = (volume_z < 0.0) & (close > bb_upper) & (adx_val > self.adx_entry)
+
+        long_signal = vol_push
+        short_signal = price_fade
+
+        exit_long = atr_stop_long | trailing_long | (close < bb_mid)
+        exit_short = atr_stop_short | trailing_short | (close > bb_mid)
+
+        exit_action = (exit_long & (long_signal == 0)) | (exit_short & (short_signal == 0))
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_action, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T16-A",
+    "thesis":     "16",
+    "descr":      "Velocity Divergence",
+    "timeframes": [15, 30, 60],
+    "code":       T16_A_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "atr_mult": 2.0, "vol_window": 20, "adx_entry": 15},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 17: Volatility-Adjusted Momentum
+# ============================================================
+
+T17_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    adj_window = 14
+    z_window = 20
+    z_entry = 1.5
+    atr_mult = 2.0
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+
+        adx_val = self.feat.adx(high, low, close, timeperiod=self.adj_window)
+        atr_val = self.feat.atr(high, low, close, timeperiod=self.adj_window)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        roc_val = self.feat.roc(close, timeperiod=self.adj_window)
+        adj_mom = roc_val / atr_val
+        adj_mom_z = self.feat.rolling_zscore(adj_mom, window=self.z_window)
+
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+
+        atr_stop = atr_val * self.atr_mult
+        atr_stop_long = close < (bb_mid - atr_stop)
+        atr_stop_short = close > (bb_mid + atr_stop)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_signal = (adj_mom_z > self.z_entry) & (close > bb_mid) & (volume > vol_sma) & (return_roll > 0)
+        short_signal = (adj_mom_z < -self.z_entry) & (close < bb_mid) & (volume > vol_sma) & (return_roll < 0)
+
+        exit_setup = (adx_val < 18) | atr_stop_long | atr_stop_short | trailing_long | trailing_short
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T17-A",
+    "thesis":     "17",
+    "descr":      "Vol-Adj Momentum Breakout",
+    "timeframes": [15, 30, 60],
+    "code":       T17_A_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "adj_window": 14, "z_window": 20, "z_entry": 1.5, "atr_mult": 2.0, "vol_window": 20},
+    "params":     {},
+})
+
+T17_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    adj_window = 14
+    z_window = 20
+    z_entry = 1.5
+    atr_mult = 2.0
+    vol_window = 20
+    sma_fast = 13
+    sma_slow = 34
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+
+        adx_val = self.feat.adx(high, low, close, timeperiod=self.adj_window)
+        atr_val = self.feat.atr(high, low, close, timeperiod=self.adj_window)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        roc_val = self.feat.roc(close, timeperiod=self.adj_window)
+        adj_mom = roc_val / atr_val
+        adj_mom_z = self.feat.rolling_zscore(adj_mom, window=self.z_window)
+
+        sma_13 = self.feat.sma(close, timeperiod=self.sma_fast)
+        sma_34 = self.feat.sma(close, timeperiod=self.sma_slow)
+
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+
+        atr_stop = atr_val * self.atr_mult
+        atr_stop_long = close < (bb_mid - atr_stop)
+        atr_stop_short = close > (bb_mid + atr_stop)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_signal = (adj_mom_z > self.z_entry) & (close > bb_mid) & (volume > vol_sma) & (sma_13 > sma_34)
+        short_signal = (adj_mom_z < -self.z_entry) & (close < bb_mid) & (volume > vol_sma) & (sma_13 < sma_34)
+
+        exit_setup = (adx_val < 18) | atr_stop_long | atr_stop_short | trailing_long | trailing_short | (adj_mom_z < 0)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T17-B",
+    "thesis":     "17",
+    "descr":      "Vol-Adj Momentum + SMA Filter",
+    "timeframes": [15, 30, 60],
+    "code":       T17_B_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "adj_window": 14, "z_window": 20, "z_entry": 1.5, "atr_mult": 2.0, "vol_window": 20, "sma_fast": 13, "sma_slow": 34},
+    "params":     {},
+})
+
+T17_C_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    adj_window = 14
+    z_window = 20
+    atr_mult_low = 1.5
+    atr_mult_high = 2.5
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+
+        adx_val = self.feat.adx(high, low, close, timeperiod=self.adj_window)
+        atr_val = self.feat.atr(high, low, close, timeperiod=self.adj_window)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        roc_val = self.feat.roc(close, timeperiod=self.adj_window)
+        adj_mom = roc_val / atr_val
+        adj_mom_z = self.feat.rolling_zscore(adj_mom, window=self.z_window)
+
+        vol_regime = atr_val / self.feat.sma(atr_val, timeperiod=self.z_window)
+        low_vol = vol_regime < 0.8
+
+        z_entry = self.op.where(low_vol, 2.0, 1.2)
+        trailing_mult = self.op.where(low_vol, self.atr_mult_low, self.atr_mult_high)
+
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+
+        atr_stop_long = close < (bb_mid - trailing_mult * atr_val)
+        atr_stop_short = close > (bb_mid + trailing_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_signal = (adj_mom_z > z_entry) & (close > bb_mid) & (volume > vol_sma) & (return_roll > 0)
+        short_signal = (adj_mom_z < -z_entry) & (close < bb_mid) & (volume > vol_sma) & (return_roll < 0)
+
+        exit_setup = (adx_val < 18) | atr_stop_long | atr_stop_short | trailing_long | trailing_short
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T17-C",
+    "thesis":     "17",
+    "descr":      "Vol-Adj Momentum Regime",
+    "timeframes": [15, 30, 60],
+    "code":       T17_C_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "adj_window": 14, "z_window": 20, "atr_mult_low": 1.5, "atr_mult_high": 2.5, "vol_window": 20},
+    "params":     {},
+})
 
 
 if __name__ == "__main__":
