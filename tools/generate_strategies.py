@@ -25,7 +25,7 @@ THESIS_FOLDERS = {
     "12": "thesis_12_kalman_regime_switching",
     "13": "thesis_13_cmf_squeeze_breakout",
     "14": "thesis_14_bb_squeeze_reversal",
-    "15": "thesis_15_oi_divergence",
+    "15": "thesis_15_mavp_adaptive",
     "16": "thesis_16_velocity_divergence",
     "17": "thesis_17_vol_adjusted_momentum",
 }
@@ -114,8 +114,10 @@ TEMPLATE_META = {
     "T13-A": ("CMF + Squeeze Breakout", "Bollinger squeeze (bb_width < SMA*0.8) + CMF directional flow + ADX trend filter + volume confirmation; exit via ADX fade + ATR stop only."),
     # Thesis 14: BB Squeeze Reversal
     "T14-A": ("BB Squeeze Reversal", "Bollinger squeeze reversal: trade when price touches outer band during/after squeeze + bb_width expanding + ADX confirming exit via ATR stop; no CMF needed."),
-    # Thesis 15: OI Divergence
-    "T15-A": ("OI Divergence Bearish", "Short when price rises but OI falls (longs closing weak trend); exit via ADX fade + ATR stop + trailing."),
+    # Thesis 15: MAVP Adaptive Momentum
+    "T15-mavp": ("MAVP Adaptive Trend", "Replace fixed SMA(20) with mavp(close, periods=dcperiod). Entry when price crosses adaptive MA with ADX + volume + return_roll confirmation. Exit via ADX fade + ATR stop + trailing."),
+    "T15-mavp_B": ("MAVP Adaptive BBands", "Same mavp core but use mavp as BBands mid band — bands adapt to market cycle. Entry at band touch with ADX + volume. Exit via ADX fade + ATR stop + trailing + band cross."),
+    "T15-mavp_C": ("MAVP TrendMode Gate", "Same mavp core + trendmode == 1 gate for entry. Exit adds trendmode == 0 for earlier regime-based exit."),
     # Thesis 16: Price-Volume Velocity Divergence
     "T16-A": ("Velocity Divergence", "Compare price velocity (roc) vs volume velocity (volume_z). Volume surges before price moves = accumulation. Price surges on fading volume = fake breakout. Exit via ADX fade + ATR stop + trailing."),
     # Thesis 17: Volatility-Adjusted Momentum
@@ -3223,59 +3225,172 @@ TEMPLATES.append({
 })
 
 # ============================================================
-# THESIS 15: OI Divergence
+# THESIS 15: MAVP Adaptive Momentum
 # ============================================================
 
-T15_A_CODE = """class CustomStrategy(SimpleAlgorithm):
-    bb_window = 20
-    bb_nbdev = 2
+T15_MAVP_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     adx_entry = 22
-    adx_exit = 18
     atr_mult = 2.0
     vol_window = 20
+    minperiod = 8
+    maxperiod = 30
 
     def __algorithm__(self):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
         volume = self.data.pv_volume
-        oi = self.data.fut_open_interest_vn30f1m_1d
 
-        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+        dc_period = self.op.fillna(self.feat.dcperiod(close), 20)
+        dc_smooth = self.feat.rolling_max(dc_period, 5)
+        mavp_ma = self.feat.mavp(close, periods=dc_smooth, minperiod=self.minperiod, maxperiod=self.maxperiod, matype=0)
 
         adx_val = self.feat.adx(high, low, close, timeperiod=14)
         atr_val = self.feat.atr(high, low, close, timeperiod=14)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
-        oi_change = self.op.fillna(self.op.pct_change(oi, periods=1), value=0)
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=5)
 
-        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
-        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
-
-        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        atr_stop_short = close > (mavp_ma + self.atr_mult * atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        # --- BEARISH OI DIVERGENCE (short entry) ---
-        # Price above mid BB + OI decreasing + volume confirmed + ADX trending
-        bearish_oi = (close > bb_mid) & (oi_change < -0.01) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
+        mavp_cross_up = self.op.crossed_above(close, mavp_ma)
+        mavp_cross_dn = self.op.crossed_below(close, mavp_ma)
 
-        short_signal = bearish_oi
+        long_signal = mavp_cross_up & (adx_val > self.adx_entry) & (volume > vol_sma) & (return_roll > 0)
+        short_signal = mavp_cross_dn & (adx_val > self.adx_entry) & (volume > vol_sma) & (return_roll < 0)
 
-        exit_setup = (adx_val < self.adx_exit) | atr_stop_long | atr_stop_short | trailing_long | trailing_short
+        adx_fade = self.op.crossed_below_value(adx_val, 18)
+        exit_setup = self.op.hold_for(adx_fade | atr_stop_short | trailing_short, 1)
+
+        assert not (long_signal & short_signal).any()
 
         self.set_positions(exit_setup, position=0)
+        self.set_positions(long_signal, position=1)
         self.set_positions(short_signal, position=-1)
 """
 
 TEMPLATES.append({
-    "name":       "T15-A",
+    "name":       "T15-mavp",
     "thesis":     "15",
-    "descr":      "OI Divergence Bearish",
+    "descr":      "MAVP Adaptive Trend",
     "timeframes": [15, 30, 60],
-    "code":       T15_A_CODE,
-    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "adx_entry": 22, "adx_exit": 18, "atr_mult": 2.0, "vol_window": 20},
+    "code":       T15_MAVP_A_CODE,
+    "fixed":      {"adx_entry": 22, "atr_mult": 2.0, "vol_window": 20, "minperiod": 8, "maxperiod": 30},
+    "params":     {},
+})
+
+T15_MAVP_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_nbdev = 2
+    adx_entry = 22
+    atr_mult = 2.0
+    vol_window = 20
+    minperiod = 8
+    maxperiod = 30
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        dc_period = self.op.fillna(self.feat.dcperiod(close), 20)
+        dc_smooth = self.feat.rolling_max(dc_period, 5)
+        mavp_ma = self.feat.mavp(close, periods=dc_smooth, minperiod=self.minperiod, maxperiod=self.maxperiod, matype=0)
+
+        bb_upper = mavp_ma + self.feat.rolling_std(close, 20) * self.bb_nbdev
+        bb_lower = mavp_ma - self.feat.rolling_std(close, 20) * self.bb_nbdev
+
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+
+        atr_stop_long = close < (mavp_ma - self.atr_mult * atr_val)
+        atr_stop_short = close > (mavp_ma + self.atr_mult * atr_val)
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_signal = (close > bb_upper) & (adx_val > self.adx_entry) & (volume > vol_sma) & (return_roll > 0)
+        short_signal = (close < bb_lower) & (adx_val > self.adx_entry) & (volume > vol_sma) & (return_roll < 0)
+
+        adx_fade = self.op.crossed_below_value(adx_val, 18)
+        exit_setup = self.op.hold_for(adx_fade | atr_stop_long | atr_stop_short | trailing_long | trailing_short, 1)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T15-mavp_B",
+    "thesis":     "15",
+    "descr":      "MAVP Adaptive BBands",
+    "timeframes": [15, 30, 60],
+    "code":       T15_MAVP_B_CODE,
+    "fixed":      {"bb_nbdev": 2, "adx_entry": 22, "atr_mult": 2.0, "vol_window": 20, "minperiod": 8, "maxperiod": 30},
+    "params":     {},
+})
+
+T15_MAVP_C_CODE = """class CustomStrategy(SimpleAlgorithm):
+    adx_entry = 22
+    atr_mult = 2.0
+    vol_window = 20
+    minperiod = 8
+    maxperiod = 30
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        dc_period = self.op.fillna(self.feat.dcperiod(close), 20)
+        dc_smooth = self.feat.rolling_max(dc_period, 5)
+        mavp_ma = self.feat.mavp(close, periods=dc_smooth, minperiod=self.minperiod, maxperiod=self.maxperiod, matype=0)
+
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+        trend_mode = self.feat.trendmode(close)
+
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+
+        atr_stop_long = close < (mavp_ma - self.atr_mult * atr_val)
+        atr_stop_short = close > (mavp_ma + self.atr_mult * atr_val)
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        mavp_cross_up = self.op.crossed_above(close, mavp_ma)
+        mavp_cross_dn = self.op.crossed_below(close, mavp_ma)
+
+        long_signal = mavp_cross_up & (adx_val > self.adx_entry) & (volume > vol_sma) & (trend_mode == 1) & (return_roll > 0)
+        short_signal = mavp_cross_dn & (adx_val > self.adx_entry) & (volume > vol_sma) & (trend_mode == 1) & (return_roll < 0)
+
+        adx_fade = self.op.crossed_below_value(adx_val, 18)
+        trend_exit = self.op.crossed_below_value(trend_mode, 1)
+        exit_setup = self.op.hold_for(adx_fade | atr_stop_long | atr_stop_short | trailing_long | trailing_short | trend_exit, 1)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_setup, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T15-mavp_C",
+    "thesis":     "15",
+    "descr":      "MAVP TrendMode Gate",
+    "timeframes": [15, 30, 60],
+    "code":       T15_MAVP_C_CODE,
+    "fixed":      {"adx_entry": 22, "atr_mult": 2.0, "vol_window": 20, "minperiod": 8, "maxperiod": 30},
     "params":     {},
 })
 
