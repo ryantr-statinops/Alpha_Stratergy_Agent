@@ -113,7 +113,9 @@ TEMPLATE_META = {
     # Thesis 13: CMF + Bollinger Squeeze Breakout
     "T13-A": ("CMF + Squeeze Breakout", "Bollinger squeeze (bb_width < SMA*0.8) + CMF directional flow + ADX trend filter + volume confirmation; exit via ADX fade + ATR stop only."),
     # Thesis 14: BB Squeeze Reversal
-    "T14-A": ("BB Squeeze Reversal", "Bollinger squeeze reversal: trade when price touches outer band during/after squeeze + bb_width expanding + ADX confirming exit via ATR stop; no CMF needed."),
+    "T14-A": ("BB Squeeze TrendFilter", "Same BB reversal core + SMA 200 trend filter to avoid counter-trend reversals; long only above MA200, short only below MA200."),
+    "T14-B": ("BB Squeeze Detection", "Same BB reversal core + BB width squeeze detection (bb_width < sma(bb_width,20)) to ensure entries only during/after a squeeze phase."),
+    "T14-C": ("BB Squeeze TimeStop", "Same BB reversal core + time-based exit (bars_since > max_hold) to cut stale trades that haven't worked out."),
     # Thesis 15: MAVP Adaptive Momentum
     "T15-mavp": ("MAVP Adaptive Trend", "Replace fixed SMA(20) with mavp(close, periods=dcperiod). Entry when price crosses adaptive MA with ADX + volume + return_roll confirmation. Exit via ADX fade + ATR stop + trailing."),
     "T15-mavp_B": ("MAVP Adaptive BBands", "Same mavp core but use mavp as BBands mid band — bands adapt to market cycle. Entry at band touch with ADX + volume. Exit via ADX fade + ATR stop + trailing + band cross."),
@@ -3178,6 +3180,99 @@ T14_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     bb_nbdev = 2
     atr_mult = 2.0
     vol_window = 20
+    trend_window = 200
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+
+        atr_val = self.feat.atr(high, low, close, timeperiod=self.bb_window)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        trend_ma = self.feat.sma(close, timeperiod=self.trend_window)
+        trend_filter_long = close > trend_ma
+        trend_filter_short = close < trend_ma
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        dip_long = (close > bb_upper) & (volume > vol_sma) & trend_filter_long
+        rally_short = (close < bb_lower) & (volume > vol_sma) & trend_filter_short
+
+        long_signal = dip_long
+        short_signal = rally_short
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(long_signal, position=1)
+
+        self.set_positions(exit_short, position=0)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T14_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    atr_mult = 2.0
+    vol_window = 20
+    squeeze_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+
+        atr_val = self.feat.atr(high, low, close, timeperiod=self.bb_window)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        bb_width = (bb_upper - bb_lower) / bb_mid
+        bb_width_ma = self.feat.sma(bb_width, timeperiod=self.squeeze_window)
+        squeeze_phase = bb_width < bb_width_ma
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        dip_long = (close > bb_upper) & (volume > vol_sma) & squeeze_phase
+        rally_short = (close < bb_lower) & (volume > vol_sma) & squeeze_phase
+
+        long_signal = dip_long
+        short_signal = rally_short
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(long_signal, position=1)
+
+        self.set_positions(exit_short, position=0)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T14_C_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    atr_mult = 2.0
+    vol_window = 20
+    max_hold = 15
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -3202,8 +3297,13 @@ T14_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         long_signal = dip_long
         short_signal = rally_short
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        bars_long = self.op.bars_since(long_signal)
+        bars_short = self.op.bars_since(short_signal)
+        timeout_long = bars_long > self.max_hold
+        timeout_short = bars_short > self.max_hold
+
+        exit_long = atr_stop_long | trailing_long | timeout_long
+        exit_short = atr_stop_short | trailing_short | timeout_short
 
         assert not (long_signal & short_signal).any()
 
@@ -3217,10 +3317,28 @@ T14_A_CODE = """class CustomStrategy(SimpleAlgorithm):
 TEMPLATES.append({
     "name":       "T14-A",
     "thesis":     "14",
-    "descr":      "BB Squeeze Reversal",
+    "descr":      "BB Squeeze TrendFilter",
     "timeframes": [15, 30, 60],
     "code":       T14_A_CODE,
-    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "atr_mult": 2.0, "vol_window": 20},
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "atr_mult": 2.0, "vol_window": 20, "trend_window": 200},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T14-B",
+    "thesis":     "14",
+    "descr":      "BB Squeeze Detection",
+    "timeframes": [15, 30, 60],
+    "code":       T14_B_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "atr_mult": 2.0, "vol_window": 20, "squeeze_window": 20},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T14-C",
+    "thesis":     "14",
+    "descr":      "BB Squeeze TimeStop",
+    "timeframes": [15, 30, 60],
+    "code":       T14_C_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "atr_mult": 2.0, "vol_window": 20, "max_hold": 15},
     "params":     {},
 })
 
@@ -3229,11 +3347,10 @@ TEMPLATES.append({
 # ============================================================
 
 T15_MAVP_A_CODE = """class CustomStrategy(SimpleAlgorithm):
-    adx_entry = 22
-    atr_mult = 2.0
+    fast_limit = 0.5
+    slow_limit = 0.05
+    atr_mult = 1
     vol_window = 20
-    minperiod = 8
-    maxperiod = 30
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -3241,34 +3358,37 @@ T15_MAVP_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         volume = self.data.pv_volume
 
-        dc_period = self.op.fillna(self.feat.dcperiod(close), 20)
-        dc_smooth = self.feat.rolling_max(dc_period, 5)
-        mavp_ma = self.feat.mavp(close, periods=dc_smooth, minperiod=self.minperiod, maxperiod=self.maxperiod, matype=0)
+        mama, fama = self.feat.mama(close, fastlimit=self.fast_limit, slowlimit=self.slow_limit)
 
         adx_val = self.feat.adx(high, low, close, timeperiod=14)
         atr_val = self.feat.atr(high, low, close, timeperiod=14)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
-        return_roll = self.feat.rolling_mean(return_1, window=5)
+        return_roll = self.feat.rolling_mean(return_1, window=3)
 
-        atr_stop_short = close > (mavp_ma + self.atr_mult * atr_val)
-        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+        atr_stop_long = close < (fama - self.atr_mult * atr_val)
+        atr_stop_short = close > (fama + self.atr_mult * atr_val)
 
-        mavp_cross_up = self.op.crossed_above(close, mavp_ma)
-        mavp_cross_dn = self.op.crossed_below(close, mavp_ma)
+        trailing_long = close < (self.feat.rolling_max(high, 8) - (1.2 * atr_val))
+        trailing_short = close > (self.feat.rolling_min(low, 8) + (1.2 * atr_val))
 
-        long_signal = mavp_cross_up & (adx_val > self.adx_entry) & (volume > vol_sma) & (return_roll > 0)
-        short_signal = mavp_cross_dn & (adx_val > self.adx_entry) & (volume > vol_sma) & (return_roll < 0)
+        long_setup = (close > fama) & (volume > vol_sma) & (adx_val > 18) & (return_roll > 0)
+        short_setup = (close < fama) & (volume > vol_sma) & (adx_val > 18) & (return_roll < 0)
 
-        adx_fade = self.op.crossed_below_value(adx_val, 18)
-        exit_setup = self.op.hold_for(adx_fade | atr_stop_short | trailing_short, 1)
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
 
         assert not (long_signal & short_signal).any()
 
-        self.set_positions(exit_setup, position=0)
-        self.set_positions(long_signal, position=1)
-        self.set_positions(short_signal, position=-1)
+        self.set_positions(exit_long, position=0.0)
+        self.set_positions(exit_short, position=0.0)
+
+        self.set_positions(long_signal, position=0.8)
+        self.set_positions(short_signal, position=-0.8)
 """
 
 TEMPLATES.append({
@@ -3277,7 +3397,7 @@ TEMPLATES.append({
     "descr":      "MAVP Adaptive Trend",
     "timeframes": [15, 30, 60],
     "code":       T15_MAVP_A_CODE,
-    "fixed":      {"adx_entry": 22, "atr_mult": 2.0, "vol_window": 20, "minperiod": 8, "maxperiod": 30},
+    "fixed":      {"fast_limit": 0.5, "slow_limit": 0.05, "atr_mult": 1, "vol_window": 20},
     "params":     {},
 })
 
