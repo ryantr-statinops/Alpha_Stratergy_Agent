@@ -1,16 +1,26 @@
 # Syntax Guide
 
-Tài liệu này hướng dẫn cách đọc và sử dụng hai catalog:
+Tài liệu này hướng dẫn cách đọc và sử dụng ba catalog:
 
+- [`syntax/data_syntax.md`](data_syntax.md)
 - [`syntax/feature_syntax.md`](feature_syntax.md)
 - [`syntax/operations_syntax.md`](operations_syntax.md)
 
 ## How To Read
 
-1. Tra `Quick Lookup` trước để chọn đúng nhóm hàm hoặc toán tử.
-2. Mở phần chi tiết bên dưới để lấy signature chính xác.
+1. Tra `Quick Lookup` trước để chọn đúng nhóm data / hàm / toán tử.
+2. Mở phần chi tiết bên dưới để lấy field hoặc signature chính xác.
 3. Với hàm trả tuple, luôn kiểm tra thứ tự output trước khi code.
 4. Với `self.op.*`, ưu tiên các primitive causal-safe như `previous`, `shift`, `pct_change`, `bars_since`, `hold_for`.
+
+## Data Selection Rules
+
+| Strategy need | Data groups to read first |
+|---|---|
+| Most strategies | Core OHLCV |
+| Cross-market | VN30 Index, Dow Jones Index |
+| Flow / participation | Futures Daily Fields, Core OHLCV |
+| Intraday session | Core OHLCV |
 
 ## Feature Selection Rules
 
@@ -42,5 +52,4 @@ Tài liệu này hướng dẫn cách đọc và sử dụng hai catalog:
 
 ## Minimal Workflow
 
-`idea` -> `hypothesis` -> `feature/operations syntax` -> `strategy_framework` -> code -> validate -> backtest
-
+`idea` -> `hypothesis` -> `syntax/data + syntax/feature + syntax/operations` -> `strategy_framework` -> code -> validate -> backtest

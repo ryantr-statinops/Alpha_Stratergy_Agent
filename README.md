@@ -13,7 +13,7 @@ Mục đích cốt lõi của không gian làm việc này là giúp AI Agent đ
 ```text
 ALPHA_BOT/
 ├── data/                   # Tài liệu về dữ liệu đầu vào (OHLCV, Futures, VN30, DJI)
-├── syntax/                 # Catalog + usage guide cho feature/operations
+├── syntax/                 # Catalog + usage guide cho data/feature/operations
 ├── template_example/       # Framework chuẩn + strategy mẫu chạy được trên XNOQuant
 │   └── strategy_framework.md   # **Master specification** — đọc đầu tiên
 ├── idea/                   # Nơi lưu trữ các ý tưởng nghiên cứu (.md)
@@ -68,19 +68,7 @@ Trước khi thực hiện bất kỳ yêu cầu nào từ người dùng, AI Ag
   - ✅ `open_price`
   - ❌ `open`
 
-#### Danh sách trường dữ liệu VnFuture (Hợp đồng tương lai VN30F1M)
-
-| Trường | Ý nghĩa |
-|--------|---------|
-| `fut_matched_volume_vn30f1m_1d` | Khối lượng khớp lệnh |
-| `fut_matched_value_vn30f1m_1d` | Giá trị khớp lệnh |
-| `fut_agreed_volume_vn30f1m_1d` | Khối lượng thỏa thuận |
-| `fut_agreed_value_vn30f1m_1d` | Giá trị thỏa thuận |
-| `fut_total_volume_vn30f1m_1d` | Tổng khối lượng (khớp lệnh + thỏa thuận) |
-| `fut_total_value_vn30f1m_1d` | Tổng giá trị (khớp lệnh + thỏa thuận) |
-| `fut_open_interest_vn30f1m_1d` | Hợp đồng mở (Open Interest) |
-
-Chi tiết xem tại [`data/VnFuture.md`](data/VnFuture.md).
+Chi tiết xem tại [`syntax/data_syntax.md`](syntax/data_syntax.md).
 
 #### Đặc thù thị trường Việt Nam
 
@@ -115,10 +103,11 @@ Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_chara
 
 ### `syntax/`
 
-- Tra cứu các chỉ báo kỹ thuật và toán tử trong hai catalog:
+- Tra cứu data, các chỉ báo kỹ thuật và toán tử trong các catalog:
+  - `syntax/data_syntax.md`
   - `syntax/feature_syntax.md`
   - `syntax/operations_syntax.md`
-- Đọc `syntax/syntax_guide.md` trước khi code để biết cách chọn nhóm hàm/toán tử phù hợp.
+- Đọc `syntax/syntax_guide.md` trước khi code để biết cách chọn nhóm data/hàm/toán tử phù hợp.
 - Khi sinh mã nguồn, loại bỏ các khai báo kiểu dữ liệu nội bộ của hệ thống như:
 
 ```python
@@ -240,6 +229,7 @@ Sau khi được phê duyệt:
 
 - Chuyển logic thành mã Python.
 - Chỉ sử dụng:
+  - các field trong `syntax/data_syntax.md`
   - các hàm trong `syntax/feature_syntax.md`
   - các hàm trong `syntax/operations_syntax.md`
 - Tuân thủ tuyệt đối cấu trúc trong [`template_example/strategy_framework.md`](template_example/strategy_framework.md):
@@ -298,7 +288,8 @@ AI Agent **luôn phải**:
 | **Onboarding nhanh cho AI Agent** | `.agent/GUIDE.md` |
 | **Master spec: class structure, compliance checklist** | `template_example/strategy_framework.md` |
 | **Đặc thù thị trường VN → thiết kế strategy** | `data/vietnam_market_characteristics.md` |
-| **Data fields (OHLCV, futures, VN30, DJI)** | `data/VnFuture.md` |
+| **Data fields (OHLCV, futures, VN30, DJI)** | `syntax/data_syntax.md` |
+| **Data guide** | `syntax/syntax_guide.md` |
 | **Feature functions (140+ indicators)** | `syntax/feature_syntax.md` |
 | **Operator functions (30+ operators)** | `syntax/operations_syntax.md` |
 | **Acceptance criteria, scorecard** | `idea/hypothesis/hypothesis_framework.md` |
