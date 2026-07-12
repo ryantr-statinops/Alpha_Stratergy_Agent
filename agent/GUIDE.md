@@ -14,8 +14,8 @@
 | 3 | `template_example/strategy_framework.md` | **Master spec** — class structure, multi-timeframe windows, VN30/DJI patterns, compliance checklist | **Trước khi code** |
 | 4 | `data/vietnam_market_characteristics.md` | Đặc thù thị trường VN → thiết kế strategy, Sharpe optimization rules, regime detection | **Trước khi code** |
 | 5 | `idea/hypothesis/hypothesis_framework.md` | Acceptance criteria: 10-metric weighted scorecard (Sharpe, CAGR, Sortino, Calmar, Max DD, VaR, CVaR, Ulcer, Cost, Correlation) | **Khi review hypothesis** |
-| 6 | `data/VnFuture.md` | All data fields: OHLCV + futures + VN30 + DJI | **Khi cần tra field** |
-| 7 | `syntax/syntax_guide.md` | Cách chọn và dùng feature/operator | **Khi bắt đầu code** |
+| 6 | `syntax/data_syntax.md` | `self.data.*` reference | **Khi bắt đầu code** |
+| 7 | `syntax/syntax_guide.md` | Cách chọn và dùng data / feature / operator | **Khi bắt đầu code** |
 | 8 | `syntax/feature_syntax.md` | 140+ indicators reference | **Khi cần tra function** |
 | 9 | `syntax/operations_syntax.md` | 30+ operators reference | **Khi cần tra operator** |
 | 10 | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | 3 enhancements implemented (return_roll, tiered sizing, session gating) | **Khi cần hiểu code hiện tại** |

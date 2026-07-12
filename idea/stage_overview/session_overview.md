@@ -14,8 +14,8 @@
 | # | Thành phần | Nội dung |
 |---|-----------|----------|
 | 1 | `data/` | Hiểu dữ liệu VnFuture: `pv_close`, `pv_high`, `pv_low`, `pv_volume`, `fut_matched_volume_vn30f1m_1d`, `fut_open_interest_vn30f1m_1d`, ... |
-| 2 | `syntax/` | 140+ indicators + operators: EMA, SMA, MACD, ADX, RSI, BBands, crossed_above/below, bars_since, hold_for, fillna |
-| 3 | `template_example/` | 9 template files: pattern `CustomStrategy(SimpleAlgorithm)` + `self.set_positions()` |
+| 2 | `syntax/data_syntax.md` | `self.data.*` catalog |
+| 3 | `syntax/` | 140+ indicators + operators: EMA, SMA, MACD, ADX, RSI, BBands, crossed_above/below, bars_since, hold_for, fillna |
 | 4 | `template_example/` | 9 template files: pattern `CustomStrategy(SimpleAlgorithm)` + `self.set_positions()` |
 
 ---

@@ -107,6 +107,8 @@ Window sizing convention theo timeframe:
 
 ## 2.2 Data Access Patterns
 
+> Xem chi tiết field tại [`syntax/data_syntax.md`](../syntax/data_syntax.md).
+
 ### Core OHLCV
 ```python
 close = self.data.pv_close
@@ -625,6 +627,7 @@ z_exit = 2.0        # thoát khi |z| < 2.0 — SÁT entry
 Trước khi sinh bất kỳ file `.py` nào, AI Agent phải xác nhận đã đáp ứng đầy đủ các điều kiện sau:
 
 - [ ] Đã đọc toàn bộ tài liệu trong `data/`
+- [ ] Đã đọc `syntax/data_syntax.md`
 - [ ] Đã đọc `syntax/syntax_guide.md`
 - [ ] Đã đọc các catalog trong `syntax/`
 - [ ] Đã tham khảo `template_example/`
