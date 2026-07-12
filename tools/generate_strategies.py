@@ -28,6 +28,12 @@ THESIS_FOLDERS = {
     "15": "thesis_15_mavp_adaptive",
     "16": "thesis_16_velocity_divergence",
     "17": "thesis_17_vol_adjusted_momentum",
+    "18": "thesis_18_range_rank_breakout",
+    "19": "thesis_19_bb_relative_position",
+    "20": "thesis_20_minmax_scaling",
+    "21": "thesis_21_momentum_decay",
+    "22": "thesis_22_return_mean_drift",
+    "23": "thesis_23_macd_hist_divergence",
 }
 HEADER = '''"""
 name:    {name}
@@ -125,6 +131,25 @@ TEMPLATE_META = {
     "T17-A": ("Vol-Adj Momentum Breakout", "ROC divided by ATR to normalize momentum by volatility; z-score extreme ±1.5 signals genuine breakout; exit via ADX fade + ATR stop + trailing."),
     "T17-B": ("Vol-Adj Momentum + SMA Filter", "Same adj_mom_z logic with SMA13/SMA34 trend filter to avoid counter-trend entries; exit adds adj_mom_z < 0 for earlier profit protection."),
     "T17-C": ("Vol-Adj Momentum Regime", "Adaptive adj_mom_z threshold (±2.0 in low vol, ±1.2 in high vol) and trailing mult (1.5/2.5) based on ATR ratio regime."),
+    # Thesis 18: Range Rank Breakout
+    "T18-A": ("Range Rank Only", "Trade when rolling_rank(close, 100) is extreme (<0.05 or >0.95). Exit via ATR stop + trailing."),
+    "T18-B": ("Range Rank + Volume", "Same rank extreme entry with volume > SMA(20) confirmation."),
+    # Thesis 19: BB Relative Position
+    "T19-A": ("BB Distance", "Trade when (close - bb_lower)/(bb_upper - bb_lower) is extreme (<0.05 or >0.95). Exit via ATR stop + trailing."),
+    "T19-B": ("BB + ADX", "Same BB distance entry with ADX > threshold confirmation."),
+    "T19-C": ("BB + Volume", "Same BB distance entry with volume > SMA(20) confirmation."),
+    # Thesis 20: MinMax Scaling
+    "T20-A": ("MinMax Entry", "Trade when (close - min(200))/(max(200) - min(200)) is extreme (<0.05 or >0.95). Exit via ATR stop + trailing."),
+    "T20-B": ("MinMax + Trend", "Same minmax entry with EMA(20)/EMA(50) trend filter."),
+    # Thesis 21: Momentum Decay
+    "T21-A": ("Slope Decay", "Signal reversal when linearreg_slope of MA(20) crosses its own average. Exit via ATR stop + trailing."),
+    "T21-B": ("Decay + Volume", "Same slope decay with volume confirmation."),
+    # Thesis 22: Return Mean Drift
+    "T22-A": ("RetMean Cross", "Entry when rolling_mean(returns(close), 20) crosses ±0.001 threshold. Exit via ATR stop + trailing."),
+    "T22-B": ("RetMean + ADX", "Same return mean cross with ADX > threshold confirmation."),
+    # Thesis 23: MACD Histogram Divergence
+    "T23-A": ("Hist Slope", "Entry when linearreg_slope(macd_hist, 5) crosses zero. Exit via ATR stop + trailing."),
+    "T23-B": ("Hist + Price Cross", "Same hist slope entry with price relative to BB mid-band confirmation."),
 }
 
 def _base_template_name(name):
@@ -3693,6 +3718,688 @@ TEMPLATES.append({
     "timeframes": [15, 30, 60],
     "code":       T17_C_CODE,
     "fixed":      {"bb_window": 20, "bb_nbdev": 2, "adj_window": 14, "z_window": 20, "atr_mult_low": 1.5, "atr_mult_high": 2.5, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 18: Range Rank Breakout
+# ============================================================
+
+T18_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    rank_window = 100
+    rank_entry = 0.05
+    atr_mult = 2.0
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        price_rank = self.feat.rolling_rank(close, window=self.rank_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = price_rank < self.rank_entry
+        short_setup = price_rank > (1 - self.rank_entry)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T18_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    rank_window = 100
+    rank_entry = 0.05
+    atr_mult = 2.0
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+        price_rank = self.feat.rolling_rank(close, window=self.rank_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (price_rank < self.rank_entry) & (volume > vol_sma)
+        short_setup = (price_rank > (1 - self.rank_entry)) & (volume > vol_sma)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T18-A",
+    "thesis":     "18",
+    "descr":      "Range Rank Only",
+    "timeframes": [15, 30],
+    "code":       T18_A_CODE,
+    "fixed":      {"rank_window": 100, "rank_entry": 0.05, "atr_mult": 2.0},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T18-B",
+    "thesis":     "18",
+    "descr":      "Range Rank + Volume",
+    "timeframes": [15, 30],
+    "code":       T18_B_CODE,
+    "fixed":      {"rank_window": 100, "rank_entry": 0.05, "atr_mult": 2.0, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 19: BB Relative Position
+# ============================================================
+
+T19_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    bb_entry = 0.05
+    atr_mult = 2.0
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+
+        bb_pos = (close - bb_lower) / (bb_upper - bb_lower)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = bb_pos < self.bb_entry
+        short_setup = bb_pos > (1 - self.bb_entry)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T19_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    bb_entry = 0.05
+    adx_entry = 22
+    atr_mult = 2.0
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        bb_pos = (close - bb_lower) / (bb_upper - bb_lower)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (bb_pos < self.bb_entry) & (adx_val > self.adx_entry)
+        short_setup = (bb_pos > (1 - self.bb_entry)) & (adx_val > self.adx_entry)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T19_C_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    bb_nbdev = 2
+    bb_entry = 0.05
+    atr_mult = 2.0
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        bb_pos = (close - bb_lower) / (bb_upper - bb_lower)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (bb_pos < self.bb_entry) & (volume > vol_sma)
+        short_setup = (bb_pos > (1 - self.bb_entry)) & (volume > vol_sma)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T19-A",
+    "thesis":     "19",
+    "descr":      "BB Distance",
+    "timeframes": [15, 30, 60],
+    "code":       T19_A_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "bb_entry": 0.05, "atr_mult": 2.0},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T19-B",
+    "thesis":     "19",
+    "descr":      "BB + ADX",
+    "timeframes": [15, 30, 60],
+    "code":       T19_B_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "bb_entry": 0.05, "adx_entry": 22, "atr_mult": 2.0},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T19-C",
+    "thesis":     "19",
+    "descr":      "BB + Volume",
+    "timeframes": [15, 30, 60],
+    "code":       T19_C_CODE,
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "bb_entry": 0.05, "atr_mult": 2.0, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 20: MinMax Scaling
+# ============================================================
+
+T20_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    lookback = 200
+    pos_entry = 0.05
+    atr_mult = 2.0
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+
+        min_val = self.feat.rolling_min(close, window=self.lookback)
+        max_val = self.feat.rolling_max(close, window=self.lookback)
+        pos = (close - min_val) / (max_val - min_val)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = pos < self.pos_entry
+        short_setup = pos > (1 - self.pos_entry)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T20_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    lookback = 200
+    pos_entry = 0.05
+    ema_fast = 20
+    ema_slow = 50
+    atr_mult = 2.0
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+
+        min_val = self.feat.rolling_min(close, window=self.lookback)
+        max_val = self.feat.rolling_max(close, window=self.lookback)
+        pos = (close - min_val) / (max_val - min_val)
+
+        ema_20 = self.feat.ema(close, timeperiod=self.ema_fast)
+        ema_50 = self.feat.ema(close, timeperiod=self.ema_slow)
+        trend_up = ema_20 > ema_50
+        trend_down = ema_20 < ema_50
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (pos < self.pos_entry) & trend_up
+        short_setup = (pos > (1 - self.pos_entry)) & trend_down
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T20-A",
+    "thesis":     "20",
+    "descr":      "MinMax Entry",
+    "timeframes": [15, 30, 60],
+    "code":       T20_A_CODE,
+    "fixed":      {"lookback": 200, "pos_entry": 0.05, "atr_mult": 2.0},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T20-B",
+    "thesis":     "20",
+    "descr":      "MinMax + Trend",
+    "timeframes": [15, 30, 60],
+    "code":       T20_B_CODE,
+    "fixed":      {"lookback": 200, "pos_entry": 0.05, "ema_fast": 20, "ema_slow": 50, "atr_mult": 2.0},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 21: Momentum Decay
+# ============================================================
+
+T21_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    ma_window = 20
+    slope_window = 5
+    smooth_window = 5
+    atr_mult = 2.0
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+
+        mom_ma = self.feat.rolling_mean(close, window=self.ma_window)
+        mom_slope = self.feat.linearreg_slope(mom_ma, timeperiod=self.slope_window)
+        mom_slope_avg = self.feat.rolling_mean(mom_slope, window=self.smooth_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        decay_long = (mom_slope < 0) & self.op.crossed_above(mom_slope, mom_slope_avg)
+        decay_short = (mom_slope > 0) & self.op.crossed_below(mom_slope, mom_slope_avg)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = decay_long & (~exit_long)
+        short_signal = decay_short & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T21_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    ma_window = 20
+    slope_window = 5
+    smooth_window = 5
+    atr_mult = 2.0
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        mom_ma = self.feat.rolling_mean(close, window=self.ma_window)
+        mom_slope = self.feat.linearreg_slope(mom_ma, timeperiod=self.slope_window)
+        mom_slope_avg = self.feat.rolling_mean(mom_slope, window=self.smooth_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        decay_long = (mom_slope < 0) & self.op.crossed_above(mom_slope, mom_slope_avg) & (volume > vol_sma)
+        decay_short = (mom_slope > 0) & self.op.crossed_below(mom_slope, mom_slope_avg) & (volume > vol_sma)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = decay_long & (~exit_long)
+        short_signal = decay_short & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T21-A",
+    "thesis":     "21",
+    "descr":      "Slope Decay",
+    "timeframes": [15, 30],
+    "code":       T21_A_CODE,
+    "fixed":      {"ma_window": 20, "slope_window": 5, "smooth_window": 5, "atr_mult": 2.0},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T21-B",
+    "thesis":     "21",
+    "descr":      "Decay + Volume",
+    "timeframes": [15, 30],
+    "code":       T21_B_CODE,
+    "fixed":      {"ma_window": 20, "slope_window": 5, "smooth_window": 5, "atr_mult": 2.0, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 22: Return Mean Drift
+# ============================================================
+
+T22_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    ret_window = 20
+    entry_threshold = 0.001
+    atr_mult = 2.0
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        ret_mean = self.feat.rolling_mean(return_1, window=self.ret_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = self.op.crossed_above_value(ret_mean, self.entry_threshold)
+        short_setup = self.op.crossed_below_value(ret_mean, -self.entry_threshold)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T22_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    ret_window = 20
+    entry_threshold = 0.001
+    adx_entry = 22
+    atr_mult = 2.0
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        ret_mean = self.feat.rolling_mean(return_1, window=self.ret_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = self.op.crossed_above_value(ret_mean, self.entry_threshold) & (adx_val > self.adx_entry)
+        short_setup = self.op.crossed_below_value(ret_mean, -self.entry_threshold) & (adx_val > self.adx_entry)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T22-A",
+    "thesis":     "22",
+    "descr":      "RetMean Cross",
+    "timeframes": [15, 30],
+    "code":       T22_A_CODE,
+    "fixed":      {"ret_window": 20, "entry_threshold": 0.001, "atr_mult": 2.0},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T22-B",
+    "thesis":     "22",
+    "descr":      "RetMean + ADX",
+    "timeframes": [15, 30],
+    "code":       T22_B_CODE,
+    "fixed":      {"ret_window": 20, "entry_threshold": 0.001, "adx_entry": 22, "atr_mult": 2.0},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 23: MACD Histogram Divergence
+# ============================================================
+
+T23_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    macd_fast = 12
+    macd_slow = 26
+    macd_signal = 9
+    slope_window = 5
+    atr_mult = 2.0
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+
+        macd, macd_signal_line, macd_hist = self.feat.macd(close, fastperiod=self.macd_fast, slowperiod=self.macd_slow, signalperiod=self.macd_signal)
+        hist_slope = self.feat.linearreg_slope(macd_hist, timeperiod=self.slope_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = self.op.crossed_above(hist_slope, 0)
+        short_setup = self.op.crossed_below(hist_slope, 0)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T23_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    macd_fast = 12
+    macd_slow = 26
+    macd_signal = 9
+    slope_window = 5
+    bb_window = 20
+    atr_mult = 2.0
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+
+        macd, macd_signal_line, macd_hist = self.feat.macd(close, fastperiod=self.macd_fast, slowperiod=self.macd_slow, signalperiod=self.macd_signal)
+        hist_slope = self.feat.linearreg_slope(macd_hist, timeperiod=self.slope_window)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = self.op.crossed_above(hist_slope, 0) & (close > bb_mid)
+        short_setup = self.op.crossed_below(hist_slope, 0) & (close < bb_mid)
+
+        exit_long = atr_stop_long | trailing_long
+        exit_short = atr_stop_short | trailing_short
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T23-A",
+    "thesis":     "23",
+    "descr":      "Hist Slope",
+    "timeframes": [15, 30, 60],
+    "code":       T23_A_CODE,
+    "fixed":      {"macd_fast": 12, "macd_slow": 26, "macd_signal": 9, "slope_window": 5, "atr_mult": 2.0},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T23-B",
+    "thesis":     "23",
+    "descr":      "Hist + Price Cross",
+    "timeframes": [15, 30, 60],
+    "code":       T23_B_CODE,
+    "fixed":      {"macd_fast": 12, "macd_slow": 26, "macd_signal": 9, "slope_window": 5, "bb_window": 20, "atr_mult": 2.0},
     "params":     {},
 })
 
