@@ -1,193 +1,210 @@
-# Alpha Ideas Master Plan — Complete API Mapping & Strategy Design
+# Alpha Ideas Master Plan — Thesis 18 → 38 (21 New Alpha Groups)
 
-> **Session:** 2026-07-03 — Fresh start, 6 new thesis groups
+> **Session:** 2026-07-12
 > **Platform:** XNOQuant — `CustomStrategy(SimpleAlgorithm)`
-> **Core Reference:** `syntax/data_syntax.md`, `syntax/syntax_guide.md`, `syntax/feature_syntax.md` (140+ functions), `syntax/operations_syntax.md` (30+ operators), `data/vietnam_market_characteristics.md`, `template_example/strategy_framework.md`
-> **Target:** Vietnam Quant Challenge 2026 — Sharpe ≥ 2.5, CAGR > 20%, Max DD > -20%
+> **Core Reference:** `syntax/data_syntax.md`, `syntax/feature_syntax.md`, `syntax/operations_syntax.md`, `template_example/strategy_framework.md`
+> **Mode:** Brainstorm → Design → Generate → Backtest → Iterate
 
 ---
 
-## 1. Project State
+## 1. Current Project State
 
 | Item | Status |
-|------|--------|
-| `output/` | Cleared — 0 strategies |
-| `tools/` | Cleared — no generator/validator yet |
-| `idea/planning_alpha/` | 6 new thesis design docs added |
-| Ready for implementation | Yes |
+|------|:------:|
+| Thesis 01–06 | ✅ Implemented (old phase) |
+| Thesis 07–10 | ✅ Implemented |
+| Thesis 11 (VWAP Basis) | ✅ Implemented |
+| Thesis 12 (Kalman Filter) | ✅ Implemented |
+| Thesis 13 (CMF + Squeeze) | ✅ Implemented |
+| Thesis 14 (BB Squeeze Reversal) | ✅ Implemented (A + C) |
+| Thesis 15 (MAVP Adaptive) | ✅ Implemented (A + B + C) |
+| Thesis 16 (Price-Vol Velocity) | ✅ Implemented |
+| Thesis 17 (Vol-Adj Momentum) | ✅ Implemented (A + B + C) |
+| **Thesis 18–38 (New)** | **⬜ Planning Phase** |
 
 ---
 
-## 2. Ideas → API Mapping Summary
+## 2. Origin — 20 Viable Alpha Ideas
 
-| # | Idea | Platform Support | Core API | Proxy Strategy |
-|---|------|:----------------:|----------|----------------|
-| 1 | **Rolling Mean** | ✅ Full | `rolling_mean`, `sma`, `ema`, `kama`, `mama`, `wma`, `dema`, `tema`, `t3`, `trima` | Direct |
-| 2 | **Quantile** | ✅ Full | `rolling_quantile`, `rolling_rank`, `rolling_percentile_rank`, `rolling_zscore` | Direct |
-| 3 | **Volatility Clustering** | ⚠️ Proxy | `rolling_std`, `var`, `atr`, `natr`, `trange` | rolling_std regime detection |
-| 4 | **Time-Series Decomposition** | ⚠️ Proxy | `ht_trendline`, `dcperiod`, `trendmode`, `sine`, `linearreg_slope`, `tsf` | Hilbert decomp: trend = ht_trendline, cycle = close - trend |
-| 5 | **OBI & VPIN** | ⚠️ Proxy | `bop`, `cmf`, `ad`, `adosc`, `mfi`, `fut_matched_*`, `fut_open_interest` | BOP/CMF cho OBI; volume + OI imbalance |
-| 6 | **HMM** | ❌ Proxy | `adx`, `trendmode`, `atr`, `kama`, `mama` | ADX + vol regime classification (3-state) |
-| 7 | **Hurst Exponent** | ❌ None | — | Không implement được |
-| 8 | **Entropy / Info Theory** | ❌ Proxy | `rolling_mad`, `rolling_percentile_rank`, `rolling_std` | rolling_mad/std ratio for disorder |
-| 9 | **Cointegration** | ⚠️ Proxy | `correl`, `beta`, `rolling_correlation`, `rolling_covariance`, `linearreg_intercept` | Spread = close - beta*VN30; trade z-score |
-| 10 | **Correlation** | ✅ Full | `correl`, `rolling_correlation`, `beta`, `rolling_covariance` | Direct |
+Generated from brainstorming session + `syntax/feature_syntax.md` analysis.
+All ideas verified for: **cú pháp khả thi**, **chưa trùng thesis hiện có**, **phù hợp 15m/30m**.
+
+### Nhóm A — Price Position (scale 0-1)
+| # | Idea | Feature | Entry Logic |
+|---|------|---------|-------------|
+| 1 | **Range Rank** | `rolling_rank(close, 100)` | rank > 0.95 = overbought short; rank < 0.05 = oversold long |
+| 2 | **Distance to BB** | `(close - bb_lower) / (bb_upper - bb_lower)` | > 0.95 = upper band touch (short); < 0.05 = lower band touch (long) |
+| 3 | **MinMax Scaling** | `(close - min(200)) / (max(200) - min(200))` | > 0.95 = multi-session high; < 0.05 = multi-session low |
+
+### Nhóm B — Momentum Dynamics
+| # | Idea | Feature | Entry Logic |
+|---|------|---------|-------------|
+| 4 | **Momentum Decay** | `linearreg_slope(rolling_mean(close, 20), 5)` | slope giảm dần = trend exhaustion → đảo chiều |
+| 5 | **Return Mean** | `rolling_mean(returns(close), 20)` | > 0.001 = positive drift (long); < -0.001 = negative drift (short) |
+| 6 | **MACD Hist Divergence** | `linearreg_slope(macd_hist, 5)` | hist_slope giảm khi giá tăng = bearish divergence |
+
+### Nhóm C — Volume/Flow
+| # | Idea | Feature | Entry Logic |
+|---|------|---------|-------------|
+| 7 | **Volume-Price Divergence** | `obv` + `rolling_max/min(close)` | price新高但OBV新低 = distribution → short |
+| 8 | **Price-Volume Correlation** | `rolling_correlation(close, volume, 20)` | corr < -0.5 = divergence regime (reversal bias) |
+| 9 | **CMF Quantile Threshold** | `rolling_quantile(cmf, 100)` | cmf_rank > 0.9 = accumulation → long; < 0.1 = distribution → short |
+
+### Nhóm D — Volatility/Regime
+| # | Idea | Feature | Entry Logic |
+|---|------|---------|-------------|
+| 10 | **Log-Return Vol Filter** | `rolling_std(log_returns(close), 20)` | vol < percentile(20) = flat market → skip trade |
+| 11 | **BB Width Squeeze** | `rolling_quantile(bb_width, 100, 0.1)` | bb_width < quantile(10) = squeeze → prepare breakout |
+| 12 | **Vol-of-Vol (ATR Var)** | `rolling_std(atr(14), 20)` | vol_of_vol thấp = stable regime; cao = chaotic |
+| 13 | **ADX Acceleration** | `linearreg_slope(adx(14), 5)` | adx_slope tăng = trend starting; slope giảm = trend fading |
+
+### Nhóm E — Enhanced Mean Reversion
+| # | Idea | Feature | Entry Logic |
+|---|------|---------|-------------|
+| 14 | **RSI Quantile MR** | `rolling_quantile(rsi(14), 100)` | rsi_rank < 0.1 = oversold (long); > 0.9 = overbought (short) |
+| 15 | **Cointegration Spread** | `rolling_zscore(pv_close - pv_vn30_close, 60)` | z < -2 = cheap future → long; z > 2 = expensive → short |
+| 16 | **VWAP Deviation** | `close / rolling_vwap(20) - 1` | > 0.02 = overextended long → short; < -0.02 = undersold → long |
+| 17 | **Rolling Sharpe Gate** | `rolling_mean(ret, 20) / rolling_std(ret, 20)` | sharpe > 0.5 = strategy in positive regime → allow trade |
+
+### Nhóm F — Pattern & Composite
+| # | Idea | Feature | Entry Logic |
+|---|------|---------|-------------|
+| 18 | **Candle Body Ratio** | `body = abs(close - open)`; `range = high - low` | body/range > 0.7 = strong candle (momentum); < 0.3 = weak |
+| 19 | **Regression Channel** | `linearreg(close, 50) ± 2*rolling_std(close, 50)` | outside channel = extreme → reversal |
+| 20 | **Standardized Return Quantile** | `rolling_zscore(returns(close), 20) → rolling_quantile` | combined: return_z_rank extremes |
+
+### Nhóm G — Macro Regime (daily data)
+| # | Idea | Feature | Entry Logic |
+|---|------|---------|-------------|
+| 21 | **Interbank Filter** | `vn_interbank_interest_rate_1w_daily` | rate thấp = loose liquidity → risk-on bias |
+| 22 | **USD/VND Risk Filter** | `vn_usd_vnd_sbv_central_daily` | VND ổn định → normal; VND biến động > 1% → risk-off |
 
 ---
 
-## 3. The 6 New Thesis Groups
+## 3. Thesis 18→38 — Mapping
 
-| Thesis | Core Ideas | Data Fields | Timeframes |
-|--------|-----------|-------------|:----------:|
-| **T01: Rolling Mean + Quantile** | Rolling Mean, Quantile | `pv_close`, `pv_volume`, `fut_*` | 5, 15, 30, 60 |
-| **T02: Volatility Regime** | Volatility Clustering, HMM proxy | `pv_close`, `pv_high`, `pv_low` | 5, 15, 30, 60 |
-| **T03: Time-Series Decomposition** | Time-Series Decomp, Entropy proxy | `pv_close` | 15, 30, 60 |
-| **T04: Microstructure Flow** | OBI, VPIN proxy | `pv_close`, `pv_volume`, `fut_matched_*`, `fut_open_interest` | 5, 15, 30 |
-| **T05: Cross-Market Correlation** | Correlation, Cointegration proxy | `pv_close`, `pv_vn30_*`, `pv_dji_*` | 15, 30, 60 |
-| **T06: Multi-Factor Composite** | Tất cả ideas | All fields | 15, 30, 60 |
+| Thesis | Core Idea | Templates | Ideas Used | Timeframes |
+|:------:|-----------|:---------:|:----------:|:----------:|
+| **18** | Range Rank Breakout | A: Rank only / B: Rank + Vol | #1 | 15, 30 |
+| **19** | BB Relative Position | A: BB Distance / B: BB + ADX / C: BB + Vol | #2 | 15, 30, 60 |
+| **20** | MinMax Position Scaling | A: MinMax entry / B: MinMax + Trend | #3 | 15, 30, 60 |
+| **21** | Momentum Decay Reversal | A: Slope decay / B: Decay + Divergence | #4 | 15, 30 |
+| **22** | Return Mean Drift | A: RetMean cross / B: RetMean + ADX | #5 | 15, 30 |
+| **23** | MACD Histogram Divergence | A: Hist slope / B: Hist + Price cross | #6 | 15, 30, 60 |
+| **24** | Volume-Price Divergence | A: OBV divergence / B: VPD + ATR | #7 | 15, 30 |
+| **25** | Price-Volume Correlation | A: Corr filter / B: Corr + Regime | #8 | 15, 30, 60 |
+| **26** | CMF Quantile Threshold | A: CMF rank / B: CMF + RSI | #9 | 15, 30 |
+| **27** | Log-Return Vol Filter | A: Vol gate / B: Vol-adaptive sizing | #10 | 15, 30 |
+| **28** | BB Width Squeeze | A: Squeeze detect / B: Squeeze + breakout | #11 | 15, 30, 60 |
+| **29** | Vol-of-Vol (ATR Var) | A: Low vol regime / B: Vol breakout | #12 | 15, 30 |
+| **30** | ADX Acceleration | A: ADX slope / B: ADX + DI confirm | #13 | 15, 30, 60 |
+| **31** | RSI Quantile Mean Reversion | A: RSI rank / B: RSI + Vol confirm | #14 | 15, 30 |
+| **32** | Cointegration Spread MR | A: Spread z-score / B: Spread + ADX | #15 | 15, 30, 60 |
+| **33** | Regression Channel | A: Channel breakout / B: Channel + BB | #19 | 15, 30, 60 |
+| **34** | VWAP Deviation | A: VWAP% entry / B: VWAP + Volume | #16 | 15, 30 |
+| **35** | Rolling Sharpe Gate | A: Sharpe filter / B: Sharpe + Mom | #17 | 15, 30, 60 |
+| **36** | Candle Body Ratio | A: Strong candle / B: Candle + Filter | #18 | 15, 30 |
+| **37** | Standardized Return Quantile | A: RetZ rank / B: RetZ + Volume | #20 | 15, 30 |
+| **38** | Macro Regime Context | A: Interbank / B: USDVND / C: Composite | #21, #22 | 15, 30 |
+
+**Total: 21 Thesis × ~2.3 templates = ~49 templates**
 
 ---
 
-## 4. VN Market → Strategy Mapping
+## 4. Template Design Principles
 
-| VN Characteristic | Thesis Applied | Mechanism |
-|-------------------|---------------|-----------|
-| Retail 80-90%, FOMO/panic | T01 Quantile, T04 Microstructure | Q90/Q10 extremes detect overreaction; BOP/CMF detect buying/selling pressure |
-| Margin call 1:6-1:8 cascade | T04 Microstructure, T02 Volatility | OI drop + volume spike xác nhận cascade; rolling_std phát hiện vol regime |
-| Basis volatility futures-cash | T05 Cross-Market | Spread z-score trade basis reversion |
-| Session microstructure (lunch, ATC) | Tất cả | Session gating: close lunch (04:30-06:00 UTC), close trước ATC (07:20) |
-| Trend kéo dài 2-3 phiên | T01 Rolling Mean, T02 Volatility | KAMA/MAMA tự thích ứng; ADX regime filter |
-| No circuit breaker | T02 Volatility | Trend momentum mạnh; rolling_std cảnh báo vol spike |
-| Retail dominated news-driven | T03 Decomposition | trendmode phân biệt trend vs cycle; sine/leadsine detect turning points |
-| Global spillover (DJI) | T05 Cross-Market | correl(VN30F1M, DJI) + consensus trading |
-
----
-
-## 5. Sharpe 7-Component Template (Universal)
-
+### 4.1 Universal Exit Structure
 ```python
-return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
-return_roll = self.feat.rolling_mean(return_1, window=return_window)
-adx = self.feat.adx(high, low, close, timeperiod=adx_window)
-vol_sma = self.feat.sma(volume, timeperiod=vol_window)
-
-# Entry
-long_setup = (core_signal_long)
-           & (return_roll > 0)                    # 2. Momentum confirm
-           & (adx > adx_entry_threshold)           # 1. ADX noise filter
-           & (volume > vol_sma)                   # 3. Volume confirm
-           & (abs(return_1) > min_roc_threshold)  # 4. Whipsaw guard
-
-# Exit
-exit_setup = (core_exit_long)
-           | self.op.crossed_below(abs(return_roll), return_threshold)  # 5. Asymmetric
-           | self.op.crossed_below(adx, adx_exit_threshold)            # 5. Trend faded
-           | trailing_long_exit | trailing_short_exit                   # Chandelier stop
-
-# 6. Session gating — built via class attrs
-position_close_after_n_candles = SESSION_CANDLES[tf]
-position_close_ranges = LUNCH_CLOSE_RANGES + ["07:20-07:45"]  # UTC
-
-# 7. Consecutive loss protection
-recent_exit = self.feat.rolling_max(exit_setup, window=cooldown_period)
-long_setup = long_setup & (recent_exit < 1)
-short_setup = short_setup & (recent_exit < 1)
+exit_long = atr_stop_long | trailing_long
+exit_short = atr_stop_short | trailing_short
 ```
+Áp dụng cho ALL templates (đã chứng minh hiệu quả qua T14-C).
+
+### 4.2 Pipeline Order (bắt buộc)
+```python
+assert not (long_signal & short_signal).any()
+self.set_positions(exit_setup, position=0)
+self.set_positions(long_signal, position=1)
+self.set_positions(short_signal, position=-1)
+```
+
+### 4.3 Core Feature — Chỉ 1 feature làm entry signal
+Mỗi template có **đúng 1 core feature** quyết định entry. Các feature khác chỉ làm confirmation gate.
+
+### 4.4 Fixed Params Convention
+
+| Group | Default Windows | Notes |
+|-------|-----------------|-------|
+| Position | 100–200 | rolling_rank, minmax |
+| Momentum | 14–20 | roc, returns, linearreg |
+| Volume | 20 | vol_sma |
+| Volatility | 14 | atr, adx |
+| BBands | 20, 2 | bb_window, nbdev |
+| Exit | — | atr_mult=2.0, trailing_span=10 |
 
 ---
 
-## 6. Multi-Timeframe Window Sizing
+## 5. Timeframes per Thesis
 
-| TF | Fast | Mid | Slow | RSI | ADX | Vol | ReturnRoll | ReturnThresh | SessionCandles | ChandelierW | ChandelierM | Cooldown |
-|:--:|:----:|:---:|:----:|:---:|:---:|:---:|:----------:|:-------------:|:--------------:|:-----------:|:-----------:|:--------:|
-| 5m | 8 | 14 | 20 | 7 | 7 | 14 | 3 | 0.0001 | 72 | 6 | 2.0 | 3 |
-| 15m | 13 | 26 | 34 | 10 | 10 | 20 | 5 | 0.0002 | 24 | 5 | 2.0 | 2 |
-| 30m | 20 | 40 | 50 | 14 | 14 | 26 | 8 | 0.0003 | 12 | 4 | 2.5 | 2 |
-| 60m | 30 | 60 | 100 | 21 | 21 | 34 | 14 | 0.0005 | 6 | 3 | 3.0 | 1 |
-
-### ADX Thresholds by TF
-
-| TF | ADX Entry | ADX Exit |
-|:--:|:---------:|:--------:|
-| 5m | 22 | 15 |
-| 15m | 22 | 15 |
-| 30m | 18 | 12 |
-| 60m | 16 | 10 |
-
-### Session Ranges (UTC)
-
-| Range | Purpose |
-|-------|---------|
-| `04:30-06:00` | Lunch close (VN 11:30-13:00) — ALL theses |
-| `07:20-07:45` | Pre-ATC close — ALL theses |
-| `02:00-04:30, 06:00-07:45` | Position open — THESIS 07 only |
+| TF | Which Theses | Rationale |
+|:--:|:-------------|:----------|
+| **15m** | ALL (18–38) | Primary — quick signal generation |
+| **30m** | ALL (18–38) | Secondary — confirm or alternative |
+| **60m** | 19, 20, 23, 25, 28, 30, 32, 33, 35 | Slower ideal for position/volatility/correlation theses |
 
 ---
 
-## 7. Acceptance Criteria (10-metric weighted)
+## 6. Data Dependencies
 
-| Metric | Weight | Target | Must-pass |
-|--------|:------:|--------|:---------:|
-| Sharpe Ratio | High | ≥ 2.5 (user) / ≥ 2.0 (min) | ✅ |
-| CAGR | High | > 20% | ✅ |
-| Max Drawdown | High | > -20% | ✅ |
-| Sortino Ratio | Medium | ≥ 1.5 | |
-| Calmar Ratio | Medium | ≥ 1.1 | |
-| Profit Factor | Medium | ≥ 1.3 | |
-| VaR (95%) | Medium | ≥ -5% | |
-| CVaR (95%) | Low | ≥ -6% | |
-| Ulcer Index | Low | ≤ 12 | |
-| Cost | Low | ≤ 1% | |
-| Correlation | Low | ≤ 0.8 | |
-
-**PASS:** ≥ 8.0/13pts với Sharpe, CAGR, Max DD must-pass.
+| Data Field | Used By Theses |
+|------------|:--------------|
+| `pv_close`, `pv_high`, `pv_low` | ALL |
+| `pv_volume` | 19, 20, 24, 25, 26, 31, 34, 36, 37 |
+| `pv_open` | 36 (candle body) |
+| `pv_vn30_close` | 32 (cointegration spread) |
+| `pv_dji_close` | 38 (optional macro context) |
+| `vn_interbank_interest_rate_1w_daily` | 38 |
+| `vn_usd_vnd_sbv_central_daily` | 38 |
 
 ---
 
-## 8. Document Tree
+## 7. Implementation Roadmap
 
 ```
-idea/planning_alpha/
-├── alpha_ideas_master_plan.md              ← THIS FILE
-├── thesis_01_rolling_mean_quantile.md      # Rolling Mean + Quantile
-├── thesis_02_volatility_regime.md          # Volatility Clustering + HMM proxy
-├── thesis_03_time_series_decomposition.md  # Time-Series Decomp + Entropy proxy
-├── thesis_04_microstructure_flow.md        # OBI + VPIN proxy
-├── thesis_05_cross_market_correlation.md   # Correlation + Cointegration proxy
-├── thesis_06_multifactor_composite.md      # Multi-Factor Composite
-├── alpha_5_new_ideas_cascade_basis_lunch_whale_exhaustion.md  # Legacy
-├── alpha_generation_rolling_mean_quantile.md                   # Legacy ~890 ref
-├── strategy_001_mean_quantile_rsi.md                           # Legacy sample
-├── enhancement_return_roll_tiered_session.md                   # Legacy
-├── scaling_proposal_500_10000_strategies.md                    # Legacy
-└── backtest_plan.md                                            # Legacy
-```
-
----
-
-## 9. Implementation Roadmap
-
-```
-Phase 1: Design (current)
-├── Master plan + 6 thesis docs  →  ✅ Done
-└── User review                  →  ⬜ Pending
+Phase 1: Plan (current)
+├── Master plan                →  ✅ Done
+├── Hypothesis files (18→38)   →  ⬜ Pending
+└── User review                →  ⬜ Pending
 
 Phase 2: Code Generation
-├── Write tools/generate_strategies.py  →  ⬜ Pending
-├── Write tools/validate_framework.py   →  ⬜ Pending
-└── Generate strategies → output/       →  ⬜ Pending
+├── Add T18→38 codes to generate_strategies.py  →  ⬜ Pending
+├── Update TEMPLATE_META                        →  ⬜ Pending
+└── Regenerate output/                          →  ⬜ Pending
 
-Phase 3: Backtest
-├── Upload to XNOQuant          →  ⬜ Pending
-├── Simulate all strategies     →  ⬜ Pending
-└── Scorecard by thesis group   →  ⬜ Pending
+Phase 3: Backtest & Validate
+├── Upload to XNOQuant            →  ⬜ Pending
+├── Simulate ~49 templates        →  ⬜ Pending
+└── Scorecard ranking             →  ⬜ Pending
 
-Phase 4: Optimize
-├── Analyze Sharpe < target     →  ⬜ Pending
-├── Tune parameters             →  ⬜ Pending
-└── Iterate                     →  ⬜ Pending
+Phase 4: Iterate
+├── Keep top 30% per thesis       →  ⬜ Pending
+├── Tune parameters               →  ⬜ Pending
+└── Drop bottom 30%               →  ⬜ Pending
 ```
 
 ---
 
-*End of Master Plan — Ready for thesis-by-thesis deep dive.*
+## 8. Success Criteria
+
+| Metric | Target | Must-pass |
+|--------|--------|:---------:|
+| Sharpe Ratio | ≥ 1.3 | ✅ |
+| CAGR | ≥ 15% | ✅ |
+| Max Drawdown | > -35% | ✅ |
+| Profit Factor | ≥ 1.2 | |
+| Calmar Ratio | ≥ 1.1 | |
+| Correlation to existing theses | ≤ 0.7 | |
+
+---
+
+*End of Master Plan — Ready for hypothesis design.*
