@@ -34,6 +34,18 @@ THESIS_FOLDERS = {
     "21": "thesis_21_momentum_decay",
     "22": "thesis_22_return_mean_drift",
     "23": "thesis_23_macd_hist_divergence",
+    "24": "thesis_24_volume_price_divergence",
+    "25": "thesis_25_price_volume_correlation",
+    "26": "thesis_26_cmf_quantile_threshold",
+    "27": "thesis_27_log_return_vol_filter",
+    "28": "thesis_28_bb_width_squeeze",
+    "29": "thesis_29_vol_of_vol",
+    "30": "thesis_30_adx_acceleration",
+    "31": "thesis_31_rsi_quantile_mr",
+    "32": "thesis_32_cointegration_spread",
+    "33": "thesis_33_regression_channel",
+    "36": "thesis_36_candle_body_ratio",
+    "38": "thesis_38_macro_regime_context",
 }
 HEADER = '''"""
 name:    {name}
@@ -150,6 +162,42 @@ TEMPLATE_META = {
     # Thesis 23: MACD Histogram Divergence
     "T23-A": ("Hist Slope", "Entry when linearreg_slope(macd_hist, 5) crosses zero. Exit via ATR stop + trailing."),
     "T23-B": ("Hist + Price Cross", "Same hist slope entry with price relative to BB mid-band confirmation."),
+    # Thesis 24: Volume-Price Divergence
+    "T24-A": ("OBV Divergence", "Compare OBV slope vs price slope; bull div when price down but OBV up, bear div when price up but OBV down."),
+    "T24-B": ("VPD + Volume", "Same VPD with volume > SMA(20) confirmation."),
+    # Thesis 25: Price-Volume Correlation
+    "T25-A": ("Correlation Filter", "Entry when rolling_correlation(close, volume, 20) < -0.5 with price vs bb_mid directional filter."),
+    "T25-B": ("Correlation + ADX", "Same corr filter with ADX > threshold confirmation."),
+    # Thesis 26: CMF Quantile Threshold
+    "T26-A": ("CMF Rank", "Entry when rolling_rank(cmf, 100) > 0.9 (accumulation) or < 0.1 (distribution)."),
+    "T26-B": ("CMF + RSI", "Same CMF rank with RSI > 50 / < 50 directional filter."),
+    # Thesis 27: Log-Return Vol Filter
+    "T27-A": ("Vol Gate", "Skip trade when log-ret volatility is below 30th percentile; only trade in active markets via BB position."),
+    "T27-B": ("Vol Gate + Volume", "Same vol gate with volume > SMA(20) confirmation."),
+    # Thesis 28: BB Width Squeeze
+    "T28-A": ("BB Squeeze", "Detect squeeze when bb_width < quantile(bb_width, 100, 0.1); trade breakout direction."),
+    "T28-B": ("Squeeze + Volume", "Same squeeze breakout with volume confirmation."),
+    # Thesis 29: Vol-of-Vol
+    "T29-A": ("Low Vol Regime", "Trade when vol-of-vol (rolling_std(atr, 20)) is below its 50-bar mean — stable regime + BB reversal."),
+    "T29-B": ("Stable + Volume", "Same low vol regime with volume > SMA(20) confirmation."),
+    # Thesis 30: ADX Acceleration
+    "T30-A": ("ADX Slope + EMA", "Trade when ADX linearreg_slope > 0 (trend accelerating) confirmed by price > EMA50 (long) or < EMA50 (short). Exit via ATR stop + trailing."),
+    "T30-B": ("ADX + DI Confirm", "Same ADX acceleration with DI+/DI- crossover for directional confirmation. Exit via ATR stop + trailing."),
+    # Thesis 31: RSI Quantile Mean Reversion
+    "T31-A": ("RSI Rank MR", "Mean-revert on RSI rolling_rank extremes: rsi_rank < 0.1 (oversold long), > 0.9 (overbought short). Exit via ATR stop + trailing."),
+    "T31-B": ("RSI Rank + Volume", "Same RSI rank extreme entry with volume > SMA(20) confirmation."),
+    # Thesis 32: Cointegration Spread MR
+    "T32-A": ("Spread Z-score", "Mean-revert futures-VN30 spread via rolling_zscore(spread, 60); long when z < -2, short when z > 2. Exit via ATR stop + trailing."),
+    # Thesis 33: Regression Channel
+    "T33-A": ("Channel Breakout", "Trade when price exits linearreg(50) ± 2*std channel; long below lower band, short above upper band. Exit via ATR stop + trailing."),
+    "T33-B": ("Channel + BB Confirm", "Same regression channel + BBands outer band alignment for stronger extreme confirmation."),
+    # Thesis 36: Candle Body Ratio
+    "T36-A": ("Strong Candle", "Trade momentum when candle body/range > 0.7 (strong candle) in direction of close > open. Exit via ATR stop + trailing."),
+    "T36-B": ("Candle + Volume", "Same strong candle entry with volume > SMA(20) confirmation."),
+    # Thesis 38: Macro Regime Context
+    "T38-A": ("Interbank Bias", "Macro regime filter: vn_interbank_interest_rate_1w_daily z-score; low rate (risk-on) favors long, high rate (risk-off) favors short. Entry via BB mid-band + ADX."),
+    "T38-B": ("USDVND Bias", "Macro regime filter: vn_usd_vnd_sbv_central_daily slope; VND strengthening favors long, weakening favors short. Entry via BB mid-band + ADX."),
+    "T38-C": ("Macro Composite", "Combine interbank + USDVND bias for composite macro direction filter."),
 }
 
 def _base_template_name(name):
@@ -3729,6 +3777,8 @@ T18_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     rank_window = 100
     rank_entry = 0.05
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
     vol_window = 20
 
     def __algorithm__(self):
@@ -3740,17 +3790,22 @@ T18_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         atr_val = self.feat.atr(high, low, close, timeperiod=14)
         price_rank = self.feat.rolling_rank(close, window=self.rank_window)
 
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
 
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = price_rank < self.rank_entry
-        short_setup = price_rank > (1 - self.rank_entry)
+        long_setup = (price_rank < self.rank_entry) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (price_rank > (1 - self.rank_entry)) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -3767,6 +3822,8 @@ T18_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     rank_window = 100
     rank_entry = 0.05
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
     vol_window = 20
 
     def __algorithm__(self):
@@ -3780,17 +3837,22 @@ T18_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
         price_rank = self.feat.rolling_rank(close, window=self.rank_window)
 
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
 
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = (price_rank < self.rank_entry) & (volume > vol_sma)
-        short_setup = (price_rank > (1 - self.rank_entry)) & (volume > vol_sma)
+        long_setup = (price_rank < self.rank_entry) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (price_rank > (1 - self.rank_entry)) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -3809,7 +3871,7 @@ TEMPLATES.append({
     "descr":      "Range Rank Only",
     "timeframes": [15, 30],
     "code":       T18_A_CODE,
-    "fixed":      {"rank_window": 100, "rank_entry": 0.05, "atr_mult": 2.0},
+    "fixed":      {"rank_window": 100, "rank_entry": 0.05, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
     "params":     {},
 })
 TEMPLATES.append({
@@ -3818,7 +3880,7 @@ TEMPLATES.append({
     "descr":      "Range Rank + Volume",
     "timeframes": [15, 30],
     "code":       T18_B_CODE,
-    "fixed":      {"rank_window": 100, "rank_entry": 0.05, "atr_mult": 2.0, "vol_window": 20},
+    "fixed":      {"rank_window": 100, "rank_entry": 0.05, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50, "vol_window": 20},
     "params":     {},
 })
 
@@ -3831,6 +3893,8 @@ T19_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     bb_nbdev = 2
     bb_entry = 0.05
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -3841,6 +3905,10 @@ T19_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         atr_val = self.feat.atr(high, low, close, timeperiod=14)
 
         bb_pos = (close - bb_lower) / (bb_upper - bb_lower)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -3848,11 +3916,11 @@ T19_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = bb_pos < self.bb_entry
-        short_setup = bb_pos > (1 - self.bb_entry)
+        long_setup = (bb_pos < self.bb_entry) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (bb_pos > (1 - self.bb_entry)) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -3871,6 +3939,7 @@ T19_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     bb_entry = 0.05
     adx_entry = 22
     atr_mult = 2.0
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -3882,6 +3951,9 @@ T19_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         adx_val = self.feat.adx(high, low, close, timeperiod=14)
 
         bb_pos = (close - bb_lower) / (bb_upper - bb_lower)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -3889,11 +3961,11 @@ T19_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = (bb_pos < self.bb_entry) & (adx_val > self.adx_entry)
-        short_setup = (bb_pos > (1 - self.bb_entry)) & (adx_val > self.adx_entry)
+        long_setup = (bb_pos < self.bb_entry) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (bb_pos > (1 - self.bb_entry)) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -3911,6 +3983,8 @@ T19_C_CODE = """class CustomStrategy(SimpleAlgorithm):
     bb_nbdev = 2
     bb_entry = 0.05
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
     vol_window = 20
 
     def __algorithm__(self):
@@ -3921,9 +3995,13 @@ T19_C_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
         atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
 
         bb_pos = (close - bb_lower) / (bb_upper - bb_lower)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -3931,11 +4009,11 @@ T19_C_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = (bb_pos < self.bb_entry) & (volume > vol_sma)
-        short_setup = (bb_pos > (1 - self.bb_entry)) & (volume > vol_sma)
+        long_setup = (bb_pos < self.bb_entry) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (bb_pos > (1 - self.bb_entry)) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -3954,25 +4032,25 @@ TEMPLATES.append({
     "descr":      "BB Distance",
     "timeframes": [15, 30, 60],
     "code":       T19_A_CODE,
-    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "bb_entry": 0.05, "atr_mult": 2.0},
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "bb_entry": 0.05, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
     "params":     {},
 })
 TEMPLATES.append({
     "name":       "T19-B",
     "thesis":     "19",
-    "descr":      "BB + ADX",
+    "descr":      "BB Distance + ADX",
     "timeframes": [15, 30, 60],
     "code":       T19_B_CODE,
-    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "bb_entry": 0.05, "adx_entry": 22, "atr_mult": 2.0},
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "bb_entry": 0.05, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
     "params":     {},
 })
 TEMPLATES.append({
     "name":       "T19-C",
     "thesis":     "19",
-    "descr":      "BB + Volume",
+    "descr":      "BB Distance + Volume",
     "timeframes": [15, 30, 60],
     "code":       T19_C_CODE,
-    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "bb_entry": 0.05, "atr_mult": 2.0, "vol_window": 20},
+    "fixed":      {"bb_window": 20, "bb_nbdev": 2, "bb_entry": 0.05, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50, "vol_window": 20},
     "params":     {},
 })
 
@@ -3984,6 +4062,8 @@ T20_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     lookback = 200
     pos_entry = 0.05
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -3996,6 +4076,10 @@ T20_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         min_val = self.feat.rolling_min(close, window=self.lookback)
         max_val = self.feat.rolling_max(close, window=self.lookback)
         pos = (close - min_val) / (max_val - min_val)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -4003,11 +4087,11 @@ T20_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = pos < self.pos_entry
-        short_setup = pos > (1 - self.pos_entry)
+        long_setup = (pos < self.pos_entry) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (pos > (1 - self.pos_entry)) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -4026,6 +4110,8 @@ T20_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     ema_fast = 20
     ema_slow = 50
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -4038,6 +4124,10 @@ T20_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         min_val = self.feat.rolling_min(close, window=self.lookback)
         max_val = self.feat.rolling_max(close, window=self.lookback)
         pos = (close - min_val) / (max_val - min_val)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         ema_20 = self.feat.ema(close, timeperiod=self.ema_fast)
         ema_50 = self.feat.ema(close, timeperiod=self.ema_slow)
@@ -4050,11 +4140,11 @@ T20_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = (pos < self.pos_entry) & trend_up
-        short_setup = (pos > (1 - self.pos_entry)) & trend_down
+        long_setup = (pos < self.pos_entry) & trend_up & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (pos > (1 - self.pos_entry)) & trend_down & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -4073,7 +4163,7 @@ TEMPLATES.append({
     "descr":      "MinMax Entry",
     "timeframes": [15, 30, 60],
     "code":       T20_A_CODE,
-    "fixed":      {"lookback": 200, "pos_entry": 0.05, "atr_mult": 2.0},
+    "fixed":      {"lookback": 200, "pos_entry": 0.05, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
     "params":     {},
 })
 TEMPLATES.append({
@@ -4082,7 +4172,7 @@ TEMPLATES.append({
     "descr":      "MinMax + Trend",
     "timeframes": [15, 30, 60],
     "code":       T20_B_CODE,
-    "fixed":      {"lookback": 200, "pos_entry": 0.05, "ema_fast": 20, "ema_slow": 50, "atr_mult": 2.0},
+    "fixed":      {"lookback": 200, "pos_entry": 0.05, "ema_fast": 20, "ema_slow": 50, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
     "params":     {},
 })
 
@@ -4095,6 +4185,8 @@ T21_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     slope_window = 5
     smooth_window = 5
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -4107,6 +4199,10 @@ T21_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         mom_ma = self.feat.rolling_mean(close, window=self.ma_window)
         mom_slope = self.feat.linearreg_slope(mom_ma, timeperiod=self.slope_window)
         mom_slope_avg = self.feat.rolling_mean(mom_slope, window=self.smooth_window)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -4114,11 +4210,11 @@ T21_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        decay_long = (mom_slope < 0) & self.op.crossed_above(mom_slope, mom_slope_avg)
-        decay_short = (mom_slope > 0) & self.op.crossed_below(mom_slope, mom_slope_avg)
+        decay_long = (mom_slope < 0) & self.op.crossed_above(mom_slope, mom_slope_avg) & (adx_val > self.adx_entry) & (return_roll > 0)
+        decay_short = (mom_slope > 0) & self.op.crossed_below(mom_slope, mom_slope_avg) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = decay_long & (~exit_long)
         short_signal = decay_short & (~exit_short)
@@ -4136,6 +4232,8 @@ T21_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     slope_window = 5
     smooth_window = 5
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
     vol_window = 20
 
     def __algorithm__(self):
@@ -4146,11 +4244,15 @@ T21_B_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
         atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
 
         mom_ma = self.feat.rolling_mean(close, window=self.ma_window)
         mom_slope = self.feat.linearreg_slope(mom_ma, timeperiod=self.slope_window)
         mom_slope_avg = self.feat.rolling_mean(mom_slope, window=self.smooth_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -4158,11 +4260,11 @@ T21_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        decay_long = (mom_slope < 0) & self.op.crossed_above(mom_slope, mom_slope_avg) & (volume > vol_sma)
-        decay_short = (mom_slope > 0) & self.op.crossed_below(mom_slope, mom_slope_avg) & (volume > vol_sma)
+        decay_long = (mom_slope < 0) & self.op.crossed_above(mom_slope, mom_slope_avg) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll > 0)
+        decay_short = (mom_slope > 0) & self.op.crossed_below(mom_slope, mom_slope_avg) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = decay_long & (~exit_long)
         short_signal = decay_short & (~exit_short)
@@ -4181,7 +4283,7 @@ TEMPLATES.append({
     "descr":      "Slope Decay",
     "timeframes": [15, 30],
     "code":       T21_A_CODE,
-    "fixed":      {"ma_window": 20, "slope_window": 5, "smooth_window": 5, "atr_mult": 2.0},
+    "fixed":      {"ma_window": 20, "slope_window": 5, "smooth_window": 5, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
     "params":     {},
 })
 TEMPLATES.append({
@@ -4190,7 +4292,7 @@ TEMPLATES.append({
     "descr":      "Decay + Volume",
     "timeframes": [15, 30],
     "code":       T21_B_CODE,
-    "fixed":      {"ma_window": 20, "slope_window": 5, "smooth_window": 5, "atr_mult": 2.0, "vol_window": 20},
+    "fixed":      {"ma_window": 20, "slope_window": 5, "smooth_window": 5, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50, "vol_window": 20},
     "params":     {},
 })
 
@@ -4202,6 +4304,8 @@ T22_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     ret_window = 20
     entry_threshold = 0.001
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -4213,6 +4317,9 @@ T22_A_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         ret_mean = self.feat.rolling_mean(return_1, window=self.ret_window)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -4220,11 +4327,11 @@ T22_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = self.op.crossed_above_value(ret_mean, self.entry_threshold)
-        short_setup = self.op.crossed_below_value(ret_mean, -self.entry_threshold)
+        long_setup = self.op.crossed_above_value(ret_mean, self.entry_threshold) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = self.op.crossed_below_value(ret_mean, -self.entry_threshold) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -4242,6 +4349,7 @@ T22_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     entry_threshold = 0.001
     adx_entry = 22
     atr_mult = 2.0
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -4254,6 +4362,8 @@ T22_B_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         ret_mean = self.feat.rolling_mean(return_1, window=self.ret_window)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -4261,11 +4371,11 @@ T22_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = self.op.crossed_above_value(ret_mean, self.entry_threshold) & (adx_val > self.adx_entry)
-        short_setup = self.op.crossed_below_value(ret_mean, -self.entry_threshold) & (adx_val > self.adx_entry)
+        long_setup = self.op.crossed_above_value(ret_mean, self.entry_threshold) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = self.op.crossed_below_value(ret_mean, -self.entry_threshold) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -4284,7 +4394,7 @@ TEMPLATES.append({
     "descr":      "RetMean Cross",
     "timeframes": [15, 30],
     "code":       T22_A_CODE,
-    "fixed":      {"ret_window": 20, "entry_threshold": 0.001, "atr_mult": 2.0},
+    "fixed":      {"ret_window": 20, "entry_threshold": 0.001, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
     "params":     {},
 })
 TEMPLATES.append({
@@ -4293,7 +4403,7 @@ TEMPLATES.append({
     "descr":      "RetMean + ADX",
     "timeframes": [15, 30],
     "code":       T22_B_CODE,
-    "fixed":      {"ret_window": 20, "entry_threshold": 0.001, "adx_entry": 22, "atr_mult": 2.0},
+    "fixed":      {"ret_window": 20, "entry_threshold": 0.001, "adx_entry": 22, "atr_mult": 2.0, "rsi_entry": 50},
     "params":     {},
 })
 
@@ -4307,6 +4417,8 @@ T23_A_CODE = """class CustomStrategy(SimpleAlgorithm):
     macd_signal = 9
     slope_window = 5
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -4318,6 +4430,10 @@ T23_A_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         macd, macd_signal_line, macd_hist = self.feat.macd(close, fastperiod=self.macd_fast, slowperiod=self.macd_slow, signalperiod=self.macd_signal)
         hist_slope = self.feat.linearreg_slope(macd_hist, timeperiod=self.slope_window)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -4325,11 +4441,11 @@ T23_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = self.op.crossed_above(hist_slope, 0)
-        short_setup = self.op.crossed_below(hist_slope, 0)
+        long_setup = self.op.crossed_above(hist_slope, 0) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = self.op.crossed_below(hist_slope, 0) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -4349,6 +4465,8 @@ T23_B_CODE = """class CustomStrategy(SimpleAlgorithm):
     slope_window = 5
     bb_window = 20
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -4360,6 +4478,10 @@ T23_B_CODE = """class CustomStrategy(SimpleAlgorithm):
 
         macd, macd_signal_line, macd_hist = self.feat.macd(close, fastperiod=self.macd_fast, slowperiod=self.macd_slow, signalperiod=self.macd_signal)
         hist_slope = self.feat.linearreg_slope(macd_hist, timeperiod=self.slope_window)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -4367,11 +4489,11 @@ T23_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = self.op.crossed_above(hist_slope, 0) & (close > bb_mid)
-        short_setup = self.op.crossed_below(hist_slope, 0) & (close < bb_mid)
+        long_setup = self.op.crossed_above(hist_slope, 0) & (close > bb_mid) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = self.op.crossed_below(hist_slope, 0) & (close < bb_mid) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
@@ -4390,7 +4512,7 @@ TEMPLATES.append({
     "descr":      "Hist Slope",
     "timeframes": [15, 30, 60],
     "code":       T23_A_CODE,
-    "fixed":      {"macd_fast": 12, "macd_slow": 26, "macd_signal": 9, "slope_window": 5, "atr_mult": 2.0},
+    "fixed":      {"macd_fast": 12, "macd_slow": 26, "macd_signal": 9, "slope_window": 5, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
     "params":     {},
 })
 TEMPLATES.append({
@@ -4399,10 +4521,1415 @@ TEMPLATES.append({
     "descr":      "Hist + Price Cross",
     "timeframes": [15, 30, 60],
     "code":       T23_B_CODE,
-    "fixed":      {"macd_fast": 12, "macd_slow": 26, "macd_signal": 9, "slope_window": 5, "bb_window": 20, "atr_mult": 2.0},
+    "fixed":      {"macd_fast": 12, "macd_slow": 26, "macd_signal": 9, "slope_window": 5, "bb_window": 20, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
     "params":     {},
 })
 
+# ============================================================
+# THESIS 24: Volume-Price Divergence
+# ============================================================
+
+T24_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    slope_window = 5
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        obv = self.feat.obv(close, volume)
+        price_slope = self.feat.linearreg_slope(close, timeperiod=self.slope_window)
+        obv_slope = self.feat.linearreg_slope(obv, timeperiod=self.slope_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        bull_div = (price_slope < 0) & self.op.crossed_above(obv_slope, 0) & (adx_val > self.adx_entry) & (return_roll > 0)
+        bear_div = (price_slope > 0) & self.op.crossed_below(obv_slope, 0) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = bull_div & (~exit_long)
+        short_signal = bear_div & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T24_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    slope_window = 5
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        obv = self.feat.obv(close, volume)
+        price_slope = self.feat.linearreg_slope(close, timeperiod=self.slope_window)
+        obv_slope = self.feat.linearreg_slope(obv, timeperiod=self.slope_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        bull_div = (price_slope < 0) & self.op.crossed_above(obv_slope, 0) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll > 0)
+        bear_div = (price_slope > 0) & self.op.crossed_below(obv_slope, 0) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = bull_div & (~exit_long)
+        short_signal = bear_div & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T24-A",
+    "thesis":     "24",
+    "descr":      "OBV Divergence",
+    "timeframes": [15, 30],
+    "code":       T24_A_CODE,
+    "fixed":      {"slope_window": 5, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T24-B",
+    "thesis":     "24",
+    "descr":      "VPD + Volume",
+    "timeframes": [15, 30],
+    "code":       T24_B_CODE,
+    "fixed":      {"slope_window": 5, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 25: Price-Volume Correlation
+# ============================================================
+
+T25_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    corr_window = 20
+    corr_entry = -0.5
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        corr_pv = self.feat.rolling_correlation(close, volume, window=self.corr_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (corr_pv < self.corr_entry) & (close < bb_mid) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (corr_pv < self.corr_entry) & (close > bb_mid) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T25_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    corr_window = 20
+    corr_entry = -0.5
+    adx_entry = 18
+    atr_mult = 2.0
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        corr_pv = self.feat.rolling_correlation(close, volume, window=self.corr_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (corr_pv < self.corr_entry) & (close < bb_mid) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (corr_pv < self.corr_entry) & (close > bb_mid) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T25-A",
+    "thesis":     "25",
+    "descr":      "Correlation Filter",
+    "timeframes": [15, 30, 60],
+    "code":       T25_A_CODE,
+    "fixed":      {"corr_window": 20, "corr_entry": -0.5, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T25-B",
+    "thesis":     "25",
+    "descr":      "Correlation + ADX",
+    "timeframes": [15, 30, 60],
+    "code":       T25_B_CODE,
+    "fixed":      {"corr_window": 20, "corr_entry": -0.5, "adx_entry": 18, "atr_mult": 2.0, "rsi_entry": 50},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 26: CMF Quantile Threshold
+# ============================================================
+
+T26_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    cmf_window = 20
+    rank_window = 100
+    entry_q = 0.9
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        cmf_val = self.feat.cmf(high, low, close, volume, timeperiod=self.cmf_window)
+        cmf_rank = self.feat.rolling_rank(cmf_val, window=self.rank_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (cmf_rank > self.entry_q) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (cmf_rank < (1 - self.entry_q)) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T26_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    cmf_window = 20
+    rank_window = 100
+    entry_q = 0.9
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        cmf_val = self.feat.cmf(high, low, close, volume, timeperiod=self.cmf_window)
+        cmf_rank = self.feat.rolling_rank(cmf_val, window=self.rank_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (cmf_rank > self.entry_q) & (rsi_val > 50) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (cmf_rank < (1 - self.entry_q)) & (rsi_val < 50) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T26-A",
+    "thesis":     "26",
+    "descr":      "CMF Rank",
+    "timeframes": [15, 30],
+    "code":       T26_A_CODE,
+    "fixed":      {"cmf_window": 20, "rank_window": 100, "entry_q": 0.9, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T26-B",
+    "thesis":     "26",
+    "descr":      "CMF + RSI",
+    "timeframes": [15, 30],
+    "code":       T26_B_CODE,
+    "fixed":      {"cmf_window": 20, "rank_window": 100, "entry_q": 0.9, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 27: Log-Return Vol Filter
+# ============================================================
+
+T27_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    vol_window = 20
+    vol_q = 0.3
+    quantile_window = 100
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        log_ret = self.feat.log_returns(close, periods=1)
+        log_ret_vol = self.feat.rolling_std(log_ret, window=self.vol_window)
+        vol_threshold = self.feat.rolling_quantile(log_ret_vol, window=self.quantile_window, q=self.vol_q)
+        vol_filter = log_ret_vol > vol_threshold
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = vol_filter & (close < bb_lower) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = vol_filter & (close > bb_upper) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T27_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    vol_window = 20
+    vol_q = 0.3
+    quantile_window = 100
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+    vol_window2 = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window2)
+
+        log_ret = self.feat.log_returns(close, periods=1)
+        log_ret_vol = self.feat.rolling_std(log_ret, window=self.vol_window)
+        vol_threshold = self.feat.rolling_quantile(log_ret_vol, window=self.quantile_window, q=self.vol_q)
+        vol_filter = log_ret_vol > vol_threshold
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = vol_filter & (close < bb_lower) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = vol_filter & (close > bb_upper) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T27-A",
+    "thesis":     "27",
+    "descr":      "Vol Gate",
+    "timeframes": [15, 30],
+    "code":       T27_A_CODE,
+    "fixed":      {"vol_window": 20, "vol_q": 0.3, "quantile_window": 100, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T27-B",
+    "thesis":     "27",
+    "descr":      "Vol Gate + Volume",
+    "timeframes": [15, 30],
+    "code":       T27_B_CODE,
+    "fixed":      {"vol_window": 20, "vol_q": 0.3, "quantile_window": 100, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50, "vol_window2": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 28: BB Width Squeeze
+# ============================================================
+
+T28_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    squeeze_q = 0.1
+    quantile_window = 100
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        bb_width = (bb_upper - bb_lower) / bb_mid
+        bb_width_q10 = self.feat.rolling_quantile(bb_width, window=self.quantile_window, q=self.squeeze_q)
+        squeeze = bb_width < bb_width_q10
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = squeeze & self.op.crossed_above(close, bb_upper) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = squeeze & self.op.crossed_below(close, bb_lower) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T28_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    bb_window = 20
+    squeeze_q = 0.1
+    quantile_window = 100
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        bb_width = (bb_upper - bb_lower) / bb_mid
+        bb_width_q10 = self.feat.rolling_quantile(bb_width, window=self.quantile_window, q=self.squeeze_q)
+        squeeze = bb_width < bb_width_q10
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = squeeze & self.op.crossed_above(close, bb_upper) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = squeeze & self.op.crossed_below(close, bb_lower) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T28-A",
+    "thesis":     "28",
+    "descr":      "BB Squeeze",
+    "timeframes": [15, 30, 60],
+    "code":       T28_A_CODE,
+    "fixed":      {"bb_window": 20, "squeeze_q": 0.1, "quantile_window": 100, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T28-B",
+    "thesis":     "28",
+    "descr":      "Squeeze + Volume",
+    "timeframes": [15, 30, 60],
+    "code":       T28_B_CODE,
+    "fixed":      {"bb_window": 20, "squeeze_q": 0.1, "quantile_window": 100, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 29: Vol-of-Vol
+# ============================================================
+
+T29_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    atr_window = 14
+    vov_window = 20
+    vov_ma_window = 50
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=self.atr_window)
+
+        vov = self.feat.rolling_std(atr_val, window=self.vov_window)
+        vov_ma = self.feat.rolling_mean(vov, window=self.vov_ma_window)
+        stable = vov < vov_ma
+
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = stable & (close < bb_lower) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = stable & (close > bb_upper) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T29_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    atr_window = 14
+    vov_window = 20
+    vov_ma_window = 50
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=self.atr_window)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        vov = self.feat.rolling_std(atr_val, window=self.vov_window)
+        vov_ma = self.feat.rolling_mean(vov, window=self.vov_ma_window)
+        stable = vov < vov_ma
+
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = stable & (close < bb_lower) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = stable & (close > bb_upper) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T29-A",
+    "thesis":     "29",
+    "descr":      "Low Vol Regime",
+    "timeframes": [15, 30],
+    "code":       T29_A_CODE,
+    "fixed":      {"atr_window": 14, "vov_window": 20, "vov_ma_window": 50, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T29-B",
+    "thesis":     "29",
+    "descr":      "Stable + Volume",
+    "timeframes": [15, 30],
+    "code":       T29_B_CODE,
+    "fixed":      {"atr_window": 14, "vov_window": 20, "vov_ma_window": 50, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 30: ADX Acceleration
+# ============================================================
+
+T30_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    ema_window = 50
+    slope_window = 5
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        adx_slope = self.feat.linearreg_slope(adx_val, timeperiod=self.slope_window)
+        ema_50 = self.feat.ema(close, timeperiod=self.ema_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (adx_slope > 0) & (close > ema_50) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (adx_slope > 0) & (close < ema_50) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T30_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    slope_window = 5
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        adx_slope = self.feat.linearreg_slope(adx_val, timeperiod=self.slope_window)
+        plus_di = self.feat.plus_di(high, low, close, timeperiod=14)
+        minus_di = self.feat.minus_di(high, low, close, timeperiod=14)
+        di_up = plus_di > minus_di
+        di_down = minus_di > plus_di
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (adx_slope > 0) & di_up & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (adx_slope > 0) & di_down & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T30-A",
+    "thesis":     "30",
+    "descr":      "ADX Slope + EMA",
+    "timeframes": [15, 30, 60],
+    "code":       T30_A_CODE,
+    "fixed":      {"ema_window": 50, "slope_window": 5, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T30-B",
+    "thesis":     "30",
+    "descr":      "ADX + DI Confirm",
+    "timeframes": [15, 30, 60],
+    "code":       T30_B_CODE,
+    "fixed":      {"slope_window": 5, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 31: RSI Quantile Mean Reversion
+# ============================================================
+
+T31_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    rsi_rank_window = 100
+    rsi_entry_q = 0.1
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+        rsi_rank = self.feat.rolling_rank(rsi_val, window=self.rsi_rank_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (rsi_rank < self.rsi_entry_q) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (rsi_rank > (1 - self.rsi_entry_q)) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T31_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    rsi_rank_window = 100
+    rsi_entry_q = 0.1
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+        rsi_rank = self.feat.rolling_rank(rsi_val, window=self.rsi_rank_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (rsi_rank < self.rsi_entry_q) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (rsi_rank > (1 - self.rsi_entry_q)) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T31-A",
+    "thesis":     "31",
+    "descr":      "RSI Rank MR",
+    "timeframes": [15, 30],
+    "code":       T31_A_CODE,
+    "fixed":      {"rsi_rank_window": 100, "rsi_entry_q": 0.1, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T31-B",
+    "thesis":     "31",
+    "descr":      "RSI Rank + Volume",
+    "timeframes": [15, 30],
+    "code":       T31_B_CODE,
+    "fixed":      {"rsi_rank_window": 100, "rsi_entry_q": 0.1, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 32: Cointegration Spread MR
+# ============================================================
+
+T32_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    z_window = 60
+    z_entry = 2.0
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        vn30 = self.data.pv_vn30_close
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        spread = self.op.sub(close, vn30)
+        spread_z = self.feat.rolling_zscore(spread, window=self.z_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (spread_z < -self.z_entry) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (spread_z > self.z_entry) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T32-A",
+    "thesis":     "32",
+    "descr":      "Spread Z-score",
+    "timeframes": [15, 30, 60],
+    "code":       T32_A_CODE,
+    "fixed":      {"z_window": 60, "z_entry": 2.0, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 33: Regression Channel
+# ============================================================
+
+T33_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    linreg_window = 50
+    std_mult = 2.0
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        linreg = self.feat.linearreg(close, timeperiod=self.linreg_window)
+        linreg_std = self.feat.rolling_std(close, window=self.linreg_window)
+        channel_upper = linreg + self.std_mult * linreg_std
+        channel_lower = linreg - self.std_mult * linreg_std
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (close < channel_lower) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (close > channel_upper) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T33_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    linreg_window = 50
+    std_mult = 2.0
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        linreg = self.feat.linearreg(close, timeperiod=self.linreg_window)
+        linreg_std = self.feat.rolling_std(close, window=self.linreg_window)
+        channel_upper = linreg + self.std_mult * linreg_std
+        channel_lower = linreg - self.std_mult * linreg_std
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (close < channel_lower) & (close < bb_lower) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (close > channel_upper) & (close > bb_upper) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T33-A",
+    "thesis":     "33",
+    "descr":      "Channel Breakout",
+    "timeframes": [15, 30, 60],
+    "code":       T33_A_CODE,
+    "fixed":      {"linreg_window": 50, "std_mult": 2.0, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T33-B",
+    "thesis":     "33",
+    "descr":      "Channel + BB Confirm",
+    "timeframes": [15, 30, 60],
+    "code":       T33_B_CODE,
+    "fixed":      {"linreg_window": 50, "std_mult": 2.0, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 36: Candle Body Ratio
+# ============================================================
+
+T36_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    body_ratio_entry = 0.7
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        open_ = self.data.pv_open
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        body = self.feat.abs(self.feat.sub(close, open_))
+        candle_range = self.feat.sub(high, low)
+        body_ratio = self.feat.div(body, candle_range)
+        strong_bull = (body_ratio > self.body_ratio_entry) & (close > open_)
+        strong_bear = (body_ratio > self.body_ratio_entry) & (close < open_)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = strong_bull & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = strong_bear & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T36_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    body_ratio_entry = 0.7
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+    vol_window = 20
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        open_ = self.data.pv_open
+        volume = self.data.pv_volume
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
+
+        body = self.feat.abs(self.feat.sub(close, open_))
+        candle_range = self.feat.sub(high, low)
+        body_ratio = self.feat.div(body, candle_range)
+        strong_bull = (body_ratio > self.body_ratio_entry) & (close > open_)
+        strong_bear = (body_ratio > self.body_ratio_entry) & (close < open_)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = strong_bull & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = strong_bear & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T36-A",
+    "thesis":     "36",
+    "descr":      "Strong Candle",
+    "timeframes": [15, 30],
+    "code":       T36_A_CODE,
+    "fixed":      {"body_ratio_entry": 0.7, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T36-B",
+    "thesis":     "36",
+    "descr":      "Candle + Volume",
+    "timeframes": [15, 30],
+    "code":       T36_B_CODE,
+    "fixed":      {"body_ratio_entry": 0.7, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50, "vol_window": 20},
+    "params":     {},
+})
+
+# ============================================================
+# THESIS 38: Macro Regime Context
+# ============================================================
+
+T38_A_CODE = """class CustomStrategy(SimpleAlgorithm):
+    interbank_window = 20
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        interbank = self.data.vn_interbank_interest_rate_1w_daily
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        interbank_z = self.feat.rolling_zscore(interbank, window=self.interbank_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (close > bb_mid) & (interbank_z < 0) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (close < bb_mid) & (interbank_z > 0) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T38_B_CODE = """class CustomStrategy(SimpleAlgorithm):
+    usd_vnd_window = 20
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        usd_vnd = self.data.vn_usd_vnd_sbv_central_daily
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        usd_vnd_slope = self.feat.linearreg_slope(usd_vnd, timeperiod=self.usd_vnd_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (close > bb_mid) & (usd_vnd_slope < 0) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (close < bb_mid) & (usd_vnd_slope > 0) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+T38_C_CODE = """class CustomStrategy(SimpleAlgorithm):
+    interbank_window = 20
+    usd_vnd_window = 20
+    atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
+
+    def __algorithm__(self):
+        close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        interbank = self.data.vn_interbank_interest_rate_1w_daily
+        usd_vnd = self.data.vn_usd_vnd_sbv_central_daily
+
+        bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+
+        interbank_z = self.feat.rolling_zscore(interbank, window=self.interbank_window)
+        usd_vnd_slope = self.feat.linearreg_slope(usd_vnd, timeperiod=self.usd_vnd_window)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
+
+        atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
+        atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
+
+        trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
+        trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
+
+        long_setup = (close > bb_mid) & (interbank_z < 0) & (usd_vnd_slope < 0) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (close < bb_mid) & (interbank_z > 0) & (usd_vnd_slope > 0) & (adx_val > self.adx_entry) & (return_roll < 0)
+
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
+
+        long_signal = long_setup & (~exit_long)
+        short_signal = short_setup & (~exit_short)
+
+        assert not (long_signal & short_signal).any()
+
+        self.set_positions(exit_long, position=0)
+        self.set_positions(exit_short, position=0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
+"""
+
+TEMPLATES.append({
+    "name":       "T38-A",
+    "thesis":     "38",
+    "descr":      "Interbank Bias",
+    "timeframes": [15, 30],
+    "code":       T38_A_CODE,
+    "fixed":      {"interbank_window": 20, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T38-B",
+    "thesis":     "38",
+    "descr":      "USDVND Bias",
+    "timeframes": [15, 30],
+    "code":       T38_B_CODE,
+    "fixed":      {"usd_vnd_window": 20, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
+TEMPLATES.append({
+    "name":       "T38-C",
+    "thesis":     "38",
+    "descr":      "Macro Composite",
+    "timeframes": [15, 30],
+    "code":       T38_C_CODE,
+    "fixed":      {"interbank_window": 20, "usd_vnd_window": 20, "atr_mult": 2.0, "adx_entry": 22, "rsi_entry": 50},
+    "params":     {},
+})
 
 if __name__ == "__main__":
     generate()
