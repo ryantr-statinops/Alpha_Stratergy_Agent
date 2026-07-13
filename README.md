@@ -260,7 +260,45 @@ Các file xuất ra phải:
 
 ---
 
-## 5. Supreme Directive
+## 5. Batch Submission (XNOQuant API)
+
+### API Endpoints (Discovered via DevTools Network)
+
+| Step | Method | URL | Body |
+|------|--------|-----|------|
+| **Send code** | PUT | `/editors/{id}/update` | `{"code": "..."}` |
+| **Verify syntax** | POST | `/editors/{id}/verify` | (empty) |
+| **Run backtest** | POST | `/editors/{id}/simulate` | (empty) |
+| Poll progress | GET | `/editors/{id}/progress` | — |
+| Poll results | GET | `/editors/{id}/info` | — |
+
+**Auth:** `Authorization: Bearer <token>` (cookie per session)
+
+### Workflow
+
+1. Open `https://alpha.xnoquant.io/build` → new editor is auto-created (UUID in URL)
+2. **PUT** code via `/editors/{id}/update` (body: `{"code": "..."}`)
+3. **POST** `/editors/{id}/verify` (auto syntax check)
+4. **POST** `/editors/{id}/simulate` (trigger backtest)
+5. No need to wait for results — move to next variant
+
+### Automation Plan (`tools/submit_all.py`)
+
+- Reads all `output/thesis_*/**/*.py` (1705 files)
+- For each: PUT → verify → simulate → sleep 2.5s
+- Editor ID hardcoded per session (copy from Network tab)
+
+```python
+H = {
+    "authorization": "Bearer <token>",
+    "content-type": "application/json",
+    "origin": "https://alpha.xnoquant.io",
+}
+```
+
+---
+
+## 6. Supreme Directive
 
 AI Agent **không được phép**:
 
@@ -279,7 +317,7 @@ AI Agent **luôn phải**:
 
 ---
 
-## 6. Where to Look When...
+## 7. Where to Look When...
 
 | Khi bạn cần… | Đọc file này |
 |--------------|-------------|
