@@ -5486,7 +5486,7 @@ T32_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         atr_val = self.feat.atr(high, low, close, timeperiod=14)
         adx_val = self.feat.adx(high, low, close, timeperiod=14)
 
-        spread = self.op.sub(close, vn30)
+        spread = close - vn30
         spread_z = self.feat.rolling_zscore(spread, window=self.z_window)
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=5)
@@ -5656,17 +5656,17 @@ T36_A_CODE = """class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        open_ = self.data.pv_open
+        open_price = self.data.pv_open
 
         bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
         atr_val = self.feat.atr(high, low, close, timeperiod=14)
         adx_val = self.feat.adx(high, low, close, timeperiod=14)
 
-        body = self.feat.abs(self.feat.sub(close, open_))
-        candle_range = self.feat.sub(high, low)
-        body_ratio = self.feat.div(body, candle_range)
-        strong_bull = (body_ratio > self.body_ratio_entry) & (close > open_)
-        strong_bear = (body_ratio > self.body_ratio_entry) & (close < open_)
+        body = self.op.abs(close - open_price)
+        candle_range = high - low
+        body_ratio = body / candle_range
+        strong_bull = (body_ratio > self.body_ratio_entry) & (close > open_price)
+        strong_bear = (body_ratio > self.body_ratio_entry) & (close < open_price)
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=5)
         rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
@@ -5705,7 +5705,7 @@ T36_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        open_ = self.data.pv_open
+        open_price = self.data.pv_open
         volume = self.data.pv_volume
 
         bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
@@ -5713,11 +5713,11 @@ T36_B_CODE = """class CustomStrategy(SimpleAlgorithm):
         adx_val = self.feat.adx(high, low, close, timeperiod=14)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
 
-        body = self.feat.abs(self.feat.sub(close, open_))
-        candle_range = self.feat.sub(high, low)
-        body_ratio = self.feat.div(body, candle_range)
-        strong_bull = (body_ratio > self.body_ratio_entry) & (close > open_)
-        strong_bear = (body_ratio > self.body_ratio_entry) & (close < open_)
+        body = self.op.abs(close - open_price)
+        candle_range = high - low
+        body_ratio = body / candle_range
+        strong_bull = (body_ratio > self.body_ratio_entry) & (close > open_price)
+        strong_bear = (body_ratio > self.body_ratio_entry) & (close < open_price)
         return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
         return_roll = self.feat.rolling_mean(return_1, window=5)
         rsi_val = self.feat.rsi(close, timeperiod={rsi_window})
