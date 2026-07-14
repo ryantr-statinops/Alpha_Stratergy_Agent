@@ -8,6 +8,8 @@ class CustomStrategy(SimpleAlgorithm):
     bb_nbdev = 2
     bb_entry = 0.05
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
     vol_window = 20
 
     def __algorithm__(self):
@@ -18,9 +20,13 @@ class CustomStrategy(SimpleAlgorithm):
 
         bb_upper, bb_mid, bb_lower = self.feat.bbands(close, timeperiod=self.bb_window, nbdevup=self.bb_nbdev, nbdevdn=self.bb_nbdev)
         atr_val = self.feat.atr(high, low, close, timeperiod=14)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
         vol_sma = self.feat.sma(volume, timeperiod=self.vol_window)
 
         bb_pos = (close - bb_lower) / (bb_upper - bb_lower)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod=10)
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -28,11 +34,11 @@ class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = (bb_pos < self.bb_entry) & (volume > vol_sma)
-        short_setup = (bb_pos > (1 - self.bb_entry)) & (volume > vol_sma)
+        long_setup = (bb_pos < self.bb_entry) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (bb_pos > (1 - self.bb_entry)) & (volume > vol_sma) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)

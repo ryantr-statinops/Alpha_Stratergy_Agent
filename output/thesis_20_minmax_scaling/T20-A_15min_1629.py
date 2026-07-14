@@ -7,6 +7,8 @@ class CustomStrategy(SimpleAlgorithm):
     lookback = 200
     pos_entry = 0.05
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -19,6 +21,10 @@ class CustomStrategy(SimpleAlgorithm):
         min_val = self.feat.rolling_min(close, window=self.lookback)
         max_val = self.feat.rolling_max(close, window=self.lookback)
         pos = (close - min_val) / (max_val - min_val)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod=10)
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -26,11 +32,11 @@ class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = pos < self.pos_entry
-        short_setup = pos > (1 - self.pos_entry)
+        long_setup = (pos < self.pos_entry) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = (pos > (1 - self.pos_entry)) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
