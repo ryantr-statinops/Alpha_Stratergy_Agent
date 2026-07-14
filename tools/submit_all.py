@@ -37,7 +37,7 @@ HEADERS = {
     "origin": "https://alpha.xnoquant.io",
     "referer": "https://alpha.xnoquant.io/",
 }
-DELAY = 2.5
+DELAY = 10
 
 session = requests.Session()
 session.headers.update(HEADERS)
