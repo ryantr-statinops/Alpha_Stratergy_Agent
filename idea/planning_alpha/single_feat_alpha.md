@@ -124,3 +124,66 @@ class CustomStrategy(SimpleAlgorithm):
 4. **Không cần class attributes**: Threshold hardcode trực tiếp trong logic
 5. **Không cần ATR / stop-loss**: Pattern đơn giản, exit duy nhất bằng crossed
 6. **Sinh file mới**: Dùng `python tools/gen_single_feat.py <indicator> <feat_call> <threshold> [--data <vars>]`
+
+---
+
+## Kế hoạch triển khai
+
+### Phase 1: Kiểm tra & Đánh giá
+- [ ] **P1.1** — Kiểm tra kết quả backtest 10 strategy trên web
+  - CAGR còn -100% không? Win rate? Sharpe? Số lệnh?
+  - Nếu CAGR vẫn -100% → cần sửa pattern (thêm ADX filter, return_roll, volume confirmation)
+  - Nếu CAGR cải thiện → gen tiếp các phase sau
+
+### Phase 2: Gen Tier 1B (16 indicators — custom logic)
+- [ ] **P2.1** — `sar(high, low, 0.02, 0.2)` — exit = `crossed(close, sar)`
+- [ ] **P2.2** — `mama(close, 0.5, 0.05)` — mama/fama crossover
+- [ ] **P2.3** — `ht_trendline(close)` — exit = `crossed(close, ht_trendline)`
+- [ ] **P2.4** — `bop(open, high, low, close)` — entry asymmetric
+- [ ] **P2.5** — `obv(close, volume)` — rolling_mean filter
+- [ ] **P2.6** — `mfi(high, low, close, volume, 14)` — mean reversion
+- [ ] **P2.7** — `cmf(high, low, close, volume, 20)` — mean reversion
+- [ ] **P2.8** — `ad(high, low, close, volume)` — rolling_mean filter
+- [ ] **P2.9** — `bbands(close, 20, 2)` — mean reversion
+- [ ] **P2.10** — `price_z(close, 20)` — mean reversion
+- [ ] **P2.11** — `rolling_zscore(close, 20)` — mean reversion
+- [ ] **P2.12** — `donchian_upper/low(high/low, 20)` — breakout
+- [ ] **P2.13** — Candlestick patterns (engulfing, morning_star, evening_star, hammer, shooting_star, marubozu, 3WS, 3BC) — time stop
+- [ ] **P2.14** — `rolling_rank(close, 20)` — mean reversion
+- [ ] **P2.15** — `rolling_argmax(high, 20)` — mean reversion + time stop
+- [ ] **P2.16** — `rolling_argmin(low, 20)` — mean reversion + time stop
+
+### Phase 3: Gen Tier 2 (14 indicators — cần filter)
+- [ ] **P3.1** — `ema(close, 20)` + price cross
+- [ ] **P3.2** — `sma(close, 20)` + price cross
+- [ ] **P3.3** — `macd(close, 12, 26, 9)` — histogram đổi dấu
+- [ ] **P3.4** — `ppo(close, 12, 26, 9)` — signal line cross
+- [ ] **P3.5** — `momemtum(close, 10)` — threshold > 0
+- [ ] **P3.6** — `roc(close, 10)` — threshold > 0
+- [ ] **P3.7** — `trix(close, 15)` — signal cross
+- [ ] **P3.8** — `ultosc(high, low, close, 7, 14, 28)` — threshold
+- [ ] **P3.9** — `adx(high, low, close, 14)` — +DI/-DI direction
+- [ ] **P3.10** — `dx(high, low, close, 14)` — price direction
+- [ ] **P3.11** — `atr(high, low, close, 14)` — price direction
+- [ ] **P3.12** — `volume_z(volume, 20)` — price move confirmation
+- [ ] **P3.13** — `correl(close, vn30_close, 20)` — cross-asset
+- [ ] **P3.14** — `beta(close, vn30_close, 20)` — relative risk
+
+### Phase 4: Nâng cấp filters (từ vietnam_market_characteristics.md)
+- [ ] **P4.1** — Thêm universal ADX filter (`ADX > 22` cho entry, `ADX < 18` cho exit)
+- [ ] **P4.2** — Thêm return_roll momentum confirmation
+- [ ] **P4.3** — Thêm volume confirmation (`volume > SMA(vol, 20)`)
+- [ ] **P4.4** — Thêm consecutive loss protection (dừng sau 3 lỗ)
+
+### Phase 5: Multi-feat thesis
+- [ ] **P5.1** — Thiết kế thesis kết hợp Tier 1A + Tier 1B + Tier 2
+- [ ] **P5.2** — Gen và submit batch multi-feat
+
+### Workflow mỗi phase
+```
+1. Gen file mới
+2. python tools/submit_all.py --test     # test 1 variant
+3. python tools/submit_all.py            # submit full batch
+4. Kiểm tra kết quả trên web
+5. git add + git commit + git push       # commit thay đổi
+```
