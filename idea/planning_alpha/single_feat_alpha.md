@@ -6,7 +6,7 @@
 
 ---
 
-## Đã gen (10 indicators)
+## Đã gen (33 indicators)
 
 | File | Indicator | Threshold | Data |
 |------|-----------|-----------|------|
@@ -20,6 +20,29 @@
 | `SF_LINEARREG_SLOPE_15min.py` | `linearreg_slope(close, 20)` | 0 | `close` |
 | `SF_LINEARREG_ANGLE_15min.py` | `linearreg_angle(close, 20)` | 0 | `close` |
 | `SF_TSF_15min.py` | `tsf(close, 20)` | — | `close` |
+| `SF_SAR_15min.py` | `sar(high, low, 0.02, 0.2)` | — | `close, high, low` |
+| `SF_MAMA_15min.py` | `mama(close, 0.5, 0.05)` | — | `close` |
+| `SF_HT_TRENDLINE_15min.py` | `ht_trendline(close)` | — | `close` |
+| `SF_BOP_15min.py` | `bop(open, high, low, close)` | — | `open, high, low, close` |
+| `SF_OBV_15min.py` | `obv(close, volume)` | — | `close, volume` |
+| `SF_MFI_15min.py` | `mfi(high, low, close, volume, 14)` | — | `close, high, low, volume` |
+| `SF_CMF_15min.py` | `cmf(high, low, close, volume, 20)` | — | `close, high, low, volume` |
+| `SF_AD_15min.py` | `ad(high, low, close, volume)` | — | `close, high, low, volume` |
+| `SF_BBANDS_15min.py` | `bbands(close, 20, 2)` | — | `close` |
+| `SF_PRICE_Z_15min.py` | `price_z(close, 20)` | — | `close` |
+| `SF_ROLLING_ZSCORE_15min.py` | `rolling_zscore(close, 20)` | — | `close` |
+| `SF_DONCHIAN_15min.py` | `donchian_upper/lower(high/low, 20)` | — | `close, high, low` |
+| `SF_ENGULFING_15min.py` | `engulfing_pattern(open, high, low, close)` | — | `open, high, low, close` |
+| `SF_MORNING_STAR_15min.py` | `morning_star(open, high, low, close, 10)` | — | `open, high, low, close` |
+| `SF_EVENING_STAR_15min.py` | `evening_star(open, high, low, close, 10)` | — | `open, high, low, close` |
+| `SF_HAMMER_15min.py` | `hammer(open, high, low, close)` | — | `open, high, low, close` |
+| `SF_SHOOTING_STAR_15min.py` | `shooting_star(open, high, low, close)` | — | `open, high, low, close` |
+| `SF_MARUBOZU_15min.py` | `marubozu(open, high, low, close)` | — | `open, high, low, close` |
+| `SF_3WHITE_SOLDIERS_15min.py` | `three_white_soldiers(open, high, low, close, 10)` | — | `open, high, low, close` |
+| `SF_3BLACK_CROWS_15min.py` | `three_black_crows(open, high, low, close, 10)` | — | `open, high, low, close` |
+| `SF_ROLLING_RANK_15min.py` | `rolling_rank(close, 20)` | — | `close` |
+| `SF_ROLLING_ARGMAX_15min.py` | `rolling_argmax(high, 20)` | — | `high` |
+| `SF_ROLLING_ARGMIN_15min.py` | `rolling_argmin(low, 20)` | — | `low` |
 
 ---
 
@@ -46,24 +69,31 @@ Các indicator dùng được pattern `feat > threshold → long, feat < thresho
 
 Các indicator này không dùng được pattern `feat > threshold / feat < threshold / crossed(feat, threshold)` vì entry/exit phức tạp hơn.
 
-| Feat | Lý do | Entry | Exit |
-|------|-------|-------|------|
-| **`sar(high, low, 0.02, 0.2)`** | Exit = `crossed(close, sar)` không phải `crossed(sar, threshold)` | `sar < close` → long; `sar > close` → short | `crossed(close, sar)` |
-| **`mama(close, 0.5, 0.05)`** | 2 outputs (mama, fama), crossover | `crossed_above(mama, fama)` → long | `crossed_below(mama, fama)` |
-| **`ht_trendline(close)`** | Exit = `crossed(close, ht_trendline)` | `close > ht_trendline` → long | `crossed(close, ht_trendline)` |
-| **`bop(open, high, low, close)`** | Entry asymmetric (0.5 / -0.5), exit khác threshold | `bop > 0.5` → long; `bop < -0.5` → short | `crossed(bop, 0)` |
-| **`obv(close, volume)`** | Dùng rolling_mean, không phải threshold cố định | `obv > rolling_mean(obv, 20)` → long | `crossed(obv, rolling_mean(obv, 20))` |
-| **`mfi(high, low, close, volume, 14)`** | Mean reversion | `mfi < 20` → long; `mfi > 80` → short | `crossed(mfi, 50)` |
-| **`cmf(high, low, close, volume, 20)`** | Mean reversion | `cmf < -0.3` → long; `cmf > 0.3` → short | `crossed(cmf, 0)` |
-| **`ad(high, low, close, volume)`** | Dùng rolling_mean | `ad > rolling_mean(ad, 20)` → long | `crossed(ad, rolling_mean(ad, 20))` |
-| **`bbands(close, 20, 2)`** | Mean reversion | `close < lower_band` → long; `close > upper_band` → short | `crossed(close, middle_band)` |
-| **`price_z(close, 20)`** | Mean reversion | `price_z < -2` → long; `price_z > 2` → short | `abs(price_z) < 1` |
-| **`rolling_zscore(close, 20)`** | Mean reversion | `rolling_zscore < -2` → long; `> 2` → short | `abs(rolling_zscore) < 1` |
-| **`donchian_upper/low(high/low, 20)`** | Breakout pattern | `close > donchian_upper` → long | `crossed(close, donchian_upper)` |
-| **Candlestick patterns** | Dùng `== 1` / `== -1`, không phải threshold | `pattern == 1` → long; `pattern == -1` → short | time stop |
-| **`rolling_rank(close, 20)`** | Mean reversion | `rolling_rank < 0.1` → long; `> 0.9` → short | `abs(rolling_rank - 0.5) < 0.2` |
-| **`rolling_argmax(high, 20)`** | Mean reversion + time stop | `rolling_argmax >= 10` → long | time stop |
-| **`rolling_argmin(low, 20)`** | Mean reversion + time stop | `rolling_argmin >= 10` → short | time stop |
+| Feat | Lý do | Entry | Exit | File |
+|------|-------|-------|------|------|
+| **`sar(high, low, 0.02, 0.2)`** | Exit = `crossed(close, sar)` không phải `crossed(sar, threshold)` | `sar < close` → long; `sar > close` → short | `crossed(close, sar)` | ✅ `SF_SAR_15min.py` |
+| **`mama(close, 0.5, 0.05)`** | 2 outputs (mama, fama), crossover | `mama > fama` → long; `mama < fama` → short | `crossed(mama, fama)` | ✅ `SF_MAMA_15min.py` |
+| **`ht_trendline(close)`** | Exit = `crossed(close, ht_trendline)` | `close > ht_trendline` → long | `crossed(close, ht_trendline)` | ✅ `SF_HT_TRENDLINE_15min.py` |
+| **`bop(open, high, low, close)`** | Entry asymmetric (0.5 / -0.5), exit khác threshold | `bop > 0.5` → long; `bop < -0.5` → short | `crossed(bop, 0)` | ✅ `SF_BOP_15min.py` |
+| **`obv(close, volume)`** | Dùng rolling_mean, không phải threshold cố định | `obv > rolling_mean(obv, 20)` → long | `crossed(obv, rolling_mean(obv, 20))` | ✅ `SF_OBV_15min.py` |
+| **`mfi(high, low, close, volume, 14)`** | Mean reversion | `mfi < 20` → long; `mfi > 80` → short | `crossed(mfi, 50)` | ✅ `SF_MFI_15min.py` |
+| **`cmf(high, low, close, volume, 20)`** | Mean reversion | `cmf < -0.3` → long; `cmf > 0.3` → short | `crossed(cmf, 0)` | ✅ `SF_CMF_15min.py` |
+| **`ad(high, low, close, volume)`** | Dùng rolling_mean | `ad > rolling_mean(ad, 20)` → long | `crossed(ad, rolling_mean(ad, 20))` | ✅ `SF_AD_15min.py` |
+| **`bbands(close, 20, 2)`** | Mean reversion | `close < lower_band` → long; `close > upper_band` → short | `crossed(close, middle_band)` | ✅ `SF_BBANDS_15min.py` |
+| **`price_z(close, 20)`** | Mean reversion | `price_z < -2` → long; `price_z > 2` → short | `abs(price_z) < 1` | ✅ `SF_PRICE_Z_15min.py` |
+| **`rolling_zscore(close, 20)`** | Mean reversion | `rolling_zscore < -2` → long; `> 2` → short | `abs(rolling_zscore) < 1` | ✅ `SF_ROLLING_ZSCORE_15min.py` |
+| **`donchian_upper/low(high/low, 20)`** | Breakout pattern | `close > donchian_upper` → long | `crossed(close, donchian_upper) \| crossed(close, donchian_lower)` | ✅ `SF_DONCHIAN_15min.py` |
+| **`engulfing_pattern(open, high, low, close)`** | Dùng `== 1` / `== -1`, không phải threshold | `engulfing == 1` → long; `engulfing == -1` → short | time stop (5 bars) | ✅ `SF_ENGULFING_15min.py` |
+| **`morning_star(open, high, low, close, 10)`** | 3-bar bullish reversal | `morning_star == 1` → long | time stop (5 bars) | ✅ `SF_MORNING_STAR_15min.py` |
+| **`evening_star(open, high, low, close, 10)`** | 3-bar bearish reversal | `evening_star == 1` → short | time stop (5 bars) | ✅ `SF_EVENING_STAR_15min.py` |
+| **`hammer(open, high, low, close)`** | Single-bar bullish reversal | `hammer == 1` → long | time stop (5 bars) | ✅ `SF_HAMMER_15min.py` |
+| **`shooting_star(open, high, low, close)`** | Single-bar bearish reversal | `shooting_star == 1` → short | time stop (5 bars) | ✅ `SF_SHOOTING_STAR_15min.py` |
+| **`marubozu(open, high, low, close)`** | No shadow → directional strength | `marubozu == 1` → long; `marubozu == -1` → short | time stop (5 bars) | ✅ `SF_MARUBOZU_15min.py` |
+| **`three_white_soldiers(open, high, low, close, 10)`** | 3-bar bullish confirmation | `three_white_soldiers == 1` → long | time stop (5 bars) | ✅ `SF_3WHITE_SOLDIERS_15min.py` |
+| **`three_black_crows(open, high, low, close, 10)`** | 3-bar bearish confirmation | `three_black_crows == 1` → short | time stop (5 bars) | ✅ `SF_3BLACK_CROWS_15min.py` |
+| **`rolling_rank(close, 20)`** | Mean reversion | `rolling_rank < 0.1` → long; `> 0.9` → short | `abs(rolling_rank - 0.5) < 0.2` | ✅ `SF_ROLLING_RANK_15min.py` |
+| **`rolling_argmax(high, 20)`** | Mean reversion + time stop | `rolling_argmax >= 10` → long; `rolling_argmax == 0` → short | time stop (5 bars) | ✅ `SF_ROLLING_ARGMAX_15min.py` |
+| **`rolling_argmin(low, 20)`** | Mean reversion + time stop | `rolling_argmin == 0` → long; `rolling_argmin >= 10` → short | time stop (5 bars) | ✅ `SF_ROLLING_ARGMIN_15min.py` |
 
 ---
 
@@ -135,23 +165,23 @@ class CustomStrategy(SimpleAlgorithm):
   - Nếu CAGR vẫn -100% → cần sửa pattern (thêm ADX filter, return_roll, volume confirmation)
   - Nếu CAGR cải thiện → gen tiếp các phase sau
 
-### Phase 2: Gen Tier 1B (16 indicators — custom logic)
-- [ ] **P2.1** — `sar(high, low, 0.02, 0.2)` — exit = `crossed(close, sar)`
-- [ ] **P2.2** — `mama(close, 0.5, 0.05)` — mama/fama crossover
-- [ ] **P2.3** — `ht_trendline(close)` — exit = `crossed(close, ht_trendline)`
-- [ ] **P2.4** — `bop(open, high, low, close)` — entry asymmetric
-- [ ] **P2.5** — `obv(close, volume)` — rolling_mean filter
-- [ ] **P2.6** — `mfi(high, low, close, volume, 14)` — mean reversion
-- [ ] **P2.7** — `cmf(high, low, close, volume, 20)` — mean reversion
-- [ ] **P2.8** — `ad(high, low, close, volume)` — rolling_mean filter
-- [ ] **P2.9** — `bbands(close, 20, 2)` — mean reversion
-- [ ] **P2.10** — `price_z(close, 20)` — mean reversion
-- [ ] **P2.11** — `rolling_zscore(close, 20)` — mean reversion
-- [ ] **P2.12** — `donchian_upper/low(high/low, 20)` — breakout
-- [ ] **P2.13** — Candlestick patterns (engulfing, morning_star, evening_star, hammer, shooting_star, marubozu, 3WS, 3BC) — time stop
-- [ ] **P2.14** — `rolling_rank(close, 20)` — mean reversion
-- [ ] **P2.15** — `rolling_argmax(high, 20)` — mean reversion + time stop
-- [ ] **P2.16** — `rolling_argmin(low, 20)` — mean reversion + time stop
+### Phase 2: Gen Tier 1B (19 indicators — custom logic)
+- [x] **P2.1** — `sar(high, low, 0.02, 0.2)` — `SF_SAR_15min.py`
+- [x] **P2.2** — `mama(close, 0.5, 0.05)` — `SF_MAMA_15min.py`
+- [x] **P2.3** — `ht_trendline(close)` — `SF_HT_TRENDLINE_15min.py`
+- [x] **P2.4** — `bop(open, high, low, close)` — `SF_BOP_15min.py`
+- [x] **P2.5** — `obv(close, volume)` — `SF_OBV_15min.py`
+- [x] **P2.6** — `mfi(high, low, close, volume, 14)` — `SF_MFI_15min.py`
+- [x] **P2.7** — `cmf(high, low, close, volume, 20)` — `SF_CMF_15min.py`
+- [x] **P2.8** — `ad(high, low, close, volume)` — `SF_AD_15min.py`
+- [x] **P2.9** — `bbands(close, 20, 2)` — `SF_BBANDS_15min.py`
+- [x] **P2.10** — `price_z(close, 20)` — `SF_PRICE_Z_15min.py`
+- [x] **P2.11** — `rolling_zscore(close, 20)` — `SF_ROLLING_ZSCORE_15min.py`
+- [x] **P2.12** — `donchian_upper/low(high/low, 20)` — `SF_DONCHIAN_15min.py`
+- [x] **P2.13** — Candlestick patterns (engulfing, morning_star, evening_star, hammer, shooting_star, marubozu, 3WS, 3BC) — `SF_ENGULFING_15min.py`, `SF_MORNING_STAR_15min.py`, `SF_EVENING_STAR_15min.py`, `SF_HAMMER_15min.py`, `SF_SHOOTING_STAR_15min.py`, `SF_MARUBOZU_15min.py`, `SF_3WHITE_SOLDIERS_15min.py`, `SF_3BLACK_CROWS_15min.py`
+- [x] **P2.14** — `rolling_rank(close, 20)` — `SF_ROLLING_RANK_15min.py`
+- [x] **P2.15** — `rolling_argmax(high, 20)` — `SF_ROLLING_ARGMAX_15min.py`
+- [x] **P2.16** — `rolling_argmin(low, 20)` — `SF_ROLLING_ARGMIN_15min.py`
 
 ### Phase 3: Gen Tier 2 (14 indicators — cần filter)
 - [ ] **P3.1** — `ema(close, 20)` + price cross
