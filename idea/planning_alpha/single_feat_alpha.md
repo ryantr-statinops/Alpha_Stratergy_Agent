@@ -2,75 +2,62 @@
 
 > Nguồn: `syntax/feature_syntax.md` (140+ indicators)
 > Nguyên tắc: Chỉ dùng **1 feat duy nhất** làm tín hiệu chính, không kết hợp nhiều indicator.
+> Pattern: Trend following (`feat > threshold` → long, `feat < threshold` → short, `crossed(feat, threshold)` → exit)
 
 ---
 
-## Tier 1 — Tín hiệu rõ ràng, độc lập, actionable ngay
+## Đã gen (4 indicators)
 
-Các feat này tự thân đã cho oversold/overbought, divergence, hoặc tín hiệu entry/exit trực tiếp. Chỉ cần 1 threshold là có thể giao dịch.
+| File | Indicator | Threshold | Data |
+|------|-----------|-----------|------|
+| `SF_RSI_15min.py` | `rsi(close, 14)` | 50 | `close` |
+| `SF_CCI_15min.py` | `cci(high, low, close, 20)` | 0 | `close, high, low` |
+| `SF_CMO_15min.py` | `cmo(close, 14)` | 0 | `close` |
+| `SF_WillR_15min.py` | `willr(high, low, close, 14)` | -50 | `close, high, low` |
 
-### Momentum Oscillators
+---
 
-| Feat | Signal | Entry | Exit | Timeframe |
-|------|--------|-------|------|-----------|
-| **`rsi(close, 14)`** | Trend momentum | `rsi > 50` → long; `rsi < 50` → short | `crossed(rsi, 50)` | 15, 30, 60 |
-| **`stoch(high, low, close, 14, 3, 3)`** | Trend momentum | `k > 50` → long; `k < 50` → short | `crossed(k, 50)` | 15, 30 |
-| **`stochrsi(close, 14, 14, 3, 3)`** | Trend momentum | `stochrsi > 0.5` → long; `< 0.5` → short | `crossed(stochrsi, 0.5)` | 15, 30 |
-| **`cci(high, low, close, 20)`** | Trend momentum | `cci > 0` → long; `cci < 0` → short | `crossed(cci, 0)` | 15, 30, 60 |
-| **`willr(high, low, close, 14)`** | Trend momentum | `willr > -50` → long; `willr < -50` → short | `crossed(willr, -50)` | 15, 30 |
-| **`cmo(close, 14)`** | Trend momentum | `cmo > 0` → long; `cmo < 0` → short | `crossed(cmo, 0)` | 15, 30, 60 |
+## Tier 1A — Fit pattern trend-following (có thể gen ngay)
 
-### Trend / Directional
+Các indicator dùng được pattern `feat > threshold → long, feat < threshold → short, exit = crossed(feat, threshold)`.
 
-| Feat | Signal | Entry | Exit | Timeframe |
-|------|--------|-------|------|-----------|
-| **`sar(high, low, 0.02, 0.2)`** | Dot flip báo đảo trend | `sar < close` → long; `sar > close` → short | `crossed_below(close, sar)` | 15, 30, 60 |
-| **`mama(close, 0.5, 0.05)`** | (mama, fama) crossover | `crossed_above(mama, fama)` → long; `crossed_below(mama, fama)` → short | `crossed_below(mama, fama)` | 15, 30 |
-| **`ht_trendline(close)`** | Hilbert trend direction | `close > ht_trendline` → long; `close < ht_trendline` → short | `crossed_below(close, ht_trendline)` | 15, 30, 60 |
-| **`aroonosc(high, low, 25)`** | -100 đến +100, trend strength + direction | `aroonosc > 0` → long; `aroonosc < 0` → short | `crossed_below(aroonosc, 0)` | 15, 30, 60 |
-| **`bop(open, high, low, close)`** | +1/-1, sức mạnh buyer/seller | `bop > 0.5` → long; `bop < -0.5` → short | `crossed_below(bop, 0)` | 5, 15, 30 |
+| Feat | Data | Threshold | Entry | Exit | Gen |
+|------|------|-----------|-------|------|-----|
+| **`rsi(close, 14)`** | `close` | 50 | `rsi > 50` / `rsi < 50` | `crossed(rsi, 50)` | ✅ `SF_RSI_15min.py` |
+| **`cci(high, low, close, 20)`** | `close, high, low` | 0 | `cci > 0` / `cci < 0` | `crossed(cci, 0)` | ✅ `SF_CCI_15min.py` |
+| **`cmo(close, 14)`** | `close` | 0 | `cmo > 0` / `cmo < 0` | `crossed(cmo, 0)` | ✅ `SF_CMO_15min.py` |
+| **`willr(high, low, close, 14)`** | `close, high, low` | -50 | `willr > -50` / `willr < -50` | `crossed(willr, -50)` | ✅ `SF_WillR_15min.py` |
+| **`stoch(high, low, close, 14, 3, 3)`** | `close, high, low` | 50 | `k > 50` / `k < 50` | `crossed(k, 50)` | ❌ |
+| **`stochrsi(close, 14, 14, 3, 3)`** | `close` | 0.5 | `stochrsi > 0.5` / `< 0.5` | `crossed(stochrsi, 0.5)` | ❌ |
+| **`aroonosc(high, low, 25)`** | `high, low` | 0 | `aroonosc > 0` / `aroonosc < 0` | `crossed(aroonosc, 0)` | ❌ |
+| **`linearreg_slope(close, 20)`** | `close` | 0 | `linearreg_slope > 0` / `< 0` | `crossed(linearreg_slope, 0)` | ❌ |
+| **`linearreg_angle(close, 20)`** | `close` | 0 | `linearreg_angle > 0` / `< 0` | `crossed(linearreg_angle, 0)` | ❌ |
+| **`tsf(close, 20)`** | `close` | — | `tsf > close` / `tsf < close` | `crossed(tsf, close)` | ❌ (custom) |
 
-### Volume / Flow
+---
 
-| Feat | Signal | Entry | Exit | Timeframe |
-|------|--------|-------|------|-----------|
-| **`obv(close, volume)`** | Divergence với price | `obv > rolling_mean(obv, 20)` → long; `obv < rolling_mean(obv, 20)` → short | `crossed_below(obv, rolling_mean(obv, 20))` | 15, 30, 60 |
-| **`mfi(high, low, close, volume, 14)`** | Volume-weighted RSI, 0-100 | `mfi < 20` → long; `mfi > 80` → short | `crossed_above(mfi, 50)` | 15, 30, 60 |
-| **`cmf(high, low, close, volume, 20)`** | +1/-1, money flow | `cmf < -0.3` → long; `cmf > 0.3` → short | `crossed_above(cmf, 0)` | 15, 30, 60 |
-| **`ad(high, low, close, volume)`** | Accumulation/distribution | `ad > rolling_mean(ad, 20)` → long; `ad < rolling_mean(ad, 20)` → short | `crossed_below(ad, rolling_mean(ad, 20))` | 15, 30, 60 |
+## Tier 1B — Cần custom logic (không fit pattern đơn giản)
 
-### Volatility / Price Extremes
+Các indicator này không dùng được pattern `feat > threshold / feat < threshold / crossed(feat, threshold)` vì entry/exit phức tạp hơn.
 
-| Feat | Signal | Entry | Exit | Timeframe |
-|------|--------|-------|------|-----------|
-| **`bbands(close, 20, 2)`** | Price chạm band → reversal | `close < lower_band` → long; `close > upper_band` → short | `crossed_above(close, middle_band)` | 15, 30, 60 |
-| **`price_z(close, 20)`** | Z-score > 2 hoặc < -2 | `price_z < -2` → long; `price_z > 2` → short | `abs(price_z) < 1` | 15, 30, 60 |
-| **`rolling_zscore(close, 20)`** | Tương tự price_z | `rolling_zscore < -2` → long; `rolling_zscore > 2` → short | `abs(rolling_zscore) < 1` | 15, 30, 60 |
-| **`donchian_upper(high, 20)` / `donchian_lower(low, 20)`** | Breakout levels | `close > donchian_upper` → long; `close < donchian_lower` → short | `crossed_below(close, donchian_upper)` | 15, 30, 60 |
-
-### Candlestick Reversal
-
-| Feat | Signal | Entry | Exit | Timeframe |
-|------|--------|-------|------|-----------|
-| **`engulfing_pattern(open, high, low, close)`** | Bullish/bearish engulfing | `engulfing_pattern == 1` → long; `engulfing_pattern == -1` → short | `engulfing_pattern == -1` (hoặc time stop) | 15, 30 |
-| **`morning_star(open, high, low, close, 10)`** | 3-bar bullish reversal | `morning_star == 1` → long | time stop (5 bars) | 15, 30 |
-| **`evening_star(open, high, low, close, 10)`** | 3-bar bearish reversal | `evening_star == 1` → short | time stop (5 bars) | 15, 30 |
-| **`hammer(open, high, low, close)`** | Single-bar bullish reversal | `hammer == 1` → long | time stop (3 bars) | 15, 30 |
-| **`shooting_star(open, high, low, close)`** | Single-bar bearish reversal | `shooting_star == 1` → short | time stop (3 bars) | 15, 30 |
-| **`marubozu(open, high, low, close)`** | No shadow → directional strength | `marubozu == 1` → long; `marubozu == -1` → short | time stop (3 bars) | 15, 30 |
-| **`three_white_soldiers(open, high, low, close, 10)`** | 3-bar bullish confirmation | `three_white_soldiers == 1` → long | time stop (5 bars) | 30, 60 |
-| **`three_black_crows(open, high, low, close, 10)`** | 3-bar bearish confirmation | `three_black_crows == 1` → short | time stop (5 bars) | 30, 60 |
-
-### Statistics / Rolling
-
-| Feat | Signal | Entry | Exit | Timeframe |
-|------|--------|-------|------|-----------|
-| **`linearreg_slope(close, 20)`** | Trend speed (dương = tăng, âm = giảm) | `linearreg_slope > 0` → long; `linearreg_slope < 0` → short | `crossed_below(linearreg_slope, 0)` | 15, 30, 60 |
-| **`linearreg_angle(close, 20)`** | Trend angle (độ) | `linearreg_angle > 10` → long; `linearreg_angle < -10` → short | `crossed_below(linearreg_angle, 0)` | 15, 30, 60 |
-| **`tsf(close, 20)`** | Future price projection | `tsf > close` → long; `tsf < close` → short | `crossed_below(tsf, close)` | 15, 30, 60 |
-| **`rolling_rank(close, 20)`** | Percentile rank (0-1) | `rolling_rank < 0.1` → long; `rolling_rank > 0.9` → short | `abs(rolling_rank - 0.5) < 0.2` | 15, 30, 60 |
-| **`rolling_argmax(high, 20)`** | Bar since recent high | `rolling_argmax >= 10` → long (mean reversion); `rolling_argmax == 0` → short (new high fade) | time stop | 15, 30, 60 |
-| **`rolling_argmin(low, 20)`** | Bar since recent low | `rolling_argmin >= 10` → short (mean reversion); `rolling_argmin == 0` → long (new low fade) | time stop | 15, 30, 60 |
+| Feat | Lý do | Entry | Exit |
+|------|-------|-------|------|
+| **`sar(high, low, 0.02, 0.2)`** | Exit = `crossed(close, sar)` không phải `crossed(sar, threshold)` | `sar < close` → long; `sar > close` → short | `crossed(close, sar)` |
+| **`mama(close, 0.5, 0.05)`** | 2 outputs (mama, fama), crossover | `crossed_above(mama, fama)` → long | `crossed_below(mama, fama)` |
+| **`ht_trendline(close)`** | Exit = `crossed(close, ht_trendline)` | `close > ht_trendline` → long | `crossed(close, ht_trendline)` |
+| **`bop(open, high, low, close)`** | Entry asymmetric (0.5 / -0.5), exit khác threshold | `bop > 0.5` → long; `bop < -0.5` → short | `crossed(bop, 0)` |
+| **`obv(close, volume)`** | Dùng rolling_mean, không phải threshold cố định | `obv > rolling_mean(obv, 20)` → long | `crossed(obv, rolling_mean(obv, 20))` |
+| **`mfi(high, low, close, volume, 14)`** | Mean reversion | `mfi < 20` → long; `mfi > 80` → short | `crossed(mfi, 50)` |
+| **`cmf(high, low, close, volume, 20)`** | Mean reversion | `cmf < -0.3` → long; `cmf > 0.3` → short | `crossed(cmf, 0)` |
+| **`ad(high, low, close, volume)`** | Dùng rolling_mean | `ad > rolling_mean(ad, 20)` → long | `crossed(ad, rolling_mean(ad, 20))` |
+| **`bbands(close, 20, 2)`** | Mean reversion | `close < lower_band` → long; `close > upper_band` → short | `crossed(close, middle_band)` |
+| **`price_z(close, 20)`** | Mean reversion | `price_z < -2` → long; `price_z > 2` → short | `abs(price_z) < 1` |
+| **`rolling_zscore(close, 20)`** | Mean reversion | `rolling_zscore < -2` → long; `> 2` → short | `abs(rolling_zscore) < 1` |
+| **`donchian_upper/low(high/low, 20)`** | Breakout pattern | `close > donchian_upper` → long | `crossed(close, donchian_upper)` |
+| **Candlestick patterns** | Dùng `== 1` / `== -1`, không phải threshold | `pattern == 1` → long; `pattern == -1` → short | time stop |
+| **`rolling_rank(close, 20)`** | Mean reversion | `rolling_rank < 0.1` → long; `> 0.9` → short | `abs(rolling_rank - 0.5) < 0.2` |
+| **`rolling_argmax(high, 20)`** | Mean reversion + time stop | `rolling_argmax >= 10` → long | time stop |
+| **`rolling_argmin(low, 20)`** | Mean reversion + time stop | `rolling_argmin >= 10` → short | time stop |
 
 ---
 
@@ -96,8 +83,6 @@ Các feat này cho tín hiệu tốt nhưng cần 1 filter phụ (volume, ADX, h
 | **`beta(close, vn30_close, 20)`** | Relative risk | Cần price direction |
 
 ---
-
-
 
 ## Template code cho Single-Feat Alpha (Trend Following)
 
