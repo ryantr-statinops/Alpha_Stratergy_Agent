@@ -6,7 +6,7 @@
 
 ---
 
-## Đã gen (4 indicators)
+## Đã gen (10 indicators)
 
 | File | Indicator | Threshold | Data |
 |------|-----------|-----------|------|
@@ -14,6 +14,12 @@
 | `SF_CCI_15min.py` | `cci(high, low, close, 20)` | 0 | `close, high, low` |
 | `SF_CMO_15min.py` | `cmo(close, 14)` | 0 | `close` |
 | `SF_WillR_15min.py` | `willr(high, low, close, 14)` | -50 | `close, high, low` |
+| `SF_STOCH_15min.py` | `stoch(high, low, close, 14, 3, 3)` | 50 | `close, high, low` |
+| `SF_STOCHRSI_15min.py` | `stochrsi(close, 14, 14, 3, 3)` | 0.5 | `close` |
+| `SF_AROONOSC_15min.py` | `aroonosc(high, low, 25)` | 0 | `high, low` |
+| `SF_LINEARREG_SLOPE_15min.py` | `linearreg_slope(close, 20)` | 0 | `close` |
+| `SF_LINEARREG_ANGLE_15min.py` | `linearreg_angle(close, 20)` | 0 | `close` |
+| `SF_TSF_15min.py` | `tsf(close, 20)` | — | `close` |
 
 ---
 
@@ -27,12 +33,12 @@ Các indicator dùng được pattern `feat > threshold → long, feat < thresho
 | **`cci(high, low, close, 20)`** | `close, high, low` | 0 | `cci > 0` / `cci < 0` | `crossed(cci, 0)` | ✅ `SF_CCI_15min.py` |
 | **`cmo(close, 14)`** | `close` | 0 | `cmo > 0` / `cmo < 0` | `crossed(cmo, 0)` | ✅ `SF_CMO_15min.py` |
 | **`willr(high, low, close, 14)`** | `close, high, low` | -50 | `willr > -50` / `willr < -50` | `crossed(willr, -50)` | ✅ `SF_WillR_15min.py` |
-| **`stoch(high, low, close, 14, 3, 3)`** | `close, high, low` | 50 | `k > 50` / `k < 50` | `crossed(k, 50)` | ❌ |
-| **`stochrsi(close, 14, 14, 3, 3)`** | `close` | 0.5 | `stochrsi > 0.5` / `< 0.5` | `crossed(stochrsi, 0.5)` | ❌ |
-| **`aroonosc(high, low, 25)`** | `high, low` | 0 | `aroonosc > 0` / `aroonosc < 0` | `crossed(aroonosc, 0)` | ❌ |
-| **`linearreg_slope(close, 20)`** | `close` | 0 | `linearreg_slope > 0` / `< 0` | `crossed(linearreg_slope, 0)` | ❌ |
-| **`linearreg_angle(close, 20)`** | `close` | 0 | `linearreg_angle > 0` / `< 0` | `crossed(linearreg_angle, 0)` | ❌ |
-| **`tsf(close, 20)`** | `close` | — | `tsf > close` / `tsf < close` | `crossed(tsf, close)` | ❌ (custom) |
+| **`stoch(high, low, close, 14, 3, 3)`** | `close, high, low` | 50 | `k > 50` / `k < 50` | `crossed(k, 50)` | ✅ `SF_STOCH_15min.py` |
+| **`stochrsi(close, 14, 14, 3, 3)`** | `close` | 0.5 | `stochrsi > 0.5` / `< 0.5` | `crossed(stochrsi, 0.5)` | ✅ `SF_STOCHRSI_15min.py` |
+| **`aroonosc(high, low, 25)`** | `high, low` | 0 | `aroonosc > 0` / `aroonosc < 0` | `crossed(aroonosc, 0)` | ✅ `SF_AROONOSC_15min.py` |
+| **`linearreg_slope(close, 20)`** | `close` | 0 | `linearreg_slope > 0` / `< 0` | `crossed(linearreg_slope, 0)` | ✅ `SF_LINEARREG_SLOPE_15min.py` |
+| **`linearreg_angle(close, 20)`** | `close` | 0 | `linearreg_angle > 0` / `< 0` | `crossed(linearreg_angle, 0)` | ✅ `SF_LINEARREG_ANGLE_15min.py` |
+| **`tsf(close, 20)`** | `close` | — | `tsf > close` / `tsf < close` | `crossed(tsf, close)` | ✅ `SF_TSF_15min.py` |
 
 ---
 
