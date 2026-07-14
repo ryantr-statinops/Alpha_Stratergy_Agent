@@ -13,12 +13,12 @@ Các feat này tự thân đã cho oversold/overbought, divergence, hoặc tín 
 
 | Feat | Signal | Entry | Exit | Timeframe |
 |------|--------|-------|------|-----------|
-| **`rsi(close, 14)`** | Oversold < 30, Overbought > 70 | `rsi < 30` → long; `rsi > 70` → short | `crossed_above(rsi, 50)` hoặc `rsi > 50` | 15, 30, 60 |
-| **`stoch(high, low, close, 14, 3, 3)`** | %K < 20 oversold, %K > 80 overbought | `k < 20` → long; `k > 80` → short | `crossed_above(k, 50)` | 15, 30 |
-| **`stochrsi(close, 14, 14, 3, 3)`** | Nhạy hơn RSI, bắt sớm reversal | `stochrsi < 0.2` → long; `> 0.8` → short | `crossed_above(stochrsi, 0.5)` | 15, 30 |
-| **`cci(high, low, close, 20)`** | Overbought > +100, Oversold < -100 | `cci < -100` → long; `cci > 100` → short | `crossed_above(cci, 0)` | 15, 30, 60 |
-| **`willr(high, low, close, 14)`** | Oversold < -80, Overbought > -20 | `willr < -80` → long; `willr > -20` → short | `crossed_above(willr, -50)` | 15, 30 |
-| **`cmo(close, 14)`** | -100/+100, nhạy hơn RSI | `cmo < -50` → long; `cmo > 50` → short | `crossed_above(cmo, 0)` | 15, 30, 60 |
+| **`rsi(close, 14)`** | Trend momentum | `rsi > 50` → long; `rsi < 50` → short | `crossed(rsi, 50)` | 15, 30, 60 |
+| **`stoch(high, low, close, 14, 3, 3)`** | Trend momentum | `k > 50` → long; `k < 50` → short | `crossed(k, 50)` | 15, 30 |
+| **`stochrsi(close, 14, 14, 3, 3)`** | Trend momentum | `stochrsi > 0.5` → long; `< 0.5` → short | `crossed(stochrsi, 0.5)` | 15, 30 |
+| **`cci(high, low, close, 20)`** | Trend momentum | `cci > 0` → long; `cci < 0` → short | `crossed(cci, 0)` | 15, 30, 60 |
+| **`willr(high, low, close, 14)`** | Trend momentum | `willr > -50` → long; `willr < -50` → short | `crossed(willr, -50)` | 15, 30 |
+| **`cmo(close, 14)`** | Trend momentum | `cmo > 0` → long; `cmo < 0` → short | `crossed(cmo, 0)` | 15, 30, 60 |
 
 ### Trend / Directional
 
@@ -99,45 +99,37 @@ Các feat này cho tín hiệu tốt nhưng cần 1 filter phụ (volume, ADX, h
 
 
 
-## Template code cho Single-Feat Alpha
+## Template code cho Single-Feat Alpha (Trend Following)
 
 ```python
-class SingleFeatAlpha(SimpleAlgorithm):
-
-    # Chỉ 1-2 params cần thiết
-    feat_window = 14
-    entry_threshold = 30      # oversold
-    exit_threshold = 50       # neutral
+class CustomStrategy(SimpleAlgorithm):
+    position_open_ranges = ["02:00-04:30", "06:00-07:20"]
+    position_close_ranges = ["04:20-04:30", "07:20-07:30"]
+    position_close_after_n_candles = 12
 
     def __algorithm__(self):
-        # Layer 1: Data
         close = self.data.pv_close
-        high = self.data.pv_high
-        low = self.data.pv_low
+        feat = self.feat.<indicator>(<args>)
 
-        # Layer 2: Single Feature
-        rsi = self.feat.rsi(close, window=self.feat_window)
+        long_setup = feat > <threshold>
+        short_setup = feat < <threshold>
+        exit_setup = self.op.crossed(feat, <threshold>)
 
-        # Layer 3: Logic
-        long_setup = rsi < self.entry_threshold
-        short_setup = rsi > (100 - self.entry_threshold)
-        exit_setup = self.op.crossed_above(rsi, self.exit_threshold) | self.op.crossed_below(rsi, 100 - self.exit_threshold)
+        long_signal = long_setup & (~exit_setup)
+        short_signal = short_setup & (~exit_setup)
 
-        # Mutual exclusive guard
-        assert not (long_setup & short_setup).any()
-
-        # Layer 4: Position
         self.set_positions(exit_setup, position=0)
-        self.set_positions(long_setup, position=1.0)
-        self.set_positions(short_setup, position=-1.0)
+        self.set_positions(long_signal, position=1)
+        self.set_positions(short_signal, position=-1)
 ```
 
 ---
 
 ## Lưu ý khi thiết kế Single-Feat Alpha
 
-1. **Neutral zone**: Luôn có gap giữa entry và exit threshold (vd entry=30, exit=50)
-2. **Mutual exclusive**: Long và short không thể cùng true trên 1 bar
-3. **Time stop**: Với candlestick patterns, luôn kèm time stop (3-5 bars) thay vì chờ tín hiệu ngược
-4. **Không dùng `crossed_*` + level mixed**: Nếu entry dùng level (`rsi < 30`), exit dùng level (`rsi > 50`), không dùng `crossed_above`
-5. **Không cần trend_filter / volume_filter**: Single feat tự thân đã đủ tín hiệu
+1. **Trend following**: Dùng `feat > threshold` → long, `feat < threshold` → short (không phải mean reversion)
+2. **Exit duy nhất**: `self.op.crossed(feat, threshold)` — exit khi feat cắt threshold từ cả 2 hướng
+3. **Session gating**: Luôn thêm `position_open_ranges`, `position_close_ranges`, `position_close_after_n_candles` cho VNFuture
+4. **Không cần class attributes**: Threshold hardcode trực tiếp trong logic
+5. **Không cần ATR / stop-loss**: Pattern đơn giản, exit duy nhất bằng crossed
+6. **Sinh file mới**: Dùng `python tools/gen_single_feat.py <indicator> <feat_call> <threshold> [--data <vars>]`
