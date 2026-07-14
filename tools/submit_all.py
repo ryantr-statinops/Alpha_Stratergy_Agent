@@ -57,12 +57,20 @@ def submit_one(fpath: str, index: int, total: int) -> str:
     status = f"{r1.status_code}/{r2.status_code}/{r3.status_code}"
     ok = all(s == 200 or s == 201 or s == 204 for s in (r1.status_code, r2.status_code, r3.status_code))
     marker = "OK" if ok else "FAIL"
-    print(f"[{index}/{total}] {marker} {status}  {name}")
+    detail = ""
+    if not ok:
+        for r, label in [(r1, "PUT"), (r2, "VERIFY"), (r3, "SIMULATE")]:
+            if r.status_code != 200 and r.status_code != 201 and r.status_code != 204:
+                try:
+                    detail += f" {label}:{r.text[:200]}"
+                except:
+                    pass
+    print(f"[{index}/{total}] {marker} {status}  {name}{detail}")
     return marker
 
 
 def main():
-    files = sorted(glob.glob("output/thesis_*/**/*.py", recursive=True))
+    files = sorted(glob.glob("output/single_feat_alpha/*.py"))
     total = len(files)
     print(f"Found {total} variants to submit")
 
