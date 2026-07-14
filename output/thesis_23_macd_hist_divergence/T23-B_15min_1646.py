@@ -10,6 +10,8 @@ class CustomStrategy(SimpleAlgorithm):
     slope_window = 5
     bb_window = 20
     atr_mult = 2.0
+    adx_entry = 22
+    rsi_entry = 50
 
     def __algorithm__(self):
         close = self.data.pv_close
@@ -21,6 +23,10 @@ class CustomStrategy(SimpleAlgorithm):
 
         macd, macd_signal_line, macd_hist = self.feat.macd(close, fastperiod=self.macd_fast, slowperiod=self.macd_slow, signalperiod=self.macd_signal)
         hist_slope = self.feat.linearreg_slope(macd_hist, timeperiod=self.slope_window)
+        adx_val = self.feat.adx(high, low, close, timeperiod=14)
+        return_1 = self.op.fillna(self.op.pct_change(close, periods=1), value=0)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
+        rsi_val = self.feat.rsi(close, timeperiod=10)
 
         atr_stop_long = close < (bb_mid - self.atr_mult * atr_val)
         atr_stop_short = close > (bb_mid + self.atr_mult * atr_val)
@@ -28,11 +34,11 @@ class CustomStrategy(SimpleAlgorithm):
         trailing_long = close < (self.feat.rolling_max(close, 10) - atr_val)
         trailing_short = close > (self.feat.rolling_min(close, 10) + atr_val)
 
-        long_setup = self.op.crossed_above(hist_slope, 0) & (close > bb_mid)
-        short_setup = self.op.crossed_below(hist_slope, 0) & (close < bb_mid)
+        long_setup = self.op.crossed_above(hist_slope, 0) & (close > bb_mid) & (adx_val > self.adx_entry) & (return_roll > 0)
+        short_setup = self.op.crossed_below(hist_slope, 0) & (close < bb_mid) & (adx_val > self.adx_entry) & (return_roll < 0)
 
-        exit_long = atr_stop_long | trailing_long
-        exit_short = atr_stop_short | trailing_short
+        exit_long = ((atr_stop_long | trailing_long) & (rsi_val < self.rsi_entry)) | (return_roll < 0)
+        exit_short = ((atr_stop_short | trailing_short) & (rsi_val > self.rsi_entry)) | (return_roll > 0)
 
         long_signal = long_setup & (~exit_long)
         short_signal = short_setup & (~exit_short)
