@@ -9,7 +9,7 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         volume = self.data.pv_volume
         ad = self.feat.ad(high, low, close, volume)
-        ad_ma = self.feat.rolling_mean(ad, timeperiod=20)
+        ad_ma = self.feat.rolling_mean(ad, window=10)
 
         long_setup = ad > ad_ma
         short_setup = ad < ad_ma

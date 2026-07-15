@@ -5,11 +5,11 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        rolling_zscore = self.feat.rolling_zscore(close, timeperiod=20)
+        rolling_zscore = self.feat.rolling_zscore(close, window=10)
 
-        long_setup = rolling_zscore < -2
-        short_setup = rolling_zscore > 2
-        exit_setup = abs(rolling_zscore) < 1
+        long_setup = rolling_zscore > 1
+        short_setup = rolling_zscore < -1
+        exit_setup = abs(rolling_zscore) < 0.5
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

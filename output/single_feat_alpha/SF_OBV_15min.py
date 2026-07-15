@@ -7,7 +7,7 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         volume = self.data.pv_volume
         obv = self.feat.obv(close, volume)
-        obv_ma = self.feat.rolling_mean(obv, timeperiod=20)
+        obv_ma = self.feat.rolling_mean(obv, window=10)
 
         long_setup = obv > obv_ma
         short_setup = obv < obv_ma

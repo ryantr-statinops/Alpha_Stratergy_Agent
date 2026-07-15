@@ -5,8 +5,7 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        close = self.data.pv_close
-        linearreg_angle = self.feat.linearreg_angle(close, 20)
+        linearreg_angle = self.feat.linearreg_angle(close, 10)
 
         long_setup = linearreg_angle > 0
         short_setup = linearreg_angle < 0

@@ -5,12 +5,11 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        close = self.data.pv_close
-        stochrsi = self.feat.stochrsi(close, 14, 14, 3, 3)
+        fastk, fastd = self.feat.stochrsi(close, timeperiod=10, fastk_period=5, fastd_period=3)
 
-        long_setup = stochrsi > 0.5
-        short_setup = stochrsi < 0.5
-        exit_setup = self.op.crossed(stochrsi, 0.5)
+        long_setup = fastk > 50
+        short_setup = fastk < 50
+        exit_setup = self.op.crossed_above_value(fastk, 50) | self.op.crossed_below_value(fastk, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

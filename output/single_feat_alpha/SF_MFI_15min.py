@@ -8,7 +8,7 @@ class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         close = self.data.pv_close
         volume = self.data.pv_volume
-        mfi = self.feat.mfi(high, low, close, volume, timeperiod=14)
+        mfi = self.feat.mfi(high, low, close, volume, timeperiod=10)
 
         long_setup = mfi < 20
         short_setup = mfi > 80
