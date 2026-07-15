@@ -107,7 +107,7 @@ Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_chara
   - `syntax/data_syntax.md`
   - `syntax/feature_syntax.md`
   - `syntax/operations_syntax.md`
-- Đọc `syntax/syntax_guide.md` trước khi code để biết cách chọn nhóm data/hàm/toán tử phù hợp.
+- Đọc `syntax/INDEX.md` trước khi code để biết cách chọn nhóm data/hàm/toán tử phù hợp.
 - Khi sinh mã nguồn, loại bỏ các khai báo kiểu dữ liệu nội bộ của hệ thống như:
 
 ```python
@@ -327,7 +327,7 @@ AI Agent **luôn phải**:
 | **Master spec: class structure, compliance checklist** | `template_example/strategy_framework.md` |
 | **Đặc thù thị trường VN → thiết kế strategy** | `data/vietnam_market_characteristics.md` |
 | **Data fields (OHLCV, futures, VN30, DJI)** | `syntax/data_syntax.md` |
-| **Data guide** | `syntax/syntax_guide.md` |
+| **Syntax index** | `syntax/INDEX.md` |
 | **Feature functions (140+ indicators)** | `syntax/feature_syntax.md` |
 | **Operator functions (30+ operators)** | `syntax/operations_syntax.md` |
 | **Acceptance criteria, scorecard** | `idea/hypothesis/hypothesis_framework.md` |
