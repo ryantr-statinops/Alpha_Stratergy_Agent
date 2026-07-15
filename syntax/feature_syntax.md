@@ -2,6 +2,20 @@
 
 Use this file as the canonical catalog for `self.feat.*`.
 
+## Section Index
+
+| Group | Jump to |
+|---|---|
+| Trend and Moving Average | [Trend and Moving Average Family](#trend-and-moving-average-family) |
+| Directional / Oscillator | [Directional / Oscillator Family](#directional--oscillator-family) |
+| Volume / Flow | [Volume / Flow Family](#volume--flow-family) |
+| Volatility | [Volatility Family](#volatility-family) |
+| Cycle | [Cycle Family](#cycle-family) |
+| Price Transforms | [Price Transforms Family](#price-transforms-family) |
+| Statistics | [Statistics Family](#statistics-family) |
+| Candles | [Candles Family](#candles-family) |
+| Math / Helpers | [Math / Helpers Family](#math--helpers-family) |
+
 ### Quick Lookup
 | Group | Typical use | Representative functions |
 |---|---|---|

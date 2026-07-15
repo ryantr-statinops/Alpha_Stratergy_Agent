@@ -2,6 +2,16 @@
 
 Use this file as the canonical catalog for `self.op.*`.
 
+## Section Index
+
+| Group | Jump to |
+|---|---|
+| Cross / Event | [Cross and Event Primitives](#cross-and-event-primitives) |
+| Lag / Time | [Lag and Time Primitives](#lag-and-time-primitives) |
+| Range / Mask / Conditional | [Range, Mask, and Conditional Helpers](#range-mask-and-conditional-helpers) |
+| Signal Persistence | [Signal Persistence](#signal-persistence) |
+| Boolean Logic | [Boolean Logic](#boolean-logic) |
+
 ### Quick Lookup
 | Group | Typical use | Representative functions |
 |---|---|---|
