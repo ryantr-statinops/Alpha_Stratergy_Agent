@@ -9,10 +9,11 @@ class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         close = self.data.pv_close
         engulfing = self.feat.engulfing_pattern(open_price, high, low, close)
+        sma = self.feat.sma(close, timeperiod=20)
 
-        long_setup = engulfing > 0
-        short_setup = engulfing < 0
-        exit_setup = close > close
+        long_setup = (close > sma) & (engulfing >= 0)
+        short_setup = (close < sma) & (engulfing <= 0)
+        exit_setup = self.op.crossed(close, sma)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

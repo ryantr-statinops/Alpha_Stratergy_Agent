@@ -9,10 +9,11 @@ class CustomStrategy(SimpleAlgorithm):
         low = self.data.pv_low
         close = self.data.pv_close
         three_white_soldiers = self.feat.three_white_soldiers(open_price, high, low, close)
+        sma = self.feat.sma(close, timeperiod=20)
 
-        long_setup = three_white_soldiers > 0
-        short_setup = three_white_soldiers < 0
-        exit_setup = close > close
+        long_setup = (close > sma) & (three_white_soldiers >= 0)
+        short_setup = (close < sma) & (three_white_soldiers <= 0)
+        exit_setup = self.op.crossed(close, sma)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
