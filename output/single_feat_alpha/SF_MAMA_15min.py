@@ -7,9 +7,9 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         mama, fama = self.feat.mama(close, fastlimit=0.5, slowlimit=0.05)
 
-        long_setup = mama > fama
-        short_setup = mama < fama
-        exit_setup = self.op.crossed(mama, fama)
+        long_setup = close > mama
+        short_setup = close < mama
+        exit_setup = self.op.crossed(close, mama)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
