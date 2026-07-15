@@ -5,11 +5,11 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        price_z = self.feat.price_z(close, timeperiod=20)
+        price_z = self.feat.price_z(close, timeperiod=10)
 
-        long_setup = price_z < -2
-        short_setup = price_z > 2
-        exit_setup = abs(price_z) < 1
+        long_setup = price_z > 1
+        short_setup = price_z < -1
+        exit_setup = abs(price_z) < 0.5
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

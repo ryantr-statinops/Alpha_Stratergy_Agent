@@ -5,7 +5,7 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        rsi = self.feat.rsi(close, timeperiod=14)
+        rsi = self.feat.rsi(close, timeperiod=10)
 
         long_setup = rsi > 50
         short_setup = rsi < 50

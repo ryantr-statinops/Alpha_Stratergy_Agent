@@ -2,6 +2,8 @@
 """
 Generate a single-feat alpha strategy file following the trend-following pattern.
 
+Parameters are read from syntax/parameters.md for 15min VNFuture.
+
 Usage:
     python tools/gen_single_feat.py <indicator> <feat_call> <threshold> [--data <vars>]
 
@@ -14,6 +16,41 @@ Examples:
 
 import os
 import sys
+import re
+
+PARAMETERS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "syntax", "parameters.md")
+
+
+def load_parameters():
+    """Parse syntax/parameters.md and return {feature: {param: value}}."""
+    params = {}
+    current_feature = None
+    with open(PARAMETERS_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            m = re.match(r"^\|\s*(\S+)\s*\|\s*(\S+)\s*\|\s*(\S+)\s*\|", line)
+            if m:
+                feature = m.group(1).lower()
+                param = m.group(2).lower()
+                value = m.group(3)
+                if feature in ("feature", "name", "---"):
+                    continue
+                if param == "(none)":
+                    continue
+                if feature not in params:
+                    params[feature] = {}
+                params[feature][param] = value
+    return params
+
+
+def get_param(feature: str, param: str, default: str, params_dict: dict) -> str:
+    """Look up a parameter value from the parameters.md file."""
+    feature_lower = feature.lower()
+    if feature_lower in params_dict:
+        if param.lower() in params_dict[feature_lower]:
+            return params_dict[feature_lower][param.lower()]
+    return default
+
 
 TEMPLATE = '''class CustomStrategy(SimpleAlgorithm):
     position_open_ranges = ["02:00-04:30", "06:00-07:20"]

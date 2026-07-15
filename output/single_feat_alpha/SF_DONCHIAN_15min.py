@@ -7,8 +7,8 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        donchian_upper = self.feat.donchian_upper(high, timeperiod=20)
-        donchian_lower = self.feat.donchian_lower(low, timeperiod=20)
+        donchian_upper = self.feat.donchian_upper(high, timeperiod=10)
+        donchian_lower = self.feat.donchian_lower(low, timeperiod=10)
 
         long_setup = close > donchian_upper
         short_setup = close < donchian_lower

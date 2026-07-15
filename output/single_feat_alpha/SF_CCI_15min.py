@@ -7,7 +7,7 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        cci = self.feat.cci(high, low, close, timeperiod=20)
+        cci = self.feat.cci(high, low, close, timeperiod=10)
 
         long_setup = cci > 0
         short_setup = cci < 0

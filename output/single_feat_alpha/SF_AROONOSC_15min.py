@@ -7,7 +7,7 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        aroonosc = self.feat.aroonosc(high, low, 25)
+        aroonosc = self.feat.aroonosc(high, low, 10)
 
         long_setup = aroonosc > 0
         short_setup = aroonosc < 0

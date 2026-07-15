@@ -5,7 +5,7 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        upper_band, middle_band, lower_band = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        upper_band, middle_band, lower_band = self.feat.bbands(close, timeperiod=10, nbdevup=2, nbdevdn=2)
 
         long_setup = close < lower_band
         short_setup = close > upper_band

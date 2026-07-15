@@ -5,7 +5,7 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        tsf = self.feat.tsf(close, timeperiod=20)
+        tsf = self.feat.tsf(close, timeperiod=10)
 
         long_setup = tsf > close
         short_setup = tsf < close

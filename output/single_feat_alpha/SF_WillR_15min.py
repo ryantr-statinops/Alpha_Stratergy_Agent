@@ -7,7 +7,7 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        willr = self.feat.willr(high, low, close, timeperiod=14)
+        willr = self.feat.willr(high, low, close, timeperiod=10)
 
         long_setup = willr > -50
         short_setup = willr < -50
