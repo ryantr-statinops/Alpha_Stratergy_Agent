@@ -12,7 +12,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = mfi < 20
         short_setup = mfi > 80
-        exit_setup = self.op.crossed(mfi, 50)
+        exit_setup = self.op.crossed_above_value(mfi, 50) | self.op.crossed_below_value(mfi, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

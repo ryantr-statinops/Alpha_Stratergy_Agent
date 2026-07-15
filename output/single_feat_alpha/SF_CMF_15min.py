@@ -12,7 +12,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = cmf < -0.3
         short_setup = cmf > 0.3
-        exit_setup = self.op.crossed(cmf, 0)
+        exit_setup = self.op.crossed_above_value(cmf, 0) | self.op.crossed_below_value(cmf, 0)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

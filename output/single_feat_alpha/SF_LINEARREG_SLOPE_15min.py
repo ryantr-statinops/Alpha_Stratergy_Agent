@@ -9,7 +9,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = linearreg_slope > 0
         short_setup = linearreg_slope < 0
-        exit_setup = self.op.crossed(linearreg_slope, 0)
+        exit_setup = self.op.crossed_above_value(linearreg_slope, 0) | self.op.crossed_below_value(linearreg_slope, 0)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
