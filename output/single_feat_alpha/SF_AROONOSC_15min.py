@@ -11,7 +11,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = aroonosc > 0
         short_setup = aroonosc < 0
-        exit_setup = self.op.crossed(aroonosc, 0)
+        exit_setup = self.op.crossed_above_value(aroonosc, 0) | self.op.crossed_below_value(aroonosc, 0)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
