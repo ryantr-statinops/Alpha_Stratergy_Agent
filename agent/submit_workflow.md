@@ -72,6 +72,13 @@ timestamp,filename,status,cagr,sharpe,calmar,max_drawdown,profit_factor
 2026-07-15T15:51,SF_CCI_15min.py,OK,-0.05,-0.20,-0.10,-0.50,0.90
 ```
 
+Lưu ý:
+khi user yêu cầu trích kết quả pass, tức là trích ra các file chạy thỏa các mục tiêu sau:
+- Sharpe Ratio:  ≥ 1.3
+- CAGR: ≥ 15%
+- Max Drawdown: ≥ -35%
+- Profit factor: ≥ 1.2
+- Calmar: ≥ 1.1
 ---
 
 ## API Response Codes
