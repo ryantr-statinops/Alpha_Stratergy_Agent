@@ -10,8 +10,8 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         bop = self.feat.bop(open_price, high, low, close)
 
-        long_setup = bop > 0.5
-        short_setup = bop < -0.5
+        long_setup = bop > 0
+        short_setup = bop < 0
         exit_setup = self.op.crossed_above_value(bop, 0) | self.op.crossed_below_value(bop, 0)
 
         long_signal = long_setup & (~exit_setup)

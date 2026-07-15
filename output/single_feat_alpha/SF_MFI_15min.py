@@ -10,8 +10,8 @@ class CustomStrategy(SimpleAlgorithm):
         volume = self.data.pv_volume
         mfi = self.feat.mfi(high, low, close, volume, timeperiod=10)
 
-        long_setup = mfi < 20
-        short_setup = mfi > 80
+        long_setup = mfi > 50
+        short_setup = mfi < 50
         exit_setup = self.op.crossed_above_value(mfi, 50) | self.op.crossed_below_value(mfi, 50)
 
         long_signal = long_setup & (~exit_setup)
