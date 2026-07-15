@@ -10,9 +10,11 @@ class CustomStrategy(SimpleAlgorithm):
         donchian_upper = self.feat.donchian_upper(high, timeperiod=10)
         donchian_lower = self.feat.donchian_lower(low, timeperiod=10)
 
-        long_setup = close > donchian_upper
-        short_setup = close < donchian_lower
-        exit_setup = self.op.crossed(close, donchian_upper) | self.op.crossed(close, donchian_lower)
+        donchian_middle = (donchian_upper + donchian_lower) / 2
+
+        long_setup = close > donchian_middle
+        short_setup = close < donchian_middle
+        exit_setup = self.op.crossed(close, donchian_middle)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

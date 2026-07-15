@@ -7,8 +7,8 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         upper_band, middle_band, lower_band = self.feat.bbands(close, timeperiod=10, nbdevup=2, nbdevdn=2)
 
-        long_setup = close < lower_band
-        short_setup = close > upper_band
+        long_setup = close > middle_band
+        short_setup = close < middle_band
         exit_setup = self.op.crossed(close, middle_band)
 
         long_signal = long_setup & (~exit_setup)

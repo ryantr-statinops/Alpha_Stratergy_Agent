@@ -9,7 +9,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = tsf > close
         short_setup = tsf < close
-        exit_setup = self.op.crossed(tsf, close)
+        exit_setup = abs(tsf - close) / close < 0.005
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
