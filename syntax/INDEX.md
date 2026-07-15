@@ -19,6 +19,13 @@ flowchart TD
 3. Đọc `syntax/operations_syntax.md` để chọn đúng toán tử `self.op.*`.
 4. Đọc `syntax/parameters.md` khi cần bộ tham số chuẩn cho khung 15m.
 
+## How To Read Catalogs
+
+- Mỗi catalog đều có `Section Index` ở đầu file.
+- Đọc `Section Index` trước để nhảy thẳng tới nhóm cần dùng.
+- Nếu đã biết tên hàm hoặc field, dùng search trong file rồi mở đúng section tương ứng.
+- Nếu chưa biết nhóm nào cần đọc, quay lại `syntax/INDEX.md` để chọn đúng file trước.
+
 ## When To Use
 
 | Need | Read first |
@@ -44,4 +51,3 @@ flowchart TD
 - `syntax/data_syntax.md`, `syntax/feature_syntax.md`, `syntax/operations_syntax.md` là catalog tra cứu.
 - `syntax/parameters.md` chỉ chứa bộ tham số chuẩn cho khung 15m.
 - Khi generate code, ưu tiên đọc INDEX trước, rồi mới rẽ sang catalog chi tiết.
-

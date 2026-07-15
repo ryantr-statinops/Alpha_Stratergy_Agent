@@ -2,6 +2,15 @@
 
 Use this file as the canonical catalog for `self.data.*`.
 
+## Section Index
+
+| Group | Jump to |
+|---|---|
+| Core OHLCV | [Core OHLCV](#core-ohlcv) |
+| VN30 Index | [VN30 Index](#vn30-index) |
+| Dow Jones Index | [Dow Jones Index](#dow-jones-index) |
+| Futures Daily Fields | [Futures Daily Fields](#futures-daily-fields) |
+
 ## Quick Lookup
 
 | Group | Typical use | Representative fields |

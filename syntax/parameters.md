@@ -2,6 +2,18 @@
 
 1 session = ~10 bars (02:00-04:30 = 2.5h). All parameters are chosen to fit within one session.
 
+## Section Index
+
+| Group | Jump to |
+|---|---|
+| Trend / Moving Average | [Trend / Moving Average](#trend--moving-average) |
+| Momentum / Oscillator | [Momentum / Oscillator](#momentum--oscillator) |
+| Volatility | [Volatility](#volatility) |
+| Volume / Flow | [Volume / Flow](#volume--flow) |
+| Statistics / Rolling Window | [Statistics / Rolling Window](#statistics--rolling-window) |
+| Candlestick Patterns | [Candlestick Patterns](#candlestick-patterns) |
+| No Timeperiod | [Features Without Timeperiod](#features-without-timeperiod-keep-as-is) |
+
 ## Trend / Moving Average
 
 | Feature | Parameter | Value | Rationale |
