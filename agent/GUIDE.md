@@ -14,17 +14,18 @@
 | 3 | `template_example/strategy_framework.md` | **Master spec** — class structure, multi-timeframe windows, VN30/DJI patterns, compliance checklist | **Trước khi code** |
 | 4 | `data/vietnam_market_characteristics.md` | Đặc thù thị trường VN → thiết kế strategy, Sharpe optimization rules, regime detection | **Trước khi code** |
 | 5 | `idea/hypothesis/hypothesis_framework.md` | Acceptance criteria: 10-metric weighted scorecard (Sharpe, CAGR, Sortino, Calmar, Max DD, VaR, CVaR, Ulcer, Cost, Correlation) | **Khi review hypothesis** |
-| 6 | `syntax/data_syntax.md` | `self.data.*` reference | **Khi bắt đầu code** |
-| 7 | `syntax/syntax_guide.md` | Cách chọn và dùng data / feature / operator | **Khi bắt đầu code** |
+| 6 | `syntax/INDEX.md` | Cửa vào cho toàn bộ syntax docs | **Khi bắt đầu code** |
+| 7 | `syntax/data_syntax.md` | `self.data.*` reference | **Khi bắt đầu code** |
 | 8 | `syntax/feature_syntax.md` | 140+ indicators reference | **Khi cần tra function** |
 | 9 | `syntax/operations_syntax.md` | 30+ operators reference | **Khi cần tra operator** |
-| 10 | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | 3 enhancements implemented (return_roll, tiered sizing, session gating) | **Khi cần hiểu code hiện tại** |
-| 11 | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants (idea source) | **Khi cần thêm ý tưởng** |
-| 12 | `idea/planning_alpha/backtest_plan.md` | Kế hoạch backtest 4 tuần, decision rules, tracking template | **Khi bắt đầu backtest** |
-| 13 | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Kế hoạch mở rộng từ 500 lên 10000 strategies | **Khi planning scale** |
-| 14 | `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` | Strategy design mẫu đầu tiên — mean reversion + quantile + RSI | **Khi tham khảo mẫu** |
+| 10 | `syntax/parameters.md` | Parameter defaults for 15m | **Khi cần param chuẩn** |
+| 11 | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | 3 enhancements implemented (return_roll, tiered sizing, session gating) | **Khi cần hiểu code hiện tại** |
+| 12 | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants (idea source) | **Khi cần thêm ý tưởng** |
+| 13 | `idea/planning_alpha/backtest_plan.md` | Kế hoạch backtest 4 tuần, decision rules, tracking template | **Khi bắt đầu backtest** |
+| 14 | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Kế hoạch mở rộng từ 500 lên 10000 strategies | **Khi planning scale** |
+| 15 | `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` | Strategy design mẫu đầu tiên — mean reversion + quantile + RSI | **Khi tham khảo mẫu** |
 
-**Optimal order:** 1→2→3→4→5 first, then 6→7→8 on-demand when coding. Read 9→13 when needed.
+**Optimal order:** 1→2→3→4→5 first, then 6→7→8→9 on-demand when coding. Read 10→14 when needed.
 
 ---
 
