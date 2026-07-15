@@ -6,10 +6,11 @@ class CustomStrategy(SimpleAlgorithm):
     def __algorithm__(self):
         close = self.data.pv_close
         rolling_rank = self.feat.rolling_rank(close, window=10)
+        sma = self.feat.sma(close, timeperiod=8)
 
-        long_setup = rolling_rank > 0.8
-        short_setup = rolling_rank < 0.2
-        exit_setup = abs(rolling_rank - 0.5) < 0.2
+        long_setup = (close > sma) & (rolling_rank > 0.5)
+        short_setup = (close < sma) & (rolling_rank < 0.5)
+        exit_setup = self.op.crossed(close, sma)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

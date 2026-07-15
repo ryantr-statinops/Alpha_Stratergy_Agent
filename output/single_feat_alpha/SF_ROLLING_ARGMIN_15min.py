@@ -4,12 +4,14 @@ class CustomStrategy(SimpleAlgorithm):
     position_close_after_n_candles = 12
 
     def __algorithm__(self):
+        close = self.data.pv_close
         low = self.data.pv_low
         rolling_argmin = self.feat.rolling_argmin(low, window=10)
+        sma = self.feat.sma(close, timeperiod=20)
 
-        long_setup = rolling_argmin >= 4
-        short_setup = rolling_argmin == 0
-        exit_setup = (rolling_argmin >= 2) & (rolling_argmin < 4)
+        long_setup = (close > sma) & (rolling_argmin >= 4)
+        short_setup = (close < sma) & (rolling_argmin <= 2)
+        exit_setup = self.op.crossed(close, sma)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
