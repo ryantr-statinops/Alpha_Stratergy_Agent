@@ -10,8 +10,8 @@ class CustomStrategy(SimpleAlgorithm):
         volume = self.data.pv_volume
         cmf = self.feat.cmf(high, low, close, volume, timeperiod=10)
 
-        long_setup = cmf < -0.3
-        short_setup = cmf > 0.3
+        long_setup = cmf > 0
+        short_setup = cmf < 0
         exit_setup = self.op.crossed_above_value(cmf, 0) | self.op.crossed_below_value(cmf, 0)
 
         long_signal = long_setup & (~exit_setup)
