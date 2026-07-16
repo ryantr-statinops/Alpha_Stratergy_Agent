@@ -7,13 +7,12 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        stoch = self.feat.stoch(high, low, close, fastk_period=14, slowk_period=3, slowd_period=3)
-        stoch_k = stoch['slowk']
+        slowk, slowd = self.feat.stoch(high, low, close, fastk_period=14, slowk_period=3, slowd_period=3)
         rsi = self.feat.rsi(close, timeperiod=10)
 
-        long_setup = (stoch_k > 50) & (rsi > 50)
-        short_setup = (stoch_k < 50) & (rsi < 50)
-        exit_setup = self.op.crossed_above_value(stoch_k, 50) | self.op.crossed_below_value(stoch_k, 50) | self.op.crossed_above_value(rsi, 50) | self.op.crossed_below_value(rsi, 50)
+        long_setup = (slowk > 50) & (rsi > 50)
+        short_setup = (slowk < 50) & (rsi < 50)
+        exit_setup = self.op.crossed_above_value(slowk, 50) | self.op.crossed_below_value(slowk, 50) | self.op.crossed_above_value(rsi, 50) | self.op.crossed_below_value(rsi, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

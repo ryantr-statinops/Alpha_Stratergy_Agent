@@ -5,13 +5,12 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        macd = self.feat.macd(close, fastperiod=12, slowperiod=26, signalperiod=9)
-        macd_hist = macd['macd'] - macd['macdsignal']
+        macd_line, signal_line, histogram = self.feat.macd(close, fastperiod=12, slowperiod=26, signalperiod=9)
         rsi = self.feat.rsi(close, timeperiod=10)
 
-        long_setup = (macd_hist > 0) & (rsi > 50)
-        short_setup = (macd_hist < 0) & (rsi < 50)
-        exit_setup = (self.op.crossed_above_value(macd_hist, 0) | self.op.crossed_below_value(macd_hist, 0)) | (self.op.crossed_above_value(rsi, 50) | self.op.crossed_below_value(rsi, 50))
+        long_setup = (histogram > 0) & (rsi > 50)
+        short_setup = (histogram < 0) & (rsi < 50)
+        exit_setup = self.op.crossed_above_value(histogram, 0) | self.op.crossed_below_value(histogram, 0) | self.op.crossed_above_value(rsi, 50) | self.op.crossed_below_value(rsi, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

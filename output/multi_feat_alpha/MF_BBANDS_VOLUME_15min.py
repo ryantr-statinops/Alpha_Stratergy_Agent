@@ -6,12 +6,12 @@ class CustomStrategy(SimpleAlgorithm):
     def __algorithm__(self):
         close = self.data.pv_close
         volume = self.data.pv_volume
-        bbands = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+        upper_band, middle_band, lower_band = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
         vol_ma = self.feat.sma(volume, timeperiod=20)
 
-        long_setup = (close < bbands['lowerband']) & (volume > vol_ma)
-        short_setup = (close > bbands['upperband']) & (volume > vol_ma)
-        exit_setup = self.op.crossed_above_value(close, bbands['middleband']) | self.op.crossed_below_value(close, bbands['middleband'])
+        long_setup = (close < lower_band) & (volume > vol_ma)
+        short_setup = (close > upper_band) & (volume > vol_ma)
+        exit_setup = self.op.crossed(close, middle_band)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

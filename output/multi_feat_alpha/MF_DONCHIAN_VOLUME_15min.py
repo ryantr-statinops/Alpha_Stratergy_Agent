@@ -8,13 +8,13 @@ class CustomStrategy(SimpleAlgorithm):
         high = self.data.pv_high
         low = self.data.pv_low
         volume = self.data.pv_volume
-        donchian_upper = self.feat.donchian_upper(high, low, timeperiod=20)
-        donchian_lower = self.feat.donchian_lower(high, low, timeperiod=20)
+        donchian_upper = self.feat.donchian_upper(high, timeperiod=20)
+        donchian_lower = self.feat.donchian_lower(low, timeperiod=20)
         vol_ma = self.feat.sma(volume, timeperiod=20)
 
         long_setup = (close > donchian_upper) & (volume > vol_ma)
         short_setup = (close < donchian_lower) & (volume > vol_ma)
-        exit_setup = self.op.crossed_below_value(close, donchian_upper) | self.op.crossed_above_value(close, donchian_lower)
+        exit_setup = self.op.crossed_below(close, donchian_upper) | self.op.crossed_above(close, donchian_lower)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

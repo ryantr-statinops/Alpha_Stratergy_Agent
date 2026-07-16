@@ -12,7 +12,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         long_setup = (close > sar) & (adx > 22)
         short_setup = (close < sar) & (adx > 22)
-        exit_setup = self.op.crossed_above_value(close, sar) | self.op.crossed_below_value(close, sar) | (adx < 18)
+        exit_setup = self.op.crossed_above(close, sar) | self.op.crossed_below(close, sar) | (adx < 18)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
