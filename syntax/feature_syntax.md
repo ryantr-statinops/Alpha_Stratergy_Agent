@@ -259,3 +259,21 @@ Use this file as the canonical catalog for `self.feat.*`.
 
 ### Tutorial
 Use the tables above to pick a feature family first, then jump to the detailed entry for exact signatures.
+
+### Tuple Unpacking Examples
+
+Các function trả về tuple cần **tuple unpacking** — không dùng dict access:
+
+```python
+# MACD — returns (macd_line, signal_line, histogram)
+macd_line, signal_line, histogram = self.feat.macd(close, fastperiod=12, slowperiod=26, signalperiod=9)
+
+# BBANDS — returns (upper_band, middle_band, lower_band)
+upper_band, middle_band, lower_band = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+
+# MAMA — returns (mama_line, fama_line)
+mama_line, fama_line = self.feat.mama(close, fastlimit=0.5, slowlimit=0.05)
+
+# STOCH — returns (slowk, slowd)
+slowk, slowd = self.feat.stoch(high, low, close, fastk_period=14, slowk_period=3, slowd_period=3)
+```
