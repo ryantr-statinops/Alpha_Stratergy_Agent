@@ -56,7 +56,7 @@ Các indicator dùng được pattern `feat > threshold → long, feat < thresho
 | **`cci(high, low, close, 20)`** | `close, high, low` | 0 | `cci > 0` / `cci < 0` | `crossed(cci, 0)` | ✅ `SF_CCI_15min.py` |
 | **`cmo(close, 14)`** | `close` | 0 | `cmo > 0` / `cmo < 0` | `crossed(cmo, 0)` | ✅ `SF_CMO_15min.py` |
 | **`willr(high, low, close, 14)`** | `close, high, low` | -50 | `willr > -50` / `willr < -50` | `crossed(willr, -50)` | ✅ `SF_WillR_15min.py` |
-| **`stoch(high, low, close, 14, 3, 3)`** | `close, high, low` | 50 | `k > 50` / `k < 50` | `crossed(k, 50)` | ✅ `SF_STOCH_15min.py` |
+| **`stoch(high, low, close, 14, 3, 3)`** | `close, high, low` | 50 | `slowk > 50` / `slowk < 50` | `crossed(slowk, 50)` | ✅ `SF_STOCH_15min.py` |
 | **`stochrsi(close, 14, 14, 3, 3)`** | `close` | 0.5 | `stochrsi > 0.5` / `< 0.5` | `crossed(stochrsi, 0.5)` | ✅ `SF_STOCHRSI_15min.py` |
 | **`aroonosc(high, low, 25)`** | `high, low` | 0 | `aroonosc > 0` / `aroonosc < 0` | `crossed(aroonosc, 0)` | ✅ `SF_AROONOSC_15min.py` |
 | **`linearreg_slope(close, 20)`** | `close` | 0 | `linearreg_slope > 0` / `< 0` | `crossed(linearreg_slope, 0)` | ✅ `SF_LINEARREG_SLOPE_15min.py` |
@@ -72,17 +72,17 @@ Các indicator này không dùng được pattern `feat > threshold / feat < thr
 | Feat | Lý do | Entry | Exit | File |
 |------|-------|-------|------|------|
 | **`sar(high, low, 0.02, 0.2)`** | Exit = `crossed(close, sar)` không phải `crossed(sar, threshold)` | `sar < close` → long; `sar > close` → short | `crossed(close, sar)` | ✅ `SF_SAR_15min.py` |
-| **`mama(close, 0.5, 0.05)`** | 2 outputs (mama, fama), crossover | `mama > fama` → long; `mama < fama` → short | `crossed(mama, fama)` | ✅ `SF_MAMA_15min.py` |
+| **`mama(close, 0.5, 0.05)`** | 2 outputs (mama, fama), dùng close thay vì cross | `close > mama` → long; `close < mama` → short | `crossed(close, mama)` | ✅ `SF_MAMA_15min.py` |
 | **`ht_trendline(close)`** | Exit = `crossed(close, ht_trendline)` | `close > ht_trendline` → long | `crossed(close, ht_trendline)` | ✅ `SF_HT_TRENDLINE_15min.py` |
 | **`bop(open, high, low, close)`** | Entry asymmetric (0.5 / -0.5), exit khác threshold | `bop > 0.5` → long; `bop < -0.5` → short | `crossed(bop, 0)` | ✅ `SF_BOP_15min.py` |
 | **`obv(close, volume)`** | Dùng rolling_mean, không phải threshold cố định | `obv > rolling_mean(obv, 20)` → long | `crossed(obv, rolling_mean(obv, 20))` | ✅ `SF_OBV_15min.py` |
 | **`mfi(high, low, close, volume, 14)`** | Mean reversion | `mfi < 20` → long; `mfi > 80` → short | `crossed(mfi, 50)` | ✅ `SF_MFI_15min.py` |
 | **`cmf(high, low, close, volume, 20)`** | Mean reversion | `cmf < -0.3` → long; `cmf > 0.3` → short | `crossed(cmf, 0)` | ✅ `SF_CMF_15min.py` |
 | **`ad(high, low, close, volume)`** | Dùng rolling_mean | `ad > rolling_mean(ad, 20)` → long | `crossed(ad, rolling_mean(ad, 20))` | ✅ `SF_AD_15min.py` |
-| **`bbands(close, 20, 2)`** | Mean reversion | `close < lower_band` → long; `close > upper_band` → short | `crossed(close, middle_band)` | ✅ `SF_BBANDS_15min.py` |
+| **`bbands(close, 20, 2)`** | Trend following (dùng middle band) | `close > middle_band` → long; `close < middle_band` → short | `crossed(close, middle_band)` | ✅ `SF_BBANDS_15min.py` |
 | **`price_z(close, 20)`** | Mean reversion | `price_z < -2` → long; `price_z > 2` → short | `abs(price_z) < 1` | ✅ `SF_PRICE_Z_15min.py` |
 | **`rolling_zscore(close, 20)`** | Mean reversion | `rolling_zscore < -2` → long; `> 2` → short | `abs(rolling_zscore) < 1` | ✅ `SF_ROLLING_ZSCORE_15min.py` |
-| **`donchian_upper/low(high/low, 20)`** | Breakout pattern | `close > donchian_upper` → long | `crossed(close, donchian_upper) \| crossed(close, donchian_lower)` | ✅ `SF_DONCHIAN_15min.py` |
+| **`donchian_upper/low(high/low, 20)`** | Trend following (dùng middle band) | `close > donchian_middle` → long; `close < donchian_middle` → short | `crossed(close, donchian_middle)` | ✅ `SF_DONCHIAN_15min.py` |
 | **`engulfing_pattern(open, high, low, close)`** | Dùng `== 1` / `== -1`, không phải threshold | `engulfing == 1` → long; `engulfing == -1` → short | time stop (5 bars) | ✅ `SF_ENGULFING_15min.py` |
 | **`morning_star(open, high, low, close, 10)`** | 3-bar bullish reversal | `morning_star == 1` → long | time stop (5 bars) | ✅ `SF_MORNING_STAR_15min.py` |
 | **`evening_star(open, high, low, close, 10)`** | 3-bar bearish reversal | `evening_star == 1` → short | time stop (5 bars) | ✅ `SF_EVENING_STAR_15min.py` |
@@ -122,6 +122,8 @@ Các feat này cho tín hiệu tốt nhưng cần 1 filter phụ (volume, ADX, h
 
 ## Template code cho Single-Feat Alpha (Trend Following)
 
+### Pattern cơ bản (1 output — RSI, CCI, CMO, ...)
+
 ```python
 class CustomStrategy(SimpleAlgorithm):
     position_open_ranges = ["02:00-04:30", "06:00-07:20"]
@@ -144,6 +146,35 @@ class CustomStrategy(SimpleAlgorithm):
         self.set_positions(short_signal, position=-1)
 ```
 
+### Pattern tuple (nhiều outputs — MACD, BBANDS, MAMA, STOCH)
+
+Các function này trả về tuple, cần tuple unpacking:
+
+```python
+# MACD: (macd_line, signal_line, histogram)
+macd_line, signal_line, histogram = self.feat.macd(close, fastperiod=12, slowperiod=26, signalperiod=9)
+long_setup = histogram > 0
+exit_setup = self.op.crossed(histogram, 0)
+
+# BBANDS: (upper_band, middle_band, lower_band)
+upper_band, middle_band, lower_band = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
+long_setup = close > middle_band
+exit_setup = self.op.crossed(close, middle_band)
+
+# MAMA: (mama_line, fama_line)
+mama_line, fama_line = self.feat.mama(close, fastlimit=0.5, slowlimit=0.05)
+long_setup = close > mama_line
+exit_setup = self.op.crossed(close, mama_line)
+
+# STOCH: (slowk, slowd)
+slowk, slowd = self.feat.stoch(high, low, close, fastk_period=14, slowk_period=3, slowd_period=3)
+long_setup = slowk > 50
+exit_setup = self.op.crossed_above_value(slowk, 50) | self.op.crossed_below_value(slowk, 50)
+```
+
+> ⚠️ `tools/gen_single_feat.py` chỉ hoạt động cho function trả về 1 Series. 
+> Với tuple functions, phải manual viết code — dùng mẫu trên.
+
 ---
 
 ## Lưu ý khi thiết kế Single-Feat Alpha
@@ -154,6 +185,8 @@ class CustomStrategy(SimpleAlgorithm):
 4. **Không cần class attributes**: Threshold hardcode trực tiếp trong logic
 5. **Không cần ATR / stop-loss**: Pattern đơn giản, exit duy nhất bằng crossed
 6. **Sinh file mới**: Dùng `python tools/gen_single_feat.py <indicator> <feat_call> <threshold> [--data <vars>]`
+7. **`crossed_above_value`/`crossed_below_value` chỉ nhận `float`**, không nhận Series. Dùng `crossed_above`/`crossed_below` cho Series.
+8. **Tuple functions** (macd, bbands, mama, stoch, ...) dùng tuple unpacking, không dùng dict access.
 
 ---
 
