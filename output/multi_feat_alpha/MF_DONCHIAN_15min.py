@@ -5,13 +5,14 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        volume = self.data.pv_volume
-        upper_band, middle_band, lower_band = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
-        vol_ma = self.feat.sma(volume, timeperiod=20)
+        high = self.data.pv_high
+        low = self.data.pv_low
+        donchian_upper = self.feat.donchian_upper(high, timeperiod=20)
+        donchian_lower = self.feat.donchian_lower(low, timeperiod=20)
 
-        long_setup = (close < lower_band) & (volume > vol_ma)
-        short_setup = (close > upper_band) & (volume > vol_ma)
-        exit_setup = self.op.crossed(close, middle_band)
+        long_setup = close > donchian_upper
+        short_setup = close < donchian_lower
+        exit_setup = self.op.crossed(close, donchian_upper) | self.op.crossed(close, donchian_lower)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

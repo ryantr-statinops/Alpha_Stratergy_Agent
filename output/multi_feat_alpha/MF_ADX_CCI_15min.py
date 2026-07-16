@@ -7,13 +7,12 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        volume = self.data.pv_volume
-        upper_band, middle_band, lower_band = self.feat.bbands(close, timeperiod=20, nbdevup=2, nbdevdn=2)
-        cmf = self.feat.cmf(high, low, close, volume, timeperiod=20)
+        cci = self.feat.cci(high, low, close, timeperiod=10)
+        adx = self.feat.adx(high, low, close, timeperiod=10)
 
-        long_setup = (close < lower_band) & (cmf > 0)
-        short_setup = (close > upper_band) & (cmf < 0)
-        exit_setup = self.op.crossed(close, middle_band) | self.op.crossed_above_value(cmf, 0) | self.op.crossed_below_value(cmf, 0)
+        long_setup = (cci > 0) & (adx > 22)
+        short_setup = (cci < 0) & (adx > 22)
+        exit_setup = self.op.crossed(cci, 0) | (adx < 18)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
