@@ -9,7 +9,7 @@
 
 | # | File | Purpose | Đọc khi nào |
 |:-:|------|---------|-------------|
-| 1 | `context_session/session_context.md` | Trạng thái dự án hiện tại: 805 strategies, tiến độ, blocking issues | **Đầu phiên** |
+| 1 | `context_session/session_context.md` | Trạng thái dự án hiện tại: {{STRATEGY_COUNT}} strategies, tiến độ, blocking issues | **Đầu phiên** |
 | 2 | `README.md` | Tổng quan project, 5-step workflow, project structure | **Đầu phiên** |
 | 3 | `template_example/strategy_framework.md` | **Master spec** — class structure, multi-timeframe windows, VN30/DJI patterns, compliance checklist | **Trước khi code** |
 | 4 | `data/vietnam_market_characteristics.md` | Đặc thù thị trường VN → thiết kế strategy, Sharpe optimization rules, regime detection | **Trước khi code** |
@@ -45,7 +45,9 @@ self.set_positions(long_setup, position=1)     # Long second
 self.set_positions(short_setup, position=-1)   # Short third
 ```
 
-### 8 Thesis Groups
+### Thesis Groups ({{THESIS_COUNT}} groups)
+Xem danh sách đầy đủ tại `output/` — các thư mục `thesis_NN_name/`.
+Các nhóm chính:
 | # | Thesis | Timeframes | Key Data |
 |:-:|--------|:----------:|----------|
 | 01 | Momentum | 5, 15, 30, 60 | `pv_close`, `pv_volume`, `pv_vn30_close` |
@@ -56,6 +58,8 @@ self.set_positions(short_setup, position=-1)   # Short third
 | 06 | Volume & Flow | 15, 30, 60 | `pv_close`, `fut_*` |
 | 07 | Intraday Session | 5, 15 | `pv_open`, `pv_close`, `pv_high`, `pv_low` |
 | 08 | Multi-Factor | 15, 30, 60 | All of the above |
+| ... | thesis_09 → thesis_38 | (xem trong output/) | — |
+Ngoài ra còn: `single_feat_alpha/` (47 files) và `multi_feat_alpha/` (9 files).
 
 ### Multi-Timeframe Window Sizing
 | Timeframe | Fast | Mid | Slow | RSI | ADX | Vol | ReturnRoll | ReturnThresh | SessionCandles |
@@ -107,7 +111,7 @@ Khi gặp vấn đề, tra theo triệu chứng:
 | **Strategy không publish được** | `template_example/strategy_framework.md` §Checklist | Docstring thiếu thesis, position bounds sai |
 | **Look-ahead bias** | `template_example/strategy_framework.md` §Data Access | Dùng `pv_close` thay vì `pv_open` |
 | **Generator ra code sai** | `tools/generate_strategies.py` search `inject_filters` | Fix generator, regenerate |
-| **Không biết tham số nào cho TF nào** | `.agent/GUIDE.md` §Multi-Timeframe Window Sizing | Bảng tham số đầy đủ |
+| **Không biết tham số nào cho TF nào** | `agent/GUIDE.md` §Multi-Timeframe Window Sizing | Bảng tham số đầy đủ |
 | **Cần thêm template mới** | `tools/generate_strategies.py` search `TEMPLATES` | Thêm vào TEMPLATES dict |
 | **Cần validate output** | `python tools/validate_framework.py` | Run validator |
 | **Cần hiểu VN market behavior** | `data/vietnam_market_characteristics.md` | Full analysis + mapping table |
@@ -121,15 +125,18 @@ Khi gặp vấn đề, tra theo triệu chứng:
 ## Generator Usage
 
 ```bash
-# Generate all 805 strategies
+# Generate all strategies
 python tools/generate_strategies.py
 
 # Validate all output files
 python tools/validate_framework.py
+
+# Update strategy count stats
+python tools/update_guide_stats.py
 ```
 
 ### Generator Architecture
-- **38 templates** in `TEMPLATES` dict with parameter variants
+- **{{TEMPLATE_COUNT}} templates** in `TEMPLATES` dict with parameter variants
 - **6 ADX templates** get tiered sizing (strong/weak split)
 - **`inject_filters()`** post-processor adds return_roll, class attrs, session gating to ALL templates
 - **Output**: `output/thesis_NN_name/TF/*.py` + `output/index.csv`
@@ -137,25 +144,22 @@ python tools/validate_framework.py
 ### Enhancements Implemented
 | Enhancement | Scope | Status |
 |-------------|-------|--------|
-| A — return_roll filter | All 805 strategies | ✅ |
+| A — return_roll filter | All {{STRATEGY_COUNT}} strategies | ✅ |
 | B — Tiered sizing | 6 ADX templates | ✅ |
-| C — Session gating | All 805 strategies | ✅ |
+| C — Session gating | All {{STRATEGY_COUNT}} strategies | ✅ |
 
 ---
 
 ## Output Structure
 ```
 output/
-├── index.csv                        # 805 strategies manifest
-├── thesis_01_momentum/     5min/ 15min/ 30min/ 60min/
-├── thesis_02_trend/         5min/ 15min/ 30min/ 60min/
-├── thesis_03_mean_reversion/ 5min/ 15min/ 30min/ 60min/
-├── thesis_04_breakout/      5min/ 15min/ 30min/ 60min/
-├── thesis_05_cross_market/        15min/ 30min/ 60min/
-├── thesis_06_volume_flow/         15min/ 30min/ 60min/
-├── thesis_07_intraday_session/    5min/ 15min/
-└── thesis_08_multifactor/         15min/ 30min/ 60min/
+├── index.csv                        # Strategies manifest (xem STATS.md)
+├── thesis_NN_name/  TF/*.py         # Generated hypotheses ({{THESIS_COUNT}} groups)
+├── single_feat_alpha/   *.py        # 47 single-feat strategies (manual)
+│   └── tier2/           *.py        # 14 Tier 2 single-feat strategies
+└── multi_feat_alpha/    *.py        # 9 multi-feat strategies (manual)
 ```
+Xem `output/STATS.md` (do `tools/update_guide_stats.py` sinh ra) để biết số liệu chi tiết.
 
 ---
 
@@ -184,6 +188,7 @@ Nguyên tắc: commit nhỏ, commit thường xuyên → dễ rollback, dễ rev
 | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Scale-up roadmap |
 | `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` | First strategy design reference |
 | `idea/hypothesis/hyp_thesis_01_momentum.md` → `08_multifactor.md` | Hypothesis docs (30 hypotheses) |
+| `output/STATS.md` | Auto-generated strategy count stats (run `tools/update_guide_stats.py`) |
 
 ---
 
