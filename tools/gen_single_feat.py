@@ -52,6 +52,11 @@ def get_param(feature: str, param: str, default: str, params_dict: dict) -> str:
     return default
 
 
+# Functions that return tuple (not single Series).
+# Generator CANNOT auto-gen these; they need manual tuple unpacking.
+TUPLE_FUNCTIONS = {"macd", "bbands", "mama", "stoch", "stochf", "stochrsi",
+                   "aroon", "macdext", "macdfix", "minmax", "minmaxindex", "sine"}
+
 TEMPLATE = '''class CustomStrategy(SimpleAlgorithm):
     position_open_ranges = ["02:00-04:30", "06:00-07:20"]
     position_close_ranges = ["04:20-04:30", "07:20-07:30"]
@@ -86,6 +91,12 @@ def generate(indicator: str, feat_call: str, threshold: str, data_vars: list[str
         data_lines.append("        close = self.data.pv_close")
 
     feat_var = feat_call.split("(")[0]
+
+    feat_name = feat_var.split("[")[0].strip()
+    if feat_name in TUPLE_FUNCTIONS:
+        print(f"  [!] WARNING: '{feat_name}' returns a tuple, not a single Series.")
+        print(f"      Generator output will be INVALID. Use manual tuple unpacking instead.")
+        print(f"      Example: output1, output2 = self.feat.{feat_call}")
 
     code = TEMPLATE.format(
         data_lines="\n".join(data_lines),
