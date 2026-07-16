@@ -1,6 +1,6 @@
 # Strategy Statistics
 
-_Auto-generated: 2026-07-16 15:38:12_
+_Auto-generated: 2026-07-16 22:27:20_
 
 | Category | Count |
 |----------|:-----:|
@@ -8,5 +8,5 @@ _Auto-generated: 2026-07-16 15:38:12_
 | Thesis strategies | 1732 |
 | Single-feat alpha (Tier 1) | 33 |
 | Single-feat alpha (Tier 2) | 14 |
-| Multi-feat alpha | 9 |
-| **Total** | **1774** |
+| Multi-feat alpha | 29 |
+| **Total** | **1794** |
