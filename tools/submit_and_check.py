@@ -39,7 +39,7 @@ HEADERS = {
 }
 WAIT_SECONDS = 10
 CSV_PATH = os.path.join("backtest", "results.csv")
-FILES_DIR = os.path.join("output", "single_feat_alpha")
+FILES_DIR = os.path.join("output", "multi_feat_alpha")
 
 session = requests.Session()
 session.headers.update(HEADERS)
@@ -138,29 +138,37 @@ def submit_and_check(fpath: str, index: int, total: int) -> bool:
 
     name = os.path.basename(fpath)
 
-    r1 = session.put(f"{BASE}/update", json={"code": code})
-    r2 = session.post(f"{BASE}/verify")
-    r3 = session.post(f"{BASE}/simulate")
+    max_retries = 5
+    for attempt in range(1, max_retries + 1):
+        r1 = session.put(f"{BASE}/update", json={"code": code})
+        r2 = session.post(f"{BASE}/verify")
+        time.sleep(2)
+        r3 = session.post(f"{BASE}/simulate")
 
-    status_codes = f"{r1.status_code}/{r2.status_code}/{r3.status_code}"
-    ok = all(s in (200, 201, 204) for s in (r1.status_code, r2.status_code, r3.status_code))
-    marker = "OK" if ok else "FAIL"
+        ok = all(s in (200, 201, 204) for s in (r1.status_code, r2.status_code, r3.status_code))
+        detail = ""
+        if not ok:
+            for r, label in [(r1, "PUT"), (r2, "VERIFY"), (r3, "SIMULATE")]:
+                if r.status_code not in (200, 201, 204):
+                    try:
+                        detail += f" {label}:{r.text[:200]}"
+                    except:
+                        pass
 
-    detail = ""
-    if not ok:
-        for r, label in [(r1, "PUT"), (r2, "VERIFY"), (r3, "SIMULATE")]:
-            if r.status_code not in (200, 201, 204):
-                try:
-                    detail += f" {label}:{r.text[:200]}"
-                except:
-                    pass
+        print(f"  PUT: {r1.status_code} | VERIFY: {r2.status_code} | SIMULATE: {r3.status_code} "
+              f"{'[OK]' if ok else '[FAIL]'}  {name}{detail}")
 
-    print(f"  PUT: {r1.status_code} | VERIFY: {r2.status_code} | SIMULATE: {r3.status_code} "
-          f"{'[OK]' if ok else '[FAIL]'}  {name}{detail}")
+        if ok:
+            break
 
-    if not ok:
-        save_to_csv(name, "FAIL", {})
-        return False
+        is_rate_limit = r1.status_code == 429 or r2.status_code == 429 or r3.status_code == 429
+        if not is_rate_limit or attempt == max_retries:
+            save_to_csv(name, "FAIL", {})
+            return False
+
+        wait = 15
+        print(f"  => Rate limit, retry in {wait}s (attempt {attempt}/{max_retries})...")
+        time.sleep(wait)
 
     print(f"  Doi {WAIT_SECONDS}s de fetch ket qua...")
     time.sleep(WAIT_SECONDS)
