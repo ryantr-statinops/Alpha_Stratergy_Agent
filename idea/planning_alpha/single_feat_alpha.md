@@ -160,10 +160,7 @@ class CustomStrategy(SimpleAlgorithm):
 ## Kế hoạch triển khai
 
 ### Phase 1: Kiểm tra & Đánh giá
-- [ ] **P1.1** — Kiểm tra kết quả backtest 10 strategy trên web
-  - CAGR còn -100% không? Win rate? Sharpe? Số lệnh?
-  - Nếu CAGR vẫn -100% → cần sửa pattern (thêm ADX filter, return_roll, volume confirmation)
-  - Nếu CAGR cải thiện → gen tiếp các phase sau
+- [x] **P1.1** — Kiểm tra kết quả backtest 10 strategy trên web — tất cả PASS
 
 ### Phase 2: Gen Tier 1B (19 indicators — custom logic)
 - [x] **P2.1** — `sar(high, low, 0.02, 0.2)` — `SF_SAR_15min.py`
@@ -184,30 +181,24 @@ class CustomStrategy(SimpleAlgorithm):
 - [x] **P2.16** — `rolling_argmin(low, 20)` — `SF_ROLLING_ARGMIN_15min.py`
 
 ### Phase 3: Gen Tier 2 (14 indicators — cần filter)
-- [ ] **P3.1** — `ema(close, 20)` + price cross
-- [ ] **P3.2** — `sma(close, 20)` + price cross
-- [ ] **P3.3** — `macd(close, 12, 26, 9)` — histogram đổi dấu
-- [ ] **P3.4** — `ppo(close, 12, 26, 9)` — signal line cross
-- [ ] **P3.5** — `momemtum(close, 10)` — threshold > 0
-- [ ] **P3.6** — `roc(close, 10)` — threshold > 0
-- [ ] **P3.7** — `trix(close, 15)` — signal cross
-- [ ] **P3.8** — `ultosc(high, low, close, 7, 14, 28)` — threshold
-- [ ] **P3.9** — `adx(high, low, close, 14)` — +DI/-DI direction
-- [ ] **P3.10** — `dx(high, low, close, 14)` — price direction
-- [ ] **P3.11** — `atr(high, low, close, 14)` — price direction
-- [ ] **P3.12** — `volume_z(volume, 20)` — price move confirmation
-- [ ] **P3.13** — `correl(close, vn30_close, 20)` — cross-asset
-- [ ] **P3.14** — `beta(close, vn30_close, 20)` — relative risk
+- [x] **P3.1** — `ema(close, 20)` + price cross
+- [x] **P3.2** — `sma(close, 20)` + price cross
+- [x] **P3.3** — `macd(close, 12, 26, 9)` — histogram đổi dấu
+- [x] **P3.4** — `ppo(close, 12, 26, 9)` — signal line cross
+- [x] **P3.5** — `momemtum(close, 10)` — threshold > 0
+- [x] **P3.6** — `roc(close, 10)` — threshold > 0
+- [x] **P3.7** — `trix(close, 15)` — signal cross
+- [x] **P3.8** — `ultosc(high, low, close, 7, 14, 28)` — threshold
+- [x] **P3.9** — `adx(high, low, close, 14)` — +DI/-DI direction
+- [x] **P3.10** — `dx(high, low, close, 14)` — price direction
+- [x] **P3.11** — `atr(high, low, close, 14)` — price direction
+- [x] **P3.12** — `volume_z(volume, 20)` — price move confirmation
+- [x] **P3.13** — `correl(close, vn30_close, 20)` — cross-asset
+- [x] **P3.14** — `beta(close, vn30_close, 20)` — relative risk
 
-### Phase 4: Nâng cấp filters (từ vietnam_market_characteristics.md)
-- [ ] **P4.1** — Thêm universal ADX filter (`ADX > 22` cho entry, `ADX < 18` cho exit)
-- [ ] **P4.2** — Thêm return_roll momentum confirmation
-- [ ] **P4.3** — Thêm volume confirmation (`volume > SMA(vol, 20)`)
-- [ ] **P4.4** — Thêm consecutive loss protection (dừng sau 3 lỗ)
-
-### Phase 5: Multi-feat thesis
-- [ ] **P5.1** — Thiết kế thesis kết hợp Tier 1A + Tier 1B + Tier 2
-- [ ] **P5.2** — Gen và submit batch multi-feat
+### Phase 4: Multi-feat thesis
+- [ ] **P4.1** — Thiết kế thesis kết hợp Tier 1A + Tier 1B + Tier 2
+- [ ] **P4.2** — Gen và submit batch multi-feat
 
 ### Workflow mỗi phase
 ```
