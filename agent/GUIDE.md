@@ -9,7 +9,7 @@
 
 | # | File | Purpose | Đọc khi nào |
 |:-:|------|---------|-------------|
-| 1 | `context_session/session_context.md` | Trạng thái dự án hiện tại: {{STRATEGY_COUNT}} strategies, tiến độ, blocking issues | **Đầu phiên** |
+| 1 | `context_session/session_context.md` | Trạng thái dự án hiện tại: 1774 strategies, tiến độ, blocking issues | **Đầu phiên** |
 | 2 | `README.md` | Tổng quan project, 5-step workflow, project structure | **Đầu phiên** |
 | 3 | `template_example/strategy_framework.md` | **Master spec** — class structure, multi-timeframe windows, VN30/DJI patterns, compliance checklist | **Trước khi code** |
 | 4 | `data/vietnam_market_characteristics.md` | Đặc thù thị trường VN → thiết kế strategy, Sharpe optimization rules, regime detection | **Trước khi code** |
@@ -45,7 +45,7 @@ self.set_positions(long_setup, position=1)     # Long second
 self.set_positions(short_setup, position=-1)   # Short third
 ```
 
-### Thesis Groups ({{THESIS_COUNT}} groups)
+### Thesis Groups (35 groups)
 Xem danh sách đầy đủ tại `output/` — các thư mục `thesis_NN_name/`.
 Các nhóm chính:
 | # | Thesis | Timeframes | Key Data |
@@ -136,7 +136,7 @@ python tools/update_guide_stats.py
 ```
 
 ### Generator Architecture
-- **{{TEMPLATE_COUNT}} templates** in `TEMPLATES` dict with parameter variants
+- **108 templates** in `TEMPLATES` dict with parameter variants
 - **6 ADX templates** get tiered sizing (strong/weak split)
 - **`inject_filters()`** post-processor adds return_roll, class attrs, session gating to ALL templates
 - **Output**: `output/thesis_NN_name/TF/*.py` + `output/index.csv`
@@ -144,9 +144,9 @@ python tools/update_guide_stats.py
 ### Enhancements Implemented
 | Enhancement | Scope | Status |
 |-------------|-------|--------|
-| A — return_roll filter | All {{STRATEGY_COUNT}} strategies | ✅ |
+| A — return_roll filter | All 1774 strategies | ✅ |
 | B — Tiered sizing | 6 ADX templates | ✅ |
-| C — Session gating | All {{STRATEGY_COUNT}} strategies | ✅ |
+| C — Session gating | All 1774 strategies | ✅ |
 
 ---
 
@@ -154,7 +154,7 @@ python tools/update_guide_stats.py
 ```
 output/
 ├── index.csv                        # Strategies manifest (xem STATS.md)
-├── thesis_NN_name/  TF/*.py         # Generated hypotheses ({{THESIS_COUNT}} groups)
+├── thesis_NN_name/  TF/*.py         # Generated hypotheses (35 groups)
 ├── single_feat_alpha/   *.py        # 47 single-feat strategies (manual)
 │   └── tier2/           *.py        # 14 Tier 2 single-feat strategies
 └── multi_feat_alpha/    *.py        # 9 multi-feat strategies (manual)
