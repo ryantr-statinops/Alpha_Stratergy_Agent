@@ -5,13 +5,12 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        vn30_close = self.data.pv_vn30_close
-        correl_val = self.feat.correl(close, vn30_close, timeperiod=20)
+        ema = self.feat.ema(close, timeperiod=10)
         rsi = self.feat.rsi(close, timeperiod=10)
 
-        long_setup = (rsi > 50) & (correl_val > 0.5)
-        short_setup = (rsi < 50) & (correl_val < -0.5)
-        exit_setup = self.op.crossed_above_value(rsi, 50) | self.op.crossed_below_value(rsi, 50) | self.op.crossed_above_value(correl_val, 0) | self.op.crossed_below_value(correl_val, 0)
+        long_setup = (close > ema) & (rsi > 50)
+        short_setup = (close < ema) & (rsi < 50)
+        exit_setup = self.op.crossed(close, ema) | self.op.crossed_above_value(rsi, 50) | self.op.crossed_below_value(rsi, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
