@@ -2,15 +2,7 @@
 """
 Submit strategy files to XNOQuant and fetch backtest metrics automatically.
 
-Usage:
-    python tools/submit_and_check.py              # Interactive mode
-    python tools/submit_and_check.py --batch      # Batch mode (all .py files)
-    python tools/submit_and_check.py --batch --test  # Batch mode (1 file only)
-
-Interactive mode:
-    - Enter file paths one by one
-    - Type 'done' to finish
-    - Type 'help' for instructions
+Interactive mode: enter one file path at a time, type 'done' to finish.
 
 Results are saved to: backtest/results.csv
 """
@@ -21,7 +13,6 @@ import time
 import os
 import sys
 import csv
-import glob
 from datetime import datetime
 
 # ── CONFIG ── UPDATE THESE IF SESSION EXPIRES ──
@@ -39,7 +30,6 @@ HEADERS = {
 }
 WAIT_SECONDS = 10
 CSV_PATH = os.path.join("backtest", "results.csv")
-FILES_DIR = os.path.join("output", "multi_feat_alpha")
 
 session = requests.Session()
 session.headers.update(HEADERS)
@@ -47,20 +37,12 @@ session.headers.update(HEADERS)
 
 def print_help():
     print("""
-=== XNOQuant Submit & Check Tool — Huong dan ===
+=== XNOQuant Submit & Check Tool (Interactive) ===
 
-Interactive mode (mac dinh):
+Usage:
   python tools/submit_and_check.py
-  -> Nhap tung file path, nhan 'done' de ket thuc
-     VD: output/single_feat_alpha/SF_RSI_15min.py
 
-Batch mode:
-  python tools/submit_and_check.py --batch
-  -> Tu dong submit tat ca file trong output/single_feat_alpha/*.py
-
-Test mode:
-  python tools/submit_and_check.py --batch --test
-  -> Submit 1 file dau tien de test nhanh
+Nhap duong dan file alpha, go 'done' de ket thuc.
 
 Ket qua duoc luu vao: backtest/results.csv
 """)
@@ -190,72 +172,27 @@ def submit_and_check(fpath: str, index: int, total: int) -> bool:
     return True
 
 
-def run_interactive():
-    print_help()
-    count = 0
-    ok_count = 0
+def main():
+    print("=== XNOQuant Submit & Check Tool (Interactive) ===\n")
+    print("Nhap duong dan file alpha (hoac 'done' de ket thuc):\n")
 
+    ok_count = 0
+    total = 0
     while True:
-        try:
-            raw = input("\nEnter path (>^_^)> ")
-        except (EOFError, KeyboardInterrupt):
-            print()
-            break
-
-        path = raw.strip()
-
-        if not path:
+        fpath = input(">>> ").strip()
+        if not fpath:
             continue
-        if path.lower() == "done":
+        if fpath.lower() == "done":
             break
-        if path.lower() == "help":
-            print_help()
-            continue
-
-        count += 1
-        if submit_and_check(path, count, None):
-            ok_count += 1
-
-    print(f"\n=== Hoan thanh: {count} submitted, {ok_count} OK ===")
-    print(f"Ket qua da luu vao {CSV_PATH}")
-
-
-def run_batch(is_test: bool = False):
-    pattern = os.path.join(FILES_DIR, "*.py")
-    files = sorted(glob.glob(pattern))
-
-    if not files:
-        print(f"Khong tim thay file .py nao trong {FILES_DIR}/")
-        return
-
-    if is_test:
-        files = files[:1]
-
-    total = len(files)
-    print(f"Tim thay {total} files can submit\n")
-
-    ok_count = 0
-    for i, fpath in enumerate(files, 1):
+        total += 1
         name = os.path.basename(fpath)
-        print(f"[{i}/{total}] {name}")
-        if submit_and_check(fpath, i, total):
+        print(f"[{total}] {name}")
+        if submit_and_check(fpath, total, None):
             ok_count += 1
         print()
 
     print(f"=== Hoan thanh: {total} submitted, {ok_count} OK ===")
     print(f"Ket qua da luu vao {CSV_PATH}")
-
-
-def main():
-    is_batch = "--batch" in sys.argv
-    is_test = "--test" in sys.argv
-
-    print("=== XNOQuant Submit & Check Tool ===\n")
-
-    if is_batch:
-        run_batch(is_test)
-    else:
-        run_interactive()
 
 
 if __name__ == "__main__":
