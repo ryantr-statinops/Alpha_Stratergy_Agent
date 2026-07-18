@@ -8,12 +8,15 @@ class CustomStrategy(SimpleAlgorithm):
         high = self.data.pv_high
         low = self.data.pv_low
         volume = self.data.pv_volume
-        adosc = self.feat.adosc(high, low, close, volume, fastperiod=3, slowperiod=10)
-        adx = self.feat.adx(high, low, close, timeperiod=14)
+        mfi = self.feat.mfi(high, low, close, volume, timeperiod=10)
+        cci = self.feat.cci(high, low, close, timeperiod=10)
+        adx = self.feat.adx(high, low, close, timeperiod=10)
+        return_1 = self.op.pct_change(close, periods=1)
+        return_roll = self.feat.rolling_mean(return_1, window=5)
 
-        long_setup = (adosc > 0) & (adx > 22)
-        short_setup = (adosc < 0) & (adx > 22)
-        exit_setup = self.op.crossed(adosc, 0) | (adx < 18)
+        long_setup = (mfi > 50) & (cci > 0) & (adx > 22) & (return_roll > 0)
+        short_setup = (mfi < 50) & (cci < 0) & (adx > 22) & (return_roll < 0)
+        exit_setup = self.op.crossed_above_value(mfi, 50) | self.op.crossed_below_value(mfi, 50) | self.op.crossed(cci, 0) | (adx < 18)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

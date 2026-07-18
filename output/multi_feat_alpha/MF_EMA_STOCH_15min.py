@@ -5,14 +5,14 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        fut_oi = self.data.fut_open_interest_vn30f1m_1d
-        return_1 = self.op.pct_change(close, periods=1)
-        return_roll = self.feat.rolling_mean(return_1, window=5)
-        oi_change = self.op.pct_change(fut_oi, periods=1)
+        high = self.data.pv_high
+        low = self.data.pv_low
+        ema = self.feat.ema(close, timeperiod=20)
+        slowk, slowd = self.feat.stoch(high, low, close, fastk_period=10, slowk_period=3, slowd_period=3)
 
-        long_setup = (return_roll < 0) & (oi_change > 0)
-        short_setup = (return_roll > 0) & (oi_change < 0)
-        exit_setup = (return_roll > 0) | (return_roll < 0) | (oi_change < 0.01)
+        long_setup = (close > ema) & (slowk > 50)
+        short_setup = (close < ema) & (slowk < 50)
+        exit_setup = self.op.crossed(close, ema) | self.op.crossed_above_value(slowk, 50) | self.op.crossed_below_value(slowk, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

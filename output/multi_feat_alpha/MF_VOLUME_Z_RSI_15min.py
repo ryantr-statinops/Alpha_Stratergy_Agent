@@ -7,14 +7,12 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        plus_di = self.feat.plus_di(high, low, close, timeperiod=14)
-        minus_di = self.feat.minus_di(high, low, close, timeperiod=14)
-        adx = self.feat.adx(high, low, close, timeperiod=14)
-        spread = self.feat.sub(plus_di, minus_di)
+        mama_line, fama_line = self.feat.mama(close, fastlimit=0.5, slowlimit=0.05)
+        cci = self.feat.cci(high, low, close, timeperiod=10)
 
-        long_setup = (spread > 0) & (adx > 22)
-        short_setup = (spread < 0) & (adx > 22)
-        exit_setup = self.op.crossed(spread, 0) | (adx < 18)
+        long_setup = (close > mama_line) & (cci > 0)
+        short_setup = (close < mama_line) & (cci < 0)
+        exit_setup = self.op.crossed(close, mama_line) | self.op.crossed(cci, 0)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

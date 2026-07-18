@@ -7,16 +7,14 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        vn30_close = self.data.pv_vn30_close
-        correl = self.feat.correl(close, vn30_close, timeperiod=30)
-        roc = self.feat.roc(close, timeperiod=10)
-        adx = self.feat.adx(high, low, close, timeperiod=14)
-        return_1 = self.op.pct_change(close, periods=1)
-        return_roll = self.feat.rolling_mean(return_1, window=5)
+        volume = self.data.pv_volume
+        obv = self.feat.obv(close, volume)
+        obv_ma = self.feat.sma(obv, timeperiod=20)
+        cci = self.feat.cci(high, low, close, timeperiod=10)
 
-        long_setup = (correl > 0.5) & (roc > 0) & (adx > 22) & (return_roll > 0)
-        short_setup = (correl > 0.5) & (roc < 0) & (adx > 22) & (return_roll < 0)
-        exit_setup = (correl < 0.3) | self.op.crossed(roc, 0) | (adx < 18)
+        long_setup = (obv > obv_ma) & (cci > 0)
+        short_setup = (obv < obv_ma) & (cci < 0)
+        exit_setup = self.op.crossed(obv, obv_ma) | self.op.crossed(cci, 0)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

@@ -5,13 +5,14 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        volume = self.data.pv_volume
-        apo = self.feat.apo(close, fastperiod=12, slowperiod=26, matype=0)
-        volume_z = self.feat.volume_z(volume, timeperiod=20)
+        high = self.data.pv_high
+        low = self.data.pv_low
+        slope = self.feat.linearreg_slope(close, timeperiod=10)
+        adx = self.feat.adx(high, low, close, timeperiod=10)
 
-        long_setup = (apo > 0) & (volume_z > 0)
-        short_setup = (apo < 0) & (volume_z > 0)
-        exit_setup = self.op.crossed(apo, 0) | (volume_z < -1)
+        long_setup = (slope > 0) & (adx > 22)
+        short_setup = (slope < 0) & (adx > 22)
+        exit_setup = self.op.crossed_above_value(slope, 0) | self.op.crossed_below_value(slope, 0) | (adx < 18)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
