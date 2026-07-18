@@ -7,13 +7,13 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        fut_matched_value = self.data.fut_matched_value_vn30f1m_1d
-        value_accel = self.feat.roc(fut_matched_value, timeperiod=5)
-        adx = self.feat.adx(high, low, close, timeperiod=14)
+        volume = self.data.pv_volume
+        mfi = self.feat.mfi(high, low, close, volume, timeperiod=10)
+        rsi = self.feat.rsi(close, timeperiod=10)
 
-        long_setup = (value_accel > 0) & (adx > 22)
-        short_setup = (value_accel < 0) & (adx > 22)
-        exit_setup = (value_accel < 0) | (adx < 18)
+        long_setup = (mfi > 50) & (rsi > 50)
+        short_setup = (mfi < 50) & (rsi < 50)
+        exit_setup = self.op.crossed_above_value(mfi, 50) | self.op.crossed_below_value(mfi, 50) | self.op.crossed(rsi, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

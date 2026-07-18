@@ -5,13 +5,15 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        trix = self.feat.trix(close, timeperiod=14)
-        fut_matched_volume = self.data.fut_matched_volume_vn30f1m_1d
-        vol_accel = self.feat.roc(fut_matched_volume, timeperiod=5)
+        open_price = self.data.pv_open
+        high = self.data.pv_high
+        low = self.data.pv_low
+        bop = self.feat.bop(open_price, high, low, close)
+        rsi = self.feat.rsi(close, timeperiod=10)
 
-        long_setup = (trix > 0) & (vol_accel > 0)
-        short_setup = (trix < 0) & (vol_accel > 0)
-        exit_setup = self.op.crossed(trix, 0) | (vol_accel < 0)
+        long_setup = (bop > 0) & (rsi > 50)
+        short_setup = (bop < 0) & (rsi < 50)
+        exit_setup = self.op.crossed_above_value(bop, 0) | self.op.crossed_below_value(bop, 0) | self.op.crossed(rsi, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

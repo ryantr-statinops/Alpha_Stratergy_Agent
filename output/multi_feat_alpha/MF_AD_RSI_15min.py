@@ -7,13 +7,14 @@ class CustomStrategy(SimpleAlgorithm):
         close = self.data.pv_close
         high = self.data.pv_high
         low = self.data.pv_low
-        kama = self.feat.kama(close, timeperiod=14)
-        kama_slope = self.op.diff(kama, periods=1)
-        adx = self.feat.adx(high, low, close, timeperiod=14)
+        volume = self.data.pv_volume
+        ad = self.feat.ad(high, low, close, volume)
+        ad_ma = self.feat.sma(ad, timeperiod=20)
+        rsi = self.feat.rsi(close, timeperiod=10)
 
-        long_setup = (kama_slope > 0) & (adx > 22)
-        short_setup = (kama_slope < 0) & (adx > 22)
-        exit_setup = self.op.crossed(kama_slope, 0) | (adx < 18)
+        long_setup = (ad > ad_ma) & (rsi > 50)
+        short_setup = (ad < ad_ma) & (rsi < 50)
+        exit_setup = self.op.crossed(ad, ad_ma) | self.op.crossed(rsi, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

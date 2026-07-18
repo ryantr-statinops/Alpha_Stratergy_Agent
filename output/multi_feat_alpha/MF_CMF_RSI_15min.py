@@ -5,12 +5,15 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        trendmode = self.feat.trendmode(close)
-        roc = self.feat.roc(close, timeperiod=10)
+        high = self.data.pv_high
+        low = self.data.pv_low
+        volume = self.data.pv_volume
+        cmf = self.feat.cmf(high, low, close, volume, timeperiod=20)
+        rsi = self.feat.rsi(close, timeperiod=10)
 
-        long_setup = (trendmode > 0) & (roc > 0)
-        short_setup = (trendmode > 0) & (roc < 0)
-        exit_setup = self.op.crossed_below_value(trendmode, 0) | self.op.crossed(roc, 0)
+        long_setup = (cmf > 0) & (rsi > 50)
+        short_setup = (cmf < 0) & (rsi < 50)
+        exit_setup = self.op.crossed_above_value(cmf, 0) | self.op.crossed_below_value(cmf, 0) | self.op.crossed(rsi, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

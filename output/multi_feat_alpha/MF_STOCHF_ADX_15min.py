@@ -5,15 +5,18 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
+        high = self.data.pv_high
+        low = self.data.pv_low
+        slowk, slowd = self.feat.stoch(high, low, close, fastk_period=10, slowk_period=3, slowd_period=3)
+        adx = self.feat.adx(high, low, close, timeperiod=10)
         return_1 = self.op.pct_change(close, periods=1)
         return_roll = self.feat.rolling_mean(return_1, window=5)
-        vn30_close = self.data.pv_vn30_close
-        vn30_return = self.op.pct_change(vn30_close, periods=1)
-        vn30_momentum = self.feat.rolling_mean(vn30_return, window=5)
+        volume = self.data.pv_volume
+        vol_sma = self.feat.sma(volume, timeperiod=10)
 
-        long_setup = (vn30_momentum > 0) & (return_roll > 0)
-        short_setup = (vn30_momentum < 0) & (return_roll < 0)
-        exit_setup = (return_roll < 0) | (return_roll > 0)
+        long_setup = (slowk > slowd) & (adx > 22) & (return_roll > 0) & (volume > vol_sma)
+        short_setup = (slowk < slowd) & (adx > 22) & (return_roll < 0) & (volume > vol_sma)
+        exit_setup = self.op.crossed(slowk, slowd) | (adx < 18)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)

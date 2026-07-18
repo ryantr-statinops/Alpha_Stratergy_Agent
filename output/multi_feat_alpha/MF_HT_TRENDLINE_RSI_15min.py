@@ -5,13 +5,12 @@ class CustomStrategy(SimpleAlgorithm):
 
     def __algorithm__(self):
         close = self.data.pv_close
-        fut_oi = self.data.fut_open_interest_vn30f1m_1d
-        oi_change = self.op.pct_change(fut_oi, periods=1)
-        roc = self.feat.roc(close, timeperiod=10)
+        ht = self.feat.ht_trendline(close)
+        rsi = self.feat.rsi(close, timeperiod=10)
 
-        long_setup = (oi_change > 0) & (roc > 0)
-        short_setup = (oi_change > 0) & (roc < 0)
-        exit_setup = self.op.crossed(roc, 0) | (oi_change < 0)
+        long_setup = (close > ht) & (rsi > 50)
+        short_setup = (close < ht) & (rsi < 50)
+        exit_setup = self.op.crossed(close, ht) | self.op.crossed(rsi, 50)
 
         long_signal = long_setup & (~exit_setup)
         short_signal = short_setup & (~exit_setup)
