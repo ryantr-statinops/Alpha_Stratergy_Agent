@@ -100,6 +100,32 @@ Sharpe ≥ 2.0 =
 
 ---
 
+## Alpha Creation Workflow
+
+Quy trình 7 bước sau khi nghĩ ra alpha idea mới:
+
+```bash
+# 1. NGHĨ Ý TƯỞNG → ghi vào idea/planning_alpha/alpha_data_type_ideas.md
+
+# 2. CHECK TRÙNG (tránh viết lại strategy đã có)
+python backtest/check_duplicate.py --check
+python backtest/check_duplicate.py --idea DT_IDEA_15min.py
+
+# 3. VIẾT STRATEGY → tạo file trong output/data_type_alpha/
+
+# 4. SUBMIT & VERIFY
+python tools/submit_and_check.py
+
+# 5. NẾU FAIL → fix hoặc replace, quay lại bước 3
+
+# 6. UPDATE INDEX
+python backtest/check_duplicate.py --index
+
+# 7. COMMIT + PUSH
+```
+
+---
+
 ## Problem → Solution Lookup
 
 Khi gặp vấn đề, tra theo triệu chứng:
@@ -119,6 +145,8 @@ Khi gặp vấn đề, tra theo triệu chứng:
 | **Cần thêm alpha ideas** | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 variants tham khảo |
 | **Cần planning scale** | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Roadmap mở rộng |
 | **Cần bắt đầu backtest** | `idea/planning_alpha/backtest_plan.md` | Decision rules, tracking |
+| **Cần check duplicate trước khi viết alpha mới** | `backtest/check_duplicate.py --check` | Run duplicate checker |
+| **Cần tìm strategy theo feature** | `backtest/check_duplicate.py --feature adx` | Search by indicator |
 
 ---
 
@@ -157,7 +185,8 @@ output/
 ├── thesis_NN_name/  TF/*.py         # Generated hypotheses (35 groups)
 ├── single_feat_alpha/   *.py        # 47 single-feat strategies (manual)
 │   └── tier2/           *.py        # 14 Tier 2 single-feat strategies
-└── multi_feat_alpha/    *.py        # 9 multi-feat strategies (manual)
+├── multi_feat_alpha/    *.py        # 9 multi-feat strategies (manual)
+└── data_type_alpha/     *.py        # 48 data-type alpha strategies (manual)
 ```
 Xem `output/STATS.md` (do `tools/update_guide_stats.py` sinh ra) để biết số liệu chi tiết.
 
@@ -189,6 +218,8 @@ Nguyên tắc: commit nhỏ, commit thường xuyên → dễ rollback, dễ rev
 | `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` | First strategy design reference |
 | `idea/hypothesis/hyp_thesis_01_momentum.md` → `08_multifactor.md` | Hypothesis docs (30 hypotheses) |
 | `output/STATS.md` | Auto-generated strategy count stats (run `tools/update_guide_stats.py`) |
+| `backtest/check_duplicate.py` | Check duplicates before writing new alpha |
+| `backtest/INDEX.md` | Backtest module documentation + dead code list |
 
 ---
 
