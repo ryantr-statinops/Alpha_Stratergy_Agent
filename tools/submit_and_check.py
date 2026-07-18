@@ -79,19 +79,18 @@ def get_strategy_id() -> str | None:
 
 
 def fetch_metrics(strategy_id: str) -> dict:
-    url = f"https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/train/summary-table"
+    url = f"https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/simulate/summary-aggregate"
     try:
         r = session.get(url)
         if r.status_code == 200:
-            rows = r.json().get("data", [])
-            if rows:
-                n = len(rows)
+            data = r.json().get("data", {})
+            if data:
                 return {
-                    "cagr": sum(row.get("cagr", 0) or 0 for row in rows) / n,
-                    "sharpe": sum(row.get("sharpe", 0) or 0 for row in rows) / n,
-                    "calmar": sum(row.get("calmar", 0) or 0 for row in rows) / n,
-                    "max_drawdown": sum(row.get("max_drawdown", 0) or 0 for row in rows) / n,
-                    "profit_factor": sum(row.get("profit_factor", 0) or 0 for row in rows) / n,
+                    "cagr": data.get("cagr", 0) or 0,
+                    "sharpe": data.get("sharpe", 0) or 0,
+                    "calmar": data.get("calmar", 0) or 0,
+                    "max_drawdown": data.get("max_drawdown", 0) or 0,
+                    "profit_factor": data.get("profit_factor", 0) or 0,
                 }
     except Exception:
         pass
