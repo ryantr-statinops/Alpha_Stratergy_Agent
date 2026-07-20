@@ -13,6 +13,7 @@ import time
 import os
 import sys
 import csv
+import argparse
 from datetime import datetime
 
 # ── CONFIG ── UPDATE THESE IF SESSION EXPIRES ──
@@ -61,7 +62,7 @@ def get_strategy_id() -> str | None:
 
 
 def fetch_metrics(strategy_id: str) -> dict:
-    url = f"https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/simulate/summary-aggregate"
+    url = f"https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/train/summary-aggregate"
     try:
         r = session.get(url)
         if r.status_code == 200:
@@ -172,7 +173,59 @@ def submit_and_check(fpath: str, index: int, total: int) -> bool:
     return True
 
 
+def discover_batch_files() -> list[str]:
+    roots = ["output", "success_alpha"]
+    files = []
+    for root in roots:
+        if not os.path.isdir(root):
+            continue
+        for current_root, _dirs, filenames in os.walk(root):
+            for filename in filenames:
+                if filename.endswith(".py"):
+                    files.append(os.path.join(current_root, filename))
+    return sorted(files)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Submit strategies to XNOQuant and fetch metrics.")
+    parser.add_argument("--batch", action="store_true", help="Submit all discovered strategy files.")
+    parser.add_argument("--test", action="store_true", help="Only submit the first discovered file in batch mode.")
+    parser.add_argument("--start", type=int, default=1, help="1-based start index for batch mode.")
+    parser.add_argument("--limit", type=int, default=None, help="Maximum number of files to submit in batch mode.")
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
+
+    if args.batch:
+        files = discover_batch_files()
+        start_idx = max(args.start - 1, 0)
+        if start_idx:
+            files = files[start_idx:]
+        if args.limit is not None:
+            files = files[: max(args.limit, 0)]
+        if args.test:
+            files = files[:1]
+        if not files:
+            print("[!] Khong tim thay file strategy nao trong output/ hoac success_alpha/")
+            return
+
+        print("=== XNOQuant Submit & Check Tool (Batch) ===\n")
+        ok_count = 0
+        total = 0
+        for fpath in files:
+            total += 1
+            name = os.path.basename(fpath)
+            print(f"[{total}] {name}")
+            if submit_and_check(fpath, total, len(files)):
+                ok_count += 1
+            print()
+
+        print(f"=== Hoan thanh: {total} submitted, {ok_count} OK ===")
+        print(f"Ket qua da luu vao {CSV_PATH}")
+        return
+
     print("=== XNOQuant Submit & Check Tool (Interactive) ===\n")
     print("Nhap duong dan file alpha (hoac 'done' de ket thuc):\n")
 
