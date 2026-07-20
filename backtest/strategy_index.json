@@ -1,0 +1,1360 @@
+[
+  {
+    "name": "DT_ACCUM_DISTRIBUTION_15min",
+    "file": "DT_ACCUM_DISTRIBUTION_15min.py",
+    "features": [
+      "ad",
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_volume"
+    ],
+    "conditions": {
+      "long_setup": "(ad_line > ad_ma) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(ad_line < ad_ma) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_ADOSC_MOMENTUM_15min",
+    "file": "DT_ADOSC_MOMENTUM_15min.py",
+    "features": [
+      "adosc",
+      "adx",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_volume"
+    ],
+    "conditions": {
+      "long_setup": "(adosc > 0) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(adosc < 0) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_AROONOSC_TREND_15min",
+    "file": "DT_AROONOSC_TREND_15min.py",
+    "features": [
+      "adx",
+      "aroonosc",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(aroonosc > 0) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(aroonosc < 0) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_ATR_EXPANSION_15min",
+    "file": "DT_ATR_EXPANSION_15min.py",
+    "features": [
+      "adx",
+      "atr",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(atr > atr_sma) & (close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(atr > atr_sma) & (close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_AVGPRICE_TREND_15min",
+    "file": "DT_AVGPRICE_TREND_15min.py",
+    "features": [
+      "adx",
+      "avgprice",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_open"
+    ],
+    "conditions": {
+      "long_setup": "(avgprice > avgprice_sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(avgprice < avgprice_sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_BBANDS_WIDTH_15min",
+    "file": "DT_BBANDS_WIDTH_15min.py",
+    "features": [
+      "adx",
+      "bbands",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(band_width > band_sma) & (close > middle_band) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(band_width > band_sma) & (close < middle_band) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_BETA_MEANREVERSION_15min",
+    "file": "DT_BETA_MEANREVERSION_15min.py",
+    "features": [
+      "adx",
+      "beta",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_vn30_close"
+    ],
+    "conditions": {
+      "long_setup": "(beta > 1.5) & (close > vn30) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(beta < 0.5) & (close < vn30) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_BOP_MOMENTUM_15min",
+    "file": "DT_BOP_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_CCI_TREND_15min",
+    "file": "DT_CCI_TREND_15min.py",
+    "features": [
+      "adx",
+      "cci",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(cci > 100) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(cci < -100) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_CMF_DIVERGENCE_15min",
+    "file": "DT_CMF_DIVERGENCE_15min.py",
+    "features": [
+      "adx",
+      "cmf",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_volume"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (cmf > 0) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (cmf < 0) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_CMF_FLOW_15min",
+    "file": "DT_CMF_FLOW_15min.py",
+    "features": [
+      "adx",
+      "cmf",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_volume"
+    ],
+    "conditions": {
+      "long_setup": "(cmf > 0) & (close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(cmf < 0) & (close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_CMO_MOMENTUM_15min",
+    "file": "DT_CMO_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "cmo",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(cmo > 0) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(cmo < 0) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (self.op.abs(cmo) < 10)"
+    }
+  },
+  {
+    "name": "DT_CORREL_TREND_15min",
+    "file": "DT_CORREL_TREND_15min.py",
+    "features": [
+      "adx",
+      "correl",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(correl > 0.5) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(correl < -0.5) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (self.op.abs(correl) < 0.2)"
+    }
+  },
+  {
+    "name": "DT_CROSS_TRIPLE_CONFIRM_15min",
+    "file": "DT_CROSS_TRIPLE_CONFIRM_15min.py",
+    "features": [
+      "adx",
+      "roc",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_vn30_close"
+    ],
+    "conditions": {
+      "long_setup": "(roc > 0) & (vn30_roc > 0) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(roc < 0) & (vn30_roc < 0) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_DEMA_CROSS_15min",
+    "file": "DT_DEMA_CROSS_15min.py",
+    "features": [
+      "adx",
+      "dema",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > dema_fast) & (dema_fast > dema_slow) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(close < dema_fast) & (dema_fast < dema_slow) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_DJI_REGIME_FILTER_15min",
+    "file": "DT_DJI_REGIME_FILTER_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_dji_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (dji_close > dji_sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (dji_close < dji_sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_DONCHIAN_BREAKOUT_15min",
+    "file": "DT_DONCHIAN_BREAKOUT_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_DOUBLE_SMA_15min",
+    "file": "DT_DOUBLE_SMA_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(sma_fast > sma_slow) & (close > sma_fast) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(sma_fast < sma_slow) & (close < sma_fast) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_DX_TREND_15min",
+    "file": "DT_DX_TREND_15min.py",
+    "features": [
+      "adx",
+      "dx",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(dx > 20) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(dx > 20) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (dx < 15)"
+    }
+  },
+  {
+    "name": "DT_FUT_AGREED_MATCHED_RATIO_15min",
+    "file": "DT_FUT_AGREED_MATCHED_RATIO_15min.py",
+    "features": [
+      "adx",
+      "div",
+      "roc",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "fut_agreed_volume_vn30f1m_1d",
+      "fut_matched_volume_vn30f1m_1d",
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(ratio > ratio_sma) & (roc > 0) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(ratio > ratio_sma) & (roc < 0) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(ratio < ratio_sma) | (adx < 18)"
+    }
+  },
+  {
+    "name": "DT_FUT_OPEN_INTEREST_FLOW_15min",
+    "file": "DT_FUT_OPEN_INTEREST_FLOW_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "fut_open_interest_vn30f1m_1d",
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(oi_roll > 0) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(oi_roll < 0) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_FUT_TOTAL_VALUE_TREND_15min",
+    "file": "DT_FUT_TOTAL_VALUE_TREND_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_HT_DCPHASE_MOMENTUM_15min",
+    "file": "DT_HT_DCPHASE_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "dcperiod",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(dcperiod > 10) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(dcperiod > 10) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_HT_SINE_CROSS_15min",
+    "file": "DT_HT_SINE_CROSS_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sine"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(sine > leadsine) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(sine < leadsine) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_HT_TRENDMODE_GATE_15min",
+    "file": "DT_HT_TRENDMODE_GATE_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "trendmode"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(trendmode > 0) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(trendmode > 0) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (trendmode == 0)"
+    }
+  },
+  {
+    "name": "DT_KAMA_TREND_15min",
+    "file": "DT_KAMA_TREND_15min.py",
+    "features": [
+      "adx",
+      "kama",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > kama) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < kama) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_LINEARREG_SLOPE_15min",
+    "file": "DT_LINEARREG_SLOPE_15min.py",
+    "features": [
+      "adx",
+      "linearreg_slope",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(slope > 0) & (close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(slope < 0) & (close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_LINREG_INTERCEPT_BREAKOUT_15min",
+    "file": "DT_LINREG_INTERCEPT_BREAKOUT_15min.py",
+    "features": [
+      "adx",
+      "linearreg_intercept",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > lr_intercept) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(close < lr_intercept) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_MAMA_MOMENTUM_15min",
+    "file": "DT_MAMA_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "mama",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_MEDPRICE_TREND_15min",
+    "file": "DT_MEDPRICE_TREND_15min.py",
+    "features": [
+      "adx",
+      "medprice",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma_med) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(close < sma_med) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_MFI_FLOW_15min",
+    "file": "DT_MFI_FLOW_15min.py",
+    "features": [
+      "adx",
+      "mfi",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_volume"
+    ],
+    "conditions": {
+      "long_setup": "(mfi > 50) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(mfi < 50) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_MIDPOINT_TREND_15min",
+    "file": "DT_MIDPOINT_TREND_15min.py",
+    "features": [
+      "adx",
+      "midpoint",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > midpoint) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < midpoint) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_MOMENTUM_CROSS_15min",
+    "file": "DT_MOMENTUM_CROSS_15min.py",
+    "features": [
+      "adx",
+      "roc",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(roc > 0) & (close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(roc < 0) & (close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_MOMENTUM_IMPULSE_15min",
+    "file": "DT_MOMENTUM_IMPULSE_15min.py",
+    "features": [
+      "adx",
+      "momentum",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(mom > 0) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(mom < 0) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_NATR_VOLATILITY_15min",
+    "file": "DT_NATR_VOLATILITY_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_OBV_TREND_CONFIRM_15min",
+    "file": "DT_OBV_TREND_CONFIRM_15min.py",
+    "features": [
+      "adx",
+      "obv",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_volume"
+    ],
+    "conditions": {
+      "long_setup": "(obv > obv_sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(obv < obv_sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_PLUS_DI_MINUS_DI_SPREAD_15min",
+    "file": "DT_PLUS_DI_MINUS_DI_SPREAD_15min.py",
+    "features": [
+      "adx",
+      "minus_di",
+      "plus_di",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(plus_di > minus_di) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(plus_di < minus_di) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_PPO_MOMENTUM_15min",
+    "file": "DT_PPO_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "ppo",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(ppo > 0) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(ppo < 0) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (self.op.abs(ppo) < 0.1)"
+    }
+  },
+  {
+    "name": "DT_PRICE_Z_REVERSAL_15min",
+    "file": "DT_PRICE_Z_REVERSAL_15min.py",
+    "features": [
+      "adx",
+      "price_z",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(price_z < -1.5) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(price_z > 1.5) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (self.op.abs(price_z) < 0.5)"
+    }
+  },
+  {
+    "name": "DT_RANGE_EXPANSION_15min",
+    "file": "DT_RANGE_EXPANSION_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_RANK_MOMENTUM_15min",
+    "file": "DT_RANK_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_ROLLING_ARGMAX_EXIT_15min",
+    "file": "DT_ROLLING_ARGMAX_EXIT_15min.py",
+    "features": [
+      "adx",
+      "rolling_argmax",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0) | (argmax >= 5)"
+    }
+  },
+  {
+    "name": "DT_ROLLING_CORREL_FLOW_15min",
+    "file": "DT_ROLLING_CORREL_FLOW_15min.py",
+    "features": [
+      "adx",
+      "rolling_correlation",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_volume"
+    ],
+    "conditions": {
+      "long_setup": "(roll_correl > 0.3) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(roll_correl < -0.3) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (self.op.abs(roll_correl) < 0.1)"
+    }
+  },
+  {
+    "name": "DT_ROLLING_MAD_BREAKOUT_15min",
+    "file": "DT_ROLLING_MAD_BREAKOUT_15min.py",
+    "features": [
+      "adx",
+      "rolling_mad",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(mad > mad_sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(mad > mad_sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_ROLLING_MEDIAN_BREAKOUT_15min",
+    "file": "DT_ROLLING_MEDIAN_BREAKOUT_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "rolling_median"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > roll_median) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(close < roll_median) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_ROLLING_PERCENTILE_RANK_15min",
+    "file": "DT_ROLLING_PERCENTILE_RANK_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "rolling_percentile_rank"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(percentile_rank > 0.6) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(percentile_rank < 0.4) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_ROLLING_SUM_MOMENTUM_15min",
+    "file": "DT_ROLLING_SUM_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "rolling_sum",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(roll_sum > 0) & (close > sma) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(roll_sum < 0) & (close < sma) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_RSI_MOMENTUM_15min",
+    "file": "DT_RSI_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "rsi",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(rsi > 50) & (close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(rsi < 50) & (close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_SAR_TREND_15min",
+    "file": "DT_SAR_TREND_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sar",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sar) & (close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sar) & (close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_STOCH_MOMENTUM_15min",
+    "file": "DT_STOCH_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "stoch"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(slowk > slowd) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(slowk < slowd) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_T3_ADAPTIVE_15min",
+    "file": "DT_T3_ADAPTIVE_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma",
+      "t3"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > t3) & (close > sma) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(close < t3) & (close < sma) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_TEMA_TREND_15min",
+    "file": "DT_TEMA_TREND_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "tema"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > tema) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < tema) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_TRIMA_TREND_15min",
+    "file": "DT_TRIMA_TREND_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma",
+      "trima"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > trima) & (close > sma) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(close < trima) & (close < sma) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_TSF_TREND_15min",
+    "file": "DT_TSF_TREND_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma",
+      "tsf"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > tsf) & (close > sma) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(close < tsf) & (close < sma) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_TYPPRICE_TREND_15min",
+    "file": "DT_TYPPRICE_TREND_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma",
+      "typprice"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(typprice > typprice_sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(typprice < typprice_sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_ULTOSC_CONFIRM_15min",
+    "file": "DT_ULTOSC_CONFIRM_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma",
+      "ultosc"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(ultosc > 50) & (close > sma) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(ultosc < 50) & (close < sma) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_VAR_EXPANSION_15min",
+    "file": "DT_VAR_EXPANSION_15min.py",
+    "features": [
+      "adx",
+      "natr",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_volume"
+    ],
+    "conditions": {
+      "long_setup": "(natr > natr_sma) & (close > sma) & (volume > vol_sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(natr > natr_sma) & (close < sma) & (volume > vol_sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0) | (natr < natr_sma)"
+    }
+  },
+  {
+    "name": "DT_VN30_BREAKOUT_CONFIRM_15min",
+    "file": "DT_VN30_BREAKOUT_CONFIRM_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_vn30_close"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (vn30_close > vn30_sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (vn30_close < vn30_sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_VN30_DJI_SPREAD_15min",
+    "file": "DT_VN30_DJI_SPREAD_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_vn30_close"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (vn30_close > vn30_sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (vn30_close < vn30_sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_VN30_RELATIVE_STRENGTH_15min",
+    "file": "DT_VN30_RELATIVE_STRENGTH_15min.py",
+    "features": [
+      "adx",
+      "roc",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(roc > 0) & (close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(roc < 0) & (close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_VN30_TREND_STRENGTH_15min",
+    "file": "DT_VN30_TREND_STRENGTH_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_VN30_VOLUME_SURGE_15min",
+    "file": "DT_VN30_VOLUME_SURGE_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_vn30_volume"
+    ],
+    "conditions": {
+      "long_setup": "(vn30_volume > vn30_vol_sma) & (close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(vn30_volume > vn30_vol_sma) & (close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_VN30_VOL_DIVERGENCE_15min",
+    "file": "DT_VN30_VOL_DIVERGENCE_15min.py",
+    "features": [
+      "adx",
+      "roc",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_vn30_close"
+    ],
+    "conditions": {
+      "long_setup": "(vn30_roc > 0) & (close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(vn30_roc < 0) & (close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_VOLUME_Z_SURGE_15min",
+    "file": "DT_VOLUME_Z_SURGE_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "volume_z"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low",
+      "pv_volume"
+    ],
+    "conditions": {
+      "long_setup": "(volume_z > 1.0) & (adx > 20) & (return_roll > 0) & (close > self.op.previous(close))",
+      "short_setup": "(volume_z > 1.0) & (adx > 20) & (return_roll < 0) & (close < self.op.previous(close))",
+      "exit_setup": "(adx < 18) | (volume_z < -0.5)"
+    }
+  },
+  {
+    "name": "DT_WCLPRICE_MOMENTUM_15min",
+    "file": "DT_WCLPRICE_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma",
+      "wclprice"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(wclprice > wclprice_sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(wclprice < wclprice_sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_WHALE_FOOTPRINT_15min",
+    "file": "DT_WHALE_FOOTPRINT_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "sma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > sma) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(close < sma) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_WILLR_REVERSAL_15min",
+    "file": "DT_WILLR_REVERSAL_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "willr"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(willr < -60) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(willr > -40) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  },
+  {
+    "name": "DT_WMA_MOMENTUM_15min",
+    "file": "DT_WMA_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "rolling_mean",
+      "wma"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(close > wma) & (adx > 20) & (return_roll > 0)",
+      "short_setup": "(close < wma) & (adx > 20) & (return_roll < 0)",
+      "exit_setup": "(adx < 18) | (return_roll < 0)"
+    }
+  },
+  {
+    "name": "DT_ZSCORE_MOMENTUM_15min",
+    "file": "DT_ZSCORE_MOMENTUM_15min.py",
+    "features": [
+      "adx",
+      "price_z",
+      "rolling_mean"
+    ],
+    "data_fields": [
+      "pv_close",
+      "pv_high",
+      "pv_low"
+    ],
+    "conditions": {
+      "long_setup": "(price_z > 0) & (adx > 22) & (return_roll > 0)",
+      "short_setup": "(price_z < 0) & (adx > 22) & (return_roll < 0)",
+      "exit_setup": "(adx < 18)"
+    }
+  }
+]
