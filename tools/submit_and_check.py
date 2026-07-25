@@ -62,7 +62,7 @@ def get_strategy_id() -> str | None:
 
 
 def fetch_metrics(strategy_id: str) -> dict:
-    url = f"https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/train/summary-aggregate"
+    url = f"https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/simulate/summary-aggregate"
     try:
         r = session.get(url)
         if r.status_code == 200:
