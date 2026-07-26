@@ -36,6 +36,42 @@ session = requests.Session()
 session.headers.update(HEADERS)
 
 
+PASS_THRESHOLDS = {
+    "sharpe": 1.3,
+    "cagr": 0.15,
+    "max_drawdown": -0.35,
+    "profit_factor": 1.2,
+    "calmar": 1.1,
+}
+
+
+def is_pass(row: dict) -> bool:
+    """Check if a CSV row meets ALL 5 pass criteria."""
+    for key, threshold in PASS_THRESHOLDS.items():
+        val = row.get(key, "")
+        if val == "" or val is None:
+            return False
+        try:
+            if float(val) < threshold:
+                return False
+        except ValueError:
+            return False
+    return True
+
+
+def load_previous_results() -> dict[str, bool]:
+    """Read results.csv, return {filename: is_pass} for latest row of each file."""
+    if not os.path.isfile(CSV_PATH):
+        return {}
+    prev = {}
+    with open(CSV_PATH, encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            fname = r.get("filename", "")
+            if fname:
+                prev[fname] = is_pass(r)
+    return prev
+
+
 def print_help():
     print("""
 === XNOQuant Submit & Check Tool (Interactive) ===
@@ -211,20 +247,34 @@ def main():
             print("[!] Khong tim thay file strategy nao trong output/ hoac success_alpha/")
             return
 
+        previous = load_previous_results()
+        skip_count = 0
+        filtered = []
+        for fpath in files:
+            name = os.path.basename(fpath)
+            if name in previous and previous[name]:
+                skip_count += 1
+            else:
+                filtered.append(fpath)
+
         print("=== XNOQuant Submit & Check Tool (Batch) ===\n")
         ok_count = 0
         total = 0
-        for fpath in files:
+        for fpath in filtered:
             total += 1
             name = os.path.basename(fpath)
             print(f"[{total}] {name}")
-            if submit_and_check(fpath, total, len(files)):
+            if submit_and_check(fpath, total, len(filtered)):
                 ok_count += 1
             print()
 
-        print(f"=== Hoan thanh: {total} submitted, {ok_count} OK ===")
+        if skip_count:
+            print(f"  => Skipped {skip_count} file(s) (da pass all 5 tieu chi truoc do)\n")
+        print(f"=== Hoan thanh: {ok_count}/{len(filtered)} submitted OK (skip {skip_count}) ===")
         print(f"Ket qua da luu vao {CSV_PATH}")
         return
+
+    previous = load_previous_results()
 
     print("=== XNOQuant Submit & Check Tool (Interactive) ===\n")
     print("Nhap duong dan file alpha (hoac 'done' de ket thuc):\n")
@@ -237,8 +287,13 @@ def main():
             continue
         if fpath.lower() == "done":
             break
-        total += 1
         name = os.path.basename(fpath)
+        if name in previous and previous[name]:
+            resp = input(f"  [!] '{name}' da pass all 5 tieu chi truoc do. Submit lai? (y/N): ").strip().lower()
+            if resp != "y":
+                print(f"  => Bo qua\n")
+                continue
+        total += 1
         print(f"[{total}] {name}")
         if submit_and_check(fpath, total, None):
             ok_count += 1

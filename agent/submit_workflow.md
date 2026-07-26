@@ -62,6 +62,26 @@ python tools/submit_and_check.py --batch      # submit tất cả
 python tools/submit_and_check.py --batch --test  # submit 1 file để test
 ```
 
+Batch mode tự động đọc `backtest/results.csv` và **bỏ qua** các file
+đã đạt cả 5 tiêu chí pass trước đó:
+- Sharpe ≥ 1.3, CAGR ≥ 15%, MaxDD ≥ -35%, PF ≥ 1.2, Calmar ≥ 1.1
+
+File bị skip hiển thị dòng `Skipped N file(s) (da pass all 5 tieu chi)` ở cuối.
+Để submit lại file đã pass, dùng interactive mode.
+
+### 3c. Interactive mode — cảnh báo file đã pass
+
+Khi nhập path của file đã pass, script hỏi xác nhận:
+```
+[!] 'SF_KAMA_15min.py' da pass all 5 tieu chi truoc do. Submit lai? (y/N):
+```
+Nhập `y` để submit lại, `N` để bỏ qua.
+
+> **Lưu ý quan trọng:**
+> - Batch mode sẽ **không bao giờ** submit lại file đã pass cả 5 tiêu chí (trừ khi xoá dòng trong CSV hoặc dùng interactive)
+> - `results.csv` là append-only, không ghi đè — dòng cuối cùng của mỗi file là kết quả mới nhất
+> - Nếu muốn force resubmit tất cả: xoá file `backtest/results.csv` hoặc dùng interactive cho từng file
+
 ### 4. Kết quả
 
 Metrics tự động lưu vào `backtest/results.csv`:
