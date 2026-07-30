@@ -282,7 +282,7 @@ Các file xuất ra phải:
 4. **POST** `/editors/{id}/simulate` (trigger backtest)
 5. No need to wait for results — move to next variant
 
-### Automation Plan (`tools/submit_all.py`)
+### Automation Plan (`tools/submit_and_check.py`)
 
 - Reads all `output/thesis_*/**/*.py` (1705 files)
 - For each: PUT → verify → simulate → sleep 2.5s
@@ -323,7 +323,7 @@ AI Agent **luôn phải**:
 |--------------|-------------|
 | **Hiểu tổng quan dự án, workflow 5 bước** | `README.md` (file này) |
 | **Context chi tiết phiên làm việc trước** | `context_session/session_context.md` |
-| **Onboarding nhanh cho AI Agent** | `.agent/GUIDE.md` |
+| **Onboarding nhanh cho AI Agent** | `agent/GUIDE.md` |
 | **Master spec: class structure, compliance checklist** | `template_example/strategy_framework.md` |
 | **Đặc thù thị trường VN → thiết kế strategy** | `data/vietnam_market_characteristics.md` |
 | **Data fields (OHLCV, futures, VN30, DJI)** | `syntax/data_syntax.md` |
@@ -338,6 +338,7 @@ AI Agent **luôn phải**:
 | **— Scaling proposal 500→10000** | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` |
 | **— Strategy design mẫu đầu tiên** | `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` |
 | **Generator code (sửa generator, không sửa output)** | `tools/generate_strategies.py` |
+| **Tool reference (chọn đúng tool cho từng task)** | `tools/INDEX.md` |
 | **Validate output files** | `tools/validate_framework.py` |
 | **Backtest plan, decision rules** | `idea/planning_alpha/backtest_plan.md` |
 
