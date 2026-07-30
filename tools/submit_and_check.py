@@ -3,8 +3,15 @@
 Submit strategy files to XNOQuant and fetch backtest metrics automatically.
 
 Interactive mode: enter one file path at a time, type 'done' to finish.
+Batch mode: submit all discovered strategy files.
 
 Results are saved to: backtest/results.csv
+
+Config via .env file (create .env in project root):
+    XNO_EDITOR_ID=<UUID>
+    XNO_TOKEN=<token>
+
+Fallback to hardcoded values if .env not present.
 """
 
 import requests
@@ -15,11 +22,16 @@ import sys
 import csv
 import argparse
 from datetime import datetime
+from pathlib import Path
 
-# ── CONFIG ── UPDATE THESE IF SESSION EXPIRES ──
-EDITOR_ID = "a1619c25-f370-4461-9d47-ddfd2deb66dc"
-TOKEN = "xq_pnLDPtb8VvmwVYPMnVDZehjSqsx1K8hr2vU"
-# ──────────────────────────────────────────────
+from dotenv import load_dotenv
+
+from common import load_previous_results, format_metrics
+
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
+
+EDITOR_ID = os.getenv("XNO_EDITOR_ID", "a1619c25-f370-4461-9d47-ddfd2deb66dc")
+TOKEN = os.getenv("XNO_TOKEN", "xq_pnLDPtb8VvmwVYPMnVDZehjSqsx1K8hr2vU")
 
 BASE = f"https://api.xnoquant.io/xalpha-api/v2/editors/{EDITOR_ID}"
 HEADERS = {
@@ -34,42 +46,6 @@ CSV_PATH = os.path.join("backtest", "results.csv")
 
 session = requests.Session()
 session.headers.update(HEADERS)
-
-
-PASS_THRESHOLDS = {
-    "sharpe": 1.3,
-    "cagr": 0.15,
-    "max_drawdown": -0.35,
-    "profit_factor": 1.2,
-    "calmar": 1.1,
-}
-
-
-def is_pass(row: dict) -> bool:
-    """Check if a CSV row meets ALL 5 pass criteria."""
-    for key, threshold in PASS_THRESHOLDS.items():
-        val = row.get(key, "")
-        if val == "" or val is None:
-            return False
-        try:
-            if float(val) < threshold:
-                return False
-        except ValueError:
-            return False
-    return True
-
-
-def load_previous_results() -> dict[str, bool]:
-    """Read results.csv, return {filename: is_pass} for latest row of each file."""
-    if not os.path.isfile(CSV_PATH):
-        return {}
-    prev = {}
-    with open(CSV_PATH, encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            fname = r.get("filename", "")
-            if fname:
-                prev[fname] = is_pass(r)
-    return prev
 
 
 def print_help():
@@ -114,18 +90,6 @@ def fetch_metrics(strategy_id: str) -> dict:
     except Exception:
         pass
     return {}
-
-
-def format_metrics(metrics: dict) -> str:
-    parts = []
-    for key, label in [("cagr", "CAGR"), ("sharpe", "Sharpe"), ("calmar", "Calmar"),
-                        ("max_drawdown", "MaxDD"), ("profit_factor", "PF")]:
-        val = metrics.get(key)
-        if val is not None:
-            parts.append(f"{label}: {val:.4f}")
-        else:
-            parts.append(f"{label}: N/A")
-    return " | ".join(parts)
 
 
 def save_to_csv(filename: str, status: str, metrics: dict):
