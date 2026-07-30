@@ -1,5 +1,7 @@
 # Submit Workflow — Paste Code lên XNOQuant
 
+> Xem thêm: [`tools/INDEX.md`](../tools/INDEX.md) để biết tổng quan tất cả tools.
+
 ## Tổng quan
 
 Quy trình submit 1 strategy lên `https://alpha.xnoquant.io/build` qua API:
@@ -34,14 +36,18 @@ Từ cURL đó lấy:
 
 ## Dùng script `tools/submit_and_check.py`
 
-### 1. Update config
+### 1. Config — `.env` file
 
-Mở `tools/submit_and_check.py`, sửa 2 dòng đầu:
+Tạo file `.env` ở project root (đã có `.gitignore`, không lo lộ token):
 
-```python
-EDITOR_ID = "a1619c25-f370-4461-9d47-ddfd2deb66dc"  # UUID mới nhất
-TOKEN = "xq_pnLDPtb8VvmwVYPMnVDZehjSqsx1K8hr2vU"   # Token hiện tại
+```env
+XNO_EDITOR_ID="<paste-editor-uuid-here>"
+XNO_TOKEN="<paste-bearer-token-here>"
 ```
+
+Hoặc copy từ mẫu: `cp .env.example .env` và điền giá trị.
+
+> **Cách lấy EDITOR_ID và TOKEN:** xem mục "Cách lấy EDITOR_ID và TOKEN" bên dưới.
 
 ### 2. Interactive mode — submit từng file
 
@@ -84,7 +90,14 @@ Nhập `y` để submit lại, `N` để bỏ qua.
 
 ### 4. Kết quả
 
-Metrics tự động lưu vào `backtest/results.csv`:
+Metrics tự động lưu vào `backtest/results.csv`. Dùng `check_results.py` để review:
+
+```bash
+python tools/check_results.py --detail        # Full 5-metric table
+python tools/check_results.py --pass          # PASS files only
+python tools/check_results.py --prefix MF     # Filter by prefix
+python tools/check_results.py --today         # Today's submissions
+```
 
 ```csv
 timestamp,filename,status,cagr,sharpe,calmar,max_drawdown,profit_factor
