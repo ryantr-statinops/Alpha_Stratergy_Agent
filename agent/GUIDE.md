@@ -220,6 +220,7 @@ Nguyên tắc: commit nhỏ, commit thường xuyên → dễ rollback, dễ rev
 | `output/STATS.md` | Auto-generated strategy count stats (run `tools/update_guide_stats.py`) |
 | `backtest/check_duplicate.py` | Check duplicates before writing new alpha |
 | `backtest/INDEX.md` | Backtest module documentation + dead code list |
+| `tools/INDEX.md` | Tool reference — chọn đúng tool cho từng task |
 
 ---
 
