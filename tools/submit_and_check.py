@@ -228,11 +228,32 @@ def parse_args():
     parser.add_argument("--test", action="store_true", help="Only submit the first discovered file in batch mode.")
     parser.add_argument("--start", type=int, default=1, help="1-based start index for batch mode.")
     parser.add_argument("--limit", type=int, default=None, help="Maximum number of files to submit in batch mode.")
+    parser.add_argument("--files", nargs="+", default=None, help="Submit specific file(s) by path.")
+    parser.add_argument("--force", action="store_true", help="Re-submit even if file already passed.")
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
+
+    if args.files:
+        previous = load_previous_results()
+        ok_count = 0
+        total = 0
+        print("=== XNOQuant Submit & Check Tool (Files Mode) ===\n")
+        for fpath in args.files:
+            total += 1
+            name = os.path.basename(fpath)
+            if not args.force and name in previous and previous[name]:
+                print(f"[{total}] {name} — da pass, skip (dung --force de submit lai)\n")
+                continue
+            print(f"[{total}] {name}")
+            if submit_and_check(fpath, total, len(args.files)):
+                ok_count += 1
+            print()
+        print(f"=== Hoan thanh: {ok_count}/{total} submitted OK ===")
+        print(f"Ket qua da luu vao {CSV_PATH}")
+        return
 
     if args.batch:
         files = discover_batch_files()
