@@ -162,6 +162,23 @@ python tools/check_results.py --detail --universe VN-SMALL-CAP
 # 5. COMMIT + PUSH
 ```
 
+### Rule — Batch Gen & Universe Assignment (bắt buộc)
+
+Mỗi lần gen `n` alpha, phải khai báo rõ alpha nào được thiết kế cho cap nào (trong 3 cap), trước khi viết code:
+
+1. **Khai báo trước khi gen:** nêu rõ `n`, danh sách alpha + `universe` mục tiêu (`VN-SMALL-CAP` / `VN-MID-CAP` / `VN-LARGE-CAP`) + `mode` (`time_series` / `cross_sectional`).
+2. **Ghi vào file kế hoạch:** mỗi batch có 1 file `.md` (vd `output/stage_2/batch_NN_plan.md`) hoặc mục trong `agent/GUIDE.md` liệt kê bảng: alpha → universe → mode → level.
+3. **Thiết kế riêng theo cap:** tham số + thesis phải hợp cap đó (vd small-cap biến động mạnh hơn → chấp nhận MaxDD lớn hơn; large-cap ổn định → yêu cầu Sharpe cao hơn). Không dùng chung 1 alpha cho mọi cap.
+4. **Ghi universe vào `index.csv`** cho từng file (cột `universe`) — để `check_results.py` đánh PASS đúng ngưỡng của cap.
+5. **Submit theo cap:** gọi `submit_and_check.py --batch --universe <CAP>` riêng cho từng cap.
+
+Ví dụ khai báo batch:
+| # | Alpha | Universe | Mode | Level |
+|:-:|-------|----------|------|:-----:|
+| 1 | VnSmallEpsMomentum | VN-SMALL-CAP | time_series | 1 |
+| 2 | VnMidRoEQuality | VN-MID-CAP | time_series | 2 |
+| 3 | VnLargeCsValueRank | VN-LARGE-CAP | cross_sectional | 4 |
+
 ---
 
 ## Alpha Creation Workflow (Vòng 1 — ARCHIVED)
