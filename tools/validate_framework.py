@@ -1,14 +1,23 @@
 """
-Alpha Bot — Framework Compliance Validator
-Checks generated strategies for framework compliance per strategy_framework.md
+Alpha Bot — Framework Compliance Validator V2 (Round 2: Fundamental Alpha Arena)
+Checks generated strategies in output/stage_2/ for round-2 framework compliance
+per agent/framework_build_guide.md + template_example/strategy_framework.md.
+
+V2 additions:
+- Quét output/stage_2/ (không phải toàn bộ output) + manifest output/index.csv (round 2).
+- Detect mode tự động: cross_sectional (set_portfolio_positions) vs time_series (set_positions).
+- Bounds theo mode: time_series long-only [0, +1]; cross_sectional market-neutral.
+- Field suffix theo mode: time_series không _panel, cross_sectional phải _panel.
+- Point-in-time: cấm global aggregations (mean/rank/quantile/sort_values), loops/lambdas.
 """
 
 import os
 import re
 import sys
 
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "output")
-INDEX_PATH = os.path.join(OUTPUT_DIR, "index.csv")
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUTPUT_DIR = os.path.join(ROOT_DIR, "output", "stage_2")
+INDEX_PATH = os.path.join(ROOT_DIR, "output", "index.csv")
 
 FORBIDDEN_PATTERNS = [
     (r'\bimport pandas\b',                    "import pandas is forbidden"),
@@ -16,97 +25,96 @@ FORBIDDEN_PATTERNS = [
     (r'(?<!= )open\s*=',                       "'open =' as variable name is forbidden (use open_price)"),
     (r'\b__init__\s*\(',                       "__init__ is forbidden"),
     (r'[^.]np\.',                              "numpy import is forbidden"),
+    (r'\bfor\b.*\bin\b',                       "loops are forbidden (vectorized only)"),
+    (r'\blambda\b',                            "lambda is forbidden"),
+    (r'\.apply\(',                             ".apply() is forbidden (vectorized only)"),
 ]
+
+# Global aggregations break point-in-time / cross-sectional neutrality
+FORBIDDEN_AGGREGATIONS = [
+    (r'\.mean\(\)',                            "global .mean() is forbidden (point-in-time)"),
+    (r'\.median\(\)',                          "global .median() is forbidden (point-in-time)"),
+    (r'\.rank\(\)',                            "global .rank() is forbidden (use feat/op panel ops)"),
+    (r'\.quantile\(',                          "global .quantile() is forbidden (point-in-time)"),
+    (r'\.sort_values\(',                       "global .sort_values() is forbidden"),
+    (r'\.max\(\)',                             "global .max() is forbidden (use rolling/panel ops)"),
+    (r'\.min\(\)',                             "global .min() is forbidden (use rolling/panel ops)"),
+]
+
+# Round-2 entry points
+SET_POSITIONS = re.compile(r'self\.set_positions\(')
+SET_PORTFOLIO_POSITIONS = re.compile(r'self\.set_portfolio_positions\(')
 
 REQUIRED_STRUCTURE = [
     (r'class CustomStrategy\(SimpleAlgorithm\):', "Must extend SimpleAlgorithm"),
     (r'def __algorithm__\(self\):',                "Must have __algorithm__ method"),
-    (r'self\.set_positions\(',                     "Must use self.set_positions()"),
 ]
 
-SETPOSITION_ORDER = ["exit", "long", "short"]
-SETPOSITION_PATTERN = re.compile(r'self\.set_positions\((\w+[^,]*),\s*position=([^)]+)\)')
-VALID_POSITIONS = {0, 0.5, 1.0, -0.5, -1.0}
+VALID_TS_POSITIONS = {0, 0.5, 1.0}
+POSITION_VALUE = re.compile(r'self\.set_positions\([^,]+,\s*position=([^)]+)\)')
 
-EXIT_KEYWORDS = re.compile(r'(exit|close_out)', re.IGNORECASE)
-LONG_KEYWORDS = re.compile(r'(long_setup|long)', re.IGNORECASE)
-SHORT_KEYWORDS = re.compile(r'(short_setup|short)', re.IGNORECASE)
+# Field access patterns: self.data.<field>, self.feat.<field>
+DATA_FIELD = re.compile(r'self\.data\.([A-Za-z0-9_]+)')
+FEAT_FIELD = re.compile(r'self\.feat\.([A-Za-z0-9_]+)')
+PANEL_OP = re.compile(r'self\.(?:op|feat)\.[A-Za-z0-9_]*panel')
+
+INDEX_HEADER = ["filepath", "thesis_group", "template", "mode", "universe", "description", "params"]
 
 
-def classify_var(name):
-    """Guess whether a variable name is exit/long/short."""
-    if EXIT_KEYWORDS.search(name):
-        return "exit"
-    if LONG_KEYWORDS.search(name):
-        return "long"
-    if SHORT_KEYWORDS.search(name):
-        return "short"
+def detect_mode(code: str):
+    """Return 'cross_sectional', 'time_series', or None."""
+    if SET_PORTFOLIO_POSITIONS.search(code):
+        return "cross_sectional"
+    if SET_POSITIONS.search(code):
+        return "time_series"
     return None
 
 
-def _try_float(val):
-    try:
-        return float(val)
-    except ValueError:
-        return None
+def _line_of(code: str, match) -> int:
+    return 1 + code[:match.start()].count("\n")
 
 
-def check_order(code: str, filepath: str) -> list:
-    """Check that set_positions calls are in either
-       Exit → Long → Short  (old convention) or
-       Long → Short → Exit  (new convention, XNOQuant: exit must beat entries)."""
-    lines = code.splitlines()
+def check_field_suffix(code: str, filepath: str, mode: str) -> list:
+    """Round-2 mode contract: field suffix must match mode."""
     findings = []
-    calls = []
-    for i, line in enumerate(lines, 1):
-        m = SETPOSITION_PATTERN.search(line)
-        if m:
-            var_name = m.group(1).strip()
-            raw_pos = m.group(2).strip()
-            pos_val = _try_float(raw_pos)
-            role = classify_var(var_name)
-            calls.append((i, role, pos_val, var_name, raw_pos))
+    fields = []
+    fields += DATA_FIELD.findall(code)
+    fields += FEAT_FIELD.findall(code)
 
-    if not calls:
-        return findings
+    for f in sorted(set(fields)):
+        if f.endswith("_panel"):
+            if mode == "time_series":
+                findings.append((filepath, 0, f"Mode contract: time_series must NOT use _panel field '{f}'"))
+        else:
+            if mode == "cross_sectional":
+                findings.append((filepath, 0, f"Mode contract: cross_sectional must use _panel field '{f}'"))
+    return findings
 
-    first = calls[0]
-    last = calls[-1]
-    first_is_exit = first[1] == "exit" or (first[2] is not None and first[2] == 0)
-    last_is_exit = last[1] == "exit" or (last[2] is not None and last[2] == 0)
-    last_is_short = last[1] == "short" or (last[2] is not None and last[2] < 0)
 
-    # New convention: Exit is last (beats long/short)
-    if last_is_exit:
-        # Validate new convention: first must be long, second must be short
-        if len(calls) >= 2:
-            second = calls[1]
-            second_is_short = second[1] == "short" or (second[2] is not None and second[2] < 0)
-            if not second_is_short:
-                findings.append((
-                    filepath, second[0],
-                    f"Second set_positions (before exit) should be Short (position<0), got '{second[3]}' pos={second[4]}"
-                ))
-    # Old convention: Exit is first
+def check_positions(code: str, filepath: str, mode: str) -> list:
+    """Check entry point + position bounds per mode."""
+    findings = []
+
+    if mode == "cross_sectional":
+        if SET_POSITIONS.search(code):
+            findings.append((filepath, 0, "Mode contract: cross_sectional must use set_portfolio_positions, not set_positions"))
+    elif mode == "time_series":
+        if SET_PORTFOLIO_POSITIONS.search(code):
+            findings.append((filepath, 0, "Mode contract: time_series must use set_positions, not set_portfolio_positions"))
+        # Long-only bounds [0, +1]
+        for m in POSITION_VALUE.finditer(code):
+            raw = m.group(1).strip()
+            try:
+                val = float(raw)
+            except ValueError:
+                continue
+            if val not in VALID_TS_POSITIONS:
+                msg = f"Invalid time_series position {val} (allowed: 0 / 0.5 / 1.0)"
+                if val < 0:
+                    msg = f"time_series is long-only, found negative position {val}"
+                findings.append((filepath, _line_of(code, m), msg))
     else:
-        if not first_is_exit:
-            findings.append((
-                filepath, first[0],
-                f"First set_positions should be Exit (position=0), got '{first[3]}' pos={first[4]}"
-            ))
-        if not last_is_short:
-            findings.append((
-                filepath, last[0],
-                f"Last set_positions should be Short (position<0), got '{last[3]}' pos={last[4]}"
-            ))
-
-    # Check numeric positions are valid
-    for line_no, role, pos_val, var_name, raw_pos in calls:
-        if pos_val is not None and pos_val not in VALID_POSITIONS:
-            findings.append((
-                filepath, line_no,
-                f"Invalid position {pos_val} in '{var_name}'"
-            ))
+        findings.append((filepath, 0, "Missing entry point: need set_positions (time_series) or set_portfolio_positions (cross_sectional)"))
 
     return findings
 
@@ -121,47 +129,54 @@ def validate_file(filepath: str) -> list:
     with open(abspath, "r", encoding="utf-8") as f:
         code = f.read()
 
-    lines = code.splitlines()
-
-    # Check required structure
+    # Required structure
     for pattern, msg in REQUIRED_STRUCTURE:
         if not re.search(pattern, code):
             findings.append((filepath, 1, f"Missing: {msg}"))
 
-    # Check forbidden patterns
+    # Forbidden patterns
     for pattern, msg in FORBIDDEN_PATTERNS:
         m = re.search(pattern, code)
         if m:
-            line_no = 1 + code[:m.start()].count("\n")
-            findings.append((filepath, line_no, f"Forbidden: {msg}"))
+            findings.append((filepath, _line_of(code, m), f"Forbidden: {msg}"))
 
-    # Check set_positions order
-    findings.extend(check_order(code, filepath))
+    # Forbidden global aggregations (point-in-time)
+    for pattern, msg in FORBIDDEN_AGGREGATIONS:
+        m = re.search(pattern, code)
+        if m:
+            findings.append((filepath, _line_of(code, m), f"Point-in-time: {msg}"))
 
-    # Check open variable naming
-    for i, line in enumerate(lines, 1):
-        # Check for bare 'open =' assignment
-        if re.match(r'^\s*open\s*=\s', line) and 'open_price' not in line and 'open_' not in line:
-            findings.append((filepath, i, "Uses 'open' as variable name"))
+    # Mode contract
+    mode = detect_mode(code)
+    if mode is None:
+        findings.append((filepath, 0, "Cannot detect mode: no entry point found"))
+    else:
+        findings.extend(check_field_suffix(code, filepath, mode))
+        findings.extend(check_positions(code, filepath, mode))
 
     return findings
 
 
-def validate_index():
-    """Check index.csv matches files on disk."""
+def validate_index() -> list:
+    """Check output/index.csv (round-2 manifest) matches files on disk."""
     findings = []
     if not os.path.exists(INDEX_PATH):
-        return [("index.csv", 0, "Index file missing")]
+        # Index will be created as strategies are written — not an error yet
+        return [("index.csv", 0, "Index file missing (will be created when strategies are written)")]
 
     with open(INDEX_PATH, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
     if len(lines) < 2:
-        return [("index.csv", 1, "Index has no data rows")]
+        # Empty index is fine only if there are no strategy files yet
+        has_py = any(f.endswith(".py") for f in os.listdir(OUTPUT_DIR))
+        if has_py:
+            return [("index.csv", 1, "Index has no data rows but strategy files exist")]
+        return []
 
     header = lines[0].strip().split(",")
-    if header != ["filepath", "thesis_group", "template", "timeframe", "description", "params"]:
-        return [("index.csv", 1, f"Unexpected header: {header}")]
+    if header != INDEX_HEADER:
+        return [("index.csv", 1, f"Unexpected header {header} (expected {INDEX_HEADER})")]
 
     indexed_files = set()
     for i, line in enumerate(lines[1:], 2):
@@ -174,7 +189,6 @@ def validate_index():
         if not os.path.exists(abspath):
             findings.append(("index.csv", i, f"Index references missing file: {fname}"))
 
-    # Check for files not in index
     actual_files = {f for f in os.listdir(OUTPUT_DIR) if f.endswith(".py")}
     orphaned = actual_files - indexed_files
     for f in sorted(orphaned):
@@ -186,17 +200,15 @@ def validate_index():
 def main():
     if not os.path.exists(OUTPUT_DIR):
         print(f"Error: Output directory not found: {OUTPUT_DIR}")
-        print("Run tools/generate_strategies.py first.")
+        print("Round-2 strategies live in output/stage_2/.")
         sys.exit(1)
 
     all_findings = []
 
-    # 1. Validate index
-    print("Checking index.csv...")
+    print("Checking output/index.csv (round-2 manifest)...")
     all_findings.extend(validate_index())
 
-    # 2. Validate each .py file (search recursively)
-    print("Checking strategy files...")
+    print("Checking strategy files in output/stage_2/...")
     py_files = []
     for root, dirs, files in os.walk(OUTPUT_DIR):
         for f in files:
@@ -205,12 +217,10 @@ def main():
                 py_files.append(rel)
     py_files = sorted(py_files)
     for fname in py_files:
-        findings = validate_file(fname)
-        all_findings.extend(findings)
+        all_findings.extend(validate_file(fname))
 
-    # 3. Report
     errors = [f for f in all_findings if any(
-        kw in f[2] for kw in ["Error", "Missing", "Forbidden", "Invalid", "Uses"]
+        kw in f[2] for kw in ["Error", "Missing", "Forbidden", "Invalid", "Uses", "Mode contract", "Point-in-time", "Cannot detect", "long-only"]
     )]
     warnings = [f for f in all_findings if f not in errors]
 
