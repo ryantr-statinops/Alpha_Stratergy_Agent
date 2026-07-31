@@ -1,6 +1,8 @@
-# Parameter Reference for 15min VNFuture
+# Parameter Reference (Round 2 — Daily Equity)
 
-1 session = ~10 bars (02:00-04:30 = 2.5h). All parameters are chosen to fit within one session.
+Round 2 là **daily equity** (small/mid/large-cap). 1 ngày giao dịch = 1 bar.
+Bộ tham số dưới đây được suy ra từ 14 examples `template_example/VN-*/` — dùng tạm làm chuẩn,
+cần xác nhận lại trên platform khi sample pass điều kiện.
 
 ## Section Index
 
@@ -10,95 +12,79 @@
 | Momentum / Oscillator | [Momentum / Oscillator](#momentum--oscillator) |
 | Volatility | [Volatility](#volatility) |
 | Volume / Flow | [Volume / Flow](#volume--flow) |
-| Statistics / Rolling Window | [Statistics / Rolling Window](#statistics--rolling-window) |
-| Candlestick Patterns | [Candlestick Patterns](#candlestick-patterns) |
-| No Timeperiod | [Features Without Timeperiod](#features-without-timeperiod-keep-as-is) |
+| Fundamental Step-Change | [Fundamental Step-Change](#fundamental-step-change) |
+| Cross-Sectional (Panel) | [Cross-Sectional (Panel)](#cross-sectional-panel) |
+
+## Quy ước thời gian daily
+
+| Đơn vị | Số bars daily |
+|--------|:-------------:|
+| 1 tuần | 5 |
+| 1 tháng | ~21 |
+| 1 quý | ~63 |
+| 1 năm | ~252 |
+
+> **Pattern chính:** ratio fast:slow = **1:3** — `(8,24)`, `(12,36)`, `(14,42)`, `(18,54)`, `(30,90)`.
 
 ## Trend / Moving Average
 
-| Feature | Parameter | Value | Rationale |
-|---------|-----------|-------|-----------|
-| adx | timeperiod | 10 | Per vietnam_market_characteristics.md |
-| sma | timeperiod | 10 | 1 session = 2.5h |
-| ema | timeperiod | 10 | 1 session = 2.5h |
-| macd | fastperiod | 5 | 75min fast EMA |
-| macd | slowperiod | 13 | 3.25h slow EMA |
-| macd | signalperiod | 5 | 75min signal line |
-| sar | acceleration | 0.02 | TA-Lib standard |
-| sar | maximum | 0.2 | TA-Lib standard |
-| mama | fastlimit | 0.5 | TA-Lib standard |
-| mama | slowlimit | 0.05 | TA-Lib standard |
-| ht_trendline | (none) | — | Self-adaptive, no parameter |
+| Feature | Parameter | Giá trị | Ghi chú |
+|---------|-----------|:-------:|---------|
+| ema | timeperiod | 8 | fast (~1.5 tuần) |
+| ema | timeperiod | 12 | fast (~2.5 tuần) |
+| ema | timeperiod | 24 | slow (1:3 với fast 8) |
+| ema | timeperiod | 36 | slow (1:3 với fast 12) |
+| sma | timeperiod | 10 | volume base active |
+| sma | timeperiod | 20 | volume base stable |
+| macd | fastperiod | 8 | theo VnBankActiveRSIMACDQuality |
+| macd | slowperiod | 21 | ≈1 tháng |
+| macd | signalperiod | 5 | |
 
 ## Momentum / Oscillator
 
-| Feature | Parameter | Value | Rationale |
-|---------|-----------|-------|-----------|
-| rsi | timeperiod | 10 | 1 session = 2.5h |
-| stoch | fastk_period | 10 | 1 session |
-| stoch | slowk_period | 3 | 45min smoothing |
-| stoch | slowd_period | 3 | 45min smoothing |
-| stochrsi | timeperiod | 10 | 1 session |
-| stochrsi | fastk_period | 5 | Responsive on 15min |
-| stochrsi | fastd_period | 3 | Standard smoothing |
-| cci | timeperiod | 10 | 1 session |
-| cmo | timeperiod | 10 | 1 session |
-| willr | timeperiod | 10 | 1 session |
-| aroonosc | timeperiod | 10 | 1 session |
-| mfi | timeperiod | 10 | 1 session |
-| momentum | timeperiod | 5 | 75min impulse |
-| roc | timeperiod | 5 | 75min rate of change |
-| ppo | fastperiod | 5 | 75min fast EMA |
-| ppo | slowperiod | 13 | 3.25h slow EMA |
-| ppo | signalperiod | 5 | 75min signal line |
-| trix | timeperiod | 10 | 1 session |
-| ultosc | timeperiod1 | 5 | Short period |
-| ultosc | timeperiod2 | 10 | Medium period |
-| ultosc | timeperiod3 | 20 | Long period (~1 day) |
+| Feature | Parameter | Giá trị | Ghi chú |
+|---------|-----------|:-------:|---------|
+| rsi | timeperiod | 7 | active |
+| rsi | timeperiod | 9 | balanced |
 
 ## Volatility
 
-| Feature | Parameter | Value | Rationale |
-|---------|-----------|-------|-----------|
-| bbands | timeperiod | 10 | 1 session |
-| bbands | nbdevup | 2 | Standard |
-| bbands | nbdevdn | 2 | Standard |
-| atr | timeperiod | 10 | 1 session |
-| price_z | timeperiod | 10 | 1 session |
-| volume_z | timeperiod | 10 | 1 session |
+| Feature | Parameter | Giá trị | Ghi chú |
+|---------|-----------|:-------:|---------|
+| atr | timeperiod | 14 | chuẩn — mọi example |
 
 ## Volume / Flow
 
-| Feature | Parameter | Value | Rationale |
-|---------|-----------|-------|-----------|
-| cmf | timeperiod | 10 | 1 session |
-| obv (rolling_mean) | window | 10 | 1 session signal line |
-| ad (rolling_mean) | window | 10 | 1 session signal line |
+| Feature | Parameter | Giá trị | Ghi chú |
+|---------|-----------|:-------:|---------|
+| sma (volume) | timeperiod | 10 | participation active |
+| sma (volume) | timeperiod | 20 | participation stable |
 
-## Statistics / Rolling Window
+## Fundamental Step-Change
 
-| Feature | Parameter | Value | Rationale |
-|---------|-----------|-------|-----------|
-| rolling_mean | window | 10 | 1 session |
-| rolling_rank | window | 10 | 1 session |
-| rolling_zscore | window | 10 | 1 session |
-| rolling_argmax | window | 10 | 1 session |
-| rolling_argmin | window | 10 | 1 session |
-| donchian_upper | timeperiod | 10 | 1 session |
-| donchian_lower | timeperiod | 10 | 1 session |
-| linearreg_slope | timeperiod | 10 | 1 session |
-| linearreg_angle | timeperiod | 10 | 1 session |
-| tsf | timeperiod | 10 | 1 session |
-| linearreg | timeperiod | 10 | 1 session |
-| correl | timeperiod | 20 | Needs more data points |
-| beta | timeperiod | 10 | 1 session |
+Fundamentals daily-aligned chỉ đổi khi report mới công bố. Đo sự thay đổi bằng:
 
-## Candlestick Patterns
+```python
+profit_growth = self.op.fillna(self.op.pct_change(net_profit, periods=1), value=0)
+```
 
-| Feature | Parameter | Value | Rationale |
-|---------|-----------|-------|-----------|
-| All patterns | (none) | — | Self-contained, no timeperiod |
+| Ngưỡng | Giá trị phổ biến | Ghi chú |
+|--------|:----------------:|---------|
+| Không suy giảm (entry) | `> -0.02` đến `> -0.08` | tuỳ độ chặt |
+| Không suy giảm rõ (entry) | `> 0` | strong long |
+| Exit khi giảm mạnh | `< -0.05` đến `< -0.15` | tuỳ tolerance |
 
-## Features Without Timeperiod (keep as-is)
+## Cross-Sectional (Panel)
 
-bop, obv, ad, ht_trendline, trange, dcperiod, sine, trendmode
+| Feature / Op | Parameter | Giá trị | Ghi chú |
+|--------------|-----------|:-------:|---------|
+| `rank_cs_panel` | method | `'average'` | percentile rank mỗi timestamp |
+| `winsorize_cs_panel` | lower / upper | `0.02` / `0.98` | |
+| `zscore_cs_panel` | ddof | `1` | |
+| `portfolio_weights_panel` | method | `'rank_demean_l1'` | market-neutral: net≈0, gross=1 |
+
+## Ghi chú
+
+- Khung 5m/30m/60m **không áp dụng** — Round 2 chỉ daily.
+- Session gates **không còn** — bỏ hoàn toàn (so với vòng 1 15min futures).
+- Bộ tham số này là **ước lượng từ sample**; khi platform cho phép verify, cần đối chiếu lại.
