@@ -5,40 +5,71 @@
 
 ---
 
-## Reading Order
+## Round 2 (ACTIVE) — Fundamental Alpha Arena
+
+> **Round 2 là ưu tiên hiện tại:** daily equity research (thay vì intraday futures vòng 1).
+> Vòng 1 đã archive tại `output/stage_1/`.
+
+### Reading Order — Round 2
+
+| # | File | Purpose | Đọc khi nào |
+|:-:|------|---------|-------------|
+| 1 | `agent/stage_2_guideline.md` | **Rules chính thức Round 2** (universes, modes, point-in-time, scoring) | **Đầu phiên** |
+| 2 | `agent/framework_build_guide.md` | **Blueprint build framework + gen strategy dễ→khó (Level 1-5, cả 2 mode)** | **Trước khi gen code** |
+| 3 | `template_example/strategy_framework.md` | **Master spec Round 2** — mode contract, templates, compliance checklist | **Trước khi code** |
+| 4 | `syntax/data_syntax.md` | 496 fields (PV/IS/BS/CF) + mode contract | **Khi chọn data** |
+| 5 | `syntax/feature_syntax.md` | 36 panel features + time_series family | **Khi cần indicator** |
+| 6 | `syntax/operations_syntax.md` | 7 cross-sectional ops + time_series ops | **Khi cần operator** |
+| 7 | `syntax/parameters.md` | Parameter chuẩn daily (ratio 1:3) | **Khi cần param** |
+| 8 | `template_example/VN-*/` | 14 examples Round 2 (BANK/INSURANCE/SECURITIES/TOP30) | **Khi tham khảo mẫu** |
+| 9 | `agent/migration_plan_v2.md` | Kế hoạch migration V1→V2 (Phase A done, B done, C pending) | **Khi cần bối cảnh** |
+
+---
+
+## Reading Order — Vòng 1 (ARCHIVED)
 
 | # | File | Purpose | Đọc khi nào |
 |:-:|------|---------|-------------|
 | 1 | `context_session/session_context.md` | Trạng thái dự án hiện tại: 1774 strategies, tiến độ, blocking issues | **Đầu phiên** |
 | 2 | `README.md` | Tổng quan project, 5-step workflow, project structure | **Đầu phiên** |
-| 3 | `template_example/strategy_framework.md` | **Master spec** — class structure, multi-timeframe windows, VN30/DJI patterns, compliance checklist | **Trước khi code** |
-| 4 | `data/vietnam_market_characteristics.md` | Đặc thù thị trường VN → thiết kế strategy, Sharpe optimization rules, regime detection | **Trước khi code** |
-| 5 | `idea/hypothesis/hypothesis_framework.md` | Acceptance criteria: 10-metric weighted scorecard (Sharpe, CAGR, Sortino, Calmar, Max DD, VaR, CVaR, Ulcer, Cost, Correlation) | **Khi review hypothesis** |
+| 3 | `template_example/(Old)vnfuture/strategy_framework.md` | Master spec vòng 1 (intraday futures) | **Chỉ khi làm việc với vòng 1** |
+| 4 | `data/vietnam_market_characteristics.md` | Đặc thù thị trường VN → thiết kế strategy | **Trước khi code** |
+| 5 | `idea/hypothesis/hypothesis_framework.md` | Acceptance criteria: 10-metric weighted scorecard | **Khi review hypothesis** |
 | 6 | `syntax/INDEX.md` | Cửa vào cho toàn bộ syntax docs | **Khi bắt đầu code** |
-| 7 | `syntax/data_syntax.md` | `self.data.*` reference | **Khi bắt đầu code** |
-| 8 | `syntax/feature_syntax.md` | 140+ indicators reference | **Khi cần tra function** |
-| 9 | `syntax/operations_syntax.md` | 30+ operators reference | **Khi cần tra operator** |
-| 10 | `syntax/parameters.md` | Parameter defaults for 15m | **Khi cần param chuẩn** |
-| 11 | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | 3 enhancements implemented (return_roll, tiered sizing, session gating) | **Khi cần hiểu code hiện tại** |
-| 12 | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants (idea source) | **Khi cần thêm ý tưởng** |
-| 13 | `idea/planning_alpha/backtest_plan.md` | Kế hoạch backtest 4 tuần, decision rules, tracking template | **Khi bắt đầu backtest** |
-| 14 | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Kế hoạch mở rộng từ 500 lên 10000 strategies | **Khi planning scale** |
-| 15 | `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` | Strategy design mẫu đầu tiên — mean reversion + quantile + RSI | **Khi tham khảo mẫu** |
-
-**Optimal order:** 1→2→3→4→5 first, then 6→7→8→9 on-demand when coding. Read 10→14 when needed.
+| 7 | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | 3 enhancements (return_roll, tiered sizing, session gating) | **Khi cần hiểu code vòng 1** |
+| 8 | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants | **Khi cần thêm ý tưởng** |
+| 9 | `idea/planning_alpha/backtest_plan.md` | Kế hoạch backtest vòng 1 | **Khi bắt đầu backtest** |
+| 10 | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Kế hoạch mở rộng lên 10000 strategies | **Khi planning scale** |
 
 ---
 
 ## Quick Reference
 
-### Stack
+### Stack (Round 2 — ACTIVE)
+- Platform: **XNOQuant** (`https://alpha.xnoquant.io/build`)
+- Class: `CustomStrategy(SimpleAlgorithm)`
+- Method: `__algorithm__(self)`
+- API: `self.data.*`, `self.feat.*`, `self.op.*`
+- **2 mode:** `time_series` (không suffix, `set_positions`, long-only `[0,+1]`) |
+  `cross_sectional` (`_panel` suffix, `set_portfolio_positions`, market-neutral)
+- **Universes:** VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP (daily)
+- No pandas/numpy, no loops/lambdas, no global aggregations, point-in-time fundamentals
+
+### Position Order (time_series)
+```python
+self.set_positions(exit_setup, position=0)    # Exit first
+self.set_positions(weak_long, position=0.5)   # Half size second
+self.set_positions(strong_long, position=1)   # Full size last (override)
+```
+
+### Stack (Vòng 1 — ARCHIVED)
 - Platform: **XNOQuant** (`https://alpha.xnoquant.io/build`)
 - Class: `CustomStrategy(SimpleAlgorithm)`
 - Method: `__algorithm__(self)` (not `__logic__`)
 - API: `self.data.*`, `self.feat.*`, `self.op.*`, `self.set_positions()`
 - No pandas, numpy, SeriesT, `open` variable
 
-### Position Order
+### Position Order (Vòng 1)
 ```python
 self.set_positions(exit_setup, position=0)    # Exit first
 self.set_positions(long_setup, position=1)     # Long second
@@ -61,13 +92,23 @@ Các nhóm chính:
 | ... | thesis_09 → thesis_38 | (xem trong output/) | — |
 Ngoài ra còn: `single_feat_alpha/` (47 files) và `multi_feat_alpha/` (9 files).
 
-### Multi-Timeframe Window Sizing
+### Multi-Timeframe Window Sizing (Vòng 1 — 15min futures, ARCHIVED)
 | Timeframe | Fast | Mid | Slow | RSI | ADX | Vol | ReturnRoll | ReturnThresh | SessionCandles |
 |:---------:|:----:|:---:|:----:|:---:|:---:|:---:|:----------:|:-------------:|:--------------:|
 | 5min | 8 | 14 | 20 | 7 | 7 | 14 | 3 | 0.0001 | 72 |
 | 15min | 13 | 26 | 34 | 10 | 10 | 20 | 5 | 0.0002 | 24 |
 | 30min | 20 | 40 | 50 | 14 | 14 | 26 | 8 | 0.0003 | 12 |
 | 60min | 30 | 60 | 100 | 21 | 21 | 34 | 14 | 0.0005 | 6 |
+
+### Parameter Daily (Round 2 — ACTIVE, xem `syntax/parameters.md`)
+| Feature | Fast | Slow | Ratio | Ghi chú |
+|---------|:----:|:----:|:-----:|---------|
+| ema | 8-12 | 24-36 | 1:3 | ~1.5 tuần / ~1.5 tháng |
+| sma (volume) | 10 | 20 | — | active / stable |
+| rsi | 7 | 9 | — | active / balanced |
+| atr | 14 | — | — | chuẩn |
+| macd | 8 | 21 / signal 5 | — | theo sample |
+| fundamental | `pct_change(x, periods=1)` + `fillna(0)` | — | — | step-change khi report mới |
 
 ### Acceptance Criteria (10-metric weighted)
 | Metric | Weight | Target | Must-pass |
@@ -132,12 +173,17 @@ Khi gặp vấn đề, tra theo triệu chứng:
 
 | Triệu chứng | File cần đọc | Fix |
 |-------------|-------------|-----|
-| **Sharpe < 1.5** | `data/vietnam_market_characteristics.md` §5 (Sharpe Rules) | Thiếu ADX filter, return_roll, volume confirm |
-| **Max DD > -40%** | `data/vietnam_market_characteristics.md` §7 (Risk Management) | Thiếu session gating, exit quá chậm |
+| **Không biết bắt đầu gen strategy Round 2** | `agent/framework_build_guide.md` | Blueprint Level 1-5 + 2 mode |
+| **Round 2 rules không rõ** | `agent/stage_2_guideline.md` | Universes, modes, point-in-time, scoring |
+| **Không biết field nào dùng được** | `syntax/data_syntax.md` | 496 fields + mode contract |
+| **Trộn series/panel bị lỗi** | `template_example/strategy_framework.md` §Mode Contract | Chọn 1 mode, đúng suffix |
+| **Fundamentals bị look-ahead** | `template_example/strategy_framework.md` §5 | Chỉ dùng sau ngày công bố, `.notna()` |
+| **Sharpe < 1.5 (vòng 1)** | `data/vietnam_market_characteristics.md` §5 (Sharpe Rules) | Thiếu ADX filter, return_roll, volume confirm |
+| **Max DD > -40% (vòng 1)** | `data/vietnam_market_characteristics.md` §7 (Risk Management) | Thiếu session gating, exit quá chậm |
 | **Strategy không publish được** | `template_example/strategy_framework.md` §Checklist | Docstring thiếu thesis, position bounds sai |
 | **Look-ahead bias** | `template_example/strategy_framework.md` §Data Access | Dùng `pv_close` thay vì `pv_open` |
 | **Generator ra code sai** | `tools/generate_strategies.py` search `inject_filters` | Fix generator, regenerate |
-| **Không biết tham số nào cho TF nào** | `agent/GUIDE.md` §Multi-Timeframe Window Sizing | Bảng tham số đầy đủ |
+| **Không biết tham số nào cho TF nào** | `syntax/parameters.md` (Round 2) / `agent/GUIDE.md` §Window Sizing (vòng 1) | Bảng tham số đầy đủ |
 | **Cần thêm template mới** | `tools/generate_strategies.py` search `TEMPLATES` | Thêm vào TEMPLATES dict |
 | **Cần validate output** | `python tools/validate_framework.py` | Run validator |
 | **Cần hiểu VN market behavior** | `data/vietnam_market_characteristics.md` | Full analysis + mapping table |
@@ -181,14 +227,17 @@ python tools/update_guide_stats.py
 ## Output Structure
 ```
 output/
-├── index.csv                        # Strategies manifest (xem STATS.md)
-├── thesis_NN_name/  TF/*.py         # Generated hypotheses (35 groups)
-├── single_feat_alpha/   *.py        # 47 single-feat strategies (manual)
-│   └── tier2/           *.py        # 14 Tier 2 single-feat strategies
-├── multi_feat_alpha/    *.py        # 9 multi-feat strategies (manual)
-└── data_type_alpha/     *.py        # 48 data-type alpha strategies (manual)
+├── INDEX.md                         # stage_1 = archive (vòng 1), stage_2 = active (vòng 2)
+├── stage_1/                         # ARCHIVE vòng 1 (VNFuture intraday futures)
+│   ├── index.csv                    # Strategies manifest vòng 1 (xem STATS.md)
+│   ├── thesis_NN_name/  TF/*.py     # Generated hypotheses (35 groups)
+│   ├── single_feat_alpha/   *.py    # 47 single-feat strategies (manual)
+│   │   └── tier2/           *.py    # 14 Tier 2 single-feat strategies
+│   ├── multi_feat_alpha/    *.py    # 9 multi-feat strategies (manual)
+│   └── data_type_alpha/     *.py    # 48 data-type alpha strategies (manual)
+└── stage_2/                         # ACTIVE vòng 2 (Round 2 — daily equity) — tạo trống
 ```
-Xem `output/STATS.md` (do `tools/update_guide_stats.py` sinh ra) để biết số liệu chi tiết.
+Xem `output/STATS.md` (do `tools/update_guide_stats.py` sinh ra) để biết số liệu chi tiết vòng 1.
 
 ---
 
@@ -208,6 +257,9 @@ Nguyên tắc: commit nhỏ, commit thường xuyên → dễ rollback, dễ rev
 
 | File | When to reference | 
 |------|-------------------|
+| `agent/stage_2_guideline.md` | Every Round-2 session start — official rules |
+| `agent/framework_build_guide.md` | Before generating Round-2 strategies |
+| `agent/migration_plan_v2.md` | Understanding V1→V2 migration status |
 | `context_session/session_context.md` | Every session start |
 | `tools/generate_strategies.py` | ALL code changes go here (NEVER patch output files) |
 | `tools/validate_framework.py` | After every generation |
