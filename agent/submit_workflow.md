@@ -1,6 +1,10 @@
 # Submit Workflow — Paste Code lên XNOQuant
 
 > Xem thêm: [`tools/INDEX.md`](../tools/INDEX.md) để biết tổng quan tất cả tools.
+>
+> **Round 2 (ACTIVE):** API giống vòng 1 nhưng script quét `output/stage_2/`, kết quả
+> ghi vào `backtest/results_stage_2.csv`, và pass criteria **theo universe** (xem §2 Round 2 bên dưới).
+> Các mục đánh dấu (vòng 1) là reference archived.
 
 ## Tổng quan
 
@@ -15,6 +19,33 @@ GET  /v1/strategies/{id}/stages/train/summary-aggregate            # lấy metri
 ```
 
 Auth: `Authorization: Bearer <token>`
+
+---
+
+## Round 2 — submit strategy daily equity
+
+```bash
+# Batch: submit tất cả file trong output/stage_2/, gắn universe để tính pass criteria
+python tools/submit_and_check.py --batch --universe VN-SMALL-CAP
+
+# Test 1 file trước
+python tools/submit_and_check.py --batch --test --universe VN-SMALL-CAP
+
+# Review kết quả (backtest/results_stage_2.csv), PASS/FAIL theo universe
+python tools/check_results.py --detail
+python tools/check_results.py --pass --universe VN-SMALL-CAP
+```
+
+**Bộ tiêu chí pass Round 2 (theo universe):**
+
+| Universe | Sharpe | CAGR | MaxDD | PF | Calmar |
+|----------|:------:|:----:|:-----:|:--:|:------:|
+| VN-SMALL-CAP | ≥ 1.0 | ≥ 25% | ≥ -45% | ≥ 1.3 | ≥ 0.8 |
+| VN-MID-CAP | ≥ 1.1 | ≥ 20% | ≥ -40% | ≥ 1.25 | ≥ 1.0 |
+| VN-LARGE-CAP | ≥ 1.2 | ≥ 15% | ≥ -35% | ≥ 1.2 | ≥ 1.1 |
+
+- File Round 2 không khai báo universe trong code — dùng flag `--universe` khi submit để ghi vào CSV.
+- Nếu submit `--files` cho vài file riêng lẻ: `python tools/submit_and_check.py --files a.py b.py --universe VN-LARGE-CAP`.
 
 ---
 
@@ -49,7 +80,7 @@ Hoặc copy từ mẫu: `cp .env.example .env` và điền giá trị.
 
 > **Cách lấy EDITOR_ID và TOKEN:** xem mục "Cách lấy EDITOR_ID và TOKEN" bên dưới.
 
-### 2. Interactive mode — submit từng file
+### 2. Interactive mode — submit từng file (vòng 1)
 
 ```bash
 python tools/submit_and_check.py
@@ -61,16 +92,16 @@ Sau khi chạy:
 - Nhập `done` để kết thúc
 - Nhập `help` để xem lại hướng dẫn
 
-### 3. Batch mode — submit tất cả file
+### 3. Batch mode — submit tất cả file (vòng 1)
 
 ```bash
 python tools/submit_and_check.py --batch      # submit tất cả
 python tools/submit_and_check.py --batch --test  # submit 1 file để test
 ```
 
-Batch mode tự động đọc `backtest/results.csv` và **bỏ qua** các file
-đã đạt cả 5 tiêu chí pass trước đó:
-- Sharpe ≥ 1.3, CAGR ≥ 15%, MaxDD ≥ -35%, PF ≥ 1.2, Calmar ≥ 1.1
+> (vòng 1) Batch mode tự động đọc `backtest/results.csv` và **bỏ qua** các file
+> đã đạt cả 5 tiêu chí pass trước đó:
+> - Sharpe ≥ 1.3, CAGR ≥ 15%, MaxDD ≥ -35%, PF ≥ 1.2, Calmar ≥ 1.1
 
 File bị skip hiển thị dòng `Skipped N file(s) (da pass all 5 tieu chi)` ở cuối.
 Để submit lại file đã pass, dùng interactive mode.
@@ -83,30 +114,28 @@ Khi nhập path của file đã pass, script hỏi xác nhận:
 ```
 Nhập `y` để submit lại, `N` để bỏ qua.
 
-> **Lưu ý quan trọng:**
+> **Lưu ý quan trọng (vòng 1):**
 > - Batch mode sẽ **không bao giờ** submit lại file đã pass cả 5 tiêu chí (trừ khi xoá dòng trong CSV hoặc dùng interactive)
 > - `results.csv` là append-only, không ghi đè — dòng cuối cùng của mỗi file là kết quả mới nhất
 > - Nếu muốn force resubmit tất cả: xoá file `backtest/results.csv` hoặc dùng interactive cho từng file
 
 ### 4. Kết quả
 
-Metrics tự động lưu vào `backtest/results.csv`. Dùng `check_results.py` để review:
+**Round 2:** metrics tự động lưu vào `backtest/results_stage_2.csv` (có cột `universe`). Review:
 
 ```bash
-python tools/check_results.py --detail        # Full 5-metric table
-python tools/check_results.py --pass          # PASS files only
-python tools/check_results.py --prefix MF     # Filter by prefix
-python tools/check_results.py --today         # Today's submissions
+python tools/check_results.py --detail                    # Full 5-metric table
+python tools/check_results.py --pass --universe VN-SMALL-CAP   # PASS + theo universe
+python tools/check_results.py --prefix VnTop              # Filter by prefix
+python tools/check_results.py --today                     # Today's submissions
 ```
 
 ```csv
-timestamp,filename,status,cagr,sharpe,calmar,max_drawdown,profit_factor
-2026-07-15T15:50,SF_RSI_15min.py,OK,0.12,0.45,0.30,-0.40,1.10
-2026-07-15T15:51,SF_CCI_15min.py,OK,-0.05,-0.20,-0.10,-0.50,0.90
+timestamp,filename,universe,status,cagr,sharpe,calmar,max_drawdown,profit_factor
+2026-08-01T15:50,VnTop30Trend.py,VN-SMALL-CAP,OK,0.30,1.40,1.00,-0.30,1.60
 ```
 
-Lưu ý:
-khi user yêu cầu trích kết quả pass, tức là trích ra các file chạy thỏa các mục tiêu sau:
+(vòng 1) Dữ liệu cũ nằm ở `backtest/results.csv` — trích pass theo tiêu chí:
 - Sharpe Ratio:  ≥ 1.3
 - CAGR: ≥ 15%
 - Max Drawdown: ≥ -35%
@@ -140,6 +169,17 @@ Cách fix:
 
 ## Workflow tối ưu
 
+**Round 2:**
+```
+1. Agent viết strategy theo agent/framework_build_guide.md → output/stage_2/ + index.csv
+2. python tools/validate_framework.py                            # check compliance
+3. python tools/submit_and_check.py --batch --test --universe VN-SMALL-CAP   # test 1 file
+4. Kiểm tra metrics trong console + backtest/results_stage_2.csv
+5. python tools/submit_and_check.py --batch --universe VN-SMALL-CAP          # submit full batch
+6. python tools/check_results.py --detail --universe VN-SMALL-CAP            # review
+```
+
+(vòng 1) Workflow cũ — đã archive:
 ```
 1. Gen/sửa file alpha trong output/single_feat_alpha/
 2. python tools/submit_and_check.py --batch --test  # test 1 file
