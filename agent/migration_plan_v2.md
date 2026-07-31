@@ -49,6 +49,7 @@ output/
 - Code strategy Round 2 do **AI agent viết trực tiếp** theo `agent/framework_build_guide.md` — KHÔNG có tool sinh code kiểu vòng 1.
 - File viết mới hoàn toàn (không migrate), đẩy thẳng vào `output/stage_2/` + cập nhật `index.csv` (không cần bước `input/` trung gian, không cần `migrate_stage2.py`).
 - Cập nhật `tools/validate_framework.py` V2 theo rule mới (mode contract, point-in-time, long-only, bounds).
+- **Audit đầy đủ các vị trí cần sửa:** xem [`agent/v2_tool_readiness.md`](v2_tool_readiness.md) — từng file + dòng.
 
 ### Phase D — Documentation
 - Cập nhật `agent/GUIDE.md`, `README.md`, `tools/INDEX.md`.
