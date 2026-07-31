@@ -61,7 +61,9 @@ In `time_series` mode the suffix-less operators remain available (from Round 1),
 ```python
 profit_growth = self.op.fillna(self.op.pct_change(net_profit, periods=1), value=0)
 capital_ratio = self.op.fillna(equity / total_assets, value=0)
+eligible = self.op.notna(net_profit) & (total_assets > 0)
 ```
 
 - Keep `fillna` causal by using a constant or forward-fill only.
+- Use `self.op.notna(series)` (or `.notna()`) to exclude unavailable fundamentals — treat them as unavailable, not zero.
 - Do not use global aggregations such as `.mean()`, `.rank()`, `.quantile()`, `.sort_values()`.
