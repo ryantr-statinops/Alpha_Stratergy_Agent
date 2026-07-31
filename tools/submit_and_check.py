@@ -5,13 +5,13 @@ Submit strategy files to XNOQuant and fetch backtest metrics automatically.
 Interactive mode: enter one file path at a time, type 'done' to finish.
 Batch mode: submit all discovered strategy files.
 
-Results are saved to: backtest/results.csv
+Results are saved to: backtest/results_stage_2.csv
 
 Config via .env file (create .env in project root):
     XNO_EDITOR_ID=<UUID>
     XNO_TOKEN=<token>
 
-Fallback to hardcoded values if .env not present.
+No hardcoded fallbacks — .env is required.
 """
 
 import requests
@@ -30,8 +30,13 @@ from common import load_previous_results, format_metrics
 
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
-EDITOR_ID = os.getenv("XNO_EDITOR_ID", "a1619c25-f370-4461-9d47-ddfd2deb66dc")
-TOKEN = os.getenv("XNO_TOKEN", "xq_pnLDPtb8VvmwVYPMnVDZehjSqsx1K8hr2vU")
+EDITOR_ID = os.getenv("XNO_EDITOR_ID")
+TOKEN = os.getenv("XNO_TOKEN")
+
+if not EDITOR_ID or not TOKEN:
+    print("[ERROR] Missing XNO_EDITOR_ID or XNO_TOKEN in .env")
+    print("  Create .env in project root (see .env.example).")
+    sys.exit(1)
 
 BASE = f"https://api.xnoquant.io/xalpha-api/v2/editors/{EDITOR_ID}"
 HEADERS = {
@@ -42,7 +47,7 @@ HEADERS = {
     "referer": "https://alpha.xnoquant.io/",
 }
 WAIT_SECONDS = 10
-CSV_PATH = os.path.join("backtest", "results.csv")
+CSV_PATH = os.path.join("backtest", "results_stage_2.csv")
 
 session = requests.Session()
 session.headers.update(HEADERS)
@@ -92,12 +97,13 @@ def fetch_metrics(strategy_id: str) -> dict:
     return {}
 
 
-def save_to_csv(filename: str, status: str, metrics: dict):
+def save_to_csv(filename: str, status: str, metrics: dict, universe: str = ""):
     os.makedirs(os.path.dirname(CSV_PATH), exist_ok=True)
     file_exists = os.path.isfile(CSV_PATH)
     row = {
         "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "filename": filename,
+        "universe": universe,
         "status": status,
         "cagr": metrics.get("cagr", ""),
         "sharpe": metrics.get("sharpe", ""),
@@ -112,7 +118,7 @@ def save_to_csv(filename: str, status: str, metrics: dict):
         writer.writerow(row)
 
 
-def submit_and_check(fpath: str, index: int, total: int) -> bool:
+def submit_and_check(fpath: str, index: int, total: int, universe: str = "") -> bool:
     if not os.path.isfile(fpath):
         print(f"  [!] File khong ton tai: {fpath}")
         return False
@@ -147,7 +153,7 @@ def submit_and_check(fpath: str, index: int, total: int) -> bool:
 
         is_rate_limit = r1.status_code == 429 or r2.status_code == 429 or r3.status_code == 429
         if not is_rate_limit or attempt == max_retries:
-            save_to_csv(name, "FAIL", {})
+            save_to_csv(name, "FAIL", {}, universe)
             return False
 
         wait = 15
@@ -161,20 +167,21 @@ def submit_and_check(fpath: str, index: int, total: int) -> bool:
     if strategy_id:
         metrics = fetch_metrics(strategy_id)
         if metrics:
-            save_to_csv(name, "OK", metrics)
+            save_to_csv(name, "OK", metrics, universe)
             print(f"  => {format_metrics(metrics)}")
         else:
-            save_to_csv(name, "OK", {})
+            save_to_csv(name, "OK", {}, universe)
             print(f"  => Metrics: N/A (co the simulation chua hoan tat)")
     else:
-        save_to_csv(name, "OK", {})
+        save_to_csv(name, "OK", {}, universe)
         print(f"  => Khong lay duoc strategy_id")
 
     return True
 
 
 def discover_batch_files() -> list[str]:
-    roots = ["output", "success_alpha"]
+    """Discover Round-2 strategy files in output/stage_2/."""
+    roots = [os.path.join("output", "stage_2")]
     files = []
     for root in roots:
         if not os.path.isdir(root):
@@ -194,6 +201,8 @@ def parse_args():
     parser.add_argument("--limit", type=int, default=None, help="Maximum number of files to submit in batch mode.")
     parser.add_argument("--files", nargs="+", default=None, help="Submit specific file(s) by path.")
     parser.add_argument("--force", action="store_true", help="Re-submit even if file already passed.")
+    parser.add_argument("--universe", default="",
+                        help="Universe for pass thresholds (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP).")
     return parser.parse_args()
 
 
@@ -201,7 +210,7 @@ def main():
     args = parse_args()
 
     if args.files:
-        previous = load_previous_results()
+        previous = load_previous_results(CSV_PATH)
         ok_count = 0
         total = 0
         print("=== XNOQuant Submit & Check Tool (Files Mode) ===\n")
@@ -212,7 +221,7 @@ def main():
                 print(f"[{total}] {name} — da pass, skip (dung --force de submit lai)\n")
                 continue
             print(f"[{total}] {name}")
-            if submit_and_check(fpath, total, len(args.files)):
+            if submit_and_check(fpath, total, len(args.files), args.universe):
                 ok_count += 1
             print()
         print(f"=== Hoan thanh: {ok_count}/{total} submitted OK ===")
@@ -229,10 +238,10 @@ def main():
         if args.test:
             files = files[:1]
         if not files:
-            print("[!] Khong tim thay file strategy nao trong output/ hoac success_alpha/")
+            print("[!] Khong tim thay file strategy nao trong output/stage_2/")
             return
 
-        previous = load_previous_results()
+        previous = load_previous_results(CSV_PATH)
         skip_count = 0
         filtered = []
         for fpath in files:
@@ -249,17 +258,17 @@ def main():
             total += 1
             name = os.path.basename(fpath)
             print(f"[{total}] {name}")
-            if submit_and_check(fpath, total, len(filtered)):
+            if submit_and_check(fpath, total, len(filtered), args.universe):
                 ok_count += 1
             print()
 
         if skip_count:
-            print(f"  => Skipped {skip_count} file(s) (da pass all 5 tieu chi truoc do)\n")
+            print(f"  => Skipped {skip_count} file(s) (da pass truoc do theo universe)\n")
         print(f"=== Hoan thanh: {ok_count}/{len(filtered)} submitted OK (skip {skip_count}) ===")
         print(f"Ket qua da luu vao {CSV_PATH}")
         return
 
-    previous = load_previous_results()
+    previous = load_previous_results(CSV_PATH)
 
     print("=== XNOQuant Submit & Check Tool (Interactive) ===\n")
     print("Nhap duong dan file alpha (hoac 'done' de ket thuc):\n")
@@ -280,7 +289,7 @@ def main():
                 continue
         total += 1
         print(f"[{total}] {name}")
-        if submit_and_check(fpath, total, None):
+        if submit_and_check(fpath, total, None, args.universe):
             ok_count += 1
         print()
 

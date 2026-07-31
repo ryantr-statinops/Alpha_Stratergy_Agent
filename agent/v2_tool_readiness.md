@@ -10,8 +10,7 @@
 
 | Nhóm | File | Phân loại cho V2 |
 |------|------|------------------|
-| **Dùng nguyên cho V2** | `tools/submit_and_check.py` (lõi API), `tools/common.py` (helper) | Cần sửa nhẹ |
-| **Sửa bổ sung** | `tools/check_results.py`, `tools/update_guide_stats.py` | Cần chỉnh cho stage_2 |
+| **Đã sửa xong** | `tools/submit_and_check.py`, `tools/common.py`, `tools/check_results.py`, `tools/update_guide_stats.py` | stage_2 + universe + CSV tách |
 | **Đã làm xong** | `tools/validate_framework.py` (V2), `agent/GUIDE.md` (round-2 first), `agent/framework_build_guide.md`, `agent/migration_plan_v2.md` | ✅ |
 | **Vòng 1 (archived, không dùng V2)** | `tools/generate_strategies.py`, `tools/gen_single_feat.py`, `backtest/*` (toàn bộ), `data/*`, `idea/*` | Giữ nguyên, không chạm |
 
@@ -85,26 +84,29 @@
 
 ---
 
-## 6. Điểm chưa có câu trả lời (chặn hoàn tất V2)
+## 6. Điểm đã có câu trả lời (cập nhật 2026-08-01)
 
-1. **Bộ tiêu chí pass Round 2 là gì?** Guideline chỉ nói "best-scoring", "net of fees", "stable across stages" —
-   không có số cụ thể (Sharpe≥?, CAGR≥?). `check_results.py`/`common.py` cần số để hiện PASS/FAIL.
-   → Cần bạn cung cấp, hoặc dùng tạm bộ cũ và đánh dấu "tạm".
+1. **Bộ tiêu chí pass Round 2** ✅ — user cung cấp, theo universe (đã ghi vào `tools/common.py` `PASS_THRESHOLDS_BY_UNIVERSE`):
+   - **VN-SMALL-CAP:** Sharpe ≥ 1.0, CAGR ≥ 25%, MaxDD ≥ -45%, PF ≥ 1.3, Calmar ≥ 0.8
+   - **VN-MID-CAP:** Sharpe ≥ 1.1, CAGR ≥ 20%, MaxDD ≥ -40%, PF ≥ 1.25, Calmar ≥ 1.0
+   - **VN-LARGE-CAP:** Sharpe ≥ 1.2, CAGR ≥ 15%, MaxDD ≥ -35%, PF ≥ 1.2, Calmar ≥ 1.1
+   - `check_results.py` + `common.py` dùng `is_pass(row, universe)` theo cột `universe` trong CSV.
 
-2. **`--stage` flag hay path config?** `submit_and_check.py` có nên quét `output/stage_2/` mặc định,
-   hay thêm cờ để chọn giữa stage_1/stage_2?
+2. **Token** ✅ — `submit_and_check.py` đã bỏ hardcode, chỉ đọc `.env` (`XNO_EDITOR_ID`, `XNO_TOKEN`), báo lỗi nếu thiếu. User tạo `.env` ở root (đã có `.gitignore` chặn).
 
-3. **Kết quả CSV tách hay gộp?** Dùng `backtest/results.csv` (gộp) hay `results_v2.csv` (tách) — tránh nhầm lẫn khi review?
+3. **Kết quả CSV** ✅ — tách riêng `backtest/results_stage_2.csv` (không trộn với `results.csv` vòng 1).
+
+4. **Discovery** ✅ — `submit_and_check.py` quét `output/stage_2/` (không quét output gốc + success_alpha). Flag `--universe` ghi universe vào CSV cho pass check.
 
 ---
 
 ## 7. Roadmap hành động (thứ tự đề xuất)
 
-| # | Việc | File | Blocked bởi |
-|:-:|------|------|-------------|
-| 1 | Tách CSV + `--stage` flag | `submit_and_check.py`, `common.py`, `check_results.py` | Quyết định 2,3 |
-| 2 | Cập nhật stats cho stage_2 | `update_guide_stats.py` | — |
-| 3 | Cập nhật docs (README banner, tools/INDEX, submit_workflow) | `README.md`, `tools/INDEX.md`, `agent/submit_workflow.md` | — |
-| 4 | Xác định PASS criteria V2 | `common.py`, `check_results.py` | Quyết định 1 |
-| 5 | Agent viết strategy Level 1-5 → `output/stage_2/` | code mới | validator sẵn sàng ✅ |
-| 6 | Submit batch + review | `submit_and_check.py --stage stage_2`, `check_results.py` | 1,2,3 |
+| # | Việc | File | Trạng thái |
+|:-:|------|------|------------|
+| 1 | Tách CSV + `--universe` flag + bỏ hardcode token | `submit_and_check.py`, `common.py`, `check_results.py` | ✅ DONE |
+| 2 | Cập nhật stats cho stage_2 | `update_guide_stats.py` | ✅ DONE |
+| 3 | Cập nhật docs (README banner, tools/INDEX, submit_workflow) | `README.md`, `tools/INDEX.md`, `agent/submit_workflow.md` | ⏳ |
+| 4 | Xác định PASS criteria V2 | `common.py`, `check_results.py` | ✅ DONE (user cung cấp) |
+| 5 | Agent viết strategy Level 1-5 → `output/stage_2/` | code mới | ⏳ NEXT |
+| 6 | Submit batch + review | `submit_and_check.py --batch --universe`, `check_results.py` | sau 5 |

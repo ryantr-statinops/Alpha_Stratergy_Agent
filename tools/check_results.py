@@ -20,18 +20,20 @@ import fnmatch
 import os
 import sys
 
-from common import PASS_THRESHOLDS, getf, is_pass, load_results_csv, build_latest, timestamp_today
+from common import PASS_THRESHOLDS_BY_UNIVERSE, thresholds_for, getf, is_pass, load_results_csv, build_latest, timestamp_today
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Review backtest results from results.csv")
-    parser.add_argument("--pattern", default=None, help="Glob pattern to filter filenames (e.g. MF_*.py)")
+    parser = argparse.ArgumentParser(description="Review backtest results from results CSV")
+    parser.add_argument("--pattern", default=None, help="Glob pattern to filter filenames (e.g. VnTop*.py)")
     parser.add_argument("--today", action="store_true", help="Filter to today's date only")
-    parser.add_argument("--prefix", default=None, help="Filter by filename prefix (e.g. MF, SF, NC)")
+    parser.add_argument("--prefix", default=None, help="Filter by filename prefix (e.g. VnTop, VnBank)")
     parser.add_argument("--pass", dest="show_pass", action="store_true", help="Show PASS files only")
     parser.add_argument("--fail", dest="show_fail", action="store_true", help="Show FAIL files only")
+    parser.add_argument("--universe", default=None,
+                        help="Filter by universe (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP)")
     parser.add_argument("--detail", action="store_true", help="Show full table with all 5 metrics")
-    parser.add_argument("--csv", default="backtest/results.csv", help="Path to results CSV")
+    parser.add_argument("--csv", default="backtest/results_stage_2.csv", help="Path to results CSV")
     return parser.parse_args()
 
 
@@ -43,6 +45,8 @@ def filter_rows(latest, args):
         if args.pattern and not fnmatch.fnmatch(fname, args.pattern):
             continue
         if args.prefix and not fname.startswith(args.prefix):
+            continue
+        if args.universe and row.get("universe") != args.universe:
             continue
         if args.today:
             ts = row.get("timestamp", "")
@@ -64,18 +68,19 @@ def print_results(latest, args):
         return
 
     if args.detail:
-        header = f'{"FILE":50s} {"S=1.3":>8s} {"C=0.15":>8s} {"MD=-0.35":>10s} {"PF=1.2":>8s} {"CA=1.1":>8s}  STATUS'
+        header = f'{"FILE":50s} {"UNIVERSE":14s} {"Sharpe":>8s} {"CAGR":>8s} {"MaxDD":>10s} {"PF":>8s} {"Calmar":>8s}  STATUS'
         print(header)
         print("-" * (len(header) + 4))
     else:
-        header = f'{"FILE":50s} {"Sharpe":>8s}  STATUS'
+        header = f'{"FILE":50s} {"UNIVERSE":14s} {"Sharpe":>8s}  STATUS'
         print(header)
-        print("-" * 64)
+        print("-" * 80)
 
     pass_count = 0
     for fname in sorted(latest.keys()):
         row = latest[fname]
         passes = is_pass(row)
+        universe = row.get("universe", "") or "-"
 
         if args.detail:
             s = getf(row, "sharpe")
@@ -89,12 +94,12 @@ def print_results(latest, args):
             p_str = f"{p:.4f}" if p is not None else "N/A"
             ca_str = f"{ca:.4f}" if ca is not None else "N/A"
             label = "PASS" if passes else "FAIL"
-            print(f'{fname:50s} {s_str:>8s} {c_str:>8s} {m_str:>10s} {p_str:>8s} {ca_str:>8s}  {label}')
+            print(f'{fname:50s} {universe:14s} {s_str:>8s} {c_str:>8s} {m_str:>10s} {p_str:>8s} {ca_str:>8s}  {label}')
         else:
             s = getf(row, "sharpe")
             s_str = f"{s:.4f}" if s is not None else "N/A"
             label = "PASS" if passes else "FAIL"
-            print(f'{fname:50s} {s_str:>8s}  {label}')
+            print(f'{fname:50s} {universe:14s} {s_str:>8s}  {label}')
 
         if passes:
             pass_count += 1
