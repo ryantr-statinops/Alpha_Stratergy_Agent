@@ -217,7 +217,7 @@ class CustomStrategy(SimpleAlgorithm):
 
 ## 8. Validator + Submit
 
-Sau khi render, chạy:
+Sau khi viết code theo template ở §7, chạy:
 
 ```bash
 python tools/validate_framework.py      # check compliance (mode contract, point-in-time, bounds)
@@ -240,17 +240,19 @@ Checklist bắt buộc (đầy đủ tại `template_example/strategy_framework.
 
 ## 9. Roadmap Build (theo thứ tự ưu tiên)
 
+> **Ghi chú quan trọng:** Code strategy do **AI agent viết trực tiếp** theo file guide này — KHÔNG có tool sinh code (không dựng lại `generate_strategies.py` kiểu vòng 1). Tool duy nhất cần dựng/cập nhật là validator.
+
 | # | Việc | Output | Trạng thái |
 |:-:|------|--------|-----------|
 | 1 | Archive vòng 1 → `output/stage_1/` | cấu trúc thư mục | ✅ DONE |
 | 2 | Viết lại syntax docs (data/feature/op/params) | `syntax/*.md` | ✅ DONE |
 | 3 | Viết lại strategy_framework.md | master spec Round 2 | ✅ DONE |
 | 4 | **File guide này** | blueprint build framework | ✅ DONE |
-| 5 | Dựng `tools/generate_strategies_v2.py` | generator theo Level 1-5 | ⏳ NEXT |
-| 6 | Dựng `tools/validate_framework.py` V2 | validator mode contract | ⏳ |
-| 7 | Dựng `tools/migrate_stage2.py` | migrate `input/*.py` → `stage_2/` | ⏳ |
-| 8 | Sinh batch strategy Level 1-5 | `output/stage_2/` | ⏳ |
-| 9 | Submit + verify, điều chỉnh params | sample pass | ⏳ |
+| 5 | Cập nhật `tools/validate_framework.py` V2 | validator mode contract | ⏳ NEXT |
+| 6 | Agent viết trực tiếp strategy Level 1-5 | `output/stage_2/` + `index.csv` | ⏳ |
+| 7 | Submit + verify, điều chỉnh params | sample pass | ⏳ |
+
+> Quy trình vận hành (không qua generator): viết code → `validate_framework.py` V2 → `submit_and_check.py` → `check_results.py`.
 
 ---
 

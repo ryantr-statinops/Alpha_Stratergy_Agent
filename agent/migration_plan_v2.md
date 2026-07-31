@@ -1,7 +1,7 @@
 # Migration Plan V2 — Chuyển sang Data Model Mới (Vòng 2)
 
-> **Trạng thái:** PHASE B DONE — Phase A chưa approve, Phase C chưa thực thi.
-> **Mục tiêu:** Archive vòng 1, dựng khung `stage_2`, migrate file new-data từ `input/` theo form chuẩn.
+> **Trạng thái:** PHASE A+B DONE — Phase C chưa thực thi.
+> **Mục tiêu:** Archive vòng 1, dựng khung `stage_2`, AI agent viết trực tiếp strategy Round 2 vào `stage_2/` theo guide.
 
 ---
 
@@ -22,11 +22,9 @@
 ```text
 output/
 ├── stage_1/          # ARCHIVE vòng 1 (nguyên trạng: index.csv, STATS.md, mọi thesis_*/, alpha dirs)
-├── stage_2/          # ACTIVE vòng 2 (tạo trống, điền dần sau migrate)
-├── index.csv         # (mới) manifest vòng 2
+├── stage_2/          # ACTIVE vòng 2 (code mới viết trực tiếp theo guide)
+├── index.csv         # manifest vòng 2
 └── INDEX.md          # phân biệt stage_1 = archive, stage_2 = active
-
-input/                # Thư mục tạm — user đặt file new-data vào đây để migrate
 ```
 
 ---
@@ -47,10 +45,10 @@ input/                # Thư mục tạm — user đặt file new-data vào đâ
   - `syntax/operations_syntax.md` — 7 cross-sectional ops + time_series ops.
   - `template_example/strategy_framework.md` — master spec Round 2 (viết lại hoàn toàn).
 
-### Phase C — Chuẩn bị `input/` + migrate ⏳ PENDING
-- User đặt file strategy new-data vào `input/`.
-- `tools/migrate_stage2.py`: đọc `input/` → chuẩn hoá form → xuất `stage_2/` + ghi `index.csv` mới.
-- Mở rộng `validate_framework.py` theo rule mới (mode contract, point-in-time, long-only).
+### Phase C — Sinh strategy Round 2 ⏳ PENDING
+- Code strategy Round 2 do **AI agent viết trực tiếp** theo `agent/framework_build_guide.md` — KHÔNG có tool sinh code kiểu vòng 1.
+- File viết mới hoàn toàn (không migrate), đẩy thẳng vào `output/stage_2/` + cập nhật `index.csv` (không cần bước `input/` trung gian, không cần `migrate_stage2.py`).
+- Cập nhật `tools/validate_framework.py` V2 theo rule mới (mode contract, point-in-time, long-only, bounds).
 
 ### Phase D — Documentation
 - Cập nhật `agent/GUIDE.md`, `README.md`, `tools/INDEX.md`.
@@ -87,15 +85,15 @@ input/                # Thư mục tạm — user đặt file new-data vào đâ
 
 ## 5. Checklist Approve
 
-- [ ] **Phase A:** cấu trúc stage_1/stage_2 (chưa approve — cần quyết định có archive `output/` vòng 1 không)
+- [x] **Phase A:** cấu trúc stage_1/stage_2 + INDEX.md ✅
 - [x] **Phase B:** syntax mới + migration map ✅
-- [ ] **Phase C:** migrate `input/` → `stage_2/`
+- [ ] **Phase C:** agent viết trực tiếp strategy Round 2 → `stage_2/` + `index.csv`, cập nhật validator V2
 - [ ] **Phase D:** docs sync
 
 ## 6. Rủi ro & Lưu ý
 
-- Vòng 2 là **sản phẩm khác hoàn toàn** (futures intraday → equity daily): file vòng 1 **không migrate được tự động**, cần viết lại.
-- `output/index.csv` vòng 1 đang stale (chỉ 428/1,705 rows khớp file) — archive nguyên trạng, không sửa.
+- Vòng 2 là **sản phẩm khác hoàn toàn** (futures intraday → equity daily): file vòng 1 **không dùng lại được**, code Round 2 viết mới hoàn toàn theo `agent/framework_build_guide.md`.
+- `output/stage_1/index.csv` vòng 1 đang stale (chỉ 428/1,705 rows khớp file) — archive nguyên trạng, không sửa.
 - Không xoá dữ liệu vòng 1 cho đến khi vòng 2 chạy ổn định.
 - Mọi thay đổi framework tuân theo `template_example/strategy_framework.md` (đã viết lại cho Round 2) và
   `agent/stage_2_guideline.md`.

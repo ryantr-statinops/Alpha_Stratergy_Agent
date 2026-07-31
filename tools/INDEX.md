@@ -43,8 +43,10 @@ Master strategy generator. Reads 38 thesis groups with templates, generates para
 
 Framework compliance validator per `template_example/strategy_framework.md`.
 
-- **Checks:** Required structure (`CustomStrategy`, `__algorithm__`, `set_positions`), forbidden patterns (`pandas`, `SeriesT`, `open` variable), set_positions order (Exit → Long → Short)
-- **Also checks:** `output/index.csv` consistency against files on disk
+- **Scope (V2):** quét `output/stage_2/` (Round 2 — Fundamental Alpha Arena) + manifest `output/index.csv`.
+- **Checks:** Required structure (`CustomStrategy`, `__algorithm__`), forbidden patterns (`pandas`, `SeriesT`, `open` variable, loops/lambdas/`.apply`), point-in-time (cấm global aggregations `.mean()/.rank()/.quantile()/.sort_values()`), **mode contract** (detect `set_portfolio_positions` = cross_sectional vs `set_positions` = time_series), field suffix (`_panel` đúng mode), bounds (`time_series` long-only 0/0.5/1.0).
+- **Also checks:** `output/index.csv` (header: `filepath,thesis_group,template,mode,universe,description,params`) consistency against files on disk.
+- **Không dùng** để check vòng 1 (đã archive tại `output/stage_1/`).
 
 ### `submit_and_check.py`
 
@@ -113,7 +115,7 @@ Shared helpers module used by `submit_and_check.py`, `check_results.py`, and oth
 | File | Purpose | Status |
 |------|---------|--------|
 | `common.py` | Shared helpers (PASS_THRESHOLDS, getf, is_pass, ...) | Active |
-| `generate_strategies.py` | Master strategy generator | Active |
+| `generate_strategies.py` | Master strategy generator (vòng 1 — ARCHIVED, vẫn dùng được cho stage_1) | Active |
 | `validate_framework.py` | Framework compliance validator | Active |
 | `submit_and_check.py` | XNOQuant submission + metrics fetcher | Active |
 | `update_guide_stats.py` | Strategy count stats generator | Active |
