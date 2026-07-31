@@ -1,5 +1,9 @@
 # backtest/ — Local Backtest Engine
 
+> **⚠️ ROUND 2 (ACTIVE) KHÔNG dùng local backtest.** Round 2 chạy backtest trực tiếp trên nền tảng
+> XNOQuant qua `tools/submit_and_check.py` (simulate → fetch metrics). Toàn bộ engine này phục vụ
+> **vòng 1 (VN30F futures intraday)** — đã archive, giữ làm reference.
+
 ## Overview
 
 Local backtest engine for VN30F futures strategies. Reads template configs from `tools/generate_strategies.py`, fetches VN30F data via `vnstock`, runs vectorized strategy simulations, and exports performance metrics.

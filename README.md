@@ -1,5 +1,24 @@
 # ALPHA_BOT - Quantitative Strategy Builder Engine
 
+> ## ⚠️ ROUND 2 (ACTIVE) — Fundamental Alpha Arena
+>
+> Dự án đang ở **Vietnam Quant Challenge 2026 — Round 2**: daily equity research trên 3 universe
+> (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP), 2 mode (time_series / cross_sectional).
+>
+> **Bắt đầu ở đây (đọc theo thứ tự):**
+> 1. `agent/stage_2_guideline.md` — rules chính thức Round 2
+> 2. `agent/framework_build_guide.md` — blueprint gen strategy (Level 1-5)
+> 3. `agent/GUIDE.md` — onboarding + pipeline
+> 4. `template_example/strategy_framework.md` — master spec Round 2
+> 5. `syntax/data_syntax.md` → `feature_syntax.md` → `operations_syntax.md` → `parameters.md`
+>
+> **Pipeline:** agent viết strategy → `output/stage_2/` → `tools/validate_framework.py` →
+> `tools/submit_and_check.py --batch --universe VN-...` → `tools/check_results.py`.
+>
+> Các phần bên dưới mô tả vòng 1 (intraday futures VN30F) — **đã archive** tại `output/stage_1/`.
+
+---
+
 ## 1. Project Overview & Purpose
 
 Dự án này là môi trường nghiên cứu và phát triển chiến lược đầu tư định lượng (Quantitative Trading) dành riêng cho nền tảng **XNOQuant**.
