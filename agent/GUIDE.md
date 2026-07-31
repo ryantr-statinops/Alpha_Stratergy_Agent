@@ -141,9 +141,32 @@ Sharpe ≥ 2.0 =
 
 ---
 
-## Alpha Creation Workflow
+## Round 2 — Pipeline Gen & Submit
 
-Quy trình 7 bước sau khi nghĩ ra alpha idea mới:
+Quy trình vận hành Round 2 (không có tool sinh code — agent viết trực tiếp):
+
+```bash
+# 1. VIẾT STRATEGY theo blueprint → tạo file output/stage_2/ + ghi index.csv
+#    (theo agent/framework_build_guide.md, Level 1-5, 1 trong 2 mode)
+
+# 2. VALIDATE compliance (mode contract, point-in-time, bounds)
+python tools/validate_framework.py
+
+# 3. SUBMIT lên XNOQuant (cần .env: XNO_EDITOR_ID + XNO_TOKEN)
+python tools/submit_and_check.py --batch --test --universe VN-SMALL-CAP   # test 1 file
+python tools/submit_and_check.py --batch --universe VN-SMALL-CAP          # submit hết
+
+# 4. REVIEW kết quả (backtest/results_stage_2.csv, PASS theo universe)
+python tools/check_results.py --detail --universe VN-SMALL-CAP
+
+# 5. COMMIT + PUSH
+```
+
+---
+
+## Alpha Creation Workflow (Vòng 1 — ARCHIVED)
+
+Quy trình 7 bước sau khi nghĩ ra alpha idea mới (vòng 1 — futures intraday):
 
 ```bash
 # 1. NGHĨ Ý TƯỞNG → ghi vào idea/planning_alpha/alpha_data_type_ideas.md
@@ -196,7 +219,7 @@ Khi gặp vấn đề, tra theo triệu chứng:
 
 ---
 
-## Generator Usage
+## Generator Usage (Vòng 1 — ARCHIVED)
 
 ```bash
 # Generate all strategies
@@ -209,7 +232,7 @@ python tools/validate_framework.py
 python tools/update_guide_stats.py
 ```
 
-### Generator Architecture
+### Generator Architecture (Vòng 1 — ARCHIVED)
 - **108 templates** in `TEMPLATES` dict with parameter variants
 - **6 ADX templates** get tiered sizing (strong/weak split)
 - **`inject_filters()`** post-processor adds return_roll, class attrs, session gating to ALL templates
