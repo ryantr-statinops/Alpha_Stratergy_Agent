@@ -1,15 +1,19 @@
 # Migration Plan V2 — Chuyển sang Data Model Mới (Vòng 2)
 
-> **Trạng thái:** AWAITING APPROVAL — Phase A chưa thực thi.
+> **Trạng thái:** PHASE B DONE — Phase A chưa approve, Phase C chưa thực thi.
 > **Mục tiêu:** Archive vòng 1, dựng khung `stage_2`, migrate file new-data từ `input/` theo form chuẩn.
 
 ---
 
 ## 1. Bối cảnh
 
-- **Vòng 1 (hiện tại):** 782 strategy file trên data model cũ — 22 data fields, 183 features, 30 operators.
-- **Vòng 2:** XNOQuant giới thiệu loại data + syntax mới (`self.data.*`, `self.feat.*`, `self.op.*` đều thay đổi).
-- **Yêu cầu:** chuẩn bị toàn bộ pipeline cho vòng thi mới, tận dụng các file đã viết theo data mới.
+- **Vòng 1 (archive):** 782 strategy file trên data model cũ — intraday VN30 futures (22 data fields, 183 features, 30 operators).
+- **Vòng 2 (active):** **Round 2 — Fundamental Alpha Arena**, daily equity research trên 3 universe
+  (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP). Data mới: 496 fields (PV 10 + IS 130 + BS 271 + CF 85),
+  36 panel features, 6 cross-sectional ops.
+- **Nguồn chuẩn:** `agent/stage_2_guideline.md` (round rules) — **khác hẳn vòng 1** (daily, long-only,
+  fundamentals point-in-time).
+- **Yêu cầu:** chuẩn bị toàn bộ pipeline cho vòng thi mới.
 
 ---
 
@@ -34,14 +38,19 @@ input/                # Thư mục tạm — user đặt file new-data vào đâ
 - Không xoá bất kỳ file nào.
 - **Output:** cấu trúc thư mục mới + `output/INDEX.md`.
 
-### Phase B — Syntax mới
-- User cung cấp tài liệu syntax mới → thay thế toàn bộ `syntax/*.md`.
-- Lập **Migration Map**: bảng `field/func cũ → mới`.
+### Phase B — Syntax mới ✅ DONE
+- User cung cấp tài liệu syntax mới → đã thay thế toàn bộ `syntax/*.md`.
+- **Migration Map** đã lập: `input/templates/migration_map_v2.md` (bảng `field/func cũ → mới`).
+- Kết quả:
+  - `syntax/data_syntax.md` — 496 fields + mode contract (time_series / cross_sectional).
+  - `syntax/feature_syntax.md` — 36 panel features + time_series family.
+  - `syntax/operations_syntax.md` — 7 cross-sectional ops + time_series ops.
+  - `template_example/strategy_framework.md` — master spec Round 2 (viết lại hoàn toàn).
 
-### Phase C — Chuẩn bị `input/` + migrate
-- User đặt file new-data vào `input/`.
+### Phase C — Chuẩn bị `input/` + migrate ⏳ PENDING
+- User đặt file strategy new-data vào `input/`.
 - `tools/migrate_stage2.py`: đọc `input/` → chuẩn hoá form → xuất `stage_2/` + ghi `index.csv` mới.
-- Mở rộng `validate_framework.py` theo rule mới.
+- Mở rộng `validate_framework.py` theo rule mới (mode contract, point-in-time, long-only).
 
 ### Phase D — Documentation
 - Cập nhật `agent/GUIDE.md`, `README.md`, `tools/INDEX.md`.
@@ -51,7 +60,10 @@ input/                # Thư mục tạm — user đặt file new-data vào đâ
 
 ## 4. Migration Map (bảng ánh xạ cũ → mới)
 
-> Điền sau khi có tài liệu syntax mới từ user.
+> ✅ Đã điền đầy đủ tại [`input/templates/migration_map_v2.md`](../input/templates/migration_map_v2.md).
+> Tóm tắt: `pv_*` giữ nguyên (time_series không suffix / cross_sectional `_panel`); DJI & futures & session
+> gates **xoá**; fundamentals `fun_*` **mới**. Chiến lược futures vòng 1 không migrate tự động — viết lại
+> theo `template_example/VN-*/`.
 
 | Field/Func cũ | Field/Func mới | Ghi chú |
 |---------------|----------------|---------|
@@ -75,15 +87,15 @@ input/                # Thư mục tạm — user đặt file new-data vào đâ
 
 ## 5. Checklist Approve
 
-- [ ] **Phase A:** cấu trúc stage_1/stage_2
-- [ ] **Phase B:** syntax mới + migration map
+- [ ] **Phase A:** cấu trúc stage_1/stage_2 (chưa approve — cần quyết định có archive `output/` vòng 1 không)
+- [x] **Phase B:** syntax mới + migration map ✅
 - [ ] **Phase C:** migrate `input/` → `stage_2/`
 - [ ] **Phase D:** docs sync
 
----
-
 ## 6. Rủi ro & Lưu ý
 
+- Vòng 2 là **sản phẩm khác hoàn toàn** (futures intraday → equity daily): file vòng 1 **không migrate được tự động**, cần viết lại.
 - `output/index.csv` vòng 1 đang stale (chỉ 428/1,705 rows khớp file) — archive nguyên trạng, không sửa.
 - Không xoá dữ liệu vòng 1 cho đến khi vòng 2 chạy ổn định.
-- Mọi thay đổi framework tuân theo `template_example/strategy_framework.md` và supreme directive trong `README.md`.
+- Mọi thay đổi framework tuân theo `template_example/strategy_framework.md` (đã viết lại cho Round 2) và
+  `agent/stage_2_guideline.md`.

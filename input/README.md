@@ -41,10 +41,16 @@ Xem kế hoạch đầy đủ: [`agent/migration_plan_v2.md`](../agent/migration
 | Hạng mục | Trạng thái |
 |----------|-----------|
 | File template | ✅ Tạo sẵn 5 file trong `templates/` |
-| Bạn điền syntax mới | ⏳ Chờ bạn điền |
-| Bạn đặt file strategy new-data | ⏳ Chờ bạn đặt vào `input/` |
-| `tools/migrate_stage2.py` | ⏳ Tạo khi bạn giao syntax mới |
+| Bạn điền syntax mới | ✅ Đã điền: `syntax_data_v2.md` (496 fields), `syntax_feature_v2.md` (36), `syntax_operations_v2.md` (7) |
+| `syntax/*.md` đã viết lại | ✅ `data_syntax.md`, `feature_syntax.md`, `operations_syntax.md` (theo data bạn điền) |
+| `template_example/strategy_framework.md` | ✅ Viết lại cho Round 2 (time_series + cross_sectional) |
+| `migration_map_v2.md` | ✅ Đã điền (PV giữ, futures/session gates xoá, fundamentals mới) |
+| Bạn đặt file strategy new-data | ⏳ Chờ bạn đặt vào `input/` (hoặc đặt thẳng theo template VN-*) |
+| `tools/migrate_stage2.py` | ⏳ Tạo khi bạn giao strategy new-data |
 | Phase A (archive vòng 1) | ⏳ Chờ bạn approve |
+
+> **Lưu ý Round 2:** chiến lược vòng 1 (futures intraday) không migrate tự động được — sản phẩm, khung
+> thời gian, direction đều đổi. File mới nên viết theo `template_example/VN-*/`.
 
 ---
 
