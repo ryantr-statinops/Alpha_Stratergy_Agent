@@ -21,11 +21,20 @@ class CustomStrategy(SimpleAlgorithm):
         ema_slow = self.feat.ema(close, timeperiod=54)
         volume_base = self.feat.sma(volume, timeperiod=20)
 
-        eps_growth = self.op.fillna(self.op.pct_change(eps, periods=1), value=0)
-        profit_growth = self.op.fillna(self.op.pct_change(net_profit, periods=1), value=0)
+        eps_growth = self.op.pct_change(eps, periods=1)
+        profit_growth = self.op.pct_change(net_profit, periods=1)
+
+        fundamentals_known = (
+            self.op.notna(eps)
+            & (eps > 0)
+            & self.op.notna(eps_growth)
+            & self.op.notna(net_profit)
+            & self.op.notna(profit_growth)
+        )
 
         weak_long = (
-            (close > sma20)
+            fundamentals_known
+            & (close > sma20)
             & (eps_growth > -0.05)
             & (profit_growth > -0.05)
         )

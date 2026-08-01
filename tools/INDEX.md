@@ -6,7 +6,7 @@
 |------|------------|---------|
 | `generate_strategies.py` | Generate all thesis strategies (vòng 1 — ARCHIVED) | `python tools/generate_strategies.py` |
 | `validate_framework.py` | Validate Round-2 files for framework compliance (quét `output/stage_2/`) | `python tools/validate_framework.py` |
-| `submit_and_check.py` | Submit Round-2 strategies to XNOQuant + fetch metrics | `python tools/submit_and_check.py [--batch \| --files ...] [--universe VN-...]` |
+| `submit_and_check.py` | Submit Round-2 strategies to XNOQuant + fetch metrics | `python tools/submit_and_check.py [--batch \| --files ...] [--dry-run] [--universe VN-...]` |
 | `check_results.py` | Review Round-2 backtest results (`backtest/results_stage_2.csv`) | `python tools/check_results.py [--detail \| --pass \| --universe ...]` |
 | `update_guide_stats.py` | Regenerate Round-2 strategy stats from `output/index.csv` | `python tools/update_guide_stats.py` |
 | `gen_single_feat.py` | Generate a single-feature alpha strategy (vòng 1 — ARCHIVED) | `python tools/gen_single_feat.py <indicator> <call> <threshold>` |
@@ -20,11 +20,12 @@
 The standard Round-2 pipeline (agent writes strategies directly, no code generator):
 
 ```
-1. Agent writes strategy -> output/stage_2/  (+ row in output/index.csv)
-2. python tools/validate_framework.py       # Validate Round-2 compliance
-3. python tools/submit_and_check.py --batch --universe VN-...  # Submit all to XNOQuant
-4. python tools/check_results.py --detail    # Review PASS/FAIL per universe
-5. python tools/update_guide_stats.py        # Update strategy count stats
+1. Agent writes strategy -> output/stage_2/<cap>/<mode>/  (+ row in output/index.csv)
+2. python tools/validate_framework.py --strict            # Validate Round-2 compliance (strict)
+3. python tools/submit_and_check.py --batch --dry-run --universe VN-...  # Preview (no HTTP)
+   # Choose universe on XNOQuant UI manually -> live: --batch --test / --batch
+4. python tools/check_results.py --detail                 # Review PASS/FAIL per universe
+5. python tools/update_guide_stats.py                     # Update strategy count stats
 ```
 
 ---
@@ -44,8 +45,9 @@ Master strategy generator (vòng 1 futures intraday). Reads 38 thesis groups wit
 Framework compliance validator per `template_example/strategy_framework.md`.
 
 - **Scope (V2):** quét `output/stage_2/` (Round 2 — Fundamental Alpha Arena) + manifest `output/index.csv`.
-- **Checks:** Required structure (`CustomStrategy`, `__algorithm__`), forbidden patterns (`pandas`, `SeriesT`, `open` variable, loops/lambdas/`.apply`), point-in-time (cấm global aggregations `.mean()/.rank()/.quantile()/.sort_values()`), **mode contract** (detect `set_portfolio_positions` = cross_sectional vs `set_positions` = time_series), field suffix (`_panel` đúng mode), bounds (`time_series` long-only 0/0.5/1.0).
-- **Also checks:** `output/index.csv` (header: `filepath,thesis_group,template,mode,universe,description,params`) consistency against files on disk.
+- **Checks:** Required structure (`CustomStrategy`, `__algorithm__`), forbidden patterns (`import`, `print/eval/exec/open(` , loops/lambdas/comprehensions/`.apply`), point-in-time (cấm global aggregations `.mean()/.rank()/.quantile()/.sort_values()`), forbidden timing (`shift` âm, `bfill/backfill`, `center=True`), **mode contract** (detect `set_portfolio_positions` = cross_sectional vs `set_positions` = time_series; CS bắt buộc `portfolio_weights_panel` + `mask`, method ∈ {`rank_demean_l1`, `demean_l1`}), field suffix (`_panel` đúng mode), bounds (`time_series` long-only 0/0.5/1.0, position phải numeric), fundamental guard (`.notna()` + denominator `>0`).
+- **`--strict`:** nâng mọi warning lên error, exit 1 — dùng trong pipeline chuẩn.
+- **Also checks:** `output/index.csv` (header: `filepath,thesis_group,template,mode,universe,description,params`) consistency — filepath `<cap>/<mode>/<file>.py`, universe khớp cap, không orphan/ghost/duplicate.
 - **Không dùng** để check vòng 1 (đã archive tại `output/stage_1/`).
 
 ### `submit_and_check.py`
@@ -56,12 +58,16 @@ Submit Round-2 strategy code (in `output/stage_2/`) to XNOQuant via API and fetc
 - **Batch mode:** `python tools/submit_and_check.py --batch` — submit all files in `output/stage_2/`
 - **Files mode:** `python tools/submit_and_check.py --files f1.py f2.py` — submit specific files
 - **Flags:**
-  - `--test` — only submit first file (dry-run)
-  - `--force` — re-submit even if already passed
+  - `--dry-run` — xem trước editor/universe/files, KHÔNG gọi API (an toàn)
+  - `--test` — live submit file đầu tiên của cap (KHÔNG phải dry-run)
+  - `--force` — re-submit dù đã có kết quả trước đó
+  - `--yes` — bỏ qua xác nhận interactive (chỉ khi đã chắc chắn universe trên UI)
   - `--start N` — start from index N in batch
   - `--limit N` — max N files in batch
-  - `--universe VN-...` — universe tag written to CSV (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP) — used for pass thresholds
-- **Config:** `.env` in project root with `XNO_EDITOR_ID` and `XNO_TOKEN` (required — no hardcoded fallbacks)
+  - `--universe VN-...` — FILTER chọn 1 cap (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP). Universe ghi CSV suy từ path, KHÔNG bị override. Batch trộn nhiều cap không có flag → từ chối.
+- **Config:** `.env` in project root — **1 editor per cap** (`XNO_EDITOR_ID_SMALL` / `XNO_EDITOR_ID_MID` / `XNO_EDITOR_ID_LARGE`) + `XNO_TOKEN`; legacy single `XNO_EDITOR_ID` dùng làm fallback. (required — no hardcoded fallbacks)
+- **Flow per file:** update → verify (nếu update fail thì dừng) → simulate (nếu verify fail thì dừng) → poll metrics (timeout 90s) → ghi 1 row CSV
+- **Idempotency:** skip theo `(filepath, universe)` — basename trùng ở cap khác KHÔNG bị coi là đã submit
 - **Results:** `backtest/results_stage_2.csv`
 
 See `agent/submit_workflow.md` for detailed setup and API reference.
@@ -103,13 +109,14 @@ Shared helpers module used by `submit_and_check.py`, `check_results.py`, and oth
 
 - `PASS_THRESHOLDS` — vòng 1: 5-criteria dict (Sharpe ≥ 1.3, CAGR ≥ 15%, MaxDD ≥ -35%, PF ≥ 1.2, Calmar ≥ 1.1)
 - `PASS_THRESHOLDS_BY_UNIVERSE` — **Round 2:** bộ tiêu chí riêng cho VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP (user cung cấp)
-- `thresholds_for(universe)` — chọn bộ tiêu chí theo universe
+- `thresholds_for(universe)` — chọn bộ tiêu chí theo universe; **fail-closed:** universe lạ/trống → `KeyError` (hết default)
 - `getf(row, key)` — parse float from CSV cell safely
-- `is_pass(row, universe=None)` — check thresholds theo universe (mặc định lấy từ cột `universe` của row)
-- `load_results_csv(path)` — load and parse CSV
-- `load_previous_results(csv_path)` — build {filename: is_pass} map
+- `is_pass(row)` — PASS chỉ khi `status == SIMULATED` + đủ cả 5 metrics + vượt ngưỡng cap
+- `status_label(row)` — PASS/FAIL/PENDING/API_ERROR/INVALID_METADATA từ status + metrics
+- `row_key(row)` — identity `(filepath, universe)` (thay cho basename — tránh collision giữa cap)
+- `load_previous_results(csv_path)` — build {(filepath, universe): is_pass} map
 - `format_metrics(metrics)` — format dict to display string
-- `build_latest(rows)` — keep latest row per filename
+- `build_latest(rows)` — keep latest row per (filepath, universe)
 - `timestamp_today()` — today's date string
 
 ---

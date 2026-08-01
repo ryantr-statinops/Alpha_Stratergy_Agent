@@ -90,13 +90,13 @@
    - **VN-SMALL-CAP:** Sharpe ≥ 1.0, CAGR ≥ 25%, MaxDD ≥ -45%, PF ≥ 1.3, Calmar ≥ 0.8
    - **VN-MID-CAP:** Sharpe ≥ 1.1, CAGR ≥ 20%, MaxDD ≥ -40%, PF ≥ 1.25, Calmar ≥ 1.0
    - **VN-LARGE-CAP:** Sharpe ≥ 1.2, CAGR ≥ 15%, MaxDD ≥ -35%, PF ≥ 1.2, Calmar ≥ 1.1
-   - `check_results.py` + `common.py` dùng `is_pass(row, universe)` theo cột `universe` trong CSV.
+   - `check_results.py` + `common.py` dùng `is_pass(row)` theo cột `universe` + `status` của row (PASS chỉ khi `SIMULATED` + đủ 5 metrics). Universe lạ/trống → `KeyError` (fail-closed).
 
 2. **Token** ✅ — `submit_and_check.py` đã bỏ hardcode, chỉ đọc `.env` (`XNO_EDITOR_ID`, `XNO_TOKEN`), báo lỗi nếu thiếu. User tạo `.env` ở root (đã có `.gitignore` chặn).
 
 3. **Kết quả CSV** ✅ — tách riêng `backtest/results_stage_2.csv` (không trộn với `results.csv` vòng 1).
 
-4. **Discovery** ✅ — `submit_and_check.py` quét `output/stage_2/` (không quét output gốc + success_alpha). Universe **tự suy từ path** `output/stage_2/<cap>/...` (`resolve_universe`), `--universe` chỉ để ghi đè.
+4. **Discovery** ✅ — `submit_and_check.py` quét `output/stage_2/` (không quét output gốc + success_alpha). Universe **tự suy từ path** `output/stage_2/<cap>/...` (`resolve_universe`), **`--universe` chỉ là FILTER chọn 1 cap — KHÔNG ghi đè universe** (single editor: không submit nhiều cap cùng lúc). Thêm `--dry-run` (xem trước, không gọi API), `--test` = live 1 file đầu, poll metrics timeout 90s, skip theo `(filepath, universe)`. `.env` bắt buộc cho live.
 
 ---
 
@@ -104,9 +104,11 @@
 
 | # | Việc | File | Trạng thái |
 |:-:|------|------|------------|
-| 1 | Tách CSV + `--universe` flag + bỏ hardcode token | `submit_and_check.py`, `common.py`, `check_results.py` | ✅ DONE |
-| 2 | Cập nhật stats cho stage_2 | `update_guide_stats.py` | ✅ DONE |
-| 3 | Cập nhật docs (README banner, tools/INDEX, submit_workflow) | `README.md`, `tools/INDEX.md`, `agent/submit_workflow.md` | ⏳ |
-| 4 | Xác định PASS criteria V2 | `common.py`, `check_results.py` | ✅ DONE (user cung cấp) |
-| 5 | Agent viết strategy Level 1-5 → `output/stage_2/` | code mới | ⏳ NEXT |
-| 6 | Submit batch + review | `submit_and_check.py --batch --universe`, `check_results.py` | sau 5 |
+| 1 | Tách CSV + `--universe` filter + bỏ hardcode token + `--dry-run` + poll timeout + idempotency `(filepath, universe)` | `submit_and_check.py`, `common.py`, `check_results.py` | ✅ DONE |
+| 2 | Cập nhật stats cho stage_2 (Total / By Universe / Matrix universe×mode) | `update_guide_stats.py` | ✅ DONE |
+| 3 | Siết validator: manifest + mode contract + `--strict` + forbidden mới (import/comprehension/print/eval/exec/open), CS bắt buộc weights/mask, fundamental guard | `validate_framework.py` | ✅ DONE |
+| 4 | Unittest 46 cases (validate/submit/results) | `tests/` | ✅ DONE |
+| 5 | Cập nhật docs (README banner, tools/INDEX, submit_workflow, GUIDE tree) | `README.md`, `tools/INDEX.md`, `agent/submit_workflow.md`, `agent/GUIDE.md` | ✅ DONE |
+| 6 | Xác định PASS criteria V2 (theo universe, fail-closed) | `common.py`, `check_results.py` | ✅ DONE (user cung cấp) |
+| 7 | Agent viết strategy Level 1-5 → `output/stage_2/` | code mới | ✅ 6 alpha Batch 1 |
+| 8 | Preflight + dry-run 3 cap + live smoke (cần user chọn universe trên UI) | `submit_and_check.py`, `check_results.py` | ⏳ NEXT |

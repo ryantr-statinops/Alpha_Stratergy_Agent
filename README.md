@@ -12,8 +12,9 @@
 > 4. `template_example/strategy_framework.md` — master spec Round 2
 > 5. `syntax/data_syntax.md` → `feature_syntax.md` → `operations_syntax.md` → `parameters.md`
 >
-> **Pipeline:** agent viết strategy → `output/stage_2/` → `tools/validate_framework.py` →
+> **Pipeline:** agent viết strategy → `output/stage_2/<cap>/<mode>/` → `tools/validate_framework.py --strict` →
 > `tools/submit_and_check.py --batch --universe VN-...` → `tools/check_results.py`.
+> Universe submit: suy từ path cap (hoặc `--universe` để lọc 1 cap).
 >
 > Các phần bên dưới mô tả vòng 1 (intraday futures VN30F) — **đã archive** tại `output/stage_1/`.
 
@@ -49,7 +50,9 @@ ALPHA_BOT/
 └── README.md               # Tài liệu hướng dẫn dành cho AI Agent
 ```
 
-### 8 Thesis Groups
+### 8 Thesis Groups (Vòng 1 — ARCHIVED)
+
+> Nhóm thesis này thuộc vòng 1 (futures intraday). Round 2 dùng 3 cap daily equity; thesis Round 2 ghi trong `idea/planning_alpha/stage_2/`.
 
 | # | Thesis | Target | Timeframes |
 |:-:|--------|--------|:----------:|
@@ -65,8 +68,9 @@ ALPHA_BOT/
 ### Competition Context
 
 Dự án hướng tới **Vietnam Quant Challenge 2026** trên nền tảng XNOQuant.  
-**Target:** 500+ chiến lược Published đạt Sharpe ≥ 1.2, CAGR ≥ 25%, Sortino ≥ 1.5, Calmar ≥ 0.9.  
-**Cách tính điểm:** Sharpe > CAGR > Sortino > Calmar > Max DD > VaR > CVaR > Ulcer Index > Cost > Correlation.
+**Target (Round 2, per universe):** pass criteria tại `tools/common.py` (`PASS_THRESHOLDS_BY_UNIVERSE`) — SMALL/MID/LARGE có ngưỡng riêng (Sharpe 1.0/1.1/1.2, CAGR 25%/20%/15%, MaxDD -45%/-40%/-35%, PF 1.3/1.25/1.2, Calmar 0.8/1.0/1.1). PASS = đạt cả 5.
+
+> ⚠️ Ngưỡng Round 1 (Sharpe ≥ 1.2, CAGR ≥ 25%...) trong §2 dưới đây là legacy — xem `idea/hypothesis/hypothesis_framework.md` (ARCHIVED).
 
 ---
 
@@ -290,18 +294,26 @@ Các file xuất ra phải:
 | **Send code** | PUT | `/editors/{id}/update` | `{"code": "..."}` |
 | **Verify syntax** | POST | `/editors/{id}/verify` | (empty) |
 | **Run backtest** | POST | `/editors/{id}/simulate` | (empty) |
-| Poll progress | GET | `/editors/{id}/progress` | — |
-| Poll results | GET | `/editors/{id}/info` | — |
+| Fetch metrics | GET | `/strategies/{strategy_id}/stages/simulate/summary-aggregate` | — |
 
 **Auth:** `Authorization: Bearer <token>` — lấy từ `.env` (`XNO_EDITOR_ID`, `XNO_TOKEN`)
+
+> ⚠️ **Universe KHÔNG được thiết lập qua API.** Editor universe được chọn thủ công trên giao diện XNOQuant.
+> `submit_and_check.py` chỉ lọc file theo cap và yêu cầu xác nhận trước live submit.
+> `--dry-run` hiển thị editor + universe + files mà không gọi API.
+> `--test` = live submit file đầu tiên của cap (KHÔNG phải dry-run).
 
 ### Workflow (Round 2)
 
 1. Agent viết strategy vào `output/stage_2/<cap>/<mode>/` (VD `vn_small_cap/time_series/`) + ghi `output/index.csv` (cột `filepath` = `<cap>/<mode>/<file>.py`)
-2. **`python tools/validate_framework.py`** — check compliance (mode contract, point-in-time, bounds)
-3. **`python tools/submit_and_check.py --batch`** — PUT → verify → simulate; universe tự suy từ path
-   - `--test` = submit 1 file đầu (test), `.env` bắt buộc, quét `output/stage_2/`
-4. **`python tools/check_results.py --universe VN-<CAP>`** — review PASS theo ngưỡng từng cap
+2. **`python tools/validate_framework.py --strict`** — check compliance (mode contract, point-in-time, bounds, manifest consistency)
+3. **`python tools/submit_and_check.py --batch --dry-run --universe VN-<CAP>`** — xem trước editor/universe/files (không gọi API)
+   - Chọn đúng universe trên XNOQuant (thủ công) → **`python tools/submit_and_check.py --batch --universe VN-<CAP>`**
+   - `--test` = live submit 1 file đầu của cap; `.env` bắt buộc cho live
+4. **`python tools/check_results.py --detail --universe VN-<CAP>`** — review PASS/FAIL theo ngưỡng từng cap
+
+> Lưu ý: `--universe` là bộ lọc cap, không phải tag override. Universe ghi vào CSV luôn suy từ path.
+> Không submit nhiều cap trong một lần chạy (single editor).
 
 ### Kết quả
 
@@ -323,7 +335,7 @@ AI Agent **luôn phải**:
 2. Kiểm tra tính tương thích với `CustomStrategy`.
 3. Chỉ sử dụng các API chính thức của XNOQuant.
 4. Tuân thủ cú pháp của `syntax/` và `template_example/`.
-5. Tham chiếu acceptance criteria trong `idea/hypothesis/hypothesis_framework.md` khi thiết kế logic.
+5. Round 2: dùng pass criteria theo cap tại `tools/common.py` (`PASS_THRESHOLDS_BY_UNIVERSE`) — không dùng hypothesis_framework vòng 1 (ARCHIVED).
 6. Đảm bảo mã nguồn có thể chạy trực tiếp trên nền tảng.
 
 ---
