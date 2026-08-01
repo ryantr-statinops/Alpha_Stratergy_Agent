@@ -20,11 +20,20 @@ class CustomStrategy(SimpleAlgorithm):
         sma60 = self.feat.sma(close, timeperiod=60)
         ema_slow = self.feat.ema(close, timeperiod=54)
 
-        profit_margin = self.op.fillna(net_profit / total_assets, value=0)
-        profit_growth = self.op.fillna(self.op.pct_change(net_profit, periods=1), value=0)
+        profit_margin = net_profit / total_assets
+        profit_growth = self.op.pct_change(net_profit, periods=1)
+
+        fundamentals_known = (
+            self.op.notna(net_profit)
+            & self.op.notna(total_assets)
+            & (total_assets > 0)
+            & self.op.notna(profit_margin)
+            & self.op.notna(profit_growth)
+        )
 
         weak_long = (
-            (close > sma60)
+            fundamentals_known
+            & (close > sma60)
             & (operating_cash_flow > 0)
             & (profit_margin > 0.005)
         )
