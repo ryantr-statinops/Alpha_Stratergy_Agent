@@ -1,5 +1,8 @@
 # Dữ liệu VnFuture (Hợp đồng tương lai VN30)
 
+> **⚠️ LEGACY (vòng 1 — VNFuture arena).** Round 2 (equity fundamental) KHÔNG dùng
+> các field `fut_*`/`pv_vn30_*`/`pv_dji_*` dưới đây. Chỉ tham chiếu cho vòng 1.
+
 ## Cách truy cập
 
 Sử dụng `self.data.<tên_trường>` để truy cập dữ liệu.
