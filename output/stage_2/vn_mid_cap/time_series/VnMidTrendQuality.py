@@ -21,14 +21,27 @@ class CustomStrategy(SimpleAlgorithm):
         ema_fast = self.feat.ema(close, timeperiod=18)
         ema_slow = self.feat.ema(close, timeperiod=54)
 
-        roe = self.op.fillna(net_profit / equity, value=0)
-        capital_ratio = self.op.fillna(equity / total_assets, value=0)
+        roe = net_profit / equity
+        capital_ratio = equity / total_assets
 
-        profit_growth = self.op.fillna(self.op.pct_change(net_profit, periods=1), value=0)
-        eps_growth = self.op.fillna(self.op.pct_change(eps, periods=1), value=0)
+        profit_growth = self.op.pct_change(net_profit, periods=1)
+        eps_growth = self.op.pct_change(eps, periods=1)
+
+        fundamentals_known = (
+            self.op.notna(net_profit)
+            & self.op.notna(equity)
+            & (equity > 0)
+            & self.op.notna(total_assets)
+            & (total_assets > 0)
+            & self.op.notna(roe)
+            & self.op.notna(capital_ratio)
+            & self.op.notna(profit_growth)
+            & self.op.notna(eps_growth)
+        )
 
         weak_long = (
-            (close > ema_slow)
+            fundamentals_known
+            & (close > ema_slow)
             & (roe > 0.02)
             & (capital_ratio > 0.10)
             & (profit_growth > -0.10)
