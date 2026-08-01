@@ -17,7 +17,7 @@ class CustomStrategy(SimpleAlgorithm):
         earnings_yield = self.feat.safe_divide_panel(eps, close)
         price_momentum = self.feat.rolling_zscore_panel(close)
 
-        eligible = self.op.notna(eps) & (close > 0)
+        eligible = (eps > 0) & (close > 0)
 
         value_score = self.op.zscore_cs_panel(earnings_yield, mask=eligible)
         momentum_score = self.op.zscore_cs_panel(price_momentum, mask=eligible)
