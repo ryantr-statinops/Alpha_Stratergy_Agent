@@ -15,7 +15,7 @@ PUT  /editors/{id}/update                                          # gửi code 
 POST /editors/{id}/verify                                          # check syntax (empty body)
 POST /editors/{id}/simulate                                        # chạy backtest (empty body)
 GET  /editors/{id}/info                                            # lấy strategy_id
-GET  /v1/strategies/{id}/stages/train/summary-aggregate            # lấy metrics (CAGR, Sharpe, ...)
+GET  /strategies/{id}/stages/simulate/summary-aggregate            # lấy metrics (CAGR, Sharpe, ...)
 ```
 
 Auth: `Authorization: Bearer <token>`
@@ -25,15 +25,21 @@ Auth: `Authorization: Bearer <token>`
 ## Round 2 — submit strategy daily equity
 
 ```bash
-# Batch: submit tất cả file trong output/stage_2/, gắn universe để tính pass criteria
-python tools/submit_and_check.py --batch --universe VN-SMALL-CAP
+# 0. Validate strict (bắt warning) trước khi submit
+python tools/validate_framework.py --strict
 
-# Test 1 file trước
+# 1. Xem trước editor/universe/files — KHÔNG gọi API (an toàn)
+python tools/submit_and_check.py --batch --dry-run --universe VN-SMALL-CAP
+
+# 2. Chọn đúng universe trên giao diện XNOQuant (thủ công, UI KHÔNG đổi qua API)
+#    rồi live test 1 file đầu:
 python tools/submit_and_check.py --batch --test --universe VN-SMALL-CAP
 
+# 3. Submit cả cap (single editor => một cap mỗi lần chạy)
+python tools/submit_and_check.py --batch --universe VN-SMALL-CAP
+
 # Review kết quả (backtest/results_stage_2.csv), PASS/FAIL theo universe
-python tools/check_results.py --detail
-python tools/check_results.py --pass --universe VN-SMALL-CAP
+python tools/check_results.py --detail --universe VN-SMALL-CAP
 ```
 
 **Bộ tiêu chí pass Round 2 (theo universe):**
@@ -44,8 +50,8 @@ python tools/check_results.py --pass --universe VN-SMALL-CAP
 | VN-MID-CAP | ≥ 1.1 | ≥ 20% | ≥ -40% | ≥ 1.25 | ≥ 1.0 |
 | VN-LARGE-CAP | ≥ 1.2 | ≥ 15% | ≥ -35% | ≥ 1.2 | ≥ 1.1 |
 
-- File Round 2 không khai báo universe trong code — dùng flag `--universe` khi submit để ghi vào CSV.
-- Nếu submit `--files` cho vài file riêng lẻ: `python tools/submit_and_check.py --files a.py b.py --universe VN-LARGE-CAP`.
+- File Round 2 không khai báo universe trong code — **universe ghi vào CSV luôn suy từ path** `output/stage_2/<cap>/...` (VD `vn_small_cap/` → `VN-SMALL-CAP`). `--universe` chỉ là FILTER chọn cap, KHÔNG ghi đè universe của file.
+- Nếu submit `--files` cho vài file riêng lẻ: `python tools/submit_and_check.py --files a.py b.py --universe VN-LARGE-CAP` (tất cả phải cùng cap).
 
 ---
 
@@ -121,7 +127,7 @@ Nhập `y` để submit lại, `N` để bỏ qua.
 
 ### 4. Kết quả
 
-**Round 2:** metrics tự động lưu vào `backtest/results_stage_2.csv` (có cột `universe`). Review:
+**Round 2:** metrics tự động lưu vào `backtest/results_stage_2.csv` (có cột `universe`, `filepath`, `status`, `strategy_id`). Review:
 
 ```bash
 python tools/check_results.py --detail                    # Full 5-metric table
@@ -131,9 +137,11 @@ python tools/check_results.py --today                     # Today's submissions
 ```
 
 ```csv
-timestamp,filename,universe,status,cagr,sharpe,calmar,max_drawdown,profit_factor
-2026-08-01T15:50,VnTop30Trend.py,VN-SMALL-CAP,OK,0.30,1.40,1.00,-0.30,1.60
+timestamp,filepath,filename,universe,mode,status,strategy_id,cagr,sharpe,calmar,max_drawdown,profit_factor,error
+2026-08-01T15:50,vn_small_cap/time_series/VnTop30Trend.py,VnTop30Trend.py,VN-SMALL-CAP,time_series,SIMULATED,s123,0.30,1.40,1.00,-0.30,1.60,
 ```
+
+Status: `SIMULATED` / `UPDATE_FAILED` / `VERIFY_FAILED` / `SIMULATE_FAILED` / `RATE_LIMITED` / `METRICS_TIMEOUT` / `NO_STRATEGY_ID`.
 
 (vòng 1) Dữ liệu cũ nằm ở `backtest/results.csv` — trích pass theo tiêu chí:
 - Sharpe Ratio:  ≥ 1.3
@@ -171,12 +179,13 @@ Cách fix:
 
 **Round 2:**
 ```
-1. Agent viết strategy theo agent/framework_build_guide.md → output/stage_2/ + index.csv
-2. python tools/validate_framework.py                            # check compliance
-3. python tools/submit_and_check.py --batch --test --universe VN-SMALL-CAP   # test 1 file
-4. Kiểm tra metrics trong console + backtest/results_stage_2.csv
-5. python tools/submit_and_check.py --batch --universe VN-SMALL-CAP          # submit full batch
-6. python tools/check_results.py --detail --universe VN-SMALL-CAP            # review
+1. Agent viết strategy theo agent/framework_build_guide.md → output/stage_2/<cap>/<mode>/ + index.csv
+2. python tools/validate_framework.py --strict                         # check compliance
+3. python tools/submit_and_check.py --batch --dry-run --universe VN-SMALL-CAP  # xem trước (no HTTP)
+4. Chọn VN-SMALL-CAP trên UI XNOQuant → python tools/submit_and_check.py --batch --test --universe VN-SMALL-CAP
+5. Kiểm tra metrics trong console + backtest/results_stage_2.csv
+6. python tools/submit_and_check.py --batch --universe VN-SMALL-CAP    # submit full batch (cùng cap)
+7. python tools/check_results.py --detail --universe VN-SMALL-CAP      # review
 ```
 
 (vòng 1) Workflow cũ — đã archive:
