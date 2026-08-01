@@ -7,9 +7,16 @@ Batch mode: submit all discovered strategy files (filtered by universe).
 
 Results are saved to: backtest/results_stage_2.csv
 
-Universe handling (safe for a single editor):
-  - The script NEVER changes the XNOQuant universe via API.
-  - The user must select the universe manually in the editor UI BEFORE submit.
+Universe handling (one editor per cap, recommended):
+  - Configure one editor PER universe in .env:
+        XNO_EDITOR_ID_SMALL=<UUID>   # editor set to VN-SMALL-CAP on XNOQuant UI
+        XNO_EDITOR_ID_MID=<UUID>     # editor set to VN-MID-CAP on XNOQuant UI
+        XNO_EDITOR_ID_LARGE=<UUID>   # editor set to VN-LARGE-CAP on XNOQuant UI
+    The tool picks the editor matching the cap folder, so you never have to
+    switch universe manually between runs.
+  - Legacy single editor: XNO_EDITOR_ID (used as fallback when the per-universe
+    var is not set). The script NEVER changes the universe via API — the UI
+    must already be on the matching universe.
   - `--universe` FILTERS which files are submitted (by cap folder), it is NOT
     an override tag. The universe written to CSV is always derived from the
     file's cap folder (output/stage_2/<cap>/<mode>/<file>.py).
@@ -17,7 +24,9 @@ Universe handling (safe for a single editor):
   - A live batch run requires explicit confirmation of the editor universe.
 
 Config via .env file (create .env in project root):
-    XNO_EDITOR_ID=<UUID>
+    XNO_EDITOR_ID_SMALL=<UUID>
+    XNO_EDITOR_ID_MID=<UUID>
+    XNO_EDITOR_ID_LARGE=<UUID>
     XNO_TOKEN=<token>
 
 No hardcoded fallbacks — .env is required for LIVE submission only.
@@ -70,12 +79,26 @@ CSV_FIELDS = [
 ]
 
 
-def require_env():
-    """Return (editor_id, token, base_url) or None if missing."""
-    editor_id = os.getenv("XNO_EDITOR_ID")
+UNIVERSE_EDITOR_ENV = {
+    "VN-SMALL-CAP": "XNO_EDITOR_ID_SMALL",
+    "VN-MID-CAP": "XNO_EDITOR_ID_MID",
+    "VN-LARGE-CAP": "XNO_EDITOR_ID_LARGE",
+}
+
+
+def require_env(universe: str = "") -> tuple | None:
+    """Return (editor_id, token, base_url) for the given universe, or None if missing.
+
+    Picks the per-universe editor (XNO_EDITOR_ID_SMALL/MID/LARGE) when one is
+    configured, falling back to the legacy single XNO_EDITOR_ID."""
+    env_key = UNIVERSE_EDITOR_ENV.get(universe, "") or "XNO_EDITOR_ID"
+    editor_id = os.getenv(env_key) or os.getenv("XNO_EDITOR_ID")
     token = os.getenv("XNO_TOKEN")
     if not editor_id or not token:
-        print("[ERROR] Missing XNO_EDITOR_ID or XNO_TOKEN in .env")
+        if env_key == "XNO_EDITOR_ID":
+            print(f"[ERROR] Missing XNO_EDITOR_ID (or a per-universe editor id) or XNO_TOKEN in .env")
+        else:
+            print(f"[ERROR] Missing {env_key} (or XNO_EDITOR_ID) or XNO_TOKEN in .env")
         print("  Create .env in project root (see .env.example).")
         return None
     base = f"https://api.xnoquant.io/xalpha-api/v2/editors/{editor_id}"
@@ -358,7 +381,7 @@ def run_files_mode(files: list, args) -> int:
             return 0
 
     print("=== XNOQuant Submit & Check Tool (Files Mode) ===\n")
-    env = None if args.dry_run else require_env()
+    env = None if args.dry_run else require_env(universe)
     if not args.dry_run and not env:
         return 1
     if not args.dry_run and not confirm_universe(env[0], universe, files, args.yes):
@@ -437,7 +460,7 @@ def run_batch_mode(args) -> int:
 
     print(f"=== XNOQuant Submit & Check Tool (Batch: {universe}) ===\n")
 
-    env = None if args.dry_run else require_env()
+    env = None if args.dry_run else require_env(universe)
     if not args.dry_run and not env:
         return 1
     if not args.dry_run and not confirm_universe(env[0], universe, files, args.yes):
@@ -488,9 +511,6 @@ def main():
     # Interactive mode
     print("=== XNOQuant Submit & Check Tool (Interactive) ===\n")
     print("Nhap duong dan file alpha (hoac 'done' de ket thuc):\n")
-    env = require_env()
-    if not env:
-        return 1
 
     while True:
         fpath = input(">>> ").strip()
@@ -502,6 +522,9 @@ def main():
         if not universe:
             print("  [!] Khong infer duoc universe tu path — file phai nam trong output/stage_2/<cap>/")
             continue
+        env = require_env(universe)
+        if not env:
+            return 1
         print(f"[submit] {os.path.basename(fpath)} (universe {universe})")
         run_http_sequence(env, fpath, os.path.basename(fpath), universe, 1, None)
         print()

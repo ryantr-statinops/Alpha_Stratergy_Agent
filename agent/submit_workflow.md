@@ -78,11 +78,18 @@ Từ cURL đó lấy:
 Tạo file `.env` ở project root (đã có `.gitignore`, không lo lộ token):
 
 ```env
-XNO_EDITOR_ID="<paste-editor-uuid-here>"
+XNO_EDITOR_ID_SMALL="<editor-uuid-cho-VN-SMALL-CAP>"
+XNO_EDITOR_ID_MID="<editor-uuid-cho-VN-MID-CAP>"
+XNO_EDITOR_ID_LARGE="<editor-uuid-cho-VN-LARGE-CAP>"
 XNO_TOKEN="<paste-bearer-token-here>"
 ```
 
 Hoặc copy từ mẫu: `cp .env.example .env` và điền giá trị.
+
+> **Khuyến nghị: 1 editor / cap** — mỗi editor set cố định đúng universe trên UI
+> (`alpha.xnoquant.io/build`). Tool tự chọn editor theo cap folder, không cần đổi
+> UI giữa các lần submit. Còn lại `XNO_EDITOR_ID` (legacy, 1 editor dùng chung)
+> làm fallback nếu thiếu ID per-universe.
 
 > **Cách lấy EDITOR_ID và TOKEN:** xem mục "Cách lấy EDITOR_ID và TOKEN" bên dưới.
 
