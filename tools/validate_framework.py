@@ -122,7 +122,7 @@ def check_positions(code: str, filepath: str, mode: str) -> list:
 def validate_file(filepath: str) -> list:
     """Validate a single strategy file. Returns list of (file, line, issue)."""
     findings = []
-    abspath = os.path.join(OUTPUT_DIR, filepath)
+    abspath = os.path.join(OUTPUT_DIR, *filepath.split("/"))
     if not os.path.exists(abspath):
         return [(filepath, 0, "File missing")]
 
@@ -185,11 +185,16 @@ def validate_index() -> list:
             continue
         fname = parts[0]
         indexed_files.add(fname)
-        abspath = os.path.join(OUTPUT_DIR, fname)
+        abspath = os.path.join(OUTPUT_DIR, *fname.split("/"))
         if not os.path.exists(abspath):
             findings.append(("index.csv", i, f"Index references missing file: {fname}"))
 
-    actual_files = {f for f in os.listdir(OUTPUT_DIR) if f.endswith(".py")}
+    actual_files = set()
+    for root, _dirs, files in os.walk(OUTPUT_DIR):
+        for f in files:
+            if f.endswith(".py"):
+                rel = os.path.relpath(os.path.join(root, f), OUTPUT_DIR).replace("\\", "/")
+                actual_files.add(rel)
     orphaned = actual_files - indexed_files
     for f in sorted(orphaned):
         findings.append(("index.csv", 0, f"File not in index: {f}"))

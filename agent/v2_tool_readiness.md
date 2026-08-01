@@ -96,7 +96,7 @@
 
 3. **Kết quả CSV** ✅ — tách riêng `backtest/results_stage_2.csv` (không trộn với `results.csv` vòng 1).
 
-4. **Discovery** ✅ — `submit_and_check.py` quét `output/stage_2/` (không quét output gốc + success_alpha). Flag `--universe` ghi universe vào CSV cho pass check.
+4. **Discovery** ✅ — `submit_and_check.py` quét `output/stage_2/` (không quét output gốc + success_alpha). Universe **tự suy từ path** `output/stage_2/<cap>/...` (`resolve_universe`), `--universe` chỉ để ghi đè.
 
 ---
 
