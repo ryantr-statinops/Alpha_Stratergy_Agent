@@ -18,7 +18,7 @@ class CustomStrategy(SimpleAlgorithm):
         eps_change = self.feat.delta_panel(eps)
         eps_growth = self.feat.safe_divide_panel(eps_change, eps)
 
-        eligible = self.op.notna(eps) & (eps > 0) & self.op.notna(close)
+        eligible = (eps > 0) & (close > 0)
 
         signal = eps_growth
 
