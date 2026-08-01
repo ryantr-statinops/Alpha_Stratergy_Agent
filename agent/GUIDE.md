@@ -159,8 +159,10 @@ Quy trình vận hành Round 2 (không có tool sinh code — agent viết trự
 python tools/validate_framework.py
 
 # 3. SUBMIT lên XNOQuant (cần .env: XNO_EDITOR_ID + XNO_TOKEN)
-python tools/submit_and_check.py --batch --test --universe VN-SMALL-CAP   # test 1 file
-python tools/submit_and_check.py --batch --universe VN-SMALL-CAP          # submit hết
+#    Universe TỰ ĐỘNG suy từ path output/stage_2/<cap>/... (không cần --universe).
+#    Vẫn dùng --universe để ghi đè / lọc, hoặc --files cho 1 file.
+python tools/submit_and_check.py --batch --test    # test 1 file
+python tools/submit_and_check.py --batch           # submit hết (mỗi file ghi đúng universe của cap)
 
 # 4. REVIEW kết quả (backtest/results_stage_2.csv, PASS theo universe)
 python tools/check_results.py --detail --universe VN-SMALL-CAP
@@ -292,7 +294,11 @@ output/
 │   └── data_type_alpha/     *.py    # 48 data-type alpha strategies (manual)
 └── stage_2/                         # ACTIVE vòng 2 (Round 2 — daily equity) — agent viết trực tiếp
     ├── index.csv                    # Manifest vòng 2 (filepath,thesis_group,template,mode,universe,...)
-    └── *.py                         # Strategies Round 2 (VD Batch 1: 6 alpha đã gen + validate pass)
+    ├── vn_small_cap/                # 1 thư mục con / cap
+    │   ├── time_series/             #   + mode time_series (VD VnSmallEpsGrowthMomentum.py)
+    │   └── cross_sectional/         #   + mode cross_sectional (VD VnSmallCsEpsRank.py)
+    ├── vn_mid_cap/                  #   (VD VnMidTrendQuality.py / VnMidCsRoERank.py)
+    └── vn_large_cap/                #   (VD VnLargeRevenueStability.py / VnLargeCsValueMomentum.py)
 ```
 Xem `output/STATS.md` (do `tools/update_guide_stats.py` sinh ra) để biết số liệu chi tiết vòng 1.
 

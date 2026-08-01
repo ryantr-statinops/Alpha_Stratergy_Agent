@@ -33,13 +33,13 @@ def generate_stats(index_rows: list):
     for r in index_rows:
         mode = (r.get("mode") or "").strip()
         universe = (r.get("universe") or "").strip()
-        stage = (r.get("filepath") or "").strip().split("/")[0]
+        cap = (r.get("filepath") or "").strip().split("/")[0]
         if mode in by_mode:
             by_mode[mode] += 1
         if universe:
             by_universe[universe] = by_universe.get(universe, 0) + 1
-        if stage:
-            by_stage[stage] = by_stage.get(stage, 0) + 1
+        if cap:
+            by_stage[cap] = by_stage.get(cap, 0) + 1
 
     with open(STATS_PATH, "w", encoding="utf-8") as f:
         f.write(f"# Strategy Statistics (Round 2)\n\n")
@@ -54,7 +54,7 @@ def generate_stats(index_rows: list):
                 f.write(f"| {u} | {by_universe[u]} |\n")
         if by_stage:
             for s in sorted(by_stage):
-                f.write(f"| stage: {s} | {by_stage[s]} |\n")
+                f.write(f"| {s} | {by_stage[s]} |\n")
 
     print(f"Generated: {STATS_PATH}")
     print(f"  Total: {total}")

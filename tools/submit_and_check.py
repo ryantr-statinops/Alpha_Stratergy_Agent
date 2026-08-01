@@ -179,6 +179,29 @@ def submit_and_check(fpath: str, index: int, total: int, universe: str = "") -> 
     return True
 
 
+def infer_universe_from_path(fpath: str) -> str:
+    """Derive universe from output/stage_2/<cap>/... layout."""
+    norm = fpath.replace("\\", "/")
+    parts = norm.split("/")
+    for i, p in enumerate(parts):
+        if p == "stage_2" and i + 1 < len(parts):
+            cap = parts[i + 1].lower()
+            mapping = {
+                "vn_small_cap": "VN-SMALL-CAP",
+                "vn_mid_cap": "VN-MID-CAP",
+                "vn_large_cap": "VN-LARGE-CAP",
+            }
+            return mapping.get(cap, "")
+    return ""
+
+
+def resolve_universe(fpath: str, explicit: str) -> str:
+    """Prefer explicit --universe; fall back to path-derived universe."""
+    if explicit:
+        return explicit
+    return infer_universe_from_path(fpath)
+
+
 def discover_batch_files() -> list[str]:
     """Discover Round-2 strategy files in output/stage_2/."""
     roots = [os.path.join("output", "stage_2")]
@@ -221,7 +244,7 @@ def main():
                 print(f"[{total}] {name} — da pass, skip (dung --force de submit lai)\n")
                 continue
             print(f"[{total}] {name}")
-            if submit_and_check(fpath, total, len(args.files), args.universe):
+            if submit_and_check(fpath, total, len(args.files), resolve_universe(fpath, args.universe)):
                 ok_count += 1
             print()
         print(f"=== Hoan thanh: {ok_count}/{total} submitted OK ===")
@@ -258,7 +281,7 @@ def main():
             total += 1
             name = os.path.basename(fpath)
             print(f"[{total}] {name}")
-            if submit_and_check(fpath, total, len(filtered), args.universe):
+            if submit_and_check(fpath, total, len(filtered), resolve_universe(fpath, args.universe)):
                 ok_count += 1
             print()
 
@@ -289,7 +312,7 @@ def main():
                 continue
         total += 1
         print(f"[{total}] {name}")
-        if submit_and_check(fpath, total, None, args.universe):
+        if submit_and_check(fpath, total, None, resolve_universe(fpath, args.universe)):
             ok_count += 1
         print()
 

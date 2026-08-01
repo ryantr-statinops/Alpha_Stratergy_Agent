@@ -1,7 +1,7 @@
 filepath,thesis_group,template,mode,universe,description,params
-VnSmallEpsGrowthMomentum.py,eps_growth_momentum,time_series,time_series,VN-SMALL-CAP,EPS q/q improvement + price above trend with volume confirmation,2-tier long
-VnMidTrendQuality.py,roe_quality_trend,time_series,time_series,VN-MID-CAP,ROE floor + improving profit + equity/asset buffer in uptrend,2-tier long
-VnLargeRevenueStability.py,cashflow_stability,time_series,time_series,VN-LARGE-CAP,Positive operating cash flow + stable margin above 60d trend,2-tier long
-VnSmallCsEpsRank.py,eps_rank_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Cross-sectional rank on quarterly EPS growth (market-neutral),rank_demean_l1
-VnMidCsRoERank.py,roe_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on ROE (market-neutral),rank_demean_l1
-VnLargeCsValueMomentum.py,value_momentum_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Composite earnings yield + price momentum z-score rank (market-neutral),rank_demean_l1
+vn_small_cap/time_series/VnSmallEpsGrowthMomentum.py,eps_growth_momentum,time_series,time_series,VN-SMALL-CAP,EPS q/q improvement + price above trend with volume confirmation,2-tier long
+vn_mid_cap/time_series/VnMidTrendQuality.py,roe_quality_trend,time_series,time_series,VN-MID-CAP,ROE floor + improving profit + equity/asset buffer in uptrend,2-tier long
+vn_large_cap/time_series/VnLargeRevenueStability.py,cashflow_stability,time_series,time_series,VN-LARGE-CAP,Positive operating cash flow + stable margin above 60d trend,2-tier long
+vn_small_cap/cross_sectional/VnSmallCsEpsRank.py,eps_rank_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Cross-sectional rank on quarterly EPS growth (market-neutral),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsRoERank.py,roe_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on ROE (market-neutral),rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsValueMomentum.py,value_momentum_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Composite earnings yield + price momentum z-score rank (market-neutral),rank_demean_l1

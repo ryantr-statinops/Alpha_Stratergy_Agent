@@ -44,6 +44,7 @@ ALPHA_BOT/
 ├── output/                 # Mã nguồn chiến lược hoàn chỉnh (.py)
 │   ├── index.csv           # Master manifest tra cứu strategy (Round 2: cột universe)
 │   └── stage_2/            # Round 2 ACTIVE — daily equity, 3 cap, 2 mode
+│       └── <cap>/<mode>/   #   VD vn_small_cap/time_series/ — 1 subdir / cap × mode
 ├── tools/                  # Tool support (validate/submit/check — Round 2 không có generator)
 └── README.md               # Tài liệu hướng dẫn dành cho AI Agent
 ```
@@ -296,9 +297,9 @@ Các file xuất ra phải:
 
 ### Workflow (Round 2)
 
-1. Agent viết strategy vào `output/stage_2/` + ghi `output/index.csv` (cột `universe`)
+1. Agent viết strategy vào `output/stage_2/<cap>/<mode>/` (VD `vn_small_cap/time_series/`) + ghi `output/index.csv` (cột `filepath` = `<cap>/<mode>/<file>.py`)
 2. **`python tools/validate_framework.py`** — check compliance (mode contract, point-in-time, bounds)
-3. **`python tools/submit_and_check.py --batch --universe VN-<CAP>`** — PUT → verify → simulate
+3. **`python tools/submit_and_check.py --batch`** — PUT → verify → simulate; universe tự suy từ path
    - `--test` = submit 1 file đầu (test), `.env` bắt buộc, quét `output/stage_2/`
 4. **`python tools/check_results.py --universe VN-<CAP>`** — review PASS theo ngưỡng từng cap
 
