@@ -23,6 +23,7 @@
 | 7 | `syntax/parameters.md` | Parameter chuẩn daily (ratio 1:3) | **Khi cần param** |
 | 8 | `template_example/VN-*/` | 14 examples Round 2 (BANK/INSURANCE/SECURITIES/TOP30) | **Khi tham khảo mẫu** |
 | 9 | `agent/migration_plan_v2.md` | Kế hoạch migration V1→V2 (Phase A done, B done, C pending) | **Khi cần bối cảnh** |
+| 10 | `idea/planning_alpha/stage_2/` | **Idea Round 2** — mỗi alpha ghi 1 file markdown trước khi gen | **Khi bắt đầu gen alpha** |
 
 ---
 
@@ -33,13 +34,13 @@
 | 1 | `context_session/session_context.md` | Trạng thái dự án hiện tại: 1774 strategies, tiến độ, blocking issues | **Đầu phiên** |
 | 2 | `README.md` | Tổng quan project, 5-step workflow, project structure | **Đầu phiên** |
 | 3 | `template_example/(Old)vnfuture/strategy_framework.md` | Master spec vòng 1 (intraday futures) | **Chỉ khi làm việc với vòng 1** |
-| 4 | `data/vietnam_market_characteristics.md` | Đặc thù thị trường VN → thiết kế strategy | **Trước khi code** |
+| 4 | `data/vietnam_market_characteristics_v1.md` | Đặc thù thị trường VN futures vòng 1 → thiết kế strategy | **Trước khi code (vòng 1)** |
 | 5 | `idea/hypothesis/hypothesis_framework.md` | Acceptance criteria: 10-metric weighted scorecard | **Khi review hypothesis** |
 | 6 | `syntax/INDEX.md` | Cửa vào cho toàn bộ syntax docs | **Khi bắt đầu code** |
-| 7 | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | 3 enhancements (return_roll, tiered sizing, session gating) | **Khi cần hiểu code vòng 1** |
-| 8 | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants | **Khi cần thêm ý tưởng** |
-| 9 | `idea/planning_alpha/backtest_plan.md` | Kế hoạch backtest vòng 1 | **Khi bắt đầu backtest** |
-| 10 | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Kế hoạch mở rộng lên 10000 strategies | **Khi planning scale** |
+| 7 | `idea/planning_alpha/stage_1/enhancement_return_roll_tiered_session.md` | 3 enhancements (return_roll, tiered sizing, session gating) | **Khi cần hiểu code vòng 1** |
+| 8 | `idea/planning_alpha/stage_1/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants | **Khi cần thêm ý tưởng** |
+| 9 | `idea/planning_alpha/stage_1/backtest_plan.md` | Kế hoạch backtest vòng 1 | **Khi bắt đầu backtest** |
+| 10 | `idea/planning_alpha/stage_1/scaling_proposal_500_10000_strategies.md` | Kế hoạch mở rộng lên 10000 strategies | **Khi planning scale** |
 
 ---
 
@@ -54,6 +55,7 @@
   `cross_sectional` (`_panel` suffix, `set_portfolio_positions`, market-neutral)
 - **Universes:** VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP (daily)
 - No pandas/numpy, no loops/lambdas, no global aggregations, point-in-time fundamentals
+- Chọn feature theo cap: `data/vietnam_market_characteristics.md` (SMALL→growth/earnings, MID→quality/ROE, LARGE→cashflow/value)
 
 ### Position Order (time_series)
 ```python
@@ -76,7 +78,7 @@ self.set_positions(long_setup, position=1)     # Long second
 self.set_positions(short_setup, position=-1)   # Short third
 ```
 
-### Thesis Groups (35 groups)
+### Thesis Groups (Vòng 1 — ARCHIVED, 35 groups)
 Xem danh sách đầy đủ tại `output/` — các thư mục `thesis_NN_name/`.
 Các nhóm chính:
 | # | Thesis | Timeframes | Key Data |
@@ -110,7 +112,8 @@ Ngoài ra còn: `single_feat_alpha/` (47 files) và `multi_feat_alpha/` (9 files
 | macd | 8 | 21 / signal 5 | — | theo sample |
 | fundamental | `pct_change(x, periods=1)` + `fillna(0)` | — | — | step-change khi report mới |
 
-### Acceptance Criteria (10-metric weighted)
+### Acceptance Criteria (Vòng 1 — ARCHIVED, 10-metric weighted)
+> Round 2 dùng pass criteria **theo universe** tại `tools/common.py` (`PASS_THRESHOLDS_BY_UNIVERSE`) + `tools/check_results.py`.
 | Metric | Weight | Target | Must-pass |
 |--------|:------:|--------|:---------:|
 | Sharpe Ratio | High | ≥ 2.0 (user) / ≥ 1.2 (competition) | ✅ |
@@ -127,7 +130,7 @@ Ngoài ra còn: `single_feat_alpha/` (47 files) và `multi_feat_alpha/` (9 files
 
 PASS: ≥ 8.0/13pts with Sharpe, CAGR, Max DD must-pass.
 
-### Công thức Sharpe ≥ 2.0
+### Công thức Sharpe ≥ 2.0 (Vòng 1 — ARCHIVED, futures intraday)
 ```
 Sharpe ≥ 2.0 =
   (ADX > 22)                        # Filter noise
@@ -146,6 +149,9 @@ Sharpe ≥ 2.0 =
 Quy trình vận hành Round 2 (không có tool sinh code — agent viết trực tiếp):
 
 ```bash
+# 0. IDEA → GHI FILE → DUYỆT → GEN (bắt buộc, xem Workflow Alpha Round 2 bên dưới)
+#    Mỗi alpha phải có file markdown trong idea/planning_alpha/stage_2/ trước khi gen code.
+
 # 1. VIẾT STRATEGY theo blueprint → tạo file output/stage_2/ + ghi index.csv
 #    (theo agent/framework_build_guide.md, Level 1-5, 1 trong 2 mode)
 
@@ -162,12 +168,21 @@ python tools/check_results.py --detail --universe VN-SMALL-CAP
 # 5. COMMIT + PUSH
 ```
 
+### Workflow Alpha Round 2 (IDEA → FILE → DUYỆT → GEN)
+
+1. **IDEA:** nghĩ ra alpha + lý do chọn cap (`VN-SMALL-CAP` / `VN-MID-CAP` / `VN-LARGE-CAP`).
+2. **GHI FILE** (bắt buộc, trước khi gen): tạo file `.md` tại `idea/planning_alpha/stage_2/`
+   — format: `concept → thesis → universe → mode → level → fields → logic → risk`.
+3. **DUYỆT:** user review file idea; chỉ gen code sau khi approve.
+4. **GEN:** viết code → `output/stage_2/` + ghi `output/index.csv` (cột `universe`).
+5. **VALIDATE + SUBMIT + REVIEW** (bước 2-4 pipeline trên).
+
 ### Rule — Batch Gen & Universe Assignment (bắt buộc)
 
 Mỗi lần gen `n` alpha, phải khai báo rõ alpha nào được thiết kế cho cap nào (trong 3 cap), trước khi viết code:
 
 1. **Khai báo trước khi gen:** nêu rõ `n`, danh sách alpha + `universe` mục tiêu (`VN-SMALL-CAP` / `VN-MID-CAP` / `VN-LARGE-CAP`) + `mode` (`time_series` / `cross_sectional`).
-2. **Ghi vào file kế hoạch:** mỗi batch có 1 file `.md` (vd `output/stage_2/batch_NN_plan.md`) hoặc mục trong `agent/GUIDE.md` liệt kê bảng: alpha → universe → mode → level.
+2. **Khai báo trong response:** bảng alpha → universe → mode → level + 1 dòng lý do chọn cap được trình bày **trực tiếp trong câu trả lời cho user** (không ghi thành file markdown riêng — nguồn chính thức là `output/index.csv` cột `universe`).
 3. **Thiết kế riêng theo cap:** tham số + thesis phải hợp cap đó (vd small-cap biến động mạnh hơn → chấp nhận MaxDD lớn hơn; large-cap ổn định → yêu cầu Sharpe cao hơn). Không dùng chung 1 alpha cho mọi cap.
 4. **Ghi universe vào `index.csv`** cho từng file (cột `universe`) — để `check_results.py` đánh PASS đúng ngưỡng của cap.
 5. **Submit theo cap:** gọi `submit_and_check.py --batch --universe <CAP>` riêng cho từng cap.
@@ -186,7 +201,7 @@ Ví dụ khai báo batch:
 Quy trình 7 bước sau khi nghĩ ra alpha idea mới (vòng 1 — futures intraday):
 
 ```bash
-# 1. NGHĨ Ý TƯỞNG → ghi vào idea/planning_alpha/alpha_data_type_ideas.md
+# 1. NGHĨ Ý TƯỞNG → ghi vào idea/planning_alpha/stage_1/alpha_data_type_ideas.md
 
 # 2. CHECK TRÙNG (tránh viết lại strategy đã có)
 python backtest/check_duplicate.py --check
@@ -218,8 +233,8 @@ Khi gặp vấn đề, tra theo triệu chứng:
 | **Không biết field nào dùng được** | `syntax/data_syntax.md` | 496 fields + mode contract |
 | **Trộn series/panel bị lỗi** | `template_example/strategy_framework.md` §Mode Contract | Chọn 1 mode, đúng suffix |
 | **Fundamentals bị look-ahead** | `template_example/strategy_framework.md` §5 | Chỉ dùng sau ngày công bố, `.notna()` |
-| **Sharpe < 1.5 (vòng 1)** | `data/vietnam_market_characteristics.md` §5 (Sharpe Rules) | Thiếu ADX filter, return_roll, volume confirm |
-| **Max DD > -40% (vòng 1)** | `data/vietnam_market_characteristics.md` §7 (Risk Management) | Thiếu session gating, exit quá chậm |
+| **Sharpe < 1.5 (vòng 1)** | `data/vietnam_market_characteristics_v1.md` §5 (Sharpe Rules) | Thiếu ADX filter, return_roll, volume confirm |
+| **Max DD > -40% (vòng 1)** | `data/vietnam_market_characteristics_v1.md` §7 (Risk Management) | Thiếu session gating, exit quá chậm |
 | **Strategy không publish được** | `template_example/strategy_framework.md` §Checklist | Docstring thiếu thesis, position bounds sai |
 | **Look-ahead bias** | `template_example/strategy_framework.md` §Data Access | Dùng `pv_close` thay vì `pv_open` |
 | **Generator ra code sai** | `tools/generate_strategies.py` search `inject_filters` | Fix generator, regenerate |
@@ -227,10 +242,10 @@ Khi gặp vấn đề, tra theo triệu chứng:
 | **Cần thêm template mới** | `tools/generate_strategies.py` search `TEMPLATES` | Thêm vào TEMPLATES dict |
 | **Cần validate output** | `python tools/validate_framework.py` | Run validator |
 | **Cần hiểu VN market behavior** | `data/vietnam_market_characteristics.md` | Full analysis + mapping table |
-| **Cần cải thiện Sharpe** | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | 3 enhancements đã implement (A/B/C) |
-| **Cần thêm alpha ideas** | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 variants tham khảo |
-| **Cần planning scale** | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Roadmap mở rộng |
-| **Cần bắt đầu backtest** | `idea/planning_alpha/backtest_plan.md` | Decision rules, tracking |
+| **Cần cải thiện Sharpe** | `idea/planning_alpha/stage_1/enhancement_return_roll_tiered_session.md` | 3 enhancements đã implement (A/B/C) |
+| **Cần thêm alpha ideas** | `idea/planning_alpha/stage_1/alpha_generation_rolling_mean_quantile.md` | ~890 variants tham khảo |
+| **Cần planning scale** | `idea/planning_alpha/stage_1/scaling_proposal_500_10000_strategies.md` | Roadmap mở rộng |
+| **Cần bắt đầu backtest** | `idea/planning_alpha/stage_1/backtest_plan.md` | Decision rules, tracking |
 | **Cần check duplicate trước khi viết alpha mới** | `backtest/check_duplicate.py --check` | Run duplicate checker |
 | **Cần tìm strategy theo feature** | `backtest/check_duplicate.py --feature adx` | Search by indicator |
 
@@ -275,7 +290,9 @@ output/
 │   │   └── tier2/           *.py    # 14 Tier 2 single-feat strategies
 │   ├── multi_feat_alpha/    *.py    # 9 multi-feat strategies (manual)
 │   └── data_type_alpha/     *.py    # 48 data-type alpha strategies (manual)
-└── stage_2/                         # ACTIVE vòng 2 (Round 2 — daily equity) — tạo trống
+└── stage_2/                         # ACTIVE vòng 2 (Round 2 — daily equity) — agent viết trực tiếp
+    ├── index.csv                    # Manifest vòng 2 (filepath,thesis_group,template,mode,universe,...)
+    └── *.py                         # Strategies Round 2 (VD Batch 1: 6 alpha đã gen + validate pass)
 ```
 Xem `output/STATS.md` (do `tools/update_guide_stats.py` sinh ra) để biết số liệu chi tiết vòng 1.
 
@@ -299,15 +316,20 @@ Nguyên tắc: commit nhỏ, commit thường xuyên → dễ rollback, dễ rev
 |------|-------------------|
 | `agent/stage_2_guideline.md` | Every Round-2 session start — official rules |
 | `agent/framework_build_guide.md` | Before generating Round-2 strategies |
+| `data/vietnam_market_characteristics.md` | Round 2 — đặc thù 3 cap → chọn feature nhanh |
 | `agent/migration_plan_v2.md` | Understanding V1→V2 migration status |
 | `context_session/session_context.md` | Every session start |
-| `tools/generate_strategies.py` | ALL code changes go here (NEVER patch output files) |
+| `tools/common.py` | Round 2 — `PASS_THRESHOLDS_BY_UNIVERSE`, `is_pass()` |
+| `tools/submit_and_check.py` | Round 2 — submit `output/stage_2/` → `backtest/results_stage_2.csv` |
+| `tools/check_results.py` | Round 2 — review results theo universe |
+| `tools/validate_framework.py` | Round 2 — validate compliance sau khi gen |
+| `tools/generate_strategies.py` | **VÒNG 1** (generator — KHÔNG dùng cho Round 2; Round 2 agent viết trực tiếp `output/stage_2/`) |
 | `tools/validate_framework.py` | After every generation |
-| `idea/planning_alpha/enhancement_return_roll_tiered_session.md` | Understanding implemented enhancements (A/B/C) |
-| `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants for new ideas |
-| `idea/planning_alpha/backtest_plan.md` | Starting backtest workflow |
-| `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` | Scale-up roadmap |
-| `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` | First strategy design reference |
+| `idea/planning_alpha/stage_1/enhancement_return_roll_tiered_session.md` | Understanding implemented enhancements (A/B/C) |
+| `idea/planning_alpha/stage_1/alpha_generation_rolling_mean_quantile.md` | ~890 alpha variants for new ideas |
+| `idea/planning_alpha/stage_1/backtest_plan.md` | Starting backtest workflow |
+| `idea/planning_alpha/stage_1/scaling_proposal_500_10000_strategies.md` | Scale-up roadmap |
+| `idea/planning_alpha/stage_1/strategy_001_mean_quantile_rsi.md` | First strategy design reference |
 | `idea/hypothesis/hyp_thesis_01_momentum.md` → `08_multifactor.md` | Hypothesis docs (30 hypotheses) |
 | `output/STATS.md` | Auto-generated strategy count stats (run `tools/update_guide_stats.py`) |
 | `backtest/check_duplicate.py` | Check duplicates before writing new alpha |
