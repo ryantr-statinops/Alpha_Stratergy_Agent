@@ -65,7 +65,7 @@ Submit Round-2 strategy code (in `output/stage_2/`) to XNOQuant via API and fetc
   - `--start N` — start from index N in batch
   - `--limit N` — max N files in batch
   - `--universe VN-...` — FILTER chọn 1 cap (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP). Universe ghi CSV suy từ path, KHÔNG bị override. Batch trộn nhiều cap không có flag → từ chối.
-- **Config:** `.env` in project root with `XNO_EDITOR_ID` and `XNO_TOKEN` (required — no hardcoded fallbacks)
+- **Config:** `.env` in project root — **1 editor per cap** (`XNO_EDITOR_ID_SMALL` / `XNO_EDITOR_ID_MID` / `XNO_EDITOR_ID_LARGE`) + `XNO_TOKEN`; legacy single `XNO_EDITOR_ID` dùng làm fallback. (required — no hardcoded fallbacks)
 - **Flow per file:** update → verify (nếu update fail thì dừng) → simulate (nếu verify fail thì dừng) → poll metrics (timeout 90s) → ghi 1 row CSV
 - **Idempotency:** skip theo `(filepath, universe)` — basename trùng ở cap khác KHÔNG bị coi là đã submit
 - **Results:** `backtest/results_stage_2.csv`
