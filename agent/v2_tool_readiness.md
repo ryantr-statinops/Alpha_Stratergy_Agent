@@ -65,8 +65,8 @@
 | `tools/generate_strategies.py` | Generator vòng 1 (TEMPLATES dict, inject_filters). V2 không có tool sinh code — agent viết trực tiếp |
 | `tools/gen_single_feat.py` | Sinh `SF_*_15min` — tham số/field vòng 1 |
 | `backtest/` toàn bộ (run.py, backtest.py, evaluate.py, regime.py, runners/, features/, data/, check_duplicate.py) | Local backtest engine VN30F futures 5m/15m — Round 2 dùng backtest trên nền tảng XNOQuant, không local |
-| `data/` (vietnam_market_characteristics.md, VnFuture.md) | Phân tích VN market futures vòng 1 |
-| `idea/hypothesis/`, `idea/planning_alpha/` | Acceptance criteria + ideas vòng 1 |
+| `data/vietnam_market_characteristics_v1.md`, `data/VnFuture.md` | Phân tích VN market futures vòng 1 (bản v1 đã chuyển sang `_v1.md`; VnFuture.md đánh dấu legacy) |
+| `idea/hypothesis/`, `idea/planning_alpha/stage_1/` | Acceptance criteria + ideas vòng 1 (stage_2/ là idea Round 2 — ACTIVE) |
 | `backtest/results.csv`, `backtest/strategy_index.json` | Kết quả vòng 1 |
 | `template_example/(Old)vnfuture/` | Framework vòng 1 |
 | `output/stage_1/` | Toàn bộ strategy vòng 1 đã archive |
