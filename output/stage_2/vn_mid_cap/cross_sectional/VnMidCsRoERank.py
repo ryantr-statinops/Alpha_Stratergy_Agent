@@ -17,7 +17,7 @@ class CustomStrategy(SimpleAlgorithm):
 
         roe = self.feat.safe_divide_panel(net_profit, equity)
 
-        eligible = self.op.notna(net_profit) & (equity > 0) & self.op.notna(close)
+        eligible = (equity > 0) & (close > 0)
 
         signal = roe
 

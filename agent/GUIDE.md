@@ -155,14 +155,16 @@ Quy trình vận hành Round 2 (không có tool sinh code — agent viết trự
 # 1. VIẾT STRATEGY theo blueprint → tạo file output/stage_2/ + ghi index.csv
 #    (theo agent/framework_build_guide.md, Level 1-5, 1 trong 2 mode)
 
-# 2. VALIDATE compliance (mode contract, point-in-time, bounds)
-python tools/validate_framework.py
+# 2. VALIDATE compliance (mode contract, point-in-time, bounds) — strict bắt cả warning
+python tools/validate_framework.py --strict
 
-# 3. SUBMIT lên XNOQuant (cần .env: XNO_EDITOR_ID + XNO_TOKEN)
-#    Universe TỰ ĐỘNG suy từ path output/stage_2/<cap>/... (không cần --universe).
-#    Vẫn dùng --universe để ghi đè / lọc, hoặc --files cho 1 file.
-python tools/submit_and_check.py --batch --test    # test 1 file
-python tools/submit_and_check.py --batch           # submit hết (mỗi file ghi đúng universe của cap)
+# 3. SUBMIT lên XNOQuant (cần .env: XNO_EDITOR_ID + XNO_TOKEN; universe chọn THỦ CÔNG trên UI)
+#    Universe trong CSV luôn suy từ path output/stage_2/<cap>/... (KHÔNG ghi đè bằng flag).
+#    --universe chỉ là FILTER chọn 1 cap (single editor => không submit nhiều cap cùng lúc).
+#    --dry-run xem trước editor/universe/files — không gọi API.
+python tools/submit_and_check.py --batch --dry-run --universe VN-SMALL-CAP   # xem trước (an toàn)
+python tools/submit_and_check.py --batch --test --universe VN-SMALL-CAP      # live 1 file đầu (chọn đúng universe trên UI trước)
+python tools/submit_and_check.py --batch --universe VN-SMALL-CAP             # submit cả cap
 
 # 4. REVIEW kết quả (backtest/results_stage_2.csv, PASS theo universe)
 python tools/check_results.py --detail --universe VN-SMALL-CAP
@@ -176,7 +178,7 @@ python tools/check_results.py --detail --universe VN-SMALL-CAP
 2. **GHI FILE** (bắt buộc, trước khi gen): tạo file `.md` tại `idea/planning_alpha/stage_2/`
    — format: `concept → thesis → universe → mode → level → fields → logic → risk`.
 3. **DUYỆT:** user review file idea; chỉ gen code sau khi approve.
-4. **GEN:** viết code → `output/stage_2/` + ghi `output/index.csv` (cột `universe`).
+4. **GEN:** viết code → `output/stage_2/<cap>/<mode>/` + ghi `output/index.csv` (cột `filepath` = `<cap>/<mode>/<file>.py`).
 5. **VALIDATE + SUBMIT + REVIEW** (bước 2-4 pipeline trên).
 
 ### Rule — Batch Gen & Universe Assignment (bắt buộc)
@@ -187,7 +189,7 @@ Mỗi lần gen `n` alpha, phải khai báo rõ alpha nào được thiết kế
 2. **Khai báo trong response:** bảng alpha → universe → mode → level + 1 dòng lý do chọn cap được trình bày **trực tiếp trong câu trả lời cho user** (không ghi thành file markdown riêng — nguồn chính thức là `output/index.csv` cột `universe`).
 3. **Thiết kế riêng theo cap:** tham số + thesis phải hợp cap đó (vd small-cap biến động mạnh hơn → chấp nhận MaxDD lớn hơn; large-cap ổn định → yêu cầu Sharpe cao hơn). Không dùng chung 1 alpha cho mọi cap.
 4. **Ghi universe vào `index.csv`** cho từng file (cột `universe`) — để `check_results.py` đánh PASS đúng ngưỡng của cap.
-5. **Submit theo cap:** gọi `submit_and_check.py --batch --universe <CAP>` riêng cho từng cap.
+5. **Submit theo cap:** gọi `submit_and_check.py --batch --universe <CAP>` riêng cho từng cap (flag là FILTER; universe thực ghi CSV suy từ path cap).
 
 Ví dụ khai báo batch:
 | # | Alpha | Universe | Mode | Level |
@@ -242,7 +244,7 @@ Khi gặp vấn đề, tra theo triệu chứng:
 | **Generator ra code sai** | `tools/generate_strategies.py` search `inject_filters` | Fix generator, regenerate |
 | **Không biết tham số nào cho TF nào** | `syntax/parameters.md` (Round 2) / `agent/GUIDE.md` §Window Sizing (vòng 1) | Bảng tham số đầy đủ |
 | **Cần thêm template mới** | `tools/generate_strategies.py` search `TEMPLATES` | Thêm vào TEMPLATES dict |
-| **Cần validate output** | `python tools/validate_framework.py` | Run validator |
+| **Cần validate output** | `python tools/validate_framework.py --strict` | Run validator (strict bắt warning) |
 | **Cần hiểu VN market behavior** | `data/vietnam_market_characteristics.md` | Full analysis + mapping table |
 | **Cần cải thiện Sharpe** | `idea/planning_alpha/stage_1/enhancement_return_roll_tiered_session.md` | 3 enhancements đã implement (A/B/C) |
 | **Cần thêm alpha ideas** | `idea/planning_alpha/stage_1/alpha_generation_rolling_mean_quantile.md` | ~890 variants tham khảo |
@@ -284,7 +286,9 @@ python tools/update_guide_stats.py
 ## Output Structure
 ```
 output/
-├── INDEX.md                         # stage_1 = archive (vòng 1), stage_2 = active (vòng 2)
+├── index.csv                        # Manifest Round 2 (filepath,thesis_group,template,mode,universe,description,params)
+│                                    #   filepath = <cap>/<mode>/<file>.py; universe suy từ cap
+├── STATS.md                         # Round 2 stats (do tools/update_guide_stats.py sinh)
 ├── stage_1/                         # ARCHIVE vòng 1 (VNFuture intraday futures)
 │   ├── index.csv                    # Strategies manifest vòng 1 (xem STATS.md)
 │   ├── thesis_NN_name/  TF/*.py     # Generated hypotheses (35 groups)
@@ -293,14 +297,13 @@ output/
 │   ├── multi_feat_alpha/    *.py    # 9 multi-feat strategies (manual)
 │   └── data_type_alpha/     *.py    # 48 data-type alpha strategies (manual)
 └── stage_2/                         # ACTIVE vòng 2 (Round 2 — daily equity) — agent viết trực tiếp
-    ├── index.csv                    # Manifest vòng 2 (filepath,thesis_group,template,mode,universe,...)
     ├── vn_small_cap/                # 1 thư mục con / cap
     │   ├── time_series/             #   + mode time_series (VD VnSmallEpsGrowthMomentum.py)
     │   └── cross_sectional/         #   + mode cross_sectional (VD VnSmallCsEpsRank.py)
     ├── vn_mid_cap/                  #   (VD VnMidTrendQuality.py / VnMidCsRoERank.py)
     └── vn_large_cap/                #   (VD VnLargeRevenueStability.py / VnLargeCsValueMomentum.py)
 ```
-Xem `output/STATS.md` (do `tools/update_guide_stats.py` sinh ra) để biết số liệu chi tiết vòng 1.
+Xem `output/STATS.md` (do `tools/update_guide_stats.py` sinh ra) để biết số liệu Round 2.
 
 ---
 
