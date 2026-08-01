@@ -31,26 +31,20 @@ Mục đích cốt lõi của không gian làm việc này là giúp AI Agent đ
 
 ```text
 ALPHA_BOT/
-├── data/                   # Tài liệu về dữ liệu đầu vào (OHLCV, Futures, VN30, DJI)
-├── syntax/                 # Catalog + usage guide cho data/feature/operations
+├── data/                   # Đặc thù thị trường + hướng dẫn chọn feature (Round 2), futures v1 (legacy)
+├── syntax/                 # Catalog + usage guide cho data/feature/operations (Round 2)
 ├── template_example/       # Framework chuẩn + strategy mẫu chạy được trên XNOQuant
 │   └── strategy_framework.md   # **Master specification** — đọc đầu tiên
 ├── idea/                   # Nơi lưu trữ các ý tưởng nghiên cứu (.md)
-│   ├── planning_alpha/     # Kế hoạch phát triển Alpha theo từng chủ đề
+│   ├── planning_alpha/
+│   │   ├── stage_1/        # Idea vòng 1 (futures intraday — archived)
+│   │   └── stage_2/        # Idea Round 2 — mỗi alpha ghi 1 file trước khi gen
 │   ├── hypothesis/         # Giả thuyết kiểm thử, tiêu chí chấm điểm, design guidelines
 │   └── stage_overview/     # Ghi lại tiến độ và lịch sử phiên làm việc
-├── output/                 # Mã nguồn chiến lược hoàn chỉnh (.py) — theo thesis group / timeframe
-│   ├── index.csv           # Master manifest tra cứu strategy
-│   ├── thesis_01_momentum/      # Momentum strategies (5, 15, 30, 60 min)
-│   ├── thesis_02_trend/         # Trend following strategies
-│   ├── thesis_03_mean_reversion/ # Mean reversion strategies
-│   ├── thesis_04_breakout/      # Breakout strategies
-│   ├── thesis_05_cross_market/  # Cross-market (VN30, DJI) strategies
-│   ├── thesis_06_volume_flow/   # Volume & flow strategies
-│   ├── thesis_07_intraday_session/ # Intraday session strategies
-│   └── thesis_08_multifactor/   # Multi-factor composite strategies
-├── tools/                  # Batch generator scripts
-│   └── generate_strategies.py
+├── output/                 # Mã nguồn chiến lược hoàn chỉnh (.py)
+│   ├── index.csv           # Master manifest tra cứu strategy (Round 2: cột universe)
+│   └── stage_2/            # Round 2 ACTIVE — daily equity, 3 cap, 2 mode
+├── tools/                  # Tool support (validate/submit/check — Round 2 không có generator)
 └── README.md               # Tài liệu hướng dẫn dành cho AI Agent
 ```
 
@@ -82,25 +76,26 @@ Trước khi thực hiện bất kỳ yêu cầu nào từ người dùng, AI Ag
 ### `data/`
 
 - Hiểu cách truy cập dữ liệu thị trường.
-- Ví dụ: `self.data.pv_close`, `self.data.fut_matched_volume_vn30f1m_1d`.
+- Round 2 (equity): `self.data.pv_close`, `self.data.fun_is_eps_basis_quarterly`, `self.data.fun_is_net_profit_loss_after_tax_quarterly_panel`.
+- Ví dụ vòng 1 (futures — legacy): `self.data.fut_matched_volume_vn30f1m_1d`.
 - Không sử dụng tên biến trùng với từ khóa của hệ thống.
   - ✅ `open_price`
   - ❌ `open`
 
 Chi tiết xem tại [`syntax/data_syntax.md`](syntax/data_syntax.md).
 
-#### Đặc thù thị trường Việt Nam
+#### Đặc thù thị trường Việt Nam (Round 2 — equity fundamental)
 
-Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_characteristics.md) phân tích chi tiết:
-- Retail 80-90% → herding, overreaction, panic sell
-- Đòn bẩy phái sinh 1:6-1:8 → margin call cascade, forced momentum
-- Session microstructure → pre-cash, lunch dead zone, ATC manipulation
-- Basis volatility → cross-market signal
-- **Mapping table**: đặc thù → signal → entry/exit rule → templates áp dụng
-- **Sharpe optimization rules**: công thức đạt Sharpe ≥ 2.0
-- **Parameter guidelines**: regime detection, tham số từng chế độ thị trường
+Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_characteristics.md) (bản Round 2) phân tích chi tiết:
+- Retail 80-90% → fundamental mispricing tồn tại lâu, growth-momentum/rank có edge
+- Tin nội tại chi phối → biến động quanh ngày công bố BCTC, gap risk
+- Thanh khoản tập trung → large/mid cap khả thi, small cap thận trọng
+- BCTC công bố chậm → **bắt buộc point-in-time**, `.notna()`, không backfill
+- **Feature Selection per cap**: SMALL → growth/earnings; MID → quality/ROE; LARGE → cashflow/value
+- **Fields verified theo catalog**: ưu tiên dùng tránh lỗi submit
+- Bản v1 (futures VN30F1M intraday) đã chuyển sang [`data/vietnam_market_characteristics_v1.md`](data/vietnam_market_characteristics_v1.md)
 
-#### Danh sách trường VN30 Index
+#### Danh sách trường VN30 Index (vòng 1 — legacy)
 
 | Trường | Ý nghĩa |
 |--------|---------|
@@ -110,7 +105,7 @@ Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_chara
 | `pv_vn30_close` | VN30 Close |
 | `pv_vn30_volume` | VN30 Volume |
 
-#### Danh sách trường Dow Jones Index
+#### Danh sách trường Dow Jones Index (vòng 1 — legacy)
 
 | Trường | Ý nghĩa |
 |--------|---------|
@@ -163,7 +158,10 @@ Tham khảo thêm các file mẫu `.py` trong thư mục này.
 
 ---
 
-## 4. Operational Workflow
+## 4. Operational Workflow (Vòng 1 — ARCHIVED)
+
+> Quy trình 5 bước dưới đây thuộc vòng 1 (idea/hypothesis loop + generator).
+> **Round 2** dùng pipeline ở §5 + `agent/GUIDE.md` §Round 2 (viết trực tiếp → validate → submit → check).
 
 AI Agent phải tuân thủ nghiêm ngặt quy trình gồm **5 bước** dưới đây.
 
@@ -188,7 +186,7 @@ idea/
 - Lưu vào:
 
 ```text
-idea/planning_alpha/
+idea/planning_alpha/stage_1/
 ```
 
 #### Hypothesis Loop
@@ -279,7 +277,10 @@ Các file xuất ra phải:
 
 ---
 
-## 5. Batch Submission (XNOQuant API)
+## 5. Batch Submission (XNOQuant API — Round 2)
+
+> Pipeline Round 2: agent viết strategy trực tiếp → `output/stage_2/` → validate → submit → check.
+> Các mục "Batch Submission vòng 1" (thesis_*/generator/hardcoded editor) đã archive — không dùng.
 
 ### API Endpoints (Discovered via DevTools Network)
 
@@ -291,29 +292,19 @@ Các file xuất ra phải:
 | Poll progress | GET | `/editors/{id}/progress` | — |
 | Poll results | GET | `/editors/{id}/info` | — |
 
-**Auth:** `Authorization: Bearer <token>` (cookie per session)
+**Auth:** `Authorization: Bearer <token>` — lấy từ `.env` (`XNO_EDITOR_ID`, `XNO_TOKEN`)
 
-### Workflow
+### Workflow (Round 2)
 
-1. Open `https://alpha.xnoquant.io/build` → new editor is auto-created (UUID in URL)
-2. **PUT** code via `/editors/{id}/update` (body: `{"code": "..."}`)
-3. **POST** `/editors/{id}/verify` (auto syntax check)
-4. **POST** `/editors/{id}/simulate` (trigger backtest)
-5. No need to wait for results — move to next variant
+1. Agent viết strategy vào `output/stage_2/` + ghi `output/index.csv` (cột `universe`)
+2. **`python tools/validate_framework.py`** — check compliance (mode contract, point-in-time, bounds)
+3. **`python tools/submit_and_check.py --batch --universe VN-<CAP>`** — PUT → verify → simulate
+   - `--test` = submit 1 file đầu (test), `.env` bắt buộc, quét `output/stage_2/`
+4. **`python tools/check_results.py --universe VN-<CAP>`** — review PASS theo ngưỡng từng cap
 
-### Automation Plan (`tools/submit_and_check.py`)
+### Kết quả
 
-- Reads all `output/thesis_*/**/*.py` (1705 files)
-- For each: PUT → verify → simulate → sleep 2.5s
-- Editor ID hardcoded per session (copy from Network tab)
-
-```python
-H = {
-    "authorization": "Bearer <token>",
-    "content-type": "application/json",
-    "origin": "https://alpha.xnoquant.io",
-}
-```
+- Metrics lưu tại `backtest/results_stage_2.csv` (có cột `universe`)
 
 ---
 
@@ -343,42 +334,56 @@ AI Agent **luôn phải**:
 | **Hiểu tổng quan dự án, workflow 5 bước** | `README.md` (file này) |
 | **Context chi tiết phiên làm việc trước** | `context_session/session_context.md` |
 | **Onboarding nhanh cho AI Agent** | `agent/GUIDE.md` |
+| **Rules chính thức Round 2** | `agent/stage_2_guideline.md` |
+| **Blueprint gen strategy Round 2** | `agent/framework_build_guide.md` |
 | **Master spec: class structure, compliance checklist** | `template_example/strategy_framework.md` |
-| **Đặc thù thị trường VN → thiết kế strategy** | `data/vietnam_market_characteristics.md` |
-| **Data fields (OHLCV, futures, VN30, DJI)** | `syntax/data_syntax.md` |
+| **Đặc thù thị trường VN Round 2 → chọn feature** | `data/vietnam_market_characteristics.md` |
+| **Data fields (PV/IS/BS/CF, 496 fields)** | `syntax/data_syntax.md` |
 | **Syntax index** | `syntax/INDEX.md` |
-| **Feature functions (140+ indicators)** | `syntax/feature_syntax.md` |
-| **Operator functions (30+ operators)** | `syntax/operations_syntax.md` |
-| **Acceptance criteria, scorecard** | `idea/hypothesis/hypothesis_framework.md` |
-| **Hypothesis docs (30 hypotheses)** | `idea/hypothesis/hyp_thesis_01_momentum.md` → `08_multifactor.md` |
-| **Planning docs (enhancements, alpha ideas)** | `idea/planning_alpha/` |
-| **— Sharpe improvement plan (3 phases)** | `idea/planning_alpha/enhancement_return_roll_tiered_session.md` |
-| **— ~890 alpha variants reference** | `idea/planning_alpha/alpha_generation_rolling_mean_quantile.md` |
-| **— Scaling proposal 500→10000** | `idea/planning_alpha/scaling_proposal_500_10000_strategies.md` |
-| **— Strategy design mẫu đầu tiên** | `idea/planning_alpha/strategy_001_mean_quantile_rsi.md` |
-| **Generator code (sửa generator, không sửa output)** | `tools/generate_strategies.py` |
+| **Feature functions (panel features)** | `syntax/feature_syntax.md` |
+| **Operator functions (cross_sectional ops)** | `syntax/operations_syntax.md` |
+| **Parameter daily Round 2** | `syntax/parameters.md` |
+| **Submit Round 2 → review** | `tools/submit_and_check.py` → `tools/check_results.py` |
+| **Validate Round 2 output** | `tools/validate_framework.py` |
+| **Pass criteria theo cap** | `tools/common.py` (`PASS_THRESHOLDS_BY_UNIVERSE`) |
 | **Tool reference (chọn đúng tool cho từng task)** | `tools/INDEX.md` |
-| **Validate output files** | `tools/validate_framework.py` |
-| **Backtest plan, decision rules** | `idea/planning_alpha/backtest_plan.md` |
+| **Acceptance criteria, scorecard (vòng 1)** | `idea/hypothesis/hypothesis_framework.md` |
+| **Hypothesis docs (30 hypotheses)** | `idea/hypothesis/hyp_thesis_01_momentum.md` → `08_multifactor.md` |
+| **Idea Round 2 (trước khi gen)** | `idea/planning_alpha/stage_2/` |
+| **Planning docs (vòng 1 — enhancements, alpha ideas)** | `idea/planning_alpha/stage_1/` |
+| **— Sharpe improvement plan (3 phases)** | `idea/planning_alpha/stage_1/enhancement_return_roll_tiered_session.md` |
+| **— ~890 alpha variants reference** | `idea/planning_alpha/stage_1/alpha_generation_rolling_mean_quantile.md` |
+| **— Scaling proposal 500→10000** | `idea/planning_alpha/stage_1/scaling_proposal_500_10000_strategies.md` |
+| **— Strategy design mẫu đầu tiên** | `idea/planning_alpha/stage_1/strategy_001_mean_quantile_rsi.md` |
+| **Generator code (vòng 1 — sửa generator, không sửa output)** | `tools/generate_strategies.py` |
+| **Backtest plan, decision rules (vòng 1)** | `idea/planning_alpha/stage_1/backtest_plan.md` |
 
 ### Debug Flow
 
 ```
-Sharpe < target?
-  → Đọc data/vietnam_market_characteristics.md §5 (Sharpe Rules)
+Round 2: alpha không đạt / lỗi submit?
+  → Đọc data/vietnam_market_characteristics.md §6 (Debug nhanh Round 2)
+  → Kiểm tra: field có trong catalog? point-in-time? mode contract? threshold theo cap?
+  → Chạy python tools/validate_framework.py
+
+Round 2: review kết quả?
+  → python tools/check_results.py --universe VN-<CAP>
+
+Vòng 1 (futures intraday — ARCHIVED):
+  → Đọc data/vietnam_market_characteristics_v1.md §5 (Sharpe Rules)
   → Kiểm tra: ADX filter? return_roll? volume? asymmetric exit? session gating?
   
 Strategy không publish được?
   → Đọc template_example/strategy_framework.md §Checklist
   → Kiểm tra: docstring thesis? position bounds? no look-ahead? valid execution?
   
-Generator ra code sai?
+Generator ra code sai (vòng 1)?
   → Sửa tools/generate_strategies.py
   → Chạy python tools/generate_strategies.py
   → Chạy python tools/validate_framework.py
   → KHÔNG patch output files trực tiếp
 
-Cần thêm template mới?
+Cần thêm template mới (vòng 1)?
   → Đọc tools/generate_strategies.py search TEMPLATES
   → Thêm vào TEMPLATES dict, thêm parameter variants
   → Thêm vào inject_filters() nếu cần post-processing
