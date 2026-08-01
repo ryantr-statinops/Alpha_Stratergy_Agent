@@ -52,7 +52,8 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 CSV_PATH = os.path.join("backtest", "results_stage_2.csv")
 WAIT_SECONDS = 10
-POLL_TIMEOUT = 90
+POLL_TIMEOUT = 240
+STRATEGY_ID_TIMEOUT = 30
 POLL_INTERVAL = 5
 
 VALID_UNIVERSES = {"VN-SMALL-CAP", "VN-MID-CAP", "VN-LARGE-CAP"}
@@ -125,6 +126,23 @@ def get_strategy_id(session, base: str) -> str | None:
     except Exception:
         pass
     return None
+
+
+def wait_for_new_strategy_id(session, base: str, old_strategy_id: str | None,
+                             timeout: int = STRATEGY_ID_TIMEOUT) -> str | None:
+    """Poll /info until the editor's strategy_id changes from the pre-PUT one.
+
+    PUT uploads a new code snapshot and XNOQuant can reassign strategy_ids.
+    Fetching metrics for the OLD id returns stale results, so we must wait for
+    the new id to appear before polling metrics."""
+    elapsed = 0
+    while elapsed < timeout:
+        sid = get_strategy_id(session, base)
+        if sid and sid != old_strategy_id:
+            return sid
+        time.sleep(POLL_INTERVAL)
+        elapsed += POLL_INTERVAL
+    return get_strategy_id(session, base)
 
 
 def fetch_metrics(session, strategy_id: str) -> dict:
@@ -272,6 +290,8 @@ def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, 
     with open(filepath, encoding="utf-8") as f:
         code = f.read()
 
+    old_strategy_id = get_strategy_id(session, base)
+
     max_retries = 5
     for attempt in range(1, max_retries + 1):
         r1 = session.put(f"{base}/update", json={"code": code})
@@ -311,13 +331,16 @@ def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, 
         print(f"  PUT: {r1.status_code} | VERIFY: {r2.status_code} | SIMULATE: {r3.status_code} [OK]  {name}")
         break
 
-    print(f"  Poll metrics (timeout {POLL_TIMEOUT}s)...")
-    strategy_id = get_strategy_id(session, base)
+    print(f"  Poll strategy_id (timeout {STRATEGY_ID_TIMEOUT}s)...")
+    strategy_id = wait_for_new_strategy_id(session, base, old_strategy_id)
     if not strategy_id:
         save_to_csv(make_row(filepath, universe, STATUS_NO_STRATEGY_ID, error="no strategy_id from /info"))
         print("  => Khong lay duoc strategy_id")
         return True
+    if strategy_id == old_strategy_id:
+        print(f"  => strategy_id khong doi ({strategy_id}), co the la ket qua cu")
 
+    print(f"  Poll metrics (timeout {POLL_TIMEOUT}s)...")
     metrics = wait_for_metrics(session, strategy_id)
     if metrics:
         save_to_csv(make_row(filepath, universe, STATUS_SIMULATED, metrics, strategy_id))

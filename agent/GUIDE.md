@@ -24,6 +24,7 @@
 | 8 | `template_example/VN-*/` | 14 examples Round 2 (BANK/INSURANCE/SECURITIES/TOP30) | **Khi tham khảo mẫu** |
 | 9 | `agent/migration_plan_v2.md` | Kế hoạch migration V1→V2 (Phase A done, B done, C pending) | **Khi cần bối cảnh** |
 | 10 | `idea/planning_alpha/stage_2/` | **Idea Round 2** — mỗi alpha ghi 1 file markdown trước khi gen | **Khi bắt đầu gen alpha** |
+| 11 | `agent/system_health_check.md` | **Health check Stage 2** — offline + API read-only + live opt-in | **Khi kiểm tra trạng thái hệ thống** |
 
 ---
 
