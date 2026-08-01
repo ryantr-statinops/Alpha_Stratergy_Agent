@@ -36,7 +36,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from common import format_metrics
+from common import format_metrics, load_previous_results
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
@@ -235,6 +235,11 @@ def make_row(filepath: str, universe: str, status: str, metrics: dict = None,
     }
 
 
+def rel_filepath(filepath: str) -> str:
+    """Relative manifest-style filepath (vn_small_cap/time_series/File.py)."""
+    return filepath.replace("\\", "/").split("output/stage_2/")[-1]
+
+
 def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, total: int) -> bool:
     """Live PUT -> verify -> simulate -> poll metrics. Returns True if submit attempt ran."""
     editor_id, token, base = env
@@ -338,6 +343,20 @@ def run_files_mode(files: list, args) -> int:
         print(f"[ERROR] --files includes file(s) not in universe '{universe}'")
         return 1
 
+    if not args.force:
+        previous = load_previous_results(CSV_PATH)
+        kept = []
+        for fpath in files:
+            key = (rel_filepath(fpath), universe)
+            if key in previous and previous[key]:
+                print(f"  => '{os.path.basename(fpath)}' da pass cho '{universe}', skip (dung --force de submit lai)")
+            else:
+                kept.append(fpath)
+        files = kept
+        if not files:
+            print("[!] Khong co file nao can submit (tat ca da pass).")
+            return 0
+
     print("=== XNOQuant Submit & Check Tool (Files Mode) ===\n")
     env = None if args.dry_run else require_env()
     if not args.dry_run and not env:
@@ -399,6 +418,23 @@ def run_batch_mode(args) -> int:
         print(f"[!] Khong co file nao trong universe '{universe}'")
         return 1
 
+    # Skip files that already PASSED for this exact (filepath, universe)
+    if not args.force:
+        previous = load_previous_results(CSV_PATH)
+        kept, skip_count = [], 0
+        for fpath in files:
+            key = (rel_filepath(fpath), universe)
+            if key in previous and previous[key]:
+                skip_count += 1
+            else:
+                kept.append(fpath)
+        files = kept
+        if skip_count:
+            print(f"  => Skipped {skip_count} file(s) da pass cho universe '{universe}' (dung --force de submit lai)")
+        if not files:
+            print(f"[!] Tat ca file trong '{universe}' da pass. Khong co gi de submit.")
+            return 0
+
     print(f"=== XNOQuant Submit & Check Tool (Batch: {universe}) ===\n")
 
     env = None if args.dry_run else require_env()
@@ -437,6 +473,7 @@ def parse_args():
                         help="Filter which cap to submit (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP). Required when batch spans caps.")
     parser.add_argument("--dry-run", action="store_true", help="No HTTP calls — only print editor/universe/files.")
     parser.add_argument("--yes", action="store_true", help="Auto-confirm the editor universe prompt (no stdin).")
+    parser.add_argument("--force", action="store_true", help="Re-submit even if (filepath, universe) already passed.")
     return parser.parse_args()
 
 
