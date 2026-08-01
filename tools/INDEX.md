@@ -4,6 +4,7 @@
 
 | Tool | When to use | Command |
 |------|------------|---------|
+| `system_health_check.md` | Kiểm tra trạng thái hệ thống / sẵn sàng chạy Stage 2 (offline → API read-only → live opt-in) | `agent/system_health_check.md` |
 | `generate_strategies.py` | Generate all thesis strategies (vòng 1 — ARCHIVED) | `python tools/generate_strategies.py` |
 | `validate_framework.py` | Validate Round-2 files for framework compliance (quét `output/stage_2/`) | `python tools/validate_framework.py` |
 | `submit_and_check.py` | Submit Round-2 strategies to XNOQuant + fetch metrics | `python tools/submit_and_check.py [--batch \| --files ...] [--dry-run] [--universe VN-...]` |
