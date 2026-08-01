@@ -182,7 +182,8 @@ class TestHTTPSequence(unittest.TestCase):
         session.post.return_value = self._resp(200)  # verify + simulate
         with mock.patch.object(sub, "requests") as mreq:
             mreq.Session.return_value = session
-            with mock.patch.object(sub, "get_strategy_id", return_value="sid"), \
+            with mock.patch.object(sub, "get_strategy_id", return_value="old-sid"), \
+                 mock.patch.object(sub, "wait_for_new_strategy_id", return_value="sid"), \
                  mock.patch.object(sub, "wait_for_metrics",
                                    return_value={"sharpe": 1.5, "cagr": 0.3, "calmar": 1.2,
                                                  "max_drawdown": -0.2, "profit_factor": 1.6}), \
@@ -194,6 +195,27 @@ class TestHTTPSequence(unittest.TestCase):
                 self.assertEqual(saved["status"], "SIMULATED")
                 self.assertEqual(saved["strategy_id"], "sid")
                 os.unlink(f.name)
+
+    def test_wait_for_new_strategy_id_returns_changed_id(self):
+        session = mock.MagicMock()
+        # first /info returns old id, second returns new id
+        r1, r2 = mock.MagicMock(), mock.MagicMock()
+        r1.status_code = 200; r1.json.return_value = {"data": {"strategy_ids": ["old"]}}
+        r2.status_code = 200; r2.json.return_value = {"data": {"strategy_ids": ["new"]}}
+        session.get.side_effect = [r1, r2]
+        with mock.patch.object(sub, "time") as mtime:
+            sid = sub.wait_for_new_strategy_id(session, "http://base", "old", timeout=10)
+            self.assertEqual(sid, "new")
+            mtime.sleep.assert_called_once()
+
+    def test_wait_for_new_strategy_id_times_out_to_latest(self):
+        session = mock.MagicMock()
+        r = mock.MagicMock()
+        r.status_code = 200; r.json.return_value = {"data": {"strategy_ids": ["old"]}}
+        session.get.return_value = r
+        with mock.patch.object(sub, "time"):
+            sid = sub.wait_for_new_strategy_id(session, "http://base", "old", timeout=5)
+            self.assertEqual(sid, "old")
 
 
 if __name__ == "__main__":
