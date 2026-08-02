@@ -86,9 +86,9 @@ Bảng này là **core reference** cho quyết định "dùng field/feature nào
 | `returns_panel` / `log_returns_panel` | `self.feat.returns_panel(series)` | Price return trong panel |
 
 Cross-sectional operators: `rank_cs_panel`, `zscore_cs_panel`, `winsorize_cs_panel`,
-`portfolio_weights_panel(signal, method='rank_demean_l1', mask=...)` — market-neutral,
-net ≈ 0, gross = 1. `mask` dùng để loại symbol thiếu fundamentals:
-`eligible = self.op.notna(net_profit) & (equity > 0)`.
+`portfolio_weights_panel(signal, method='rank_demean_l1'|'demean_l1', mask=...)`
+— market-neutral, net ≈ 0, gross = 1. Panel không dùng `op.notna`; mask bằng
+điều kiện kinh tế, ví dụ `eligible = (net_profit > 0) & (equity > 0)`.
 
 ---
 
@@ -122,5 +122,51 @@ Feature Selection Fast-path (Round 2):
   2. Chọn mode: "phân bổ vốn giữa các cp" → cross_sectional; "chỉ long 1 cp" → time_series
   3. Bắt đầu bằng price/volume + 1 fundamental theo segment
   4. Dùng safe_divide_panel cho tỷ số (cross_sectional) hoặc / với fillna (time_series)
-  5. Thêm trend filter + mask notna; point-in-time nghiêm túc
+  5. Thêm trend filter + mask điều kiện kinh tế; point-in-time nghiêm túc
+```
+
+---
+
+## 8. Bài học thực nghiệm VN-SMALL-CAP (Batch 5, 2026-08-02)
+
+Các kết luận dưới đây đến từ submit live trên XNOQuant; chỉ áp dụng cho
+cross-sectional SMALL-CAP trong sample hiện tại.
+
+1. **Value là nguồn alpha mạnh nhất đã kiểm chứng.** `EPS / close` vượt các
+   signal EPS growth thuần, RSI, breakout, volume confirmation và cash-backed
+   growth trong batch này.
+2. **Value cần trend confirmation để tránh value trap.** Tương tác
+   `earnings_yield * (close / EMA(close))^p` hiệu quả hơn cộng tuyến tính
+   value + momentum.
+3. **Quality hiệu quả nhất khi làm gate.** `owners_equity / total_assets > 15%`
+   cải thiện risk/return; trộn ROE/ROA trực tiếp vào score thường làm loãng
+   earnings-yield alpha.
+4. **Liquidity có điểm tối ưu.** Family pass dùng top-60% rolling traded value
+   (`liquidity_rank > 0.40`); quá rộng thêm nhiễu, quá hẹp bỏ opportunity.
+5. **Weighting quyết định magnitude.** `demean_l1` giữ conviction magnitude và
+   cải thiện CAGR rõ so với `rank_demean_l1`, nhưng nhạy hơn với outlier.
+6. **Interaction có thể mạnh hơn additive composite.** Product value × trend
+   tạo conditional re-rating: cổ phiếu vừa rẻ, vừa đang được thị trường xác nhận.
+7. **Không hạ threshold để tạo PASS.** Ngưỡng SMALL-CAP giữ nguyên: Sharpe 1.0,
+   CAGR 25%, MaxDD -45%, PF 1.3, Calmar 0.8.
+8. **Không dùng leverage để ép CAGR.** Gross scaling ngoài unit-gross bị platform
+   reject ở runtime; chỉ tối ưu signal/eligibility/weighting hợp lệ.
+9. **Parameter variants không phải alpha độc lập.** P02–P11 cùng một family,
+   yearly-CAGR correlation proxy thấp nhất vẫn khoảng 0.77. Chỉ nên coi là một
+   nguồn alpha với nhiều mức trend conviction.
+10. **PASS in-sample chưa đủ.** Việc CAGR tăng đơn điệu theo exponent là cảnh báo
+    parameter optimization. Bắt buộc kiểm tra walk-forward/OOS, turnover,
+    capacity, concentration và transaction cost trước khi dùng vốn thật.
+
+### Pipeline khuyến nghị sau Batch 5
+
+```text
+economic thesis độc lập
+→ point-in-time fundamental ratio
+→ quality/data-validity gate
+→ liquidity/capacity gate
+→ causal confirmation (nếu có cơ chế)
+→ interaction trước additive khi có lý do kinh tế
+→ demean_l1 và rank_demean_l1 đều phải test
+→ yearly stability + OOS + correlation với alpha đang giữ
 ```
