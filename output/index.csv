@@ -5,3 +5,4 @@ vn_large_cap/time_series/VnLargeRevenueStability.py,cashflow_stability,time_seri
 vn_small_cap/cross_sectional/VnSmallCsEpsRank.py,eps_rank_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Cross-sectional rank on quarterly EPS growth (market-neutral),rank_demean_l1
 vn_mid_cap/cross_sectional/VnMidCsRoERank.py,roe_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on ROE (market-neutral),rank_demean_l1
 vn_large_cap/cross_sectional/VnLargeCsValueMomentum.py,value_momentum_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Composite earnings yield + price momentum z-score rank (market-neutral),rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsAssetProfitabilityBaseline.py,small_asset_profitability_baseline_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Quarterly positive net profit relative to total assets as a simple market-neutral quality baseline,rank_demean_l1
