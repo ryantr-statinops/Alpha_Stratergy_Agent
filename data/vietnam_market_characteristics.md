@@ -3,7 +3,7 @@
 > Tài liệu tham chiếu đặc thù thị trường cổ phiếu Việt Nam → chọn nhanh
 > **features/fields** phù hợp khi thiết kế strategy Round 2 (equity fundamental,
 > daily, 3 cap segments). Đọc trước khi code, cùng `syntax/data_syntax.md`,
-> `syntax/feature_syntax.md`, `syntax/operations_syntax.md`.
+> `syntax/time_series/feature_syntax.md`, `syntax/time_series/operations_syntax.md`, `syntax/cross_sectional/feature_syntax.md`, `syntax/cross_sectional/operations_syntax.md`.
 >
 > Bản v1 (VN30F1M futures intraday) đã chuyển sang `vietnam_market_characteristics_v1.md`.
 

@@ -18,9 +18,9 @@
 | 2 | `agent/framework_build_guide.md` | **Blueprint build framework + gen strategy dễ→khó (Level 1-5, cả 2 mode)** | **Trước khi gen code** |
 | 3 | `template_example/strategy_framework.md` | **Master spec Round 2** — mode contract, templates, compliance checklist | **Trước khi code** |
 | 4 | `syntax/data_syntax.md` | 496 fields (PV/IS/BS/CF) + mode contract | **Khi chọn data** |
-| 5 | `syntax/feature_syntax.md` | 36 panel features + time_series family | **Khi cần indicator** |
-| 6 | `syntax/operations_syntax.md` | 7 cross-sectional ops + time_series ops | **Khi cần operator** |
-| 7 | `syntax/parameters.md` | Parameter chuẩn daily (ratio 1:3) | **Khi cần param** |
+| 5 | `syntax/time_series/feature_syntax.md`, `syntax/cross_sectional/feature_syntax.md` | 36 panel features + time_series family | **Khi cần indicator** |
+| 6 | `syntax/time_series/operations_syntax.md`, `syntax/cross_sectional/operations_syntax.md` | 7 cross-sectional ops + time_series ops | **Khi cần operator** |
+| 7 | `syntax/time_series/parameters.md`, `syntax/cross_sectional/parameters.md` | Parameter chuẩn daily (ratio 1:3) | **Khi cần param** |
 | 8 | `template_example/VN-*/` | 14 examples Round 2 (BANK/INSURANCE/SECURITIES/TOP30) | **Khi tham khảo mẫu** |
 | 9 | `agent/migration_plan_v2.md` | Kế hoạch migration V1→V2 (Phase A done, B done, C pending) | **Khi cần bối cảnh** |
 | 10 | `idea/planning_alpha/stage_2/` | **Idea Round 2** — mỗi alpha ghi 1 file markdown trước khi gen | **Khi bắt đầu gen alpha** |
@@ -103,7 +103,7 @@ Ngoài ra còn: `single_feat_alpha/` (47 files) và `multi_feat_alpha/` (9 files
 | 30min | 20 | 40 | 50 | 14 | 14 | 26 | 8 | 0.0003 | 12 |
 | 60min | 30 | 60 | 100 | 21 | 21 | 34 | 14 | 0.0005 | 6 |
 
-### Parameter Daily (Round 2 — ACTIVE, xem `syntax/parameters.md`)
+### Parameter Daily (Round 2 — ACTIVE, xem `syntax/time_series/parameters.md`)
 | Feature | Fast | Slow | Ratio | Ghi chú |
 |---------|:----:|:----:|:-----:|---------|
 | ema | 8-12 | 24-36 | 1:3 | ~1.5 tuần / ~1.5 tháng |
@@ -243,7 +243,7 @@ Khi gặp vấn đề, tra theo triệu chứng:
 | **Strategy không publish được** | `template_example/strategy_framework.md` §Checklist | Docstring thiếu thesis, position bounds sai |
 | **Look-ahead bias** | `template_example/strategy_framework.md` §Data Access | Dùng `pv_close` thay vì `pv_open` |
 | **Generator ra code sai** | `tools/generate_strategies.py` search `inject_filters` | Fix generator, regenerate |
-| **Không biết tham số nào cho TF nào** | `syntax/parameters.md` (Round 2) / `agent/GUIDE.md` §Window Sizing (vòng 1) | Bảng tham số đầy đủ |
+| **Không biết tham số nào cho TF nào** | `syntax/time_series/parameters.md` (Round 2) / `agent/GUIDE.md` §Window Sizing (vòng 1) | Bảng tham số đầy đủ |
 | **Cần thêm template mới** | `tools/generate_strategies.py` search `TEMPLATES` | Thêm vào TEMPLATES dict |
 | **Cần validate output** | `python tools/validate_framework.py --strict` | Run validator (strict bắt warning) |
 | **Cần hiểu VN market behavior** | `data/vietnam_market_characteristics.md` | Full analysis + mapping table |

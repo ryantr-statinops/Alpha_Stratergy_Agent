@@ -15,7 +15,9 @@ PUT  /editors/{id}/update                                          # gửi code 
 POST /editors/{id}/verify                                          # check syntax (empty body)
 POST /editors/{id}/simulate                                        # chạy backtest (empty body)
 GET  /editors/{id}/info                                            # lấy strategy_id
-GET  /strategies/{id}/stages/simulate/summary-aggregate            # lấy metrics (CAGR, Sharpe, ...)
+GET  /strategies/{id}/stages/simulate/summary-aggregate            # aggregate kết hợp
+GET  /strategies/{id}/stages/train/summary-aggregate               # train 2020-2022
+GET  /strategies/{id}/stages/test/summary-aggregate                # OOS test 2023-2024
 ```
 
 Auth: `Authorization: Bearer <token>`
@@ -43,6 +45,10 @@ python tools/check_results.py --detail --universe VN-SMALL-CAP
 ```
 
 **Bộ tiêu chí pass Round 2 (theo universe):**
+
+PASS là fail-closed: cả ba bộ **Aggregate + Train + Test** phải có đủ 5 metrics và
+mỗi bộ phải độc lập đạt toàn bộ ngưỡng universe bên dưới. Dòng CSV cũ chỉ có
+aggregate hoặc bất kỳ split nào để trống đều không PASS và sẽ không bị skip khi submit.
 
 | Universe | Sharpe | CAGR | MaxDD | PF | Calmar |
 |----------|:------:|:----:|:-----:|:--:|:------:|
@@ -101,7 +107,7 @@ python tools/submit_and_check.py
 
 Sau khi chạy:
 - Nhập đường dẫn file `.py` cần submit (vd: `output/single_feat_alpha/SF_RSI_15min.py`)
-- Script sẽ: submit → verify → simulate → đợi 10s → fetch metrics → lưu vào CSV
+- Script sẽ: submit → verify → simulate → fetch Aggregate/Train/Test metrics → lưu vào CSV
 - Nhập `done` để kết thúc
 - Nhập `help` để xem lại hướng dẫn
 
@@ -138,15 +144,24 @@ Nhập `y` để submit lại, `N` để bỏ qua.
 
 ```bash
 python tools/check_results.py --detail                    # Full 5-metric table
-python tools/check_results.py --pass --universe VN-SMALL-CAP   # PASS + theo universe
+python tools/check_results.py --splits                    # Detailed Aggregate/Train/Test
+python tools/check_results.py --pass --universe VN-SMALL-CAP   # True split-aware PASS
 python tools/check_results.py --prefix VnTop              # Filter by prefix
 python tools/check_results.py --today                     # Today's submissions
 ```
 
-```csv
-timestamp,filepath,filename,universe,mode,status,strategy_id,cagr,sharpe,calmar,max_drawdown,profit_factor,error
-2026-08-01T15:50,vn_small_cap/time_series/VnTop30Trend.py,VnTop30Trend.py,VN-SMALL-CAP,time_series,SIMULATED,s123,0.30,1.40,1.00,-0.30,1.60,
+CSV giữ 5 cột aggregate (`cagr`, `sharpe`, `calmar`, `max_drawdown`,
+`profit_factor`) và thêm cùng 5 cột với prefix `train_` và `test_`. Tool tự động
+migrate header cũ trước khi append, bảo toàn các row cũ với split để trống.
+
+Backfill/audit các row SIMULATED cũ bằng GET read-only (mặc định không ghi):
+
+```bash
+python tools/backfill_split_metrics.py --universe VN-SMALL-CAP
+python tools/backfill_split_metrics.py --prefix vn_small_cap/time_series/ --write
 ```
+
+`--write` chỉ append row enriched mới; không sửa row cũ và không mutation editor.
 
 Status: `SIMULATED` / `UPDATE_FAILED` / `VERIFY_FAILED` / `SIMULATE_FAILED` / `RATE_LIMITED` / `METRICS_TIMEOUT` / `NO_STRATEGY_ID`.
 

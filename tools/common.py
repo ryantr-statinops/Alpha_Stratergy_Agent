@@ -1,5 +1,6 @@
 import csv
 import os
+import time
 from datetime import datetime
 
 # Round 1 (archived) pass criteria — VN30 futures intraday
@@ -41,6 +42,9 @@ VALID_UNIVERSES = set(PASS_THRESHOLDS_BY_UNIVERSE)
 # Submit statuses that represent a real, usable simulation result
 SIMULATED_STATUS = "SIMULATED"
 VALID_METRIC_KEYS = ["sharpe", "cagr", "max_drawdown", "profit_factor", "calmar"]
+RESULT_STAGES = ("simulate", "train", "test")
+STAGE_PREFIXES = {"simulate": "", "train": "train_", "test": "test_"}
+SUMMARY_URL = "https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/{stage}/summary-aggregate"
 
 
 def thresholds_for(universe):
@@ -68,26 +72,71 @@ def row_status(row):
     return status
 
 
-def has_all_metrics(row):
+def has_all_metrics(row, prefix=""):
     """True when every required metric is a real number in the row."""
-    return all(getf(row, key) is not None for key in VALID_METRIC_KEYS)
+    return all(getf(row, f"{prefix}{key}") is not None for key in VALID_METRIC_KEYS)
+
+
+def stage_pass(row, prefix="", universe=None):
+    """Evaluate one complete aggregate/train/test metric set against its universe."""
+    if not has_all_metrics(row, prefix):
+        return False
+    thresholds = thresholds_for(universe or row.get("universe"))
+    return all(getf(row, f"{prefix}{key}") >= threshold
+               for key, threshold in thresholds.items())
 
 
 def is_pass(row, universe=None):
-    """Pass requires: SIMULATED status + all 5 metrics + every metric >= its threshold.
-    Unknown universe -> KeyError (fail closed). Non-simulated -> never pass."""
+    """Pass requires complete aggregate, train, and test sets to pass independently."""
     status = row_status(row)
     if status != SIMULATED_STATUS:
         return False
-    if not has_all_metrics(row):
-        return False
     u = universe or row.get("universe")
-    thresholds = thresholds_for(u)
-    for key, threshold in thresholds.items():
-        val = getf(row, key)
-        if val is None or val < threshold:
-            return False
-    return True
+    return all(stage_pass(row, prefix, u) for prefix in ("", "train_", "test_"))
+
+
+def fetch_stage_metrics(session, strategy_id, stage):
+    """Fetch one summary stage. Missing/null fields remain missing, never become zero."""
+    if stage not in RESULT_STAGES:
+        raise ValueError(f"Unknown result stage '{stage}'")
+    url = SUMMARY_URL.format(strategy_id=strategy_id, stage=stage)
+    try:
+        response = session.get(url)
+        if response.status_code != 200:
+            return {}
+        data = response.json().get("data") or {}
+        return {key: data[key] for key in VALID_METRIC_KEYS
+                if key in data and data[key] is not None}
+    except Exception:
+        return {}
+
+
+def wait_for_stage_metrics(session, strategy_id, timeout, poll_interval=5):
+    """Poll until all simulate/train/test summaries contain all five metrics."""
+    ready = {}
+    elapsed = 0
+    while elapsed < timeout:
+        for stage in RESULT_STAGES:
+            if stage in ready:
+                continue
+            metrics = fetch_stage_metrics(session, strategy_id, stage)
+            if all(metrics.get(key) is not None for key in VALID_METRIC_KEYS):
+                ready[stage] = metrics
+        if len(ready) == len(RESULT_STAGES):
+            return ready
+        time.sleep(poll_interval)
+        elapsed += poll_interval
+    return {}
+
+
+def flatten_stage_metrics(stages):
+    """Map API stage dictionaries to aggregate and prefixed CSV columns."""
+    flat = {}
+    for stage, prefix in STAGE_PREFIXES.items():
+        for key, value in (stages.get(stage) or {}).items():
+            if key in VALID_METRIC_KEYS:
+                flat[f"{prefix}{key}"] = value
+    return flat
 
 
 def load_results_csv(csv_path="backtest/results_stage_2.csv"):
@@ -156,12 +205,10 @@ def status_label(row):
     """Human-readable status grouping for check_results."""
     status = row_status(row)
     if status == SIMULATED_STATUS:
-        if has_all_metrics(row):
-            try:
-                return "PASS" if is_pass(row) else "FAIL"
-            except KeyError:
-                return "INVALID_METADATA"
-        return "PENDING"
+        try:
+            return "PASS" if is_pass(row) else "FAIL"
+        except KeyError:
+            return "INVALID_METADATA"
     if status in ("UPDATE_FAILED", "VERIFY_FAILED", "SIMULATE_FAILED", "RATE_LIMITED"):
         return "API_ERROR"
     if status in ("METRICS_TIMEOUT", "NO_STRATEGY_ID"):

@@ -37,26 +37,10 @@ See [`cross_sectional/INDEX.md`](cross_sectional/INDEX.md).
 
 ## Research Governance
 
-See [`research/INDEX.md`](research/INDEX.md).
-
 | Document | Purpose |
 |---|---|
 | [`research/validation_protocol.md`](research/validation_protocol.md) | Experiment ladder, locked OOS, robustness, and decision taxonomy |
 | [`research/experiment_manifest_schema.md`](research/experiment_manifest_schema.md) | Hypothesis, family, variant, trial count, freeze, and Test-access records |
-
-## Compatibility Entry Points
-
-The following root files remain as temporary links so existing repository references do not break during migration:
-
-- `feature_syntax.md`
-- `operations_syntax.md`
-- `parameters.md`
-- `strategy_patterns.md`
-- `panel_feature_contract.md`
-- `validation_protocol.md`
-- `experiment_manifest_schema.md`
-
-New documentation and active references must use the canonical mode/research paths above.
 
 ## Required Reading Order
 
