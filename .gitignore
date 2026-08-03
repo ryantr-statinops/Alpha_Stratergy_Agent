@@ -12,6 +12,9 @@ build/
 *.swp
 *.swo
 
+# Agent scratch
+.hermes/
+
 # OS
 Thumbs.db
 .DS_Store
