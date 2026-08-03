@@ -28,15 +28,15 @@ dimensions_changed: []
 selection_metric: final_test_sharpe
 rejection_rule: Reject as validated unless Aggregate, Train, and Test each pass all five VN-SMALL-CAP thresholds; label fragile if Test Sharpe retention is below 50 percent.
 default_window_dependency: false
-validation_status: DRAFT
-final_test_opened: false
-final_test_opened_at: null
+validation_status: OOS_FAIL
+final_test_opened: true
+final_test_opened_at: 2026-08-03T21:31:58+07:00
 retuned_after_test: false
 embargo_verified: true
-train_pass: null
+train_pass: false
 validation_pass: null
-final_oos_pass: null
-sharpe_retention: null
+final_oos_pass: false
+sharpe_retention: 1.4683
 coverage_train: null
 coverage_test: null
 concentration_note: Platform output does not currently expose sector or symbol contribution diagnostics.
@@ -121,3 +121,22 @@ Additional governance:
 3. Fundamental values update infrequently, reducing effective sample size.
 4. Market-neutral weighting can still contain sector, size, beta, or liquidity exposure.
 5. Small-cap transaction costs and capacity may not be fully represented by reported summary metrics.
+
+## Observed Result — Locked Final Test
+
+Live submission completed on 2026-08-03 without changing the preregistered strategy.
+
+- XNOQuant strategy ID: `0NlRhFtg8B`
+- API status: PUT 200, VERIFY 200, SIMULATE 200
+- Research status: `OOS_FAIL`
+- Retuned after Test: `false`
+
+| Stage | CAGR | Sharpe | Calmar | MaxDD | Profit Factor | Full PASS |
+|---|---:|---:|---:|---:|---:|:---:|
+| Aggregate | 6.02% | 1.0350 | 0.3222 | -18.68% | 1.1823 | No |
+| Train | 6.15% | 0.9340 | 0.3294 | -18.68% | 1.1645 | No |
+| Test | 6.45% | 1.3714 | 0.7114 | -9.06% | 1.2492 | No |
+
+Sharpe retention is `1.4683` and Test Sharpe exceeds Train Sharpe. This is not classic Train-to-Test collapse, but the alpha still fails the preregistered acceptance rule because CAGR, Calmar, and Profit Factor are below the VN-SMALL-CAP thresholds; Train also fails Sharpe.
+
+Per the locked-test rule, no condition or parameter will be added to rescue this result against the same Test period. Any future related strategy must be registered as a new development family and must not describe this Test as untouched OOS.
