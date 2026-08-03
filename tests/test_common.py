@@ -14,6 +14,10 @@ def sim_row(filepath, universe, metrics, status="SIMULATED"):
     row = {"status": status, "filepath": filepath, "universe": universe,
            "filename": os.path.basename(filepath)}
     row.update(metrics)
+    for split in ("train", "test"):
+        for key, value in metrics.items():
+            if key in common.VALID_METRIC_KEYS:
+                row[f"{split}_{key}"] = value
     return row
 
 
@@ -44,6 +48,19 @@ class TestIsPass(unittest.TestCase):
     def test_low_metric_fails(self):
         bad = dict(FULL_METRICS, sharpe=0.5)
         row = sim_row("vn_small_cap/time_series/A.py", "VN-SMALL-CAP", bad)
+        self.assertFalse(common.is_pass(row))
+
+    def test_each_split_must_pass_independently(self):
+        row = sim_row("vn_small_cap/time_series/A.py", "VN-SMALL-CAP", FULL_METRICS)
+        row["test_sharpe"] = 0.5
+        self.assertTrue(common.stage_pass(row, ""))
+        self.assertTrue(common.stage_pass(row, "train_"))
+        self.assertFalse(common.stage_pass(row, "test_"))
+        self.assertFalse(common.is_pass(row))
+
+    def test_old_aggregate_only_row_fails_closed(self):
+        row = {"status": "SIMULATED", "filepath": "a.py", "universe": "VN-SMALL-CAP"}
+        row.update(FULL_METRICS)
         self.assertFalse(common.is_pass(row))
 
     def test_unknown_universe_fails_closed(self):
@@ -96,7 +113,7 @@ class TestBuildLatest(unittest.TestCase):
 
 class TestLoadPrevious(unittest.TestCase):
 
-    def test_only_simulated_passing_rows_returned(self):
+    def test_old_aggregate_only_rows_are_not_previous_passes(self):
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "r.csv")
             with open(path, "w", encoding="utf-8") as f:
@@ -105,7 +122,7 @@ class TestLoadPrevious(unittest.TestCase):
                 f.write("t,vn_small_cap/time_series/B.py,B.py,VN-SMALL-CAP,time_series,SIMULATED,s2,0.30,0.50,1.20,-0.20,1.60,\n")
                 f.write("t,vn_small_cap/time_series/C.py,C.py,VN-SMALL-CAP,time_series,METRICS_TIMEOUT,,,,\n")
             prev = common.load_previous_results(path)
-            self.assertIn(("vn_small_cap/time_series/A.py", "VN-SMALL-CAP"), prev)
+            self.assertNotIn(("vn_small_cap/time_series/A.py", "VN-SMALL-CAP"), prev)
             self.assertNotIn(("vn_small_cap/time_series/B.py", "VN-SMALL-CAP"), prev)
             self.assertNotIn(("vn_small_cap/time_series/C.py", "VN-SMALL-CAP"), prev)
 
