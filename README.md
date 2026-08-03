@@ -10,7 +10,7 @@
 > 2. `agent/framework_build_guide.md` — blueprint gen strategy (Level 1-5)
 > 3. `agent/GUIDE.md` — onboarding + pipeline
 > 4. `template_example/strategy_framework.md` — master spec Round 2
-> 5. `syntax/data_syntax.md` → `feature_syntax.md` → `operations_syntax.md` → `parameters.md`
+> 5. `syntax/INDEX.md` — shared data + catalog riêng cho `time_series` va `cross_sectional`
 >
 > **Pipeline:** agent viết strategy → `output/stage_2/<cap>/<mode>/` → `tools/validate_framework.py --strict` →
 > `tools/submit_and_check.py --batch --universe VN-...` → `tools/check_results.py`.
