@@ -117,5 +117,5 @@ rsi = self.feat.rsi(close, timeperiod=7)
 atr = self.feat.atr(high, low, close, timeperiod=14)
 ```
 
-- Keep indicator parameters inside the allowed timeperiod convention (`syntax/parameters.md`).
+- Keep indicator parameters inside the allowed timeperiod convention ([`../time_series/parameters.md`](../time_series/parameters.md)).
 - Do not reimplement an indicator that the framework already provides.
