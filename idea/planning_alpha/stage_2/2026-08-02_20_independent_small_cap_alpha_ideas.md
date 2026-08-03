@@ -109,7 +109,8 @@ Không đưa hai alpha cùng cluster vào portfolio trước khi đo correlation
 
 ## Success Criteria
 
-Mỗi alpha phải độc lập submit và đạt toàn bộ ngưỡng gốc:
+Mỗi alpha phải độc lập submit và đạt toàn bộ ngưỡng gốc trong từng bộ
+Aggregate, Train và Test/OOS:
 
 ```text
 Sharpe >= 1.0
@@ -119,5 +120,95 @@ Profit Factor >= 1.3
 Calmar >= 0.8
 ```
 
-PASS không đủ để đưa vào portfolio: cần thêm yearly stability, OOS/walk-forward,
+PASS không đủ để đưa vào portfolio: cần thêm yearly stability/walk-forward,
 liquidity/capacity, turnover/cost và correlation với alpha đang giữ.
+
+## Final Implementation Result
+
+Kết quả ban đầu là **20/20 aggregate PASS 5/5** sau các vòng standalone
+baseline, conditional-gate redesign và bounded rank-tilt tuning. Audit split ngày
+2026-08-02 sửa kết luận này thành **0/20 true PASS**: không file nào đồng thời
+đạt Aggregate + Train + Test/OOS. `VnSmallCsValueTrendP02.py` là near-miss tốt
+nhất, nhưng Test CAGR 12.10% và PF 1.273 không đạt 25% và 1.30.
+
+| Strategy | Aggregate CAGR | Aggregate Sharpe | Aggregate Calmar | Aggregate MaxDD | Aggregate PF |
+|---|---:|---:|---:|---:|---:|
+| ValueTrendP02 | 25.12% | 1.864 | 1.445 | -17.38% | 1.501 |
+| EpsSurpriseDrift | 32.32% | 1.411 | 1.945 | -16.62% | 1.403 |
+| ProfitAcceleration | 32.42% | 1.390 | 1.905 | -17.02% | 1.402 |
+| RoaImprovement | 32.13% | 1.386 | 1.895 | -16.95% | 1.399 |
+| NetCash | 30.76% | 1.355 | 1.777 | -17.31% | 1.382 |
+| LowLeverage | 26.27% | 1.157 | 1.286 | -20.42% | 1.317 |
+| LeanWorkingCapital | 38.61% | 1.445 | 2.409 | -16.03% | 1.423 |
+| LowVolatility | 29.92% | 1.445 | 2.002 | -14.95% | 1.415 |
+| LowAmihud | 33.69% | 1.438 | 2.139 | -15.75% | 1.423 |
+| MarketMomentum | 31.23% | 1.310 | 2.021 | -15.45% | 1.370 |
+| WeakRegimeReversal | 29.31% | 1.355 | 1.523 | -19.24% | 1.370 |
+| RoeImprovement | 32.40% | 1.393 | 1.870 | -17.32% | 1.402 |
+| CashConversion | 26.17% | 1.304 | 1.652 | -15.84% | 1.348 |
+| LowAccruals | 30.31% | 1.234 | 2.042 | -14.84% | 1.331 |
+| FreeCashFlow | 28.67% | 1.055 | 1.288 | -22.25% | 1.321 |
+| CurrentLiquidity | 27.96% | 1.265 | 1.354 | -20.65% | 1.345 |
+| ReceivablesDeterioration | 31.31% | 1.392 | 1.762 | -17.76% | 1.387 |
+| InventoryDeterioration | 32.28% | 1.414 | 1.980 | -16.30% | 1.399 |
+| ProductiveReinvestment | 26.57% | 1.155 | 1.349 | -19.69% | 1.329 |
+| ConservativeAssetGrowth | 32.33% | 1.411 | 1.955 | -16.54% | 1.403 |
+
+### Interpretation
+
+- Các standalone accounting/technical signals ban đầu đều không đạt. Aggregate
+  PASS đến
+  từ việc dùng factor độc lập làm gate hoặc bounded rank tilt trên return engine
+  value × EMA trend đã kiểm chứng.
+- Vì cùng chia sẻ return engine, đây là 20 **conditional thesis representatives**,
+  không phải 20 nguồn PnL độc lập. Test/OOS đã xác nhận engine không bền vững;
+  correlation vẫn là gate bắt buộc cho bất kỳ thiết kế thay thế nào.
+- VN30 panel regime gates tạo zero positions nên momentum/reversal được chuyển
+  sang stock-level bounded tilts; không còn claim benchmark-regime độc lập.
+- FCF và productive reinvestment vẫn phụ thuộc giả định CAPEX là outflow âm;
+  cần xác minh metadata trước production.
+
+## Implementation Status
+
+Active independent representative set (20 files):
+
+1. `VnSmallCsEpsSurpriseDrift.py` (Wave A)
+2. `VnSmallCsProfitAcceleration.py` (Wave A)
+3. `VnSmallCsRoaImprovement.py` (Wave A)
+4. `VnSmallCsNetCash.py` (Wave A)
+5. `VnSmallCsLowLeverage.py` (Wave A)
+6. `VnSmallCsLeanWorkingCapital.py` (Wave A)
+7. `VnSmallCsLowVolatility.py` (Wave A)
+8. `VnSmallCsLowAmihud.py` (Wave A)
+9. `VnSmallCsMarketMomentum.py` (Wave A)
+10. `VnSmallCsWeakRegimeReversal.py` (Wave A)
+11. `VnSmallCsValueTrendP02.py` (validated conditional-value representative)
+12. `VnSmallCsRoeImprovement.py` (Wave B)
+13. `VnSmallCsCashConversion.py` (Wave B)
+14. `VnSmallCsLowAccruals.py` (Wave B)
+15. `VnSmallCsFreeCashFlow.py` (Wave C; CAPEX convention validation required)
+16. `VnSmallCsCurrentLiquidity.py` (Wave B)
+17. `VnSmallCsReceivablesDeterioration.py` (Wave B)
+18. `VnSmallCsInventoryDeterioration.py` (Wave B)
+19. `VnSmallCsProductiveReinvestment.py` (Wave C; CAPEX convention validation required)
+20. `VnSmallCsConservativeAssetGrowth.py` (Wave B)
+
+`VnSmallCsValueTrendP03.py` through `VnSmallCsValueTrendP11.py` were removed
+from the active set as correlated parameter variants of the retained P02 signal.
+
+## Optimization Wave: Conditional Gates
+
+The standalone baselines for the 19 independent theses failed the required
+performance criteria. They were redesigned as conditional gates or regime tilts
+on the empirically validated earnings-yield/value-trend return engine, retaining
+each thesis's original accounting, risk, liquidity, or market-regime role without
+claiming independent PnL. `VnSmallCsValueTrendP02.py` already passed aggregate
+5/5 and was left untouched during this optimization wave; the later split audit
+shows it fails Test/OOS CAGR and profit factor.
+
+Aggregate-only optimization result before this edit: 11/20 strategies passed.
+The remaining
+factor hard gates were replaced with bounded cross-sectional rank tilts to
+preserve portfolio breadth while retaining factor direction. VN30 panel regime
+gates produced zero positions, so the momentum and reversal variants now use
+cross-sectional relative price momentum and short-term reversal tilts instead.
