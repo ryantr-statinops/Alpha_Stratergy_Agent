@@ -18,9 +18,9 @@ Xem kế hoạch đầy đủ: [`agent/migration_plan_v2.md`](../agent/migration
 | # | Template | Bạn điền gì vào? | Vì sao cần? |
 |:-:|----------|------------------|-------------|
 | 1 | `templates/syntax_data_v2.md` | Danh sách **data fields** mới của vòng 2 (mọi `self.data.*`) | Để viết lại `syntax/data_syntax.md` — biết field nào dùng được, tên chính xác |
-| 2 | `templates/syntax_feature_v2.md` | Danh sách **feature functions** mới (mọi `self.feat.*`) + signature + return type | Để viết lại `syntax/feature_syntax.md` — biết chỉ báo nào có, tham số gì |
-| 3 | `templates/syntax_operations_v2.md` | Danh sách **operators** mới (mọi `self.op.*`) + cú pháp | Để viết lại `syntax/operations_syntax.md` — biết toán tử nào có |
-| 4 | `templates/syntax_parameters_v2.md` | Bộ **tham số chuẩn** mới theo từng timeframe (15m quan trọng nhất) | Để viết lại `syntax/parameters.md` — biết dùng window/threshold nào |
+| 2 | `templates/syntax_feature_v2.md` | Danh sách **feature functions** mới (mọi `self.feat.*`) + signature + return type | Để viết lại `syntax/time_series/feature_syntax.md` + `syntax/cross_sectional/feature_syntax.md` — biết chỉ báo nào có, tham số gì |
+| 3 | `templates/syntax_operations_v2.md` | Danh sách **operators** mới (mọi `self.op.*`) + cú pháp | Để viết lại `syntax/time_series/operations_syntax.md` + `syntax/cross_sectional/operations_syntax.md` — biết toán tử nào có |
+| 4 | `templates/syntax_parameters_v2.md` | Bộ **tham số chuẩn** mới theo từng timeframe (15m quan trọng nhất) | Để viết lại `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md` — biết dùng window/threshold nào |
 | 5 | `templates/migration_map_v2.md` | **Bảng ánh xạ cũ → mới** (mọi field/func/op vòng 1 → vòng 2, trạng thái giữ/đổi/xoá) | Để `migrate_stage2.py` biết cách convert code cũ sang mới tự động |
 
 **Mức độ bắt buộc:**

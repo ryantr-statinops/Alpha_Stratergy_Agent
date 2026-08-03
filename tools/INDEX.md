@@ -9,6 +9,7 @@
 | `validate_framework.py` | Validate Round-2 files for framework compliance (quét `output/stage_2/`) | `python tools/validate_framework.py` |
 | `submit_and_check.py` | Submit Round-2 strategies to XNOQuant + fetch metrics | `python tools/submit_and_check.py [--batch \| --files ...] [--dry-run] [--universe VN-...]` |
 | `check_results.py` | Review Round-2 backtest results (`backtest/results_stage_2.csv`) | `python tools/check_results.py [--detail \| --pass \| --universe ...]` |
+| `backfill_split_metrics.py` | GET-only audit/backfill Aggregate + Train + Test cho row cũ | `python tools/backfill_split_metrics.py [--universe ...] [--prefix ...] [--write]` |
 | `update_guide_stats.py` | Regenerate Round-2 strategy stats from `output/index.csv` | `python tools/update_guide_stats.py` |
 | `gen_single_feat.py` | Generate a single-feature alpha strategy (vòng 1 — ARCHIVED) | `python tools/gen_single_feat.py <indicator> <call> <threshold>` |
 | `common.py` | Shared helpers (imported by other tools, not standalone) | — |
@@ -25,7 +26,7 @@ The standard Round-2 pipeline (agent writes strategies directly, no code generat
 2. python tools/validate_framework.py --strict            # Validate Round-2 compliance (strict)
 3. python tools/submit_and_check.py --batch --dry-run --universe VN-...  # Preview (no HTTP)
    # Choose universe on XNOQuant UI manually -> live: --batch --test / --batch
-4. python tools/check_results.py --detail                 # Review PASS/FAIL per universe
+4. python tools/check_results.py --detail                 # Aggregate + Train/Test PASS/FAIL
 5. python tools/update_guide_stats.py                     # Update strategy count stats
 ```
 
@@ -67,8 +68,8 @@ Submit Round-2 strategy code (in `output/stage_2/`) to XNOQuant via API and fetc
   - `--limit N` — max N files in batch
   - `--universe VN-...` — FILTER chọn 1 cap (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP). Universe ghi CSV suy từ path, KHÔNG bị override. Batch trộn nhiều cap không có flag → từ chối.
 - **Config:** `.env` in project root — **1 editor per cap** (`XNO_EDITOR_ID_SMALL` / `XNO_EDITOR_ID_MID` / `XNO_EDITOR_ID_LARGE`) + `XNO_TOKEN`; legacy single `XNO_EDITOR_ID` dùng làm fallback. (required — no hardcoded fallbacks)
-- **Flow per file:** update → verify (nếu update fail thì dừng) → simulate (nếu verify fail thì dừng) → poll metrics (timeout 90s) → ghi 1 row CSV
-- **Idempotency:** skip theo `(filepath, universe)` — basename trùng ở cap khác KHÔNG bị coi là đã submit
+- **Flow per file:** update → verify → simulate → poll cả `simulate` + `train` + `test` summary (chỉ hoàn tất khi đủ cả ba) → ghi 1 row CSV
+- **Idempotency:** skip theo `(filepath, universe)` chỉ khi Aggregate + Train + Test đều PASS; row aggregate-only cũ không bị skip
 - **Results:** `backtest/results_stage_2.csv`
 
 See `agent/submit_workflow.md` for detailed setup and API reference.
@@ -83,8 +84,16 @@ Consolidated Round-2 results checker — reads `backtest/results_stage_2.csv` by
 - **Today only:** `python tools/check_results.py --today`
 - **PASS/FAIL only:** `python tools/check_results.py --pass` / `--fail`
 - **Full metrics:** `python tools/check_results.py --detail`
+- **Detailed splits:** `python tools/check_results.py --splits`
 - **Custom CSV:** `python tools/check_results.py --csv path/to/results.csv`
-- PASS/FAIL dùng tiêu chí theo universe (xem `common.py` `PASS_THRESHOLDS_BY_UNIVERSE`)
+- PASS/FAIL dùng tiêu chí theo universe; Aggregate, Train và Test phải độc lập đủ 5 metrics và PASS
+
+### `backfill_split_metrics.py`
+
+Chọn row `SIMULATED` mới nhất có `strategy_id` theo `(filepath, universe)`, GET cả ba
+summary stage và audit trên console. Mặc định read-only/no CSV writes; thêm `--write`
+để append row enriched mới. Hỗ trợ `--universe`, `--prefix`, `.env` `XNO_TOKEN`, và
+delay lịch sự giữa strategies. Tool không update/verify/simulate editor.
 
 ### `update_guide_stats.py`
 
@@ -102,7 +111,9 @@ python tools/gen_single_feat.py cci "cci(high, low, close, timeperiod=20)" 0 --d
 ```
 
 - **Output:** `output/single_feat_alpha/SF_<INDICATOR>_15min.py`
-- **Parameters:** Read from `syntax/parameters.md` for 15min VNFuture (vòng 1)
+- **Parameters:** Archived generator; do not use current parameter docs
+  (`syntax/time_series/parameters.md`, `syntax/cross_sectional/parameters.md`,
+  canonical for Round-2 daily equity) as a VNFuture 15m reference.
 
 ### `common.py`
 
@@ -112,7 +123,7 @@ Shared helpers module used by `submit_and_check.py`, `check_results.py`, and oth
 - `PASS_THRESHOLDS_BY_UNIVERSE` — **Round 2:** bộ tiêu chí riêng cho VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP (user cung cấp)
 - `thresholds_for(universe)` — chọn bộ tiêu chí theo universe; **fail-closed:** universe lạ/trống → `KeyError` (hết default)
 - `getf(row, key)` — parse float from CSV cell safely
-- `is_pass(row)` — PASS chỉ khi `status == SIMULATED` + đủ cả 5 metrics + vượt ngưỡng cap
+- `is_pass(row)` — PASS chỉ khi `SIMULATED` và cả Aggregate + Train + Test đủ 5 metrics, từng bộ vượt ngưỡng cap
 - `status_label(row)` — PASS/FAIL/PENDING/API_ERROR/INVALID_METADATA từ status + metrics
 - `row_key(row)` — identity `(filepath, universe)` (thay cho basename — tránh collision giữa cap)
 - `load_previous_results(csv_path)` — build {(filepath, universe): is_pass} map
@@ -131,6 +142,7 @@ Shared helpers module used by `submit_and_check.py`, `check_results.py`, and oth
 | `submit_and_check.py` | XNOQuant submission + metrics fetcher (`output/stage_2/` → `results_stage_2.csv`) | Active (V2) |
 | `update_guide_stats.py` | Round-2 stats generator từ `output/index.csv` | Active (V2) |
 | `check_results.py` | Round-2 results checker (theo universe) | Active (V2) |
+| `backfill_split_metrics.py` | Append-only split metrics audit/backfill | Active (V2) |
 | `generate_strategies.py` | Master strategy generator (vòng 1 — ARCHIVED) | Archived |
 | `gen_single_feat.py` | Single-feature alpha generator (vòng 1 — ARCHIVED) | Archived |
 | `INDEX.md` | This file | Active |

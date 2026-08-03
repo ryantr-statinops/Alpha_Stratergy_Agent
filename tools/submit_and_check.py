@@ -40,12 +40,16 @@ import os
 import sys
 import csv
 import argparse
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
 
-from common import format_metrics, load_previous_results
+from common import (
+    VALID_METRIC_KEYS, flatten_stage_metrics, format_metrics,
+    load_previous_results, wait_for_stage_metrics,
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
@@ -76,7 +80,11 @@ STATUS_NO_STRATEGY_ID = "NO_STRATEGY_ID"
 CSV_FIELDS = [
     "timestamp", "filepath", "filename", "universe", "mode",
     "status", "strategy_id", "cagr", "sharpe", "calmar",
-    "max_drawdown", "profit_factor", "error",
+    "max_drawdown", "profit_factor",
+    "train_cagr", "train_sharpe", "train_calmar",
+    "train_max_drawdown", "train_profit_factor",
+    "test_cagr", "test_sharpe", "test_calmar",
+    "test_max_drawdown", "test_profit_factor", "error",
 ]
 
 
@@ -145,35 +153,9 @@ def wait_for_new_strategy_id(session, base: str, old_strategy_id: str | None,
     return get_strategy_id(session, base)
 
 
-def fetch_metrics(session, strategy_id: str) -> dict:
-    url = f"https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/simulate/summary-aggregate"
-    try:
-        r = session.get(url)
-        if r.status_code == 200:
-            data = r.json().get("data", {})
-            if data:
-                return {
-                    "cagr": data.get("cagr", 0) or 0,
-                    "sharpe": data.get("sharpe", 0) or 0,
-                    "calmar": data.get("calmar", 0) or 0,
-                    "max_drawdown": data.get("max_drawdown", 0) or 0,
-                    "profit_factor": data.get("profit_factor", 0) or 0,
-                }
-    except Exception:
-        pass
-    return {}
-
-
 def wait_for_metrics(session, strategy_id: str, timeout: int = POLL_TIMEOUT) -> dict:
-    """Poll simulate summary until metrics are ready or timeout. Returns {} on timeout."""
-    elapsed = 0
-    while elapsed < timeout:
-        metrics = fetch_metrics(session, strategy_id)
-        if metrics:
-            return metrics
-        time.sleep(POLL_INTERVAL)
-        elapsed += POLL_INTERVAL
-    return {}
+    """Poll until aggregate, train, and test summaries are all ready."""
+    return wait_for_stage_metrics(session, strategy_id, timeout, POLL_INTERVAL)
 
 
 def infer_universe_from_path(fpath: str) -> str:
@@ -246,10 +228,35 @@ def split_by_universe(files: list) -> dict:
     return groups
 
 
-def save_to_csv(row: dict):
-    os.makedirs(os.path.dirname(CSV_PATH), exist_ok=True)
-    file_exists = os.path.isfile(CSV_PATH)
-    with open(CSV_PATH, "a", newline="", encoding="utf-8") as f:
+def ensure_csv_schema(csv_path=CSV_PATH):
+    """Atomically migrate an old results CSV to CSV_FIELDS before appending."""
+    parent = os.path.dirname(csv_path) or "."
+    os.makedirs(parent, exist_ok=True)
+    if not os.path.isfile(csv_path) or os.path.getsize(csv_path) == 0:
+        return
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        if reader.fieldnames == CSV_FIELDS:
+            return
+        rows = list(reader)
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile("w", newline="", encoding="utf-8",
+                                         dir=parent, delete=False) as temp:
+            temp_path = temp.name
+            writer = csv.DictWriter(temp, fieldnames=CSV_FIELDS, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(rows)
+        os.replace(temp_path, csv_path)
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+
+def save_to_csv(row: dict, csv_path=CSV_PATH):
+    ensure_csv_schema(csv_path)
+    file_exists = os.path.isfile(csv_path) and os.path.getsize(csv_path) > 0
+    with open(csv_path, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=CSV_FIELDS, extrasaction="ignore")
         if not file_exists:
             writer.writeheader()
@@ -259,7 +266,7 @@ def save_to_csv(row: dict):
 def make_row(filepath: str, universe: str, status: str, metrics: dict = None,
              strategy_id: str = "", error: str = "") -> dict:
     metrics = metrics or {}
-    return {
+    row = {
         "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "filepath": filepath.replace("\\", "/").split("output/stage_2/")[-1],
         "filename": os.path.basename(filepath),
@@ -274,6 +281,10 @@ def make_row(filepath: str, universe: str, status: str, metrics: dict = None,
         "profit_factor": metrics.get("profit_factor", ""),
         "error": error,
     }
+    for split in ("train", "test"):
+        for key in VALID_METRIC_KEYS:
+            row[f"{split}_{key}"] = metrics.get(f"{split}_{key}", "")
+    return row
 
 
 def rel_filepath(filepath: str) -> str:
@@ -340,15 +351,18 @@ def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, 
     if strategy_id == old_strategy_id:
         print(f"  => strategy_id khong doi ({strategy_id}), co the la ket qua cu")
 
-    print(f"  Poll metrics (timeout {POLL_TIMEOUT}s)...")
-    metrics = wait_for_metrics(session, strategy_id)
-    if metrics:
+    print(f"  Poll Aggregate + Train + Test metrics (timeout {POLL_TIMEOUT}s)...")
+    stages = wait_for_metrics(session, strategy_id)
+    if stages:
+        metrics = flatten_stage_metrics(stages)
         save_to_csv(make_row(filepath, universe, STATUS_SIMULATED, metrics, strategy_id))
-        print(f"  => {format_metrics(metrics)}")
+        print(f"  => Aggregate: {format_metrics(stages['simulate'])}")
+        print(f"  => Train    : {format_metrics(stages['train'])}")
+        print(f"  => Test     : {format_metrics(stages['test'])}")
     else:
         save_to_csv(make_row(filepath, universe, STATUS_METRICS_TIMEOUT, {}, strategy_id,
-                             error="simulate summary not ready within timeout"))
-        print("  => Metrics: N/A (simulation chua hoan tat trong timeout)")
+                             error="simulate/train/test summaries not all ready within timeout"))
+        print("  => Metrics: N/A (Aggregate/Train/Test not all ready within timeout)")
 
     return True
 

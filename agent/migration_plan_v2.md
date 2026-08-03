@@ -41,8 +41,8 @@ output/
 - **Migration Map** đã lập: `input/templates/migration_map_v2.md` (bảng `field/func cũ → mới`).
 - Kết quả:
   - `syntax/data_syntax.md` — 496 fields + mode contract (time_series / cross_sectional).
-  - `syntax/feature_syntax.md` — 36 panel features + time_series family.
-  - `syntax/operations_syntax.md` — 7 cross-sectional ops + time_series ops.
+  - `syntax/cross_sectional/feature_syntax.md` — 36 panel features; `syntax/time_series/feature_syntax.md` — time_series family.
+  - `syntax/cross_sectional/operations_syntax.md` — 7 cross-sectional ops; `syntax/time_series/operations_syntax.md` — time_series ops.
   - `template_example/strategy_framework.md` — master spec Round 2 (viết lại hoàn toàn).
 
 ### Phase C — Sinh strategy Round 2 ⏳ PENDING

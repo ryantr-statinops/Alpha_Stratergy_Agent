@@ -3,6 +3,57 @@ vn_small_cap/time_series/VnSmallEpsGrowthMomentum.py,eps_growth_momentum,time_se
 vn_mid_cap/time_series/VnMidTrendQuality.py,roe_quality_trend,time_series,time_series,VN-MID-CAP,ROE floor + improving profit + equity/asset buffer in uptrend,2-tier long
 vn_large_cap/time_series/VnLargeRevenueStability.py,cashflow_stability,time_series,time_series,VN-LARGE-CAP,Positive operating cash flow + stable margin above 60d trend,2-tier long
 vn_small_cap/cross_sectional/VnSmallCsEpsRank.py,eps_rank_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Cross-sectional rank on quarterly EPS growth (market-neutral),rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsValueTrendP02.py,value_trend_p02_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Earnings yield with EMA trend exponent p2 and capital-strength/liquidity gates,demean_l1
 vn_mid_cap/cross_sectional/VnMidCsRoERank.py,roe_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on ROE (market-neutral),rank_demean_l1
 vn_large_cap/cross_sectional/VnLargeCsValueMomentum.py,value_momentum_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Composite earnings yield + price momentum z-score rank (market-neutral),rank_demean_l1
+vn_large_cap/time_series/VnLargeTrendVolume824.py,trend_volume_cs,time_series,time_series,VN-LARGE-CAP,8/24 EMA uptrend with SMA10 volume confirmation,2-tier long
+vn_large_cap/time_series/VnLargeTrendVolume1236.py,trend_volume_slow,time_series,time_series,VN-LARGE-CAP,12/36 EMA uptrend with SMA20 volume confirmation,2-tier long
+vn_large_cap/time_series/VnLargeDualTrend.py,dual_trend_cs,time_series,time_series,VN-LARGE-CAP,Dual stacked EMA regime confirmation,2-tier long
+vn_large_cap/time_series/VnLargeMacdTrend.py,macd_trend_cs,time_series,time_series,VN-LARGE-CAP,MACD 8/21/5 positive over 8/24 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeRsiTrend.py,rsi_trend_cs,time_series,time_series,VN-LARGE-CAP,RSI9 momentum over 12/36 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeCashFlowTrend.py,cashflow_trend_cs,time_series,time_series,VN-LARGE-CAP,Positive annual CFO in 8/24 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeCashFlowVolume.py,cashflow_volume_cs,time_series,time_series,VN-LARGE-CAP,Positive annual CFO in 12/36 EMA uptrend with SMA20 volume,2-tier long
+vn_large_cap/time_series/VnLargeCashReturnTrend.py,cash_return_trend_cs,time_series,time_series,VN-LARGE-CAP,Positive CFO/total assets in 8/24 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeCashConversionTrend.py,cash_conversion_cs,time_series,time_series,VN-LARGE-CAP,CFO/net profit above 0.5 in 12/36 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeStableCashQuality.py,stable_cash_cs,time_series,time_series,VN-LARGE-CAP,Positive annual CFO and quarterly profit in 12/36 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeEarningsYieldTrend.py,ey_trend_cs,time_series,time_series,VN-LARGE-CAP,Positive earnings yield in 8/24 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeEarningsYieldVolume.py,ey_volume_cs,time_series,time_series,VN-LARGE-CAP,Positive earnings yield in 12/36 EMA uptrend with SMA20 volume,2-tier long
+vn_large_cap/time_series/VnLargeRoaTrend.py,roa_trend_cs,time_series,time_series,VN-LARGE-CAP,Positive annual ROA in 8/24 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeRoeTrend.py,roe_trend_cs,time_series,time_series,VN-LARGE-CAP,Positive quarterly ROE in 12/36 EMA uptrend with SMA20 volume,2-tier long
+vn_large_cap/time_series/VnLargeCapitalStrengthTrend.py,capital_strength_cs,time_series,time_series,VN-LARGE-CAP,Equity/assets above 0.3 in 8/24 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeEpsReportMomentum.py,eps_report_cs,time_series,time_series,VN-LARGE-CAP,Quarterly EPS growth trigger in 8/24 EMA uptrend with volume,2-tier long
+vn_large_cap/time_series/VnLargeProfitReportMomentum.py,profit_report_cs,time_series,time_series,VN-LARGE-CAP,Quarterly profit growth trigger in 8/24 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeBreakoutCashFlow.py,breakout_cashflow_cs,time_series,time_series,VN-LARGE-CAP,Breakout above 20d high with positive annual CFO,2-tier long
+vn_large_cap/time_series/VnLargePullbackQuality.py,pullback_quality_cs,time_series,time_series,VN-LARGE-CAP,Positive CFO pullback to 24 EMA in uptrend,2-tier long
+vn_large_cap/time_series/VnLargeValueCashTrend.py,value_cash_cs,time_series,time_series,VN-LARGE-CAP,Positive earnings yield and annual CFO in 8/24 EMA uptrend,2-tier long
+vn_small_cap/cross_sectional/VnSmallCsEpsSurpriseDrift.py,eps_surprise_drift_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Positive-trend quarterly EPS surprise drift with liquidity gate,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsProfitAcceleration.py,profit_acceleration_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Asset-scaled quarterly profit acceleration with liquidity gate,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsRoaImprovement.py,roa_improvement_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Trend-confirmed quarterly ROA improvement with liquidity gate,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsNetCash.py,net_cash_balance_sheet_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Annual net-cash strength relative to total assets,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsLowLeverage.py,low_total_leverage_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Low annual liabilities relative to total assets,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsLeanWorkingCapital.py,lean_working_capital_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Low annual operating working-capital burden,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsLowVolatility.py,low_realized_volatility_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Low realized volatility among actively traded small caps,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsLowAmihud.py,low_amihud_illiquidity_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Low Amihud price impact among actively traded small caps,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsMarketMomentum.py,market_confirmed_momentum_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Relative price momentum tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsWeakRegimeReversal.py,weak_regime_reversal_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Short-term reversal tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsRoeImprovement.py,roe_improvement_controlled_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Leverage-controlled quarterly ROE improvement,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsCashConversion.py,operating_cash_conversion_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Annual operating cash conversion relative to positive earnings,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsLowAccruals.py,total_accrual_quality_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Annual cash-supported earnings quality relative to assets,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsFreeCashFlow.py,free_cash_flow_assets_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Annual free cash flow to assets under negative CAPEX convention,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsCurrentLiquidity.py,current_liquidity_strength_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Annual current-asset coverage of current liabilities,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsReceivablesDeterioration.py,receivables_deterioration_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Avoid annual receivables build relative to assets,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsInventoryDeterioration.py,inventory_deterioration_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Avoid annual inventory build relative to assets,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsProductiveReinvestment.py,productive_reinvestment_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,CFO-backed capital investment under negative CAPEX convention,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsConservativeAssetGrowth.py,conservative_asset_growth_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Conservative annual balance-sheet expansion,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsEnterpriseEarningsYield.py,mid_enterprise_earnings_yield_cs,cross_sectional,cross_sectional,VN-MID-CAP,Annual earnings yield adjusted for debt and cash,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsCashProfitability.py,mid_cash_profitability_cs,cross_sectional,cross_sectional,VN-MID-CAP,Annual operating cash flow relative to assets,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsScalingEfficiency.py,mid_scaling_efficiency_cs,cross_sectional,cross_sectional,VN-MID-CAP,Profit news net of asset expansion,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsCashAccrualQuality.py,mid_cash_accrual_quality_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cash earnings less accounting profit relative to assets,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsProjectCommissioning.py,mid_project_commissioning_cs,cross_sectional,cross_sectional,VN-MID-CAP,CIP conversion plus fixed-asset activation and profit payoff,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsInternallyFundedInvestment.py,mid_internal_funding_cs,cross_sectional,cross_sectional,VN-MID-CAP,Internal cash funding net of capex and external proceeds,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsActiveDeleveraging.py,mid_active_deleveraging_cs,cross_sectional,cross_sectional,VN-MID-CAP,Annual debt reduction among material borrowers,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsIdiosyncraticMomentum.py,mid_idiosyncratic_momentum_cs,cross_sectional,cross_sectional,VN-MID-CAP,firm-specific price momentum tilt,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsRecognitionMigration.py,mid_recognition_migration_cs,cross_sectional,cross_sectional,VN-MID-CAP,Falling Amihud impact plus rising traded-value participation,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsAntiLotteryMaxReturn.py,mid_anti_lottery_max_cs,cross_sectional,cross_sectional,VN-MID-CAP,Negative exposure to extreme recent daily returns,demean_l1
+vn_mid_cap/cross_sectional/VnMidCsEnterpriseEarningsYieldRobust.py,mid_enterprise_earnings_yield_robust_cs,cross_sectional,cross_sectional,VN-MID-CAP,Robust concentrated enterprise-yield challenger with volatility and liquidity filters,demean_l1
 vn_small_cap/cross_sectional/VnSmallCsAssetProfitabilityBaseline.py,small_asset_profitability_baseline_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Quarterly positive net profit relative to total assets as a simple market-neutral quality baseline,rank_demean_l1

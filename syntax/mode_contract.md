@@ -113,7 +113,7 @@ eligible = (
 )
 ```
 
-This pattern is not a universal substitute for missing checks: it is valid only when positivity is part of the economic thesis. See `panel_feature_contract.md` and `fundamental_data_contract.md` before using nullable or sign-unrestricted fields.
+This pattern is not a universal substitute for missing checks: it is valid only when positivity is part of the economic thesis. See `cross_sectional/panel_contract.md` and `fundamental_data_contract.md` before using nullable or sign-unrestricted fields.
 
 ## 5. Position Contracts
 
@@ -226,10 +226,10 @@ Do not select a mode merely because one produces a better backtest. The mode mus
 
 ## 9. Canonical References
 
-- Raw fields: `syntax/data_syntax.md`
-- Features: `syntax/feature_syntax.md`
-- Operators: `syntax/operations_syntax.md`
-- Fundamental semantics: `syntax/fundamental_data_contract.md`
-- Panel defaults and verified behavior: `syntax/panel_feature_contract.md`
-- Construction recipes: `syntax/strategy_patterns.md`
-- Research validation: `syntax/validation_protocol.md`
+- Raw fields: [`data_syntax.md`](data_syntax.md)
+- Features — time series: [`time_series/feature_syntax.md`](time_series/feature_syntax.md); cross sectional: [`cross_sectional/feature_syntax.md`](cross_sectional/feature_syntax.md)
+- Operators — time series: [`time_series/operations_syntax.md`](time_series/operations_syntax.md); cross sectional: [`cross_sectional/operations_syntax.md`](cross_sectional/operations_syntax.md)
+- Fundamental semantics: [`fundamental_data_contract.md`](fundamental_data_contract.md)
+- Panel defaults and verified behavior: [`cross_sectional/panel_contract.md`](cross_sectional/panel_contract.md)
+- Construction recipes — time series: [`time_series/strategy_patterns.md`](time_series/strategy_patterns.md); cross sectional: [`cross_sectional/strategy_patterns.md`](cross_sectional/strategy_patterns.md)
+- Research validation: [`research/validation_protocol.md`](research/validation_protocol.md)

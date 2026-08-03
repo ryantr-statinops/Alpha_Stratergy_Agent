@@ -8,11 +8,16 @@ SYNTAX = ROOT / "syntax"
 
 def test_mode_specific_syntax_layout_exists():
     required = [
+        SYNTAX / "INDEX.md",
         SYNTAX / "data_syntax.md",
+        SYNTAX / "mode_contract.md",
+        SYNTAX / "fundamental_data_contract.md",
+        SYNTAX / "time_series" / "INDEX.md",
         SYNTAX / "time_series" / "feature_syntax.md",
         SYNTAX / "time_series" / "operations_syntax.md",
         SYNTAX / "time_series" / "parameters.md",
         SYNTAX / "time_series" / "strategy_patterns.md",
+        SYNTAX / "cross_sectional" / "INDEX.md",
         SYNTAX / "cross_sectional" / "feature_syntax.md",
         SYNTAX / "cross_sectional" / "operations_syntax.md",
         SYNTAX / "cross_sectional" / "parameters.md",
@@ -22,6 +27,12 @@ def test_mode_specific_syntax_layout_exists():
         SYNTAX / "research" / "experiment_manifest_schema.md",
     ]
     assert all(path.is_file() for path in required)
+
+
+def test_root_has_only_shared_documents():
+    root_files = {p.name for p in SYNTAX.iterdir() if p.is_file()}
+    assert root_files == {"INDEX.md", "data_syntax.md", "mode_contract.md",
+                          "fundamental_data_contract.md"}
 
 
 def test_shared_data_is_not_duplicated_by_mode():
@@ -58,18 +69,3 @@ def test_markdown_relative_links_resolve():
             if not resolved.exists():
                 missing.append((document.relative_to(ROOT).as_posix(), target))
     assert missing == []
-
-
-def test_compatibility_entry_points_link_to_canonical_docs():
-    expected = {
-        "feature_syntax.md": ("time_series/feature_syntax.md", "cross_sectional/feature_syntax.md"),
-        "operations_syntax.md": ("time_series/operations_syntax.md", "cross_sectional/operations_syntax.md"),
-        "parameters.md": ("time_series/parameters.md", "cross_sectional/parameters.md"),
-        "strategy_patterns.md": ("time_series/strategy_patterns.md", "cross_sectional/strategy_patterns.md"),
-        "panel_feature_contract.md": ("cross_sectional/panel_contract.md",),
-        "validation_protocol.md": ("research/validation_protocol.md",),
-        "experiment_manifest_schema.md": ("research/experiment_manifest_schema.md",),
-    }
-    for filename, targets in expected.items():
-        text = (SYNTAX / filename).read_text(encoding="utf-8")
-        assert all(target in text for target in targets)

@@ -131,7 +131,7 @@ Framework sinh strategy **từ dễ đến khó**. Mỗi level tăng thêm 1 l�
 
 ## 6. Parameters (Daily, Ratio 1:3)
 
-> Chi tiết tại `syntax/parameters.md`. Round 2 là **daily** — 1 ngày = 1 bar.
+> Chi tiết tại `syntax/time_series/parameters.md`. Round 2 là **daily** — 1 ngày = 1 bar.
 
 | Feature | Tham số chuẩn | Ghi chú |
 |---------|---------------|---------|

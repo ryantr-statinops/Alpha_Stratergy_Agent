@@ -84,7 +84,7 @@
 
 ## 2. Feature Functions (`self.feat.*`)
 
-> Vòng 1 có 183 features; vòng 2 có 36 panel features (`syntax/feature_syntax.md`) + giữ nguyên
+> Vòng 1 có 183 features; vòng 2 có 36 panel features (`syntax/cross_sectional/feature_syntax.md`) + giữ nguyên
 > bản time-series (không `_panel`, có `timeperiod`). Cột "Function mới" ghi cả 2 dạng.
 
 | Function cũ (vòng 1) | Function mới (vòng 2) | Trạng thái | Ghi chú |

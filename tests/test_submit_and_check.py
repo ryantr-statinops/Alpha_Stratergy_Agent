@@ -4,6 +4,7 @@ import os
 import sys
 import tempfile
 import unittest
+import csv
 from unittest import mock
 
 TOOLS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -185,8 +186,10 @@ class TestHTTPSequence(unittest.TestCase):
             with mock.patch.object(sub, "get_strategy_id", return_value="old-sid"), \
                  mock.patch.object(sub, "wait_for_new_strategy_id", return_value="sid"), \
                  mock.patch.object(sub, "wait_for_metrics",
-                                   return_value={"sharpe": 1.5, "cagr": 0.3, "calmar": 1.2,
-                                                 "max_drawdown": -0.2, "profit_factor": 1.6}), \
+                                    return_value={
+                                        stage: {"sharpe": 1.5, "cagr": 0.3, "calmar": 1.2,
+                                                "max_drawdown": -0.2, "profit_factor": 1.6}
+                                        for stage in ("simulate", "train", "test")}), \
                  mock.patch.object(sub, "save_to_csv") as msave:
                 f = tempfile.NamedTemporaryFile("w", suffix=".py", delete=False)
                 f.write(CODE); f.close()
@@ -194,6 +197,8 @@ class TestHTTPSequence(unittest.TestCase):
                 saved = msave.call_args[0][0]
                 self.assertEqual(saved["status"], "SIMULATED")
                 self.assertEqual(saved["strategy_id"], "sid")
+                self.assertEqual(saved["train_sharpe"], 1.5)
+                self.assertEqual(saved["test_sharpe"], 1.5)
                 os.unlink(f.name)
 
     def test_wait_for_new_strategy_id_returns_changed_id(self):
@@ -216,6 +221,69 @@ class TestHTTPSequence(unittest.TestCase):
         with mock.patch.object(sub, "time"):
             sid = sub.wait_for_new_strategy_id(session, "http://base", "old", timeout=5)
             self.assertEqual(sid, "old")
+
+
+class TestStageMetrics(unittest.TestCase):
+
+    def _response(self, data):
+        response = mock.MagicMock()
+        response.status_code = 200
+        response.json.return_value = {"data": data}
+        return response
+
+    def test_wait_fetches_all_three_stage_urls(self):
+        metrics = {"sharpe": 1.5, "cagr": 0.3, "calmar": 1.2,
+                   "max_drawdown": -0.2, "profit_factor": 1.6}
+        session = mock.MagicMock()
+        session.get.side_effect = [self._response(metrics) for _ in range(3)]
+        result = sub.wait_for_metrics(session, "sid", timeout=5)
+        self.assertEqual(set(result), {"simulate", "train", "test"})
+        urls = [call.args[0] for call in session.get.call_args_list]
+        self.assertTrue(any("/stages/simulate/summary-aggregate" in url for url in urls))
+        self.assertTrue(any("/stages/train/summary-aggregate" in url for url in urls))
+        self.assertTrue(any("/stages/test/summary-aggregate" in url for url in urls))
+
+    def test_partial_stage_is_polled_again(self):
+        full = {"sharpe": 1.5, "cagr": 0.3, "calmar": 1.2,
+                "max_drawdown": -0.2, "profit_factor": 1.6}
+        partial = dict(full)
+        partial.pop("calmar")
+        session = mock.MagicMock()
+        session.get.side_effect = [
+            self._response(full), self._response(partial), self._response(full),
+            self._response(full),
+        ]
+        with mock.patch.object(sub.time, "sleep"):
+            result = sub.wait_for_metrics(session, "sid", timeout=10)
+        self.assertEqual(result["train"], full)
+        self.assertEqual(session.get.call_count, 4)
+
+
+class TestCsvSchemaMigration(unittest.TestCase):
+
+    def test_old_header_is_atomically_migrated_before_append(self):
+        old_fields = [field for field in sub.CSV_FIELDS
+                      if not field.startswith("train_") and not field.startswith("test_")]
+        with tempfile.TemporaryDirectory() as directory:
+            path = os.path.join(directory, "results.csv")
+            old_row = {field: "" for field in old_fields}
+            old_row.update({"timestamp": "old", "filepath": "a.py", "status": "SIMULATED",
+                            "universe": "VN-SMALL-CAP", "sharpe": "1.5"})
+            with open(path, "w", newline="", encoding="utf-8") as handle:
+                writer = csv.DictWriter(handle, fieldnames=old_fields)
+                writer.writeheader()
+                writer.writerow(old_row)
+
+            sub.save_to_csv(sub.make_row("b.py", "VN-SMALL-CAP", "METRICS_TIMEOUT"), path)
+
+            with open(path, newline="", encoding="utf-8") as handle:
+                reader = csv.DictReader(handle)
+                rows = list(reader)
+                self.assertEqual(reader.fieldnames, sub.CSV_FIELDS)
+            self.assertEqual(len(rows), 2)
+            self.assertEqual(rows[0]["filepath"], "a.py")
+            self.assertEqual(rows[0]["train_sharpe"], "")
+            self.assertEqual(rows[0]["test_sharpe"], "")
 
 
 if __name__ == "__main__":
