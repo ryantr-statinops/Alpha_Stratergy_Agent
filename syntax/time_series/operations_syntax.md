@@ -108,6 +108,22 @@ The following names do **not** exist as `self.op` operations; use native operato
 - `self.op.sub(...)` → `a - b`
 - `self.op.minimum(...)` → `min(a, b)` expression or native comparison
 
+## Noise Filtering
+
+Filtering is composed from the existing functions above; no separate `noise_*`
+operator is required.
+
+- Drop unavailable or non-finite bars: `notna`, `isfinite`, `isna`.
+- Causal forward smoothing (price only, not fundamentals): `ffill`, `fillna(series, value)`.
+- Require a signal to persist a single bar does not trade: `hold_for`, `consecutive_true`,
+  `rising`, `falling`, `bars_since`.
+- De-whipsaw a crossover with an edge: `crossed_above` / `crossed_below` combined with
+  `rising` / `falling`.
+- Add a dead-band (hysteresis) with native arithmetic: `close > slow * 1.02`, plus `abs`,
+  `between`, `clip`.
+- Keep it causal: forward-only fills, positive lookbacks, no centered windows.
+- Never use `fillna` on a fundamental to hide a missing value as a zero; treat it as unavailable.
+
 ## Missing Behavior and Causal Constraints
 
 | Operation | Required research check |
