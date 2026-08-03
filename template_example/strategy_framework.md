@@ -4,6 +4,7 @@ Tài liệu này định nghĩa **Framework Specification** chuẩn cho mọi ch
 trên nền tảng **XNOQuant** trong **Round 2 — Fundamental Alpha Arena** (daily equity research).
 
 > **Nguồn tham chiếu chính thức:** `agent/stage_2_guideline.md` (round rules).
+> **Nguồn parameter canonical:** `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md` (profiles + evidence status).
 > Mọi AI Agent khi tạo mã nguồn (`.py`) trong thư mục `output/` **phải tuân thủ tuyệt đối**
 > các quy ước và ràng buộc kỹ thuật được mô tả trong tài liệu này.
 
@@ -116,12 +117,15 @@ volume = self.data.pv_volume
 ```python
 net_profit = self.data.fun_is_net_profit_loss_after_tax_quarterly
 eps = self.data.fun_is_eps_basis_quarterly
-operating_income = self.data.fun_is_total_operating_income_quarterly
 financial_expenses = self.data.fun_is_financial_expenses_quarterly
-equity = self.data.fun_bs_shareholders_equity_quarterly
+equity = self.data.fun_bs_owners_equity_quarterly
 total_assets = self.data.fun_bs_total_assets_quarterly
 operating_cash_flow = self.data.fun_cf_net_cash_inflows_outflows_from_operating_activities_annual
 ```
+
+> Chỉ dùng field có trong `syntax/data_syntax.md`. Không dùng
+> `fun_is_total_operating_income_*` hoặc `fun_bs_shareholders_equity_*` vì hai
+> tên này không tồn tại trong catalog Round 2.
 
 ### Cross-Sectional (cross_sectional — có `_panel` suffix)
 ```python
@@ -143,23 +147,28 @@ class CustomStrategy(SimpleAlgorithm):
     def __algorithm__(self):
         # STEP 1 — Raw data
         close = self.data.pv_close
-        volume = self.data.pv_volume
-
-        net_profit = self.data.fun_is_net_profit_loss_after_tax_quarterly
-        eps = self.data.fun_is_eps_basis_quarterly
+        net_profit = self.data.fun_is_net_profit_loss_after_tax_annual
+        total_assets = self.data.fun_bs_total_assets_annual
 
         # STEP 2 — Features
-        ema_fast = self.feat.ema(close, timeperiod=8)
-        ema_slow = self.feat.ema(close, timeperiod=24)
-        volume_base = self.feat.sma(volume, timeperiod=10)
+        ema8 = self.feat.ema(close, timeperiod=8)
+        ema12 = self.feat.ema(close, timeperiod=12)
+        ema24 = self.feat.ema(close, timeperiod=24)
+        ema36 = self.feat.ema(close, timeperiod=36)
 
-        # STEP 3 — Trading logic (fundamentals step on report updates)
-        profit_growth = self.op.fillna(self.op.pct_change(net_profit, periods=1), value=0)
-        eps_growth = self.op.fillna(self.op.pct_change(eps, periods=1), value=0)
+        # STEP 3 — Persistent quality + multi-horizon trend
+        roa = net_profit / total_assets
+        fundamentals_known = (
+            self.op.notna(net_profit)
+            & self.op.notna(total_assets)
+            & (total_assets > 0)
+            & self.op.notna(roa)
+        )
+        quality = fundamentals_known & (net_profit > 0) & (roa > 0.01)
 
-        weak_long = (close > ema_slow) & (ema_fast > ema_slow) & (profit_growth > -0.02) & (eps_growth > -0.02)
-        strong_long = weak_long & (profit_growth > 0) & (eps_growth > 0) & (volume > volume_base)
-        exit_setup = (ema_fast < ema_slow) | (profit_growth < -0.05)
+        weak_long = quality & (close > ema36) & (ema12 > ema36)
+        strong_long = weak_long & (ema8 > ema24)
+        exit_setup = (close < ema36) | (roa < 0)
 
         # STEP 4 — Position sizing (exit first, then half, then full)
         self.set_positions(exit_setup, position=0)
@@ -217,6 +226,10 @@ self.set_positions(strong_long, position=1)    # full size — override
 ```
 
 Long được gọi sau exit để override khi điều kiện vào lệnh thoả.
+
+Vì vậy entry và exit nên được thiết kế **loại trừ nhau** trong phần lớn trường
+hợp. Nếu chúng cùng đúng, lệnh Long gọi sau sẽ thắng; không được giả định rằng
+`exit_setup` luôn có ưu tiên cao nhất chỉ vì được gọi trước.
 
 ## 4.2 `cross_sectional` — `self.set_portfolio_positions`
 
@@ -286,31 +299,177 @@ Ví dụ: `self.feat.ema(close, timeperiod=8)` — không viết `ema(source: Se
 Trong `time_series`, thứ tự gọi `set_positions()` luôn là **Exit → Long** (xem §4.1).
 Không đảo thứ tự này.
 
-## 7.4 Exit đơn giản, Entry 3-4 conditions
+## 7.4 Exit đơn giản, Entry 3-6 conditions
 
-- **Exit:** tối đa 2-3 điều kiện OR (trend break + profit/eps giảm mạnh). Ví dụ:
+- **Exit:** tối đa 2-3 điều kiện OR (slow-trend break + persistent quality mất hiệu lực). Ví dụ:
   ```python
-  exit_setup = (ema_fast < ema_slow) | (profit_growth < -0.05)
+  exit_setup = (close < ema36) | (roa < 0)
   ```
-- **Entry:** 3-6 conditions là sweet spot — kết hợp price trend + fundamental growth + volume.
-  Ví dụ từ `VnTop30SimpleFundamentalTrend.py`:
+- **Entry:** 3-6 conditions là sweet spot — persistent quality + medium trend,
+  sau đó thêm fast confirmation cho strong entry:
   ```python
-  weak_long = (close > ema_slow) & (ema_fast > ema_slow) & (profit_growth > -0.02) & (eps_growth > -0.02)
+  weak_long = quality & (close > ema36) & (ema12 > ema36)
+  strong_long = weak_long & (ema8 > ema24)
   ```
 
-## 7.5 Ngưỡng Step-change cho Fundamentals
+## 7.5 Step-change chỉ là event signal
 
-Vì fundamentals step-change trên daily timeline (chỉ đổi khi có report mới), dùng
-`self.op.pct_change(series, periods=1)` + `self.op.fillna(..., value=0)` để đo sự thay đổi
-khi giá trị mới được công bố — **không phải** tăng trưởng ngày-ngày thực sự.
+Fundamentals được forward-fill trên daily timeline, nên `pct_change` chỉ khác 0
+ở ngày report mới xuất hiện. Đây là **event signal**, không phải quality state
+kéo dài và cũng không phải tăng trưởng ngày-ngày.
 
 ```python
-profit_growth = self.op.fillna(self.op.pct_change(net_profit, periods=1), value=0)
+profit_growth = self.op.pct_change(net_profit, periods=1)
+report_known = self.op.notna(net_profit) & self.op.notna(profit_growth)
+report_trigger = report_known & (net_profit > 0) & (profit_growth > 0)
 ```
+
+- Không `fillna(..., value=0)` cho fundamental; missing là unavailable.
+- Không dùng report-step làm hard quality state giữa hai kỳ báo cáo.
+- Với EPS/profit có thể âm hoặc đổi dấu, raw `pct_change` có thể đảo nghĩa hoặc
+  tạo outlier. Ưu tiên positive-level guard hoặc delta được scale bằng assets /
+  equity dương khi luận điểm cho phép.
+- Report trigger nên là overlay độc lập; persistent quality nên dùng level/ratio
+  như ROA, CFO dương hoặc cash conversion.
+
+## 7.6 Parameter profiles
+
+`syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md` là nguồn canonical duy nhất cho period, threshold và
+sizing parameter. Tài liệu này không duy trì một danh sách parameter song song.
+
+Quy tắc:
+
+- Chọn profile theo archetype: active momentum, price/volume, balanced
+  fundamental, cash-flow quality hoặc stable hold.
+- Luôn truyền explicit `timeperiod=`, `window=`, `fastperiod=`, `slowperiod=` và
+  `signalperiod=`; không dựa vào implementation default.
+- Equity examples là bằng chứng tham khảo, không tự động biến parameter thành
+  `PASS`. Dùng evidence labels trong `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md`.
+- MACD time-series phải unpack đủ ba outputs theo contract canonical.
+- Mỗi ablation chỉ thay một dimension: period, threshold, sizing hoặc exit.
 
 ---
 
-# 8. Example Reference (Round 2)
+# 8. Effective Daily-Equity Framework
+
+Phần này đúc kết từ các example equity Round 2 và kết quả nghiên cứu
+VN-LARGE-CAP. Không áp dụng logic intraday futures trong `(Old)vnfuture/`.
+
+## 8.1 Kiến trúc khuyến nghị
+
+```text
+Availability
+→ Persistent quality
+→ Medium trend regime
+→ Fast trend confirmation
+→ Tiered long-only sizing
+→ Slow-trend / quality exit
+```
+
+### Layer A — Availability
+
+```python
+available = (
+    self.op.notna(numerator)
+    & self.op.notna(denominator)
+    & (denominator > 0)
+)
+```
+
+Không dùng `fillna(..., value=0)` để làm fundamental trở nên eligible.
+
+### Layer B — Persistent quality
+
+Mỗi strategy chỉ nên chọn một quality thesis chính hoặc một OR có luận điểm:
+
+```python
+roa_quality = available & (net_profit > 0) & (roa > 0.01)
+
+cash_quality = (
+    cash_available
+    & (operating_cash_flow > 0)
+    & (net_profit > 0)
+    & (cash_conversion > 0.5)
+)
+
+quality = roa_quality | cash_quality
+```
+
+Không bắt buộc ROA, cash conversion, capital ratio, EPS growth và volume cùng
+đúng trong một entry. Quá nhiều AND làm signal thưa và khó xác định nguồn alpha.
+
+### Layer C — Multi-horizon trend
+
+```python
+ema8 = self.feat.ema(close, timeperiod=8)
+ema12 = self.feat.ema(close, timeperiod=12)
+ema24 = self.feat.ema(close, timeperiod=24)
+ema36 = self.feat.ema(close, timeperiod=36)
+
+fast_trend = ema8 > ema24
+medium_trend = ema12 > ema36
+price_regime = close > ema36
+```
+
+Multi-horizon trend là baseline ưu tiên cho large-cap: signal liên tục, ít phụ
+thuộc report-day và giảm false breakout so với một indicator đơn lẻ.
+
+### Layer D — Sizing và exit
+
+```python
+weak_long = quality & medium_trend & price_regime
+strong_long = weak_long & fast_trend
+exit_setup = (close < ema36) | quality_failure
+
+self.set_positions(exit_setup, position=0)
+self.set_positions(weak_long, position=0.5)
+self.set_positions(strong_long, position=1)
+```
+
+- `0.5`: quality hợp lệ + medium trend.
+- `1.0`: thêm fast trend confirmation.
+- `0.0`: slow trend hoặc persistent quality thật sự mất hiệu lực.
+- Volume chỉ nên là optional sizing/entry confirmation; không exit chỉ vì một
+  ngày volume dưới SMA, tránh churn `0.5 ↔ 1.0`.
+
+## 8.2 Sector awareness
+
+VN-LARGE-CAP gồm bank, bảo hiểm, chứng khoán và non-financial. Không áp một hard
+threshold kế toán cho mọi ngành:
+
+- Non-financial: CFO/net profit, ROA, cash return phù hợp hơn.
+- Bank: tránh dùng CFO generic làm hard requirement; ưu tiên profitability và
+  capital field có ý nghĩa ngân hàng khi catalog hỗ trợ.
+- Bảo hiểm: premium, claims, insurance/investment profit.
+- Chứng khoán: fee, commission, derivatives/FVTPL income và expense pressure.
+
+Nếu không có sector mask, ưu tiên quality có ý nghĩa rộng hoặc tạo strategy
+riêng theo accounting archetype.
+
+## 8.3 Complexity limits
+
+- Base entry: tối đa 4 điều kiện kinh tế chính.
+- Strong entry: thêm tối đa 2 confirmation.
+- Exit: tối đa 3 nhánh OR.
+- ATR chỉ dùng khi có vai trò risk/volatility cụ thể; `atr > 0` chỉ là data guard,
+  không phải alpha.
+- Volume là confirmation, không thay thế quality hoặc trend.
+
+## 8.4 Research workflow bắt buộc
+
+1. Xây baseline đơn giản (ví dụ dual trend).
+2. Thêm đúng một component mỗi iteration.
+3. Chạy ablation: baseline → +ROA → +cash conversion → +volume sizing.
+4. So sánh CAGR, Sharpe, Calmar, MaxDD, Profit Factor và turnover nếu có.
+5. Chỉ giữ component nếu cải thiện risk-adjusted metrics ổn định.
+6. Chọn canonical profile và robustness range từ `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md`; không
+   copy một parameter family sang archetype khác nếu chưa có ablation.
+7. Không tối ưu đồng thời period, threshold, sizing và exit.
+8. Không đảo chiều hoặc thêm điều kiện chỉ để cứu một backtest.
+
+---
+
+# 9. Example Reference (Round 2)
 
 | Universe folder | File | Luận điểm chính |
 |---|---|---|
@@ -334,12 +493,13 @@ profit_growth = self.op.fillna(self.op.pct_change(net_profit, periods=1), value=
 
 ---
 
-# 9. AI Agent Compliance Checklist
+# 10. AI Agent Compliance Checklist
 
 Trước khi sinh bất kỳ file `.py` nào, AI Agent phải xác nhận:
 
 - [ ] Đã đọc `agent/stage_2_guideline.md`
-- [ ] Đã đọc `syntax/data_syntax.md`, `syntax/feature_syntax.md`, `syntax/operations_syntax.md`
+- [ ] Đã đọc `syntax/data_syntax.md`, `syntax/time_series/feature_syntax.md`, `syntax/time_series/operations_syntax.md`, `syntax/cross_sectional/feature_syntax.md`, `syntax/cross_sectional/operations_syntax.md`
+- [ ] Đã đọc `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md` và chọn đúng canonical profile cho archetype
 - [ ] Đã tham khảo `template_example/VN-*/`
 - [ ] Chỉ dùng 1 mode: `time_series` hoặc `cross_sectional` — không trộn
 - [ ] Field đúng mode: time_series không suffix / cross_sectional có `_panel`
@@ -351,6 +511,12 @@ Trước khi sinh bất kỳ file `.py` nào, AI Agent phải xác nhận:
 - [ ] Fundamentals chỉ dùng sau ngày công bố (point-in-time)
 - [ ] Missing fundamentals xử lý bằng `.notna()`, không phải zero
 - [ ] Ratio: yêu cầu denominator dương; dùng `safe_divide_panel` nếu cross_sectional
+- [ ] Fundamental level/ratio dùng làm persistent quality; report-step chỉ là event overlay
+- [ ] Entry không quá 4 điều kiện kinh tế chính; strong thêm tối đa 2 confirmation
+- [ ] Đã chạy ablation trước khi giữ component mới
+- [ ] Đã kiểm tra sector meaning của accounting ratio
+- [ ] Mọi period/window đều explicit; không dựa vào default implementation
+- [ ] MACD time-series unpack `(macd, macd_signal, histogram)` đúng contract
 - [ ] Không giữ type hints từ tài liệu (`SeriesT`, `PanelT`, ...)
 - [ ] Không dùng biến `open`
 - [ ] `time_series`: chỉ dùng `self.set_positions()`, bounds `[0, +1]`, thứ tự Exit → Long
