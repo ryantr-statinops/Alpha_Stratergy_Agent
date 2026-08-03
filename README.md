@@ -124,8 +124,8 @@ Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_chara
 
 - Tra cứu data, các chỉ báo kỹ thuật và toán tử trong các catalog:
   - `syntax/data_syntax.md`
-  - `syntax/feature_syntax.md`
-  - `syntax/operations_syntax.md`
+  - `syntax/time_series/feature_syntax.md, syntax/cross_sectional/feature_syntax.md`
+  - `syntax/time_series/operations_syntax.md, syntax/cross_sectional/operations_syntax.md`
 - Đọc `syntax/INDEX.md` trước khi code để biết cách chọn nhóm data/hàm/toán tử phù hợp.
 - Khi sinh mã nguồn, loại bỏ các khai báo kiểu dữ liệu nội bộ của hệ thống như:
 
@@ -252,8 +252,8 @@ Sau khi được phê duyệt:
 - Chuyển logic thành mã Python.
 - Chỉ sử dụng:
   - các field trong `syntax/data_syntax.md`
-  - các hàm trong `syntax/feature_syntax.md`
-  - các hàm trong `syntax/operations_syntax.md`
+  - các hàm trong `syntax/time_series/feature_syntax.md, syntax/cross_sectional/feature_syntax.md`
+  - các hàm trong `syntax/time_series/operations_syntax.md, syntax/cross_sectional/operations_syntax.md`
 - Tuân thủ tuyệt đối cấu trúc trong [`template_example/strategy_framework.md`](template_example/strategy_framework.md):
   - Class `CustomStrategy(SimpleAlgorithm)`, method `__algorithm__`
   - Exit → Long → Short order
@@ -353,9 +353,9 @@ AI Agent **luôn phải**:
 | **Đặc thù thị trường VN Round 2 → chọn feature** | `data/vietnam_market_characteristics.md` |
 | **Data fields (PV/IS/BS/CF, 496 fields)** | `syntax/data_syntax.md` |
 | **Syntax index** | `syntax/INDEX.md` |
-| **Feature functions (panel features)** | `syntax/feature_syntax.md` |
-| **Operator functions (cross_sectional ops)** | `syntax/operations_syntax.md` |
-| **Parameter daily Round 2** | `syntax/parameters.md` |
+| **Feature functions (panel features)** | `syntax/time_series/feature_syntax.md, syntax/cross_sectional/feature_syntax.md` |
+| **Operator functions (cross_sectional ops)** | `syntax/time_series/operations_syntax.md, syntax/cross_sectional/operations_syntax.md` |
+| **Parameter daily Round 2** | `syntax/time_series/parameters.md, syntax/cross_sectional/parameters.md` |
 | **Submit Round 2 → review** | `tools/submit_and_check.py` → `tools/check_results.py` |
 | **Validate Round 2 output** | `tools/validate_framework.py` |
 | **Pass criteria theo cap** | `tools/common.py` (`PASS_THRESHOLDS_BY_UNIVERSE`) |
