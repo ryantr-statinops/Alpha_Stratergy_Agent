@@ -106,6 +106,32 @@ Economic factor
 
 Do not claim liquidity alpha when liquidity only removes untradeable symbols. Test whether performance is stable across nearby eligibility thresholds.
 
+## 8. Cross-Sectional Noise Filtering
+
+Filter factor noise before weights so a handful of extreme or illiquid symbols do not drive
+the book. Compose from existing `self.op` only.
+
+```python
+factor = self.feat.safe_divide_panel(numerator, denominator)
+eligible = (denominator > 0) & liquidity_rank_eligible
+
+# Remove extreme readings, then standardize with safe zero-variance handling.
+clean = self.op.winsorize_cs_panel(factor, mask=eligible, lower=0.02, upper=0.98)
+score = self.op.zscore_cs_panel(clean, mask=eligible, ddof=1)
+
+# Ranks absorb magnitude instability; weights stay market-neutral.
+signal = self.op.rank_cs_panel(clean, mask=eligible, method="average")
+weights = self.op.portfolio_weights_panel(signal, method="rank_demean_l1", mask=eligible)
+```
+
+Rules:
+
+- Winsorize/zscore/rank are noise filters, not alpha signals; keep magnitude weighting only
+  when magnitude is economically meaningful.
+- Restrict the cross-section with an eligibility `mask` (e.g. liquidity rank) before normalizing.
+- Prefer `rank_demean_l1` when the factor scale is unstable across dates.
+- Keep every filter causal; no centered windows or backfill.
+
 ## 9. Ablation Pattern
 
 Every composite starts from a baseline:
@@ -157,6 +183,15 @@ Test fails -> add another condition -> rerun same test -> call it OOS
 
 Once test results influence a change, that test is development data. See `validation_protocol.md`.
 
+### Extreme-symbol dominance
+
+```python
+# FRAGILE: a few outliers drive weights; magnitudes never cleaned
+weights = self.op.portfolio_weights_panel(factor, method="demean_l1", mask=eligible)
+```
+
+Winsorize/zscore/rank before magnitude weighting, or prefer `rank_demean_l1`.
+
 ## 11. Pattern Promotion Checklist
 
 - [ ] Thesis selects the mode before testing.
@@ -169,5 +204,6 @@ Once test results influence a change, that test is development data. See `valida
 - [ ] Strong entry adds no more than two confirmations.
 - [ ] Exit has no more than three OR branches.
 - [ ] Cross-sectional coverage and concentration are audited.
+- [ ] Factor noise is filtered (winsorize/zscore/rank or liquidity mask) and the filter recorded.
 - [ ] All variants are tracked as one family.
 - [ ] Final selection follows `validation_protocol.md`.

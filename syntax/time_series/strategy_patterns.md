@@ -54,6 +54,39 @@ report_event = report_known & (profit > 0) & (profit_change > 0)
 
 Use the event as an overlay or trigger. Keep a separate persistent state if the position is intended to survive between reports. For negative/sign-changing profit, prefer an asset-scaled delta when supported by the operator contract.
 
+## 7. Noise Filtering
+
+Filter noise so a single noisy bar does not open or close a position. Compose from existing
+`self.op` + `self.feat` only; no `noise_*` operator is assumed.
+
+```python
+close = self.data.pv_close
+fast = self.feat.ema(close, timeperiod=12)
+slow = self.feat.ema(close, timeperiod=36)
+
+# Mask unavailable / non-finite bars, and smooth price causally (not fundamentals).
+known = self.op.notna(close) & self.op.isfinite(close)
+smooth = self.op.ffill(close)
+
+# Require persistence so a one-bar flicker does not trade.
+cross_up = self.op.crossed_above(fast, slow)
+up_trend = self.op.rising(close, 3)
+confirmed = cross_up & up_trend
+entry = known & self.op.hold_for(confirmed, 2)
+
+# Dead-band / hysteresis via native arithmetic to ignore noise around the slow EMA.
+band = slow * 1.02
+strong_up = known & self.op.between(close, band, float("inf"))
+```
+
+Rules:
+
+- A filter is an eligibility/state guard, not an alpha signal on its own.
+- Prefer confirmation (`hold_for`, `consecutive_true`, `rising`, `falling`) over adding gates.
+- Use a dead-band with native `*`/comparison; never `fillna` a fundamental to hide missing
+  as zero.
+- Keep every filter causal: forward-only fills and positive lookbacks.
+
 ## 8. Breakout Pattern
 
 A breakout feature must have verified current-bar semantics.
@@ -122,6 +155,15 @@ Test fails -> add another condition -> rerun same test -> call it OOS
 
 Once test results influence a change, that test is development data. See `validation_protocol.md`.
 
+### One-bar whipsaw trigger
+
+```python
+# FRAGILE: a single noisy bar opens a position
+entry = crossed_above(fast, slow)  # just a flicker, no persistence
+```
+
+Confirm before trading: `hold_for` / `consecutive_true` / `rising` / `falling`, or a dead-band.
+
 ## 11. Pattern Promotion Checklist
 
 - [ ] Thesis selects the mode before testing.
@@ -132,6 +174,7 @@ Once test results influence a change, that test is development data. See `valida
 - [ ] Each ablation changes one component.
 - [ ] Entry has no more than four primary economic conditions.
 - [ ] Strong entry adds no more than two confirmations.
+- [ ] Confirm the signal before entry (noise filter) and record the chosen filter as a variant.
 - [ ] Exit has no more than three OR branches.
 - [ ] Cross-sectional coverage and concentration are audited.
 - [ ] All variants are tracked as one family.

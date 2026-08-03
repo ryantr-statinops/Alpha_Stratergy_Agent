@@ -54,6 +54,17 @@ Use this file as the canonical catalog for `self.op.*` on the Round 2 equity mod
 |---|---|---|---|
 | `portfolio_weights_panel` | `PanelT` | `self.op.portfolio_weights_panel(signal: PanelT, method='rank_demean_l1', mask: PanelT = None, rank_method='average', max_abs_weight=None)` | Build neutral unit-gross portfolio weights from cross-sectional ranks. |
 
+## Noise Filtering
+
+The normalization operators already absorb most factor noise; keep magnitude-sensitive
+weighting only when magnitude is economically meaningful.
+
+- Outlier / extreme readings: `winsorize_cs_panel` first, then `zscore_cs_panel`.
+- Unstable or heterogeneous scale: prefer `rank_cs_panel` over raw magnitude.
+- Illiquid or non-eligible symbols: restrict with a liquidity gate via the `mask` and a
+  `rank_cs_panel` liquidity filter.
+- Unit-gross neutral weights: `normalize_l1_cs_panel` or `portfolio_weights_panel`.
+
 ## Time-Series Mode Notes
 
 In `time_series` mode the suffix-less operators remain available (from Round 1), for example:
