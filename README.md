@@ -98,7 +98,8 @@ Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_chara
 - BCTC công bố chậm → **bắt buộc point-in-time**, `.notna()`, không backfill
 - **Feature Selection per cap**: SMALL → growth/earnings; MID → quality/ROE; LARGE → cashflow/value
 - **Fields verified theo catalog**: ưu tiên dùng tránh lỗi submit
-- Bản v1 (futures VN30F1M intraday) đã chuyển sang [`data/vietnam_market_characteristics_v1.md`](data/vietnam_market_characteristics_v1.md)
+- **Bản v1 (futures VN30F1M intraday) đã chuyển sang** [`data/vietnam_market_characteristics_v1.md`](data/vietnam_market_characteristics_v1.md)
+- **Hồ sơ chi tiết từng universe:** [`data/VN-SMALL-CAP.md`](data/VN-SMALL-CAP.md), [`data/VN-MID-CAP.md`](data/VN-MID-CAP.md), [`data/VN-LARGE-CAP.md`](data/VN-LARGE-CAP.md)
 
 #### Danh sách trường VN30 Index (vòng 1 — legacy)
 
