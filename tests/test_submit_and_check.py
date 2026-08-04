@@ -235,28 +235,58 @@ class TestStageMetrics(unittest.TestCase):
         metrics = {"sharpe": 1.5, "cagr": 0.3, "calmar": 1.2,
                    "max_drawdown": -0.2, "profit_factor": 1.6}
         session = mock.MagicMock()
-        session.get.side_effect = [self._response(metrics) for _ in range(3)]
+        session.get.side_effect = self._summary_or_perf(metrics)
         result = sub.wait_for_metrics(session, "sid", timeout=5)
         self.assertEqual(set(result), {"simulate", "train", "test"})
         urls = [call.args[0] for call in session.get.call_args_list]
         self.assertTrue(any("/stages/simulate/summary-aggregate" in url for url in urls))
         self.assertTrue(any("/stages/train/summary-aggregate" in url for url in urls))
         self.assertTrue(any("/stages/test/summary-aggregate" in url for url in urls))
+        self.assertTrue(any("/stages/simulate/performance" in url for url in urls))
 
     def test_partial_stage_is_polled_again(self):
         full = {"sharpe": 1.5, "cagr": 0.3, "calmar": 1.2,
                 "max_drawdown": -0.2, "profit_factor": 1.6}
         partial = dict(full)
         partial.pop("calmar")
+
+        calls = []
+        stage_count = {"simulate": 0, "train": 0, "test": 0}
+        urls = {
+            "simulate": 2, "train": 2, "test": 2,
+        }
+
+        def fake_get(url, **kwargs):
+            calls.append(url)
+            if "/performance" in url:
+                return self._response({})
+            for stage in ("simulate", "train", "test"):
+                if f"/stages/{stage}/summary-aggregate" in url:
+                    stage_count[stage] += 1
+                    if stage == "train" and stage_count[stage] == 1:
+                        return self._response(partial)
+                    return self._response(full)
+            return self._response({})
+
         session = mock.MagicMock()
-        session.get.side_effect = [
-            self._response(full), self._response(partial), self._response(full),
-            self._response(full),
-        ]
+        session.get.side_effect = fake_get
         with mock.patch.object(sub.time, "sleep"):
             result = sub.wait_for_metrics(session, "sid", timeout=10)
         self.assertEqual(result["train"], full)
-        self.assertEqual(session.get.call_count, 4)
+        # First train summary is partial -> second poll refetches it.
+        self.assertEqual(stage_count["train"], 2)
+        self.assertEqual(stage_count["simulate"], 1)
+        self.assertEqual(stage_count["test"], 1)
+
+    def _summary_or_perf(self, metrics):
+        """Return a callable that serves summary-aggregate (full) and performance (empty)."""
+        def fake_get(url, **kwargs):
+            if "/performance" in url:
+                return self._response({})
+            if "/summary-aggregate" in url:
+                return self._response(metrics)
+            return self._response({})
+        return fake_get
 
 
 class TestCsvSchemaMigration(unittest.TestCase):
