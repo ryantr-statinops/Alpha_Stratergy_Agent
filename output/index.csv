@@ -57,3 +57,13 @@ vn_mid_cap/cross_sectional/VnMidCsRecognitionMigration.py,mid_recognition_migrat
 vn_mid_cap/cross_sectional/VnMidCsAntiLotteryMaxReturn.py,mid_anti_lottery_max_cs,cross_sectional,cross_sectional,VN-MID-CAP,Negative exposure to extreme recent daily returns,demean_l1
 vn_mid_cap/cross_sectional/VnMidCsEnterpriseEarningsYieldRobust.py,mid_enterprise_earnings_yield_robust_cs,cross_sectional,cross_sectional,VN-MID-CAP,Robust concentrated enterprise-yield challenger with volatility and liquidity filters,demean_l1
 vn_small_cap/cross_sectional/VnSmallCsAssetProfitabilityBaseline.py,small_asset_profitability_baseline_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Quarterly positive net profit relative to total assets as a simple market-neutral quality baseline,rank_demean_l1
+vn_large_cap/time_series/VnLargeSelfFundingTrend.py,self_funding_trend,time_series,time_series,VN-LARGE-CAP,Positive annual CFO with net financing outflow in 10/30 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeCashRichResilience.py,cash_rich_resilience,time_series,time_series,VN-LARGE-CAP,Cash and equivalents above 10% of total assets in 8/24 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeLowAccrualTrend.py,low_accrual_trend,time_series,time_series,VN-LARGE-CAP,Low accrual ratio earnings quality in 10/30 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeCashInterestCoverage.py,cash_interest_coverage,time_series,time_series,VN-LARGE-CAP,Cash interest coverage above 3x in 12/36 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeCapexDisciplineTrend.py,capex_discipline_trend,time_series,time_series,VN-LARGE-CAP,CFO funds capital expenditure in 12/36 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeDeleveragingTrend.py,deleveraging_trend,time_series,time_series,VN-LARGE-CAP,Loans-to-assets falling with positive CFO in 12/36 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargePayoutAffordability.py,payout_affordability,time_series,time_series,VN-LARGE-CAP,Operating cash flow covers dividends in 8/24 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeRetainedEarningsCompounder.py,retained_earnings_compounder,time_series,time_series,VN-LARGE-CAP,Growing retained earnings with positive profit in 30/90 EMA hold,2-tier long
+vn_large_cap/time_series/VnLargeQualityTrendAgreement.py,quality_trend_agreement,time_series,time_series,VN-LARGE-CAP,Positive CFO and profit with 8/24 and 12/36 EMA trend agreement,2-tier long
+vn_large_cap/cross_sectional/VnLargeCsCashFlowYield.py,cash_flow_yield_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Cash-flow-to-price yield cross-sectional z-score (market-neutral),rank_demean_l1
