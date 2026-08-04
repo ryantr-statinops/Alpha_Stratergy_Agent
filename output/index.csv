@@ -67,3 +67,64 @@ vn_large_cap/time_series/VnLargePayoutAffordability.py,payout_affordability,time
 vn_large_cap/time_series/VnLargeRetainedEarningsCompounder.py,retained_earnings_compounder,time_series,time_series,VN-LARGE-CAP,Growing retained earnings with positive profit in 30/90 EMA hold,2-tier long
 vn_large_cap/time_series/VnLargeQualityTrendAgreement.py,quality_trend_agreement,time_series,time_series,VN-LARGE-CAP,Positive CFO and profit with 8/24 and 12/36 EMA trend agreement,2-tier long
 vn_large_cap/cross_sectional/VnLargeCsCashFlowYield.py,cash_flow_yield_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Cash-flow-to-price yield cross-sectional z-score (market-neutral),rank_demean_l1
+vn_large_cap/time_series/VnLargeAgreement1442.py,quality_trend_agreement_w2,time_series,time_series,VN-LARGE-CAP,Positive CFO and profit with 14/42 and 18/54 EMA trend agreement,2-tier long
+vn_large_cap/time_series/VnLargeAgreement1854.py,quality_trend_agreement_w2,time_series,time_series,VN-LARGE-CAP,Positive CFO and profit with 18/54 and 30/90 EMA trend agreement,2-tier long
+vn_large_cap/time_series/VnLargeAgreementFullExit.py,quality_trend_agreement_w2,time_series,time_series,VN-LARGE-CAP,Positive CFO and profit with 8/24 and 12/36 agreement plus full exit,2-tier long
+vn_large_cap/time_series/VnLargeAgreementConversion.py,quality_trend_agreement_w2,time_series,time_series,VN-LARGE-CAP,CFO/profit conversion above 0.5 with 8/24 and 12/36 trend agreement,2-tier long
+vn_large_cap/time_series/VnLargeAgreementHysteresis.py,quality_trend_agreement_w2,time_series,time_series,VN-LARGE-CAP,Positive CFO and profit with dead-band above 36 EMA trend agreement,2-tier long
+vn_large_cap/time_series/VnLargeCapex1442.py,capex_discipline_w2,time_series,time_series,VN-LARGE-CAP,CFO funds capital expenditure in 14/42 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeCapex1854.py,capex_discipline_w2,time_series,time_series,VN-LARGE-CAP,CFO funds capital expenditure in 18/54 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeCapex3090.py,capex_discipline_w2,time_series,time_series,VN-LARGE-CAP,CFO funds capital expenditure in 30/90 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeCapexDeadband.py,capex_discipline_w2,time_series,time_series,VN-LARGE-CAP,CFO funds capital expenditure with dead-band above 36 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeCapexProfitGuard.py,capex_discipline_w2,time_series,time_series,VN-LARGE-CAP,CFO funds capital expenditure with positive profit in 12/36 EMA uptrend,2-tier long
+vn_large_cap/cross_sectional/VnLargeCsPersistentCashRoa.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Persistent positive cash ROA via EMA of annual CFO/assets,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsStableCashProfitability.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Stable positive cash profitability via EMA of annual CFO/assets,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsCashEarningsSpread.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Cash earnings spread CFO/assets minus PAT/assets,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsPreWcCashStrength.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Pre-working-capital cash strength spread vs profitability,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsMultiYearFcfConsistency.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Consistent positive FCF/assets via EMA (capex outflow convention),rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsEarningsYield.py,valuation_residual_v,cross_sectional,cross_sectional,VN-LARGE-CAP,Positive earnings-to-price yield cross-sectional,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsOcfYield.py,valuation_residual_v,cross_sectional,cross_sectional,VN-LARGE-CAP,Operating cash flow yield on market capitalization,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsResidualFcfYield.py,valuation_residual_v,cross_sectional,cross_sectional,VN-LARGE-CAP,Free cash flow yield on market capitalization (capex outflow convention),rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsEvAdjustedCashYield.py,valuation_residual_v,cross_sectional,cross_sectional,VN-LARGE-CAP,Cash yield on enterprise value net of liquid assets,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsResidualTangibleBook.py,valuation_residual_v,cross_sectional,cross_sectional,VN-LARGE-CAP,Tangible book value to market capitalization orthogonal to earnings yield,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsCashValueComposite.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Composite of pre-working-capital cash strength and earnings yield,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsPreWcRanked.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Pre-working-capital cash strength rank-based noise filter,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsPreWcWinsorized.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Pre-working-capital cash strength winsorized noise filter,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsCashEarningsWinsorized.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Cash earnings spread winsorized noise filter,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsEarningsWinsorized.py,valuation_residual_v,cross_sectional,cross_sectional,VN-LARGE-CAP,Earnings yield winsorized noise filter,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsEarningsRanked.py,valuation_residual_v,cross_sectional,cross_sectional,VN-LARGE-CAP,Earnings yield rank-based noise filter,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsPreWcRankedWinsorized.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Pre-working-capital cash strength winsorize plus rank,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsPreWcMagnitude.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Pre-working-capital cash strength winsorized magnitude weighting,demean_l1
+vn_large_cap/cross_sectional/VnLargeCsEarningsMagnitude.py,valuation_residual_v,cross_sectional,cross_sectional,VN-LARGE-CAP,Earnings yield winsorized magnitude weighting,demean_l1
+vn_large_cap/cross_sectional/VnLargeCsCashEarningsMagnitude.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Cash earnings spread winsorized magnitude weighting,demean_l1
+vn_large_cap/cross_sectional/VnLargeCsCompositeMagnitude.py,cash_quality_q,cross_sectional,cross_sectional,VN-LARGE-CAP,Composite cash strength plus earnings yield magnitude weighting,demean_l1
+vn_mid_cap/time_series/VnMidDonchianBreakout.py,donchian_breakout_ts,time_series,time_series,VN-MID-CAP,Donchian 20-day high breakout above 30-day EMA,1-tier long
+vn_mid_cap/time_series/VnMidEmaTrendRide.py,ema_trend_ride_ts,time_series,time_series,VN-MID-CAP,EMA golden cross ride above slow average,2-tier long
+vn_mid_cap/time_series/VnMidMacdTrend.py,macd_trend_ts,time_series,time_series,VN-MID-CAP,MACD 8/21/5 expansion above 30-day EMA,2-tier long
+vn_mid_cap/time_series/VnMidAdxStrongTrend.py,adx_strong_trend_ts,time_series,time_series,VN-MID-CAP,ADX 22 directional strength with +DI above -DI above 30-day EMA,2-tier long
+vn_mid_cap/time_series/VnMidAroonBreakout.py,aroon_breakout_ts,time_series,time_series,VN-MID-CAP,Aroon-up above 70 breakout confirmation above 30-day EMA,2-tier long
+vn_mid_cap/time_series/VnMidBreakoutVolume.py,breakout_volume_ts,time_series,time_series,VN-MID-CAP,20-day high breakout with 2x volume confirmation,2-tier long
+vn_mid_cap/time_series/VnMidSmartMoneySpike.py,smart_money_spike_ts,time_series,time_series,VN-MID-CAP,Volume spike 3x with 6.8 percent return above 30-day EMA,2-tier long
+vn_mid_cap/time_series/VnMidVolumeAcceleration.py,volume_acceleration_ts,time_series,time_series,VN-MID-CAP,Volume ratio acceleration with MFI confirmation,2-tier long
+vn_mid_cap/time_series/VnMidVolatilitySqueeze.py,volatility_squeeze_ts,time_series,time_series,VN-MID-CAP,Bollinger squeeze low percentile resolving above upper band,1-tier long
+vn_mid_cap/time_series/VnMidObvTrendConfirm.py,obv_trend_confirm_ts,time_series,time_series,VN-MID-CAP,OBV above its average confirming price trend,2-tier long
+vn_mid_cap/time_series/VnMidUptrendPullback.py,uptrend_pullback_ts,time_series,time_series,VN-MID-CAP,10-15 percent pullback in uptrend with RSI below 45,2-tier long
+vn_mid_cap/time_series/VnMidRsiRecoveryTrend.py,rsi_recovery_trend_ts,time_series,time_series,VN-MID-CAP,RSI recovery above 48 in 8/24 EMA uptrend,2-tier long
+vn_mid_cap/time_series/VnMidTrendSlopeAccel.py,trend_slope_accel_ts,time_series,time_series,VN-MID-CAP,Linear regression slope positive and accelerating,2-tier long
+vn_mid_cap/time_series/VnMidEpsSurpriseDrift.py,eps_surprise_drift_ts,time_series,time_series,VN-MID-CAP,Positive EPS surprise drift above 30-day EMA,2-tier long
+vn_mid_cap/time_series/VnMidProfitEventTrend.py,profit_event_trend_ts,time_series,time_series,VN-MID-CAP,Quarterly profit growth event above 36-day EMA,2-tier long
+vn_mid_cap/time_series/VnMidCfoSurpriseTrend.py,cfo_surprise_trend_ts,time_series,time_series,VN-MID-CAP,Positive CFO growth with cash conversion above 0.5,2-tier long
+vn_mid_cap/time_series/VnMidRoaQualityTrend.py,roa_quality_trend_ts,time_series,time_series,VN-MID-CAP,ROA above 1 percent with profit in uptrend,2-tier long
+vn_mid_cap/time_series/VnMidAntiChaseGuard.py,anti_chase_guard_ts,time_series,time_series,VN-MID-CAP,Half size when overbought or 4 consecutive up days,2-tier long
+vn_mid_cap/time_series/VnMidLiquidityTrend.py,liquidity_trend_ts,time_series,time_series,VN-MID-CAP,Traded value above liquidity floor in uptrend,2-tier long
+vn_mid_cap/time_series/VnMidBetaFollower.py,beta_follower_ts,time_series,time_series,VN-MID-CAP,Beta to VN30 above 0.5 confirming broad rally,2-tier long
+vn_large_cap/time_series/VnLargeRsiRecoveryTrend.py,rsi_recovery_large,time_series,time_series,VN-LARGE-CAP,RSI7 recovery over 8/24 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargePullbackMeanReversion.py,pullback_mean_reversion,time_series,time_series,VN-LARGE-CAP,8pct pullback from 20d high with RSI oversold in uptrend,2-tier long
+vn_large_cap/time_series/VnLargeAdxStrongTrend.py,adx_strong_trend,time_series,time_series,VN-LARGE-CAP,ADX>22 directional strength filter over 30 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeObvTrendConfirm.py,obv_trend_confirm,time_series,time_series,VN-LARGE-CAP,OBV>EMA20 confirms price uptrend with volume support,2-tier long
+vn_large_cap/time_series/VnLargeBollingerSqueezeBreakout.py,bb_squeeze_breakout,time_series,time_series,VN-LARGE-CAP,BB width at 15th percentile then breakout above upper band,2-tier long
+vn_large_cap/time_series/VnLargeCciTrend.py,cci_trend,time_series,time_series,VN-LARGE-CAP,CCI>100 momentum confirmation over 30 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeTrixMomentum.py,trix_momentum,time_series,time_series,VN-LARGE-CAP,TRIX>0 with rising slope over 30 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeStochRecovery.py,stoch_recovery,time_series,time_series,VN-LARGE-CAP,Stochastic K/D crossover from oversold in 30 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeWillrBounce.py,willr_bounce,time_series,time_series,VN-LARGE-CAP,Williams %R bounce from -80 oversold in 30 EMA uptrend,2-tier long
+vn_large_cap/time_series/VnLargeMfiDivergence.py,mfi_divergence,time_series,time_series,VN-LARGE-CAP,MFI 50-80 healthy momentum with rising slope in uptrend,2-tier long
