@@ -180,8 +180,25 @@ Không tiếp tục random EMA tuning. Wave 2 phải kiểm tra **2022 defense**
 Sharpe `1.2` vẫn khả thi: ROA hiện chỉ thiếu khoảng `0.105`, nhưng cần giảm
 common-regime loss thay vì tăng exposure trong 2020–2021.
 
-## Security note
+## Confirmed OOS status (audit refresh)
 
-Git history có dấu hiệu từng chứa credential hard-coded đã bị xóa khỏi worktree.
+Kiểm lại ngày 2026-08-04 với `tools/check_results.py --pass --universe ...` trên
+`backtest/results_stage_2.csv` (split-metric):
+
+- **VN-MID-CAP: 0/13 PASS** — `No matching results found`.
+- **VN-SMALL-CAP: 0/47 PASS** — `No matching results found`.
+- Gần đạt nhất: `VnSmallCsValueTrendP02` (SMALL, cross_sectional) — Test CAGR
+  ~12.10%, PF ~1.273 so với yêu cầu 25% / 1.30.
+
+Ưu tiên tiếp theo (không chạy thêm từ đây được — cần live XNOQuant):
+
+1. **Verify runtime ops trước** — hầu hết `self.op.*` mới chỉ `CATALOG_ONLY`
+   (`syntax/*/operations_syntax.md`, mục Evidence Status). Chạy probe verify/simulate
+   để promote `EXAMPLE_VERIFIED` → `VERIFY_PASSED`/`SIMULATE_PASSED` trước khi dựng
+   chiến lược mới.
+2. **Wave 2 defense 2022** theo mục "Wave 2 recommendation" ở trên.
+3. Mỗi variant mới phải so annual table (đặc biệt 2022), không chỉ aggregate.
+
+## Security noteGit history có dấu hiệu từng chứa credential hard-coded đã bị xóa khỏi worktree.
 Nếu credential đó từng là thật, cần revoke/rotate; xóa khỏi file hiện tại không
 xóa khỏi Git history.
