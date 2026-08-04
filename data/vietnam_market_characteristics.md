@@ -6,6 +6,10 @@
 > `syntax/time_series/feature_syntax.md`, `syntax/time_series/operations_syntax.md`, `syntax/cross_sectional/feature_syntax.md`, `syntax/cross_sectional/operations_syntax.md`.
 >
 > Bản v1 (VN30F1M futures intraday) đã chuyển sang `vietnam_market_characteristics_v1.md`.
+>
+> **Hồ sơ chi tiết từng universe:** [`VN-SMALL-CAP.md`](VN-SMALL-CAP.md) ·
+> [`VN-MID-CAP.md`](VN-MID-CAP.md) · [`VN-LARGE-CAP.md`](VN-LARGE-CAP.md) — cấu trúc thị
+> trường, hành vi giá, alpha opportunities theo từng cap.
 
 ---
 
