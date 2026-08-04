@@ -28,7 +28,12 @@ venv/
 *.orig
 
 # Output
-output/
+output/*
+
+# Round 2 strategy sources: track generated .py (stage_2), ignore the rest of output/
+!output/stage_2/
+!output/stage_2/**/
+!output/stage_2/**/*.py
 
 #back_test
 backtest/results.csv
