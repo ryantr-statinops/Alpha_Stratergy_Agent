@@ -45,6 +45,21 @@ VALID_METRIC_KEYS = ["sharpe", "cagr", "max_drawdown", "profit_factor", "calmar"
 RESULT_STAGES = ("simulate", "train", "test")
 STAGE_PREFIXES = {"simulate": "", "train": "train_", "test": "test_"}
 SUMMARY_URL = "https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/{stage}/summary-aggregate"
+PERFORMANCE_URL = "https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/{stage}/performance"
+
+# Extended performance + analysis metrics (endpoint /performance), added per stage.
+# sharpe/calmar/profit_factor/max_drawdown already come from summary-aggregate;
+# annual_return duplicates cagr — neither is repeated here.
+EXTENDED_PERFORMANCE_KEYS = [
+    "sortino", "omega", "recovery_factor", "kelly_criterion",
+    "win_rate", "win_loss_ratio", "avg_return", "cumulative_return",
+    "volatility", "var", "cvar", "tail_ratio", "gain_to_pain_ratio",
+    "ulcer_index",
+    "total_trades", "total_closed_trades", "total_open_trades",
+    "best_trade", "worst_trade", "avg_win_trade", "avg_loss_trade",
+    "avg_win_trade_duration", "avg_loss_trade_duration", "total_fee",
+]
+ALL_METRIC_KEYS = VALID_METRIC_KEYS + EXTENDED_PERFORMANCE_KEYS
 
 
 def thresholds_for(universe):
@@ -111,6 +126,30 @@ def fetch_stage_metrics(session, strategy_id, stage):
         return {}
 
 
+def fetch_stage_performance(session, strategy_id, stage):
+    """Fetch extended performance + analysis metrics for one stage from /performance.
+
+    Only keys present (and non-null) are returned; missing keys stay missing.
+    Ratios live under data.performance, trade counts under data.analysis."""
+    if stage not in RESULT_STAGES:
+        raise ValueError(f"Unknown result stage '{stage}'")
+    url = PERFORMANCE_URL.format(strategy_id=strategy_id, stage=stage)
+    try:
+        response = session.get(url)
+        if response.status_code != 200:
+            return {}
+        data = response.json().get("data") or {}
+        sources = {}
+        for block in ("performance", "analysis"):
+            block_data = data.get(block) or {}
+            if isinstance(block_data, dict):
+                sources.update(block_data)
+        return {key: sources[key] for key in EXTENDED_PERFORMANCE_KEYS
+                if key in sources and sources[key] is not None}
+    except Exception:
+        return {}
+
+
 def wait_for_stage_metrics(session, strategy_id, timeout, poll_interval=5):
     """Poll until all simulate/train/test summaries contain all five metrics."""
     ready = {}
@@ -121,6 +160,8 @@ def wait_for_stage_metrics(session, strategy_id, timeout, poll_interval=5):
                 continue
             metrics = fetch_stage_metrics(session, strategy_id, stage)
             if all(metrics.get(key) is not None for key in VALID_METRIC_KEYS):
+                perf = fetch_stage_performance(session, strategy_id, stage)
+                metrics.update(perf)
                 ready[stage] = metrics
         if len(ready) == len(RESULT_STAGES):
             return ready
@@ -134,7 +175,7 @@ def flatten_stage_metrics(stages):
     flat = {}
     for stage, prefix in STAGE_PREFIXES.items():
         for key, value in (stages.get(stage) or {}).items():
-            if key in VALID_METRIC_KEYS:
+            if key in ALL_METRIC_KEYS:
                 flat[f"{prefix}{key}"] = value
     return flat
 

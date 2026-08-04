@@ -47,8 +47,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from common import (
-    VALID_METRIC_KEYS, flatten_stage_metrics, format_metrics,
-    load_previous_results, wait_for_stage_metrics,
+    VALID_METRIC_KEYS, EXTENDED_PERFORMANCE_KEYS, ALL_METRIC_KEYS,
+    flatten_stage_metrics, format_metrics, load_previous_results, wait_for_stage_metrics,
 )
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -77,14 +77,22 @@ STATUS_RATE_LIMITED = "RATE_LIMITED"
 STATUS_METRICS_TIMEOUT = "METRICS_TIMEOUT"
 STATUS_NO_STRATEGY_ID = "NO_STRATEGY_ID"
 
+def stage_extended_columns(prefix):
+    return [f"{prefix}{key}" for key in EXTENDED_PERFORMANCE_KEYS]
+
+
 CSV_FIELDS = [
     "timestamp", "filepath", "filename", "universe", "mode",
     "status", "strategy_id", "cagr", "sharpe", "calmar",
     "max_drawdown", "profit_factor",
+    *stage_extended_columns(""),
     "train_cagr", "train_sharpe", "train_calmar",
     "train_max_drawdown", "train_profit_factor",
+    *stage_extended_columns("train_"),
     "test_cagr", "test_sharpe", "test_calmar",
-    "test_max_drawdown", "test_profit_factor", "error",
+    "test_max_drawdown", "test_profit_factor",
+    *stage_extended_columns("test_"),
+    "error",
 ]
 
 
@@ -281,9 +289,13 @@ def make_row(filepath: str, universe: str, status: str, metrics: dict = None,
         "profit_factor": metrics.get("profit_factor", ""),
         "error": error,
     }
-    for split in ("train", "test"):
-        for key in VALID_METRIC_KEYS:
-            row[f"{split}_{key}"] = metrics.get(f"{split}_{key}", "")
+    for split in ("", "train", "test"):
+        prefix = split + "_" if split else ""
+        for key in EXTENDED_PERFORMANCE_KEYS:
+            row[f"{prefix}{key}"] = metrics.get(f"{prefix}{key}", "")
+        if split:
+            for key in VALID_METRIC_KEYS:
+                row[f"{split}_{key}"] = metrics.get(f"{split}_{key}", "")
     return row
 
 
