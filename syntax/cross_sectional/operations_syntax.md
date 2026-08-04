@@ -65,6 +65,18 @@ weighting only when magnitude is economically meaningful.
   `rank_cs_panel` liquidity filter.
 - Unit-gross neutral weights: `normalize_l1_cs_panel` or `portfolio_weights_panel`.
 
+## Evidence Status
+
+| Op | Evidence |
+|---|---|
+| `portfolio_weights_panel` | EXAMPLE_VERIFIED |
+| `rank_cs_panel` | EXAMPLE_VERIFIED |
+| `zscore_cs_panel` | EXAMPLE_VERIFIED |
+
+Every other operation in this catalog is `CATALOG_ONLY`: declared in the authoritative
+inventory but not exercised in any approved example. Promoting an op to `VERIFY_PASSED` /
+`SIMULATE_PASSED` requires a live XNOQuant verify/simulate probe.
+
 ## Time-Series Mode Notes
 
 In `time_series` mode the suffix-less operators remain available (from Round 1), for example:

@@ -133,9 +133,19 @@ operator is required.
 | `between`, `clip` | Bounds are inclusive; verify sign and orientation in research. |
 | `replace` | Missing-value behavior must be verified before use. |
 
-## Pending Evidence
+## Evidence Status
 
-Rows marked `CATALOG_ONLY` above are declared supported by the authoritative inventory but have not yet been promoted by a runtime probe. Do not generate undocumented `self.op` calls from this file. Existing strategy examples provide partial evidence but are not a substitute for the complete authoritative operation catalog.
+| Op | Evidence |
+|---|---|
+| `fillna` | EXAMPLE_VERIFIED |
+| `notna` | EXAMPLE_VERIFIED |
+| `pct_change` | EXAMPLE_VERIFIED |
+
+Every other operation in this catalog is `CATALOG_ONLY`: declared in the authoritative
+inventory but not exercised in any approved example. Promoting an op to `VERIFY_PASSED` /
+`SIMULATE_PASSED` requires a live XNOQuant verify/simulate probe. Do not generate
+undocumented `self.op` calls from this file. Existing strategy examples provide partial
+evidence but are not a substitute for the complete authoritative operation catalog.
 
 ## Related Documents
 
