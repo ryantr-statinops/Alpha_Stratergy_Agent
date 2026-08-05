@@ -346,7 +346,6 @@ AI Agent **luôn phải**:
 | Khi bạn cần… | Đọc file này |
 |--------------|-------------|
 | **Hiểu tổng quan dự án, workflow 5 bước** | `README.md` (file này) |
-| **Context chi tiết phiên làm việc trước** | `context_session/session_context.md` |
 | **Onboarding nhanh cho AI Agent** | `agent/GUIDE.md` |
 | **Rules chính thức Round 2** | `agent/stage_2_guideline.md` |
 | **Blueprint gen strategy Round 2** | `agent/framework_build_guide.md` |

@@ -32,8 +32,7 @@
 
 | # | File | Purpose | Đọc khi nào |
 |:-:|------|---------|-------------|
-| 1 | `context_session/session_context.md` | Trạng thái dự án hiện tại: 1774 strategies, tiến độ, blocking issues | **Đầu phiên** |
-| 2 | `README.md` | Tổng quan project, 5-step workflow, project structure | **Đầu phiên** |
+| 1 | `README.md` | Tổng quan project, 5-step workflow, project structure | **Đầu phiên** |
 | 3 | `template_example/(Old)vnfuture/strategy_framework.md` | Master spec vòng 1 (intraday futures) | **Chỉ khi làm việc với vòng 1** |
 | 4 | `data/vietnam_market_characteristics_v1.md` | Đặc thù thị trường VN futures vòng 1 → thiết kế strategy | **Trước khi code (vòng 1)** |
 | 5 | `idea/hypothesis/hypothesis_framework.md` | Acceptance criteria: 10-metric weighted scorecard | **Khi review hypothesis** |
@@ -328,7 +327,6 @@ Nguyên tắc: commit nhỏ, commit thường xuyên → dễ rollback, dễ rev
 | `agent/framework_build_guide.md` | Before generating Round-2 strategies |
 | `data/vietnam_market_characteristics.md` | Round 2 — đặc thù 3 cap → chọn feature nhanh |
 | `agent/migration_plan_v2.md` | Understanding V1→V2 migration status |
-| `context_session/session_context.md` | Every session start |
 | `tools/common.py` | Round 2 — `PASS_THRESHOLDS_BY_UNIVERSE`, `is_pass()` |
 | `tools/submit_and_check.py` | Round 2 — submit `output/stage_2/` → `backtest/results_stage_2.csv` |
 | `tools/check_results.py` | Round 2 — review results theo universe |
