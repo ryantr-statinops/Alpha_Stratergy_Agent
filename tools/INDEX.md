@@ -10,6 +10,8 @@
 | `submit_and_check.py` | Submit Round-2 strategies to XNOQuant + fetch metrics | `python tools/submit_and_check.py [--batch \| --files ...] [--dry-run] [--universe VN-...]` |
 | `check_results.py` | Review Round-2 backtest results (`backtest/results_stage_2.csv`) | `python tools/check_results.py [--detail \| --pass \| --universe ...]` |
 | `backfill_split_metrics.py` | GET-only audit/backfill Aggregate + Train + Test cho row cũ | `python tools/backfill_split_metrics.py [--universe ...] [--prefix ...] [--write]` |
+| `retention_audit.py` | Multiple-testing math + parameter plateau theo family (CSV-only) | `python tools/retention_audit.py [--plateau] [--universe ...]` |
+| `fetch_yearly_tables.py` | GET-only yearly `summary-table` + Gate 1–3 (stability / 2022 / 2024) | `python tools/fetch_yearly_tables.py --strategy-id <id> [--from-csv-prefix ...]` |
 | `update_guide_stats.py` | Regenerate Round-2 strategy stats from `output/index.csv` | `python tools/update_guide_stats.py` |
 | `gen_single_feat.py` | Generate a single-feature alpha strategy (vòng 1 — ARCHIVED) | `python tools/gen_single_feat.py <indicator> <call> <threshold>` |
 | `common.py` | Shared helpers (imported by other tools, not standalone) | — |
@@ -95,6 +97,41 @@ summary stage và audit trên console. Mặc định read-only/no CSV writes; th
 để append row enriched mới. Hỗ trợ `--universe`, `--prefix`, `.env` `XNO_TOKEN`, và
 delay lịch sự giữa strategies. Tool không update/verify/simulate editor.
 
+### `retention_audit.py`
+
+Multiple-testing / retention math + parameter plateau check — đọc `backtest/results_stage_2.csv`,
+dedup theo `(filepath, universe)`, nhóm SIMULATED theo family (strip suffix `P<digits>`), và báo
+`N / PassTr (Sharpe train ≥ 1.2) / PassBoth / ExpFP (α·PassTr) / Retain`.
+
+- Survival ratio ≈ α = 5% nghĩa là train-pass chủ yếu là may mắn thống kê, không phải edge bền.
+- `--plateau --min-variants 3`: bảng train/test của từng variant trong family → phát hiện tham số
+  promote có phải **đỉnh cô lập** (overfit) hay thuộc plateau trơn.
+- CSV-only, không gọi network. Là Gate 4 + Gate 5 của `idea/planning_alpha/stage_2/2026-08-05_alpha_validation_framework.md`.
+
+```
+python tools/retention_audit.py --min-candidates 1
+python tools/retention_audit.py --plateau --min-variants 3
+python tools/retention_audit.py --universe VN-SMALL-CAP
+```
+
+### `fetch_yearly_tables.py`
+
+GET-only yearly `summary-table` cho 1+ strategy (theo `--strategy-id` hoặc chọn từ CSV qua
+`--from-csv-prefix` / `--from-csv-universe`). Mỗi stage (simulate/train/test) in bảng theo năm
+kèm regime thị trường, và tính **Gate 1–3**:
+
+1. Sharpe ≥ 0 ở ≥ 4/5 năm (2020–24, bỏ row 2025 boundary)
+2. Sharpe 2022 ≥ −0.2 (crash resilience — năm trung thực duy nhất trong train)
+3. Sharpe 2024 ≥ 0 (năm mới nhất, bắt decay gần đây)
+
+Không ghi CSV, không mutate editor. Yêu cầu `XNO_TOKEN` trong `.env`.
+
+```
+python tools/fetch_yearly_tables.py --strategy-id DSbhQzWjPi --strategy-id 6hZhskaS1Y
+python tools/fetch_yearly_tables.py --from-csv-prefix VnSmallCsFinancialNetPayout
+python tools/fetch_yearly_tables.py --from-csv-universe VN-SMALL-CAP --from-csv-prefix VnSmallCsValueTrend
+```
+
 ### `update_guide_stats.py`
 
 Count Round-2 strategies from `output/index.csv` and generate `output/STATS.md`.
@@ -143,6 +180,8 @@ Shared helpers module used by `submit_and_check.py`, `check_results.py`, and oth
 | `update_guide_stats.py` | Round-2 stats generator từ `output/index.csv` | Active (V2) |
 | `check_results.py` | Round-2 results checker (theo universe) | Active (V2) |
 | `backfill_split_metrics.py` | Append-only split metrics audit/backfill | Active (V2) |
+| `retention_audit.py` | Retention/multiple-testing math + plateau check (CSV-only) | Active (V2) |
+| `fetch_yearly_tables.py` | GET-only yearly summary-table + Gate 1–3 stability | Active (V2) |
 | `generate_strategies.py` | Master strategy generator (vòng 1 — ARCHIVED) | Archived |
 | `gen_single_feat.py` | Single-feature alpha generator (vòng 1 — ARCHIVED) | Archived |
 | `INDEX.md` | This file | Active |
