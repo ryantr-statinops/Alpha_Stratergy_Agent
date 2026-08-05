@@ -6,6 +6,7 @@
 > Mode: `cross_sectional` (`_panel`, market-neutral, `set_portfolio_positions`)
 > Predecessor: `idea/planning_alpha/stage_2/2026-08-04_alpha_generation_framework.md` (what to build)
 > Companion: `idea/planning_alpha/stage_2/2026-08-05_alpha_validation_framework.md` (how to judge)
+> Combinations: `idea/planning_alpha/_framework/DATA_GROUP_COMBINATIONS.md` (16 groups, 120 pairs)
 
 ## Pipeline Contract
 
@@ -23,73 +24,208 @@ Rules:
 
 ---
 
-## TIER 1: DATA (nhóm các field lại)
+## TIER 1: DATA (16 groups — see DATA_GROUP_COMBINATIONS.md)
 
-### Group 1: Price & Volume
+> Full field lists and 120 pair combinations in `DATA_GROUP_COMBINATIONS.md`.
 
-| Field | Type | Usage |
+### Group A — Price & Volume (daily)
+
+| Field | Usage |
+|---|---|
+| `pv_close_panel` | Price level, market value calculation |
+| `pv_open_panel` | Gap signals |
+| `pv_high_panel` | ATR, VWAP, range signals |
+| `pv_low_panel` | ATR, VWAP, range signals |
+| `pv_volume_panel` | Liquidity, Amihud, volume signals |
+| `pv_vn30_close_panel` | Market reference, beta |
+| `pv_vn30_open_panel` | VN30 gap |
+| `pv_vn30_high_panel` | VN30 range |
+| `pv_vn30_low_panel` | VN30 range |
+| `pv_vn30_volume_panel` | Market volume reference |
+
+### Group B — Profitability (Income Q/A)
+
+| Field | Usage |
+|---|---|
+| `fun_is_net_profit_loss_after_tax_*_panel` | Core profitability (ROA, ROE) |
+| `fun_is_net_accounting_profit_loss_before_tax_*_panel` | Pre-tax profit, interest coverage |
+| `fun_is_profit_from_financial_activities_*_panel` | Financial income decomposition |
+| `fun_is_net_operating_income_from_other_activities_*_panel` | Non-core operating income |
+| `fun_is_other_income_*_panel` | Other income |
+| `fun_is_gain_loss_from_joint_ventures_*_panel` | JV contribution |
+
+### Group C — Cost & Margin (Income Q)
+
+| Field | Usage |
+|---|---|
+| `fun_is_selling_expenses_quarterly_panel` | Selling cost discipline |
+| `fun_is_general_and_admin_expenses_quarterly_panel` | G&A cost discipline |
+| `fun_is_financial_income_quarterly_panel` | Interest income decomposition |
+| `fun_is_financial_expenses_quarterly_panel` | Interest expense |
+| `fun_is_total_compensation_quarterly_panel` | Labor cost |
+| `fun_is_compensation_quarterly_panel` | Direct compensation |
+| `fun_is_expenses_from_other_activities_quarterly_panel` | Non-core expenses |
+| `fun_is_other_expenses_quarterly_panel` | Other expenses |
+
+### Group D — EPS & Attribution (Income Q/A)
+
+| Field | Usage |
+|---|---|
+| `fun_is_eps_basis_*_panel` | EPS yield, EPS surprise |
+| `fun_is_attributable_to_parent_company_*_panel` | Parent-company EPS |
+| `fun_is_minority_interests_*_panel` | Minority drag |
+
+### Group E — Tax & Reserves (Income Q/A)
+
+| Field | Usage |
+|---|---|
+| `fun_is_business_income_tax_current_*_panel` | Current tax |
+| `fun_is_business_income_tax_deferred_*_panel` | Deferred tax |
+| `fun_is_equalisation_reserve_*_panel` | Insurance tax smoothing |
+| `fun_is_provision_for_catastrophe_reserve_*_panel` | Catastrophe reserve |
+| `fun_is_other_deductions_*_panel` | Other deductions |
+
+### Group F — Capital Structure (Balance Sheet Q/A)
+
+| Field | Usage |
+|---|---|
+| `fun_bs_total_assets_*_panel` | Size, ROA denominator, quality gate |
+| `fun_bs_owners_equity_*_panel` | ROE denominator, leverage |
+| `fun_bs_liabilities_*_panel` | Total debt |
+| `fun_bs_total_resources_*_panel` | Total resources |
+| `fun_bs_long_term_liabilities_*_panel` | Long-term debt |
+| `fun_bs_capital_and_researves_*_panel` | Capital base |
+
+### Group G — Cash & Liquidity (Balance Sheet Q/A)
+
+| Field | Usage |
+|---|---|
+| `fun_bs_cash_*_panel` | Cash |
+| `fun_bs_cash_equivalents_*_panel` | Cash equivalents |
+| `fun_bs_cash_and_cash_equivalents_*_panel` | Total cash position |
+| `fun_bs_short_term_investments_*_panel` | Liquid investments |
+| `fun_bs_short_term_financial_investments_*_panel` | Short-term financial investments |
+| `fun_bs_current_assets_*_panel` | Current assets |
+| `fun_bs_current_liabilities_*_panel` | Current liabilities |
+
+### Group H — Working Capital (Balance Sheet Q/A)
+
+| Field | Usage |
+|---|---|
+| `fun_bs_inventories_*_panel` | Inventory |
+| `fun_bs_inventories_net_*_panel` | Net inventory |
+| `fun_bs_trade_accounts_receivable_*_panel` | Trade receivables |
+| `fun_bs_trade_accounts_payable_*_panel` | Trade payables |
+| `fun_bs_accounts_receivable_*_panel` | Other receivables |
+| `fun_bs_advances_*_panel` | Advances |
+| `fun_bs_advances_from_customers_*_panel` | Customer advances |
+| `fun_bs_prepayments_to_suppliers_*_panel` | Prepayments |
+| `fun_bs_other_receivables_*_panel` | Other receivables |
+| `fun_bs_short_term_loans_*_panel` | Short-term loans (liability) |
+
+### Group I — Long-term Assets (Balance Sheet Q/A)
+
+| Field | Usage |
+|---|---|
+| `fun_bs_tangible_fixed_assets_*_panel` | Tangible FA |
+| `fun_bs_intangible_fixed_assets_*_panel` | Intangible FA |
+| `fun_bs_construction_in_progress_*_panel` | CIP (idle capital risk) |
+| `fun_bs_good_will_*_panel` | Goodwill |
+| `fun_bs_investment_properties_*_panel` | Investment property |
+| `fun_bs_finance_lease_assets_*_panel` | Finance lease assets |
+| `fun_bs_ppe_tangible_cost_*_panel` | PPE cost |
+
+### Group J — Investments (Balance Sheet Q/A)
+
+| Field | Usage |
+|---|---|
+| `fun_bs_long_term_investments_*_panel` | Long-term investments |
+| `fun_bs_investments_in_subsidiaries_*_panel` | Subsidiary investments |
+| `fun_bs_investments_in_associates_*_panel` | Associate investments |
+| `fun_bs_held_to_maturity_investment_current_*_panel` | HTM (current) |
+| `fun_bs_held_to_maturity_investment_non_current_*_panel` | HTM (non-current) |
+| `fun_bs_long_term_loans_*_panel` | Long-term loans (receivable) |
+| `fun_bs_short_term_loans_receivables_*_panel` | Short-term loans (receivable) |
+| `fun_bs_long_term_receivables_*_panel` | Long-term receivables |
+
+### Group K — Equity Structure (Balance Sheet Q/A)
+
+| Field | Usage |
+|---|---|
+| `fun_bs_paid_in_capital_*_panel` | Paid-in capital |
+| `fun_bs_common_shares_*_panel` | Common shares (for market value) |
+| `fun_bs_treasury_shares_*_panel` | Treasury shares (negative) |
+| `fun_bs_undistributed_earnings_*_panel` | Retained earnings |
+| `fun_bs_capital_surplus_*_panel` | Capital surplus |
+| `fun_bs_preferred_shares_*_panel` | Preferred shares |
+| `fun_bs_bonus_and_welfare_funds_*_panel` | Bonus/welfare funds |
+| `fun_bs_statutory_reserve_*_panel` | Statutory reserve |
+| `fun_bs_investment_and_development_funds_*_panel` | Investment/dev funds |
+
+### Group L — Financial Institution Identifiers (BS/CF — mask-only)
+
+| Field | Source | Usage |
 |---|---|---|
-| `pv_close_panel` | daily | Price level, market value calculation |
-| `pv_volume_panel` | daily | Liquidity, Amihud, volume signals |
-| `pv_high_panel` | daily | ATR, VWAP, range signals |
-| `pv_low_panel` | daily | ATR, VWAP, range signals |
-| `pv_open_panel` | daily | Gap signals |
-| `pv_vn30_close_panel` | daily | Market reference, beta |
-| `pv_vn30_volume_panel` | daily | Market volume reference |
+| `fun_bs_insurance_reserve_*_panel` | BS | Insurance intensity |
+| `fun_bs_unearned_premium_reserve_*_panel` | BS | Insurance intensity |
+| `fun_bs_mathematical_reserve_*_panel` | BS | Insurance intensity |
+| `fun_bs_claim_reserve_*_panel` | BS | Insurance intensity |
+| `fun_bs_margin_deposits_*_panel` | BS | Securities intensity |
+| `fun_bs_reinsurance_assets_*_panel` | BS | Reinsurance intensity |
+| `fun_bs_insurance_deposits_*_panel` | BS | Insurance deposits |
+| `fun_bs_payables_from_insurance_contract_*_panel` | BS | Insurance payables |
+| `fun_bs_receivable_from_insurance_contract_*_panel` | BS | Insurance receivables |
+| `fun_bs_equalization_reserves_*_panel` | BS | Equalisation reserve |
+| `fun_cf_loans_granted_purchases_of_debt_instruments_*_panel` | CF | Loans granted |
+| `fun_cf_collection_of_loans_proceeds_from_sales_of_debts_instruments_*_panel` | CF | Loan collection |
 
-### Group 2: Income Statement — Profitability
+### Group M — Operating Cash Flow (Q/A)
 
-| Field | Frequency | Usage |
-|---|---|---|
-| `fun_is_net_profit_loss_after_tax_*_panel` | Q/A | Core profitability (ROA, ROE) |
-| `fun_is_eps_basis_*_panel` | Q/A | Earnings yield, EPS surprise |
-| `fun_is_net_accounting_profit_loss_before_tax_*_panel` | Q/A | Interest coverage |
-| `fun_is_financial_income_*_panel` | Q | Financial income decomposition |
-| `fun_is_financial_expenses_*_panel` | Q | Interest expense |
-| `fun_is_selling_expenses_*_panel` | Q | Cost discipline |
-| `fun_is_general_and_admin_expenses_*_panel` | Q | Cost discipline |
-| `fun_is_business_income_tax_current_*_panel` | Q | Tax stability |
-| `fun_is_attributable_to_parent_company_*_panel` | Q | Minority interest drag |
+| Field | Usage |
+|---|---|
+| `fun_cf_net_cash_inflows_outflows_from_operating_activities_*_panel` | CFO |
+| `fun_cf_operating_profit_loss_before_changes_in_wc_*_panel` | CFO before WC |
+| `fun_cf_business_income_tax_paid_*_panel` | Tax paid |
+| `fun_cf_interest_paid_*_panel` | Interest paid |
+| `fun_cf_interest_income_and_dividend_*_panel` | Interest/dividend received |
+| `fun_cf_dividends_and_interest_received_*_panel` | Dividends + interest received |
+| `fun_cf_depreciation_and_amortisation_*_panel` | Depreciation (non-cash add-back) |
+| `fun_cf_provisions_*_panel` | Provisions |
 
-### Group 3: Balance Sheet — Structure
+### Group N — Investing Cash Flow (Q/A)
 
-| Field | Frequency | Usage |
-|---|---|---|
-| `fun_bs_total_assets_*_panel` | Q/A | Size, ROA denominator |
-| `fun_bs_owners_equity_*_panel` | Q/A | ROE denominator, leverage |
-| `fun_bs_cash_and_cash_equivalents_*_panel` | Q | Liquidity buffer |
-| `fun_bs_current_assets_*_panel` | Q | Current ratio |
-| `fun_bs_current_liabilities_*_panel` | Q | Current ratio |
-| `fun_bs_short_term_loans_*_panel` | Q | Working capital safety |
-| `fun_bs_inventories_net_*_panel` | Q | Inventory quality |
-| `fun_bs_trade_accounts_receivable_*_panel` | Q | Receivables quality |
-| `fun_bs_trade_accounts_payable_*_panel` | Q | Supplier credit |
-| `fun_bs_advances_from_customers_*_panel` | Q | Customer advances |
-| `fun_bs_good_will_*_panel` | Q | Intangible burden |
-| `fun_bs_intangible_fixed_assets_*_panel` | Q | Intangible burden |
-| `fun_bs_tangible_fixed_assets_*_panel` | Q | Capital productivity |
-| `fun_bs_construction_in_progress_*_panel` | Q | Idle CIP risk |
-| `fun_bs_common_shares_*_panel` | Q | Market value calculation |
+| Field | Usage |
+|---|---|
+| `fun_cf_purchases_of_fixed_assets_and_other_long_term_assets_*_panel` | Capex |
+| `fun_cf_proceeds_from_disposal_of_fixed_assets_*_panel` | Disposal proceeds |
+| `fun_cf_investments_in_other_entities_*_panel` | Investments in others |
+| `fun_cf_proceeds_from_divestment_in_other_entities_*_panel` | Divestment proceeds |
+| `fun_cf_profit_loss_from_investing_activities_*_panel` | Investment P&L |
 
-### Group 4: Cash Flow — Operating
+### Group O — Financing Cash Flow (Q/A)
 
-| Field | Frequency | Usage |
-|---|---|---|
-| `fun_cf_net_cash_inflows_outflows_from_operating_activities_*_panel` | A | CFO quality, cash conversion |
-| `fun_cf_dividends_paid_*_panel` | A | Dividend sustainability |
-| `fun_cf_proceeds_from_borrowings_*_panel` | A | External dependence |
-| `fun_cf_repayment_of_borrowings_*_panel` | A | External dependence |
-| `fun_cf_proceeds_from_issue_of_shares_*_panel` | A | Dilution, net payout |
-| `fun_cf_payments_for_share_returns_and_repurchases_*_panel` | A | Net payout |
-| `fun_cf_loans_granted_purchases_of_debt_instruments_*_panel` | A | Financial institution mask |
+| Field | Usage |
+|---|---|
+| `fun_cf_dividends_paid_*_panel` | Dividends (outflow <= 0) |
+| `fun_cf_proceeds_from_issue_of_shares_*_panel` | Share issuance (inflow > 0) |
+| `fun_cf_payments_for_share_returns_and_repurchases_*_panel` | Repurchases (outflow <= 0) |
+| `fun_cf_proceeds_from_borrowings_*_panel` | Borrowings proceeds |
+| `fun_cf_repayment_of_borrowings_*_panel` | Borrowings repayment |
+| `fun_cf_finance_lease_principal_payments_*_panel` | Lease payments |
+| `fun_cf_net_cash_inflows_outflows_from_financing_activities_*_panel` | Net financing CF |
 
-### Group 5: Financial Institution Identifiers
+### Group P — Cash Reconciliation (Q/A)
 
-| Field | Frequency | Usage |
-|---|---|---|
-| `fun_bs_insurance_reserve_*_panel` | A | Insurance intensity |
-| `fun_bs_unearned_premium_reserve_*_panel` | A | Insurance intensity |
-| `fun_bs_margin_deposits_*_panel` | A | Securities intensity |
+| Field | Usage |
+|---|---|
+| `fun_cf_net_increase_in_cash_and_cash_equivalents_*_panel` | Net cash change |
+| `fun_cf_cash_and_cash_equivalents_at_the_beginning_of_period_*_panel` | Beginning cash |
+| `fun_cf_cash_and_cash_equivalents_at_the_end_of_period_*_panel` | Ending cash |
+| `fun_cf_effect_of_foreign_exchange_differences_*_panel` | FX effect |
+| `fun_cf_amortisation_of_goodwill_*_panel` | Goodwill amortisation |
+| `fun_cf_increase_decrease_in_inventories_*_panel` | WC: inventories change |
+| `fun_cf_increase_decrease_in_receivables_*_panel` | WC: receivables change |
+| `fun_cf_increase_decrease_in_payables_*_panel` | WC: payables change |
 
 ---
 
@@ -112,52 +248,108 @@ Rules:
 
 ### Feature Recipes by Data Group
 
-**From Group 1 (Price/Volume):**
+**From Group A (Price/Volume):**
 ```python
-market_value = close * common_shares
+market_value = close * common_shares    # common_shares from K
 traded_value = self.feat.rolling_value_panel(close, volume)
 amihud = self.feat.amihud_illiquidity_panel(close, volume)
 returns = self.feat.returns_panel(close)
 smoothed = self.feat.ema_panel(returns)
 ```
 
-**From Group 2 (Income):**
+**From Group B (Profitability):**
 ```python
-roa = self.feat.safe_divide_panel(net_profit, total_assets)
-roe = self.feat.safe_divide_panel(net_profit, owners_equity)
-eps_yield = self.feat.safe_divide_panel(eps, close)
+roa = self.feat.safe_divide_panel(net_profit, total_assets)     # total_assets from F
+roe = self.feat.safe_divide_panel(net_profit, owners_equity)    # owners_equity from F
+eps_yield = self.feat.safe_divide_panel(eps, close)             # eps from D
 core_profit = self.feat.safe_divide_panel((net_profit + fin_expenses - fin_income), total_assets)
-interest_coverage = self.feat.safe_divide_panel(profit_before_tax, fin_expenses)
-cost_ratio = self.feat.safe_divide_panel((selling + gae), total_assets)
 ```
 
-**From Group 3 (Balance Sheet):**
+**From Group C (Cost & Margin):**
+```python
+interest_coverage = self.feat.safe_divide_panel(profit_before_tax, fin_expenses)
+cost_ratio = self.feat.safe_divide_panel((selling + gae), total_assets)   # total_assets from F
+```
+
+**From Group D (EPS & Attribution):**
+```python
+eps_yield = self.feat.safe_divide_panel(eps, close)             # close from A
+minority_drag = self.feat.safe_divide_panel(minority_interests, owners_equity)  # from F
+```
+
+**From Group E (Tax & Reserves):**
+```python
+effective_tax = self.feat.safe_divide_panel(tax_current, profit_before_tax)  # from B
+```
+
+**From Group F (Capital Structure):**
 ```python
 leverage = self.feat.safe_divide_panel(liabilities, total_assets)
 equity_ratio = self.feat.safe_divide_panel(owners_equity, total_assets)
+quality_gate = (equity_ratio > 0.15)
+```
+
+**From Group G (Cash & Liquidity):**
+```python
 current_ratio = self.feat.safe_divide_panel(current_assets, current_liabilities)
-cash_ratio = self.feat.safe_divide_panel(cash, total_assets)
-intangible_burden = self.feat.safe_divide_panel((goodwill + intangible), owners_equity)
-capital_productivity = self.feat.safe_divide_panel(net_profit, tangible_fixed_assets)
-cip_risk = self.feat.safe_divide_panel(construction_in_progress, total_assets)
+cash_ratio = self.feat.safe_divide_panel(cash, total_assets)    # total_assets from F
+net_cash = self.feat.safe_divide_panel((cash - short_term_loans), total_assets)
 ```
 
-**From Group 4 (Cash Flow):**
+**From Group H (Working Capital):**
 ```python
-net_payout = (0 - dividends) + (0 - repurchases) - issuance
-net_payout_yield = self.feat.safe_divide_panel(net_payout, market_value)
-persistent_payout = self.feat.ema_panel(net_payout_yield)
-cash_conversion = self.feat.safe_divide_panel(cfo, net_profit)
-dividend_sustainability = self.feat.safe_divide_panel(dividends, cfo)
-external_dependence = self.feat.safe_divide_panel((proceeds_borrowings + proceeds_shares - repayments_borrowings), total_assets)
+wc_lean = self.feat.safe_divide_panel((receivables + inventories - payables), total_assets)  # from F
+receivables_turnover = self.feat.safe_divide_panel(receivables, total_assets)  # from F
+inventory_to_assets = self.feat.safe_divide_panel(inventories, total_assets)   # from F
 ```
 
-**From Group 5 (Financial Identifiers):**
+**From Group I (Long-term Assets):**
 ```python
-insurance_intensity = self.feat.safe_divide_panel(insurance_reserve, total_assets)
+capital_productivity = self.feat.safe_divide_panel(net_profit, tangible_fixed_assets)  # from B
+intangible_burden = self.feat.safe_divide_panel((goodwill + intangible), owners_equity)  # from F
+cip_risk = self.feat.safe_divide_panel(construction_in_progress, total_assets)  # from F
+```
+
+**From Group J (Investments):**
+```python
+investment_intensity = self.feat.safe_divide_panel(long_term_investments, total_assets)  # from F
+subsidiary_burden = self.feat.safe_divide_panel(investments_in_subsidiaries, total_assets)  # from F
+```
+
+**From Group K (Equity Structure):**
+```python
+dilution = self.feat.safe_divide_panel(treasury_shares, common_shares)
+book_per_share = self.feat.safe_divide_panel(owners_equity, common_shares)  # from F
+retained_ratio = self.feat.safe_divide_panel(undistributed_earnings, owners_equity)  # from F
+```
+
+**From Group L (Financial Identifiers — mask-only):**
+```python
+insurance_intensity = self.feat.safe_divide_panel(insurance_reserve, total_assets)  # from F
 unearned_intensity = self.feat.safe_divide_panel(unearned_premium, total_assets)
 loan_intensity = self.feat.safe_divide_panel(loans_granted, total_assets)
 margin_intensity = self.feat.safe_divide_panel(margin_deposits, total_assets)
+```
+
+**From Group M (Operating CF):**
+```python
+cash_conversion = self.feat.safe_divide_panel(cfo, net_profit)     # net_profit from B
+fcf_proxy = self.feat.safe_divide_panel((cfo - capex), market_value)  # capex from N, market_value from A
+dividend_sustainability = self.feat.safe_divide_panel(dividends, cfo)  # dividends from O
+```
+
+**From Group N (Investing CF):**
+```python
+capex_intensity = self.feat.safe_divide_panel(capex, total_assets)  # total_assets from F
+net_capex = self.feat.safe_divide_panel((capex - disposal), market_value)  # market_value from A
+```
+
+**From Group O (Financing CF):**
+```python
+net_payout = (0 - dividends) + (0 - repurchases) - issuance
+net_payout_yield = self.feat.safe_divide_panel(net_payout, market_value)  # market_value from A
+persistent_payout = self.feat.ema_panel(net_payout_yield)
+external_dependence = self.feat.safe_divide_panel((proceeds_borrowings + proceeds_shares - repayments_borrowings), total_assets)  # from F
 ```
 
 ---
@@ -295,18 +487,18 @@ weights = self.op.portfolio_weights_panel(score, method='rank_demean_l1', mask=e
 class CustomStrategy(SimpleAlgorithm):
     def __algorithm__(self):
         # TIER 1: DATA
-        dividends = self.data.fun_cf_dividends_paid_annual_panel
-        repurchases = self.data.fun_cf_payments_for_share_returns_and_repurchases_annual_panel
-        issuance = self.data.fun_cf_proceeds_from_issue_of_shares_annual_panel
-        common_shares = self.data.fun_bs_common_shares_annual_panel
-        close = self.data.pv_close_panel
+        dividends = self.data.fun_cf_dividends_paid_annual_panel            # Group O
+        repurchases = self.data.fun_cf_payments_for_share_returns_and_repurchases_annual_panel  # Group O
+        issuance = self.data.fun_cf_proceeds_from_issue_of_shares_annual_panel  # Group O
+        common_shares = self.data.fun_bs_common_shares_annual_panel         # Group K
+        close = self.data.pv_close_panel                                    # Group A
 
-        # Financial identifiers
+        # Financial identifiers (Group L)
         insurance_reserve = self.data.fun_bs_insurance_reserve_annual_panel
         unearned_premium = self.data.fun_bs_unearned_premium_reserve_annual_panel
         loans_granted = self.data.fun_cf_loans_granted_purchases_of_debt_instruments_annual_panel
         margin_deposits = self.data.fun_bs_margin_deposits_annual_panel
-        total_assets = self.data.fun_bs_total_assets_annual_panel
+        total_assets = self.data.fun_bs_total_assets_annual_panel           # Group F
 
         # TIER 2: FEAT
         # Financial intensity
@@ -361,12 +553,12 @@ class CustomStrategy(SimpleAlgorithm):
 class CustomStrategy(SimpleAlgorithm):
     def __algorithm__(self):
         # TIER 1: DATA (same as Example 1)
-        dividends = self.data.fun_cf_dividends_paid_annual_panel
-        repurchases = self.data.fun_cf_payments_for_share_returns_and_repurchases_annual_panel
-        issuance = self.data.fun_cf_proceeds_from_issue_of_shares_annual_panel
-        common_shares = self.data.fun_bs_common_shares_annual_panel
-        close = self.data.pv_close_panel
-        total_assets = self.data.fun_bs_total_assets_annual_panel
+        dividends = self.data.fun_cf_dividends_paid_annual_panel            # Group O
+        repurchases = self.data.fun_cf_payments_for_share_returns_and_repurchases_annual_panel  # Group O
+        issuance = self.data.fun_cf_proceeds_from_issue_of_shares_annual_panel  # Group O
+        common_shares = self.data.fun_bs_common_shares_annual_panel         # Group K
+        close = self.data.pv_close_panel                                    # Group A
+        total_assets = self.data.fun_bs_total_assets_annual_panel           # Group F
 
         # TIER 2: FEAT
         market_value = close * common_shares
@@ -418,40 +610,82 @@ class CustomStrategy(SimpleAlgorithm):
 ## Quick Reference: Data Groups → Features → Masks → Ops
 
 ```
-GROUP 1 (Price/Volume)
-  ├── market_value = close × common_shares
+GROUP A (Price/Volume)
+  ├── market_value = close × common_shares (K)
   ├── traded_value = rolling_value_panel(close, volume)
   ├── amihud = amihud_illiquidity_panel(close, volume)
   └── returns = returns_panel(close)
 
-GROUP 2 (Income)
+GROUP B (Profitability)
   ├── roa = safe_divide_panel(ni, assets)
   ├── roe = safe_divide_panel(ni, equity)
-  ├── eps_yield = safe_divide_panel(eps, close)
   ├── core_profit = safe_divide_panel((ni + fe - fi), assets)
-  └── interest_coverage = safe_divide_panel(ni_bt, fe)
+  └── eps_yield = safe_divide_panel(eps (D), close)
 
-GROUP 3 (Balance Sheet)
+GROUP C (Cost & Margin)
+  ├── interest_coverage = safe_divide_panel(ni_bt, fe)
+  └── cost_ratio = safe_divide_panel((selling + gae), assets)
+
+GROUP D (EPS & Attribution)
+  ├── eps_yield = safe_divide_panel(eps, close)
+  └── minority_drag = safe_divide_panel(minority, equity)
+
+GROUP E (Tax & Reserves)
+  └── effective_tax = safe_divide_panel(tax, ni_bt)
+
+GROUP F (Capital Structure)
   ├── leverage = safe_divide_panel(liabilities, assets)
   ├── equity_ratio = safe_divide_panel(equity, assets)
+  └── quality_gate = (equity_ratio > 0.15)
+
+GROUP G (Cash & Liquidity)
   ├── current_ratio = safe_divide_panel(ca, cl)
   ├── cash_ratio = safe_divide_panel(cash, assets)
-  └── intangible_burden = safe_divide_panel(gw + intang, equity)
+  └── net_cash = safe_divide_panel((cash - st_loans), assets)
 
-GROUP 4 (Cash Flow)
-  ├── net_payout_yield = safe_divide_panel(gross_payout, mv)
-  ├── persistent_payout = ema_panel(net_payout_yield)
-  ├── cash_conversion = safe_divide_panel(cfo, ni)
-  └── external_dependence = safe_divide_panel(borrow + issue - repay, assets)
+GROUP H (Working Capital)
+  ├── wc_lean = safe_divide_panel((rec + inv - pay), assets)
+  └── receivables_turnover = safe_divide_panel(rec, assets)
 
-GROUP 5 (Financial Identifiers)
+GROUP I (Long-term Assets)
+  ├── capital_productivity = safe_divide_panel(ni, tangible_fa)
+  ├── intangible_burden = safe_divide_panel((gw + intang), equity)
+  └── cip_risk = safe_divide_panel(cip, assets)
+
+GROUP J (Investments)
+  ├── investment_intensity = safe_divide_panel(lt_inv, assets)
+  └── subsidiary_burden = safe_divide_panel(sub_inv, assets)
+
+GROUP K (Equity Structure)
+  ├── dilution = safe_divide_panel(treasury, common_shares)
+  ├── book_per_share = safe_divide_panel(equity, common_shares)
+  └── retained_ratio = safe_divide_panel(undistributed, equity)
+
+GROUP L (Financial ID — mask-only)
   ├── insurance_intensity = safe_divide_panel(insurance_reserve, assets)
   ├── unearned_intensity = safe_divide_panel(unearned_premium, assets)
+  ├── loan_intensity = safe_divide_panel(loans_granted, assets)
   └── margin_intensity = safe_divide_panel(margin_deposits, assets)
+
+GROUP M (Operating CF)
+  ├── cash_conversion = safe_divide_panel(cfo, ni)
+  └── fcf_proxy = safe_divide_panel((cfo - capex), mv)
+
+GROUP N (Investing CF)
+  ├── capex_intensity = safe_divide_panel(capex, assets)
+  └── net_capex = safe_divide_panel((capex - disposal), mv)
+
+GROUP O (Financing CF)
+  ├── net_payout_yield = safe_divide_panel(gross_payout, mv)
+  ├── persistent_payout = ema_panel(net_payout_yield)
+  └── external_dependence = safe_divide_panel((borrow + issue - repay), assets)
+
+GROUP P (Cash Reconciliation — validation only)
+  └── cash_bridge: beginning → operating → investing → financing → ending
 
 MASK LAYERS
   ├── L1: data availability (input_sum == input_sum)
-  ├── L2: economic population (financial flag)
+  ├── L2: economic population (financial flag from L)
   ├── L3: sign/semantic (dividends < 0, equity > 0)
   ├── L4: liquidity gate (rank rolled_value > 0.40)
   └── L5: quality gate (equity/assets > 0.15)
