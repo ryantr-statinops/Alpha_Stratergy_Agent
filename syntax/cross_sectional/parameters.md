@@ -39,6 +39,47 @@ Eligibility is part of the model, not neutral preprocessing. Every threshold mus
 
 Do not add several eligibility thresholds together after viewing Test results.
 
+## Fundamental Change / Deterioration Thresholds
+
+Cross-sectional mode has no suffix-less `pct_change`. Express change signals as
+a delta scaled by a positive denominator, or as a ratio against a trailing
+level:
+
+```python
+asset_scaled_change = self.feat.safe_divide_panel(
+    self.feat.delta_panel(series),
+    total_assets,
+)
+
+level_ratio = self.feat.safe_divide_panel(series, self.feat.ema_panel(series))
+```
+
+Always keep the denominator positive; a raw delta around sign-changing
+profit/EPS is unsafe without a positive-level guard.
+
+Eligibility on change signals uses tolerance bands, not a strict zero. The
+threshold is the deterioration boundary, not the positivity boundary:
+
+| Role | Threshold (scaled by positive denominator) | Notes |
+|---|---:|---|
+| Loose / weak guard | `> -0.02` | Keeps near-zero but not yet bad names in the cross-section |
+| Positive confirmation | `> 0` | Strong / overlay tier |
+| Material deterioration | `< -0.05` | Exclusion or short bias |
+| High-noise sector fields | `-0.05 / -0.15` | Sector-specific only |
+
+Rules:
+
+- A strict `> 0` gate on growth or delta collapses the eligible cross-section.
+  Small cross-sections make `_cs_panel` ranks noisy and unstable. Audit the
+  eligible symbol count per date and prefer a loose weak guard plus a strong
+  confirmation tier, mirroring the template weak/strong/exit structure.
+- Report-step change is an overlay, not a hard eligibility gate. Do not freeze a
+  date's cross-section on a single report event unless the thesis demands it.
+- Do not impute missing changes with zero; missing observations are unavailable
+  and drop out of the cross-section.
+- A change threshold and a level threshold are separate trial dimensions; count
+  each variant in the family budget.
+
 ## Factor Combination
 
 Baseline composite construction uses equal contribution between independently motivated ranks unless a different weighting is preregistered.
