@@ -128,3 +128,92 @@ vn_large_cap/time_series/VnLargeTrixMomentum.py,trix_momentum,time_series,time_s
 vn_large_cap/time_series/VnLargeStochRecovery.py,stoch_recovery,time_series,time_series,VN-LARGE-CAP,Stochastic K/D crossover from oversold in 30 EMA uptrend,2-tier long
 vn_large_cap/time_series/VnLargeWillrBounce.py,willr_bounce,time_series,time_series,VN-LARGE-CAP,Williams %R bounce from -80 oversold in 30 EMA uptrend,2-tier long
 vn_large_cap/time_series/VnLargeMfiDivergence.py,mfi_divergence,time_series,time_series,VN-LARGE-CAP,MFI 50-80 healthy momentum with rising slope in uptrend,2-tier long
+vn_large_cap/time_series/VnLargeInternallyFundedCapexTrend.py,capex_discipline,time_series,time_series,VN-LARGE-CAP,CFO funds capex + no net borrowing + 12/36 EMA trend,2-tier long
+vn_large_cap/time_series/VnLargeCashFlowMomentumTrend.py,cashflow_quality,time_series,time_series,VN-LARGE-CAP,Growing CFO + capex discipline + 8/24 EMA trend,2-tier long
+vn_large_cap/time_series/VnLargeCashEarningsSpreadTrend.py,cashflow_quality,time_series,time_series,VN-LARGE-CAP,CFO/PAT > 0.5 + positive earnings + 12/36 EMA trend,2-tier long
+vn_large_cap/time_series/VnLargePreWcCashTrend.py,cashflow_quality,time_series,time_series,VN-LARGE-CAP,PreWCCash > PAT (residual cash strength) + 14/42 EMA trend,2-tier long
+vn_large_cap/time_series/VnLargeCfoImprovingTrend.py,cashflow_quality,time_series,time_series,VN-LARGE-CAP,Positive improving CFO + 10/30 EMA trend,2-tier long
+vn_large_cap/time_series/VnLargeCashSpreadFast.py,cashflow_quality,time_series,time_series,VN-LARGE-CAP,Cash earnings spread + 8/24 EMA fast timing,2-tier long
+vn_large_cap/time_series/VnLargeCashSpreadLoose.py,cashflow_quality,time_series,time_series,VN-LARGE-CAP,Cash earnings spread loose 0.3 + 12/36 EMA,2-tier long
+vn_large_cap/time_series/VnLargeCashSpreadSlow.py,cashflow_quality,time_series,time_series,VN-LARGE-CAP,Cash earnings spread + 14/42 EMA slow timing,2-tier long
+vn_large_cap/time_series/VnLargeCashSpreadCapex.py,cashflow_quality,time_series,time_series,VN-LARGE-CAP,Cash spread 0.3 + capex discipline + 12/36 EMA,2-tier long
+vn_large_cap/time_series/VnLargeCashSpreadLooseSlow.py,cashflow_quality,time_series,time_series,VN-LARGE-CAP,Cash spread loose 0.3 + 14/42 EMA slow,2-tier long
+vn_large_cap/time_series/VnLargePatSurpriseTrend.py,pead_cash_confirmed,time_series,time_series,VN-LARGE-CAP,PAT growth + CFO confirmation + 8/24 EMA,2-tier long
+vn_large_cap/time_series/VnLargeCfoSurpriseTrend.py,pead_cash_confirmed,time_series,time_series,VN-LARGE-CAP,CFO q/q growth + 8/24 EMA,2-tier long
+vn_large_cap/time_series/VnLargeCashConversionInflectionTrend.py,cashflow_quality,time_series,time_series,VN-LARGE-CAP,Positive improving cash conversion spread + 12/36 EMA,2-tier long
+vn_large_cap/time_series/VnLargeRelativeStrengthTrend.py,residual_momentum,time_series,time_series,VN-LARGE-CAP,20d relative strength vs VN30 + 12/36 EMA,2-tier long
+vn_large_cap/time_series/VnLargeAbnormalVolumeTrend.py,volume_flow,time_series,time_series,VN-LARGE-CAP,Volume spike + positive return + 8/24 EMA,2-tier long
+vn_large_cap/time_series/VnLargeVolumePullbackTrend.py,volume_flow,time_series,time_series,VN-LARGE-CAP,Volume spike + negative return dip in uptrend,2-tier long
+vn_small_cap/cross_sectional/VnSmallCsCoreProfitability.py,core_profitability_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Core profit excluding financial income tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsInterestCoverage.py,interest_coverage_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Pre-tax profit over financial expense tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsCostDiscipline.py,cost_discipline_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Low selling+admin cost burden tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsWorkingCapitalLoanSafety.py,working_capital_loan_safety_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Cash over short-term loans tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsRelatedPartyRisk.py,related_party_risk_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Avoid other/intercompany receivables tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsIntangibleBurden.py,intangible_burden_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Avoid goodwill+intangible burden tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsCapitalProductivity.py,capital_productivity_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Profit over tangible fixed assets tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsIdleCipRisk.py,idle_cip_risk_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Avoid construction-in-progress burden tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsRetainedEarningsQuality.py,retained_earnings_quality_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Undistributed earnings over assets tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsEarningsYieldChange.py,earnings_yield_change_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Delta earnings yield tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsProfitabilityStability.py,profitability_stability_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Low ROE volatility tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsQuickNetCashBuffer.py,quick_net_cash_buffer_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Quick net-cash buffer tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsMinorityDrag.py,minority_drag_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Attributable-to-parent share tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsMarginExpansion.py,margin_expansion_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Profit growth minus cost growth tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsTaxStability.py,tax_stability_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Low effective-tax-rate volatility tilt on the validated value-trend engine,demean_l1
+vn_small_cap/cross_sectional/VnSmallCsFreeSupplierCredit.py,free_supplier_credit_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Supplier/customer financing of inventory tilt on the validated value-trend engine,demean_l1
+vn_large_cap/cross_sectional/VnLargeCsAntiDilution.py,anti_dilution_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by anti-dilution: firms that restrain share,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsAssetGrowthNeutral.py,asset_growth_neutral_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by asset growth made neutral to persistent,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsCashConfirmedPatSurprise.py,cash_confirmed_pat_surprise_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,"Allocate across large caps by year-over-year PAT surprise, with a",rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsCashConversionInflection.py,cash_conversion_inflection_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by the year-over-year change in cash,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsCfoSurprise.py,cfo_surprise_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by year-over-year operating-cash-flow,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsEarnedToContributed.py,earned_to_contributed_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by earned-to-contributed capital: retained,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsFcfCoveredDividend.py,fcf_covered_dividend_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by dividend yield gated by free cash flow,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsFcfCoveredDividendWide.py,fcf_covered_dividend_wide_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by dividend yield gated by positive free,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsInternallyFundedCapex.py,internally_funded_capex_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by how much capex is funded internally from,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsNetLiquidBuffer.py,net_liquid_buffer_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by net liquid-asset buffer: cash plus,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsNetPayoutPersistence.py,net_payout_persistence_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by persistent net payout yield: dividends,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsShareholderYield.py,shareholder_yield_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by shareholder yield: net payout yield plus,rank_demean_l1
+vn_large_cap/cross_sectional/VnLargeCsShortTermRefinance.py,short_term_refinance_cs,cross_sectional,cross_sectional,VN-LARGE-CAP,Allocate across large caps by short-term refinancing pressure:,rank_demean_l1
+vn_large_cap/time_series/VnLargeCapexDownFlatten.py,capex_down_flatten,time_series,time_series,VN-LARGE-CAP,CapexDisciplineTrend baseline plus a per-stock crash guard that,2-tier long
+vn_large_cap/time_series/VnLargeCapexTailReturnGuard.py,capex_tail_return_guard,time_series,time_series,VN-LARGE-CAP,CapexDisciplineTrend baseline plus a tail-risk guard that flattens all,2-tier long
+vn_large_cap/time_series/VnLargeCapexTailZscore.py,capex_tail_zscore,time_series,time_series,VN-LARGE-CAP,CapexDisciplineTrend baseline plus a per-stock tail guard that flattens,2-tier long
+vn_large_cap/time_series/VnLargeCapexVnIndexFlatten.py,capex_vn_index_flatten,time_series,time_series,VN-LARGE-CAP,CapexDisciplineTrend baseline plus a market-wide crash guard that,2-tier long
+vn_large_cap/time_series/VnLargeCapexVnIndexTrendGuard.py,capex_vn_index_trend_guard,time_series,time_series,VN-LARGE-CAP,CapexDisciplineTrend baseline plus a regime guard that flattens all,2-tier long
+vn_large_cap/time_series/VnLargeCapexVolSpike.py,capex_vol_spike,time_series,time_series,VN-LARGE-CAP,CapexDisciplineTrend baseline plus a per-stock volatility guard that,2-tier long
+vn_large_cap/time_series/VnLargeProbeVn30Down.py,probe_vn30_down,time_series,time_series,VN-LARGE-CAP,Purely diagnostic probe. Goes long whenever the VN30 index 20-day,2-tier long
+vn_large_cap/time_series/VnLargeProbeVn30Up.py,probe_vn30_up,time_series,time_series,VN-LARGE-CAP,Purely diagnostic probe. Goes long whenever the VN30 index 20-day,2-tier long
+vn_large_cap/time_series/VnLargeRsDownFlatten.py,rs_down_flatten,time_series,time_series,VN-LARGE-CAP,RelativeStrengthTrend baseline plus a per-stock crash guard that,2-tier long
+vn_large_cap/time_series/VnLargeRsTailReturnGuard.py,rs_tail_return_guard,time_series,time_series,VN-LARGE-CAP,RelativeStrengthTrend baseline plus a tail-risk guard that flattens all,2-tier long
+vn_large_cap/time_series/VnLargeRsTailZscore.py,rs_tail_zscore,time_series,time_series,VN-LARGE-CAP,RelativeStrengthTrend baseline plus a per-stock tail guard that flattens,2-tier long
+vn_large_cap/time_series/VnLargeRsVnIndexFlatten.py,rs_vn_index_flatten,time_series,time_series,VN-LARGE-CAP,RelativeStrengthTrend baseline plus a market-wide crash guard that,2-tier long
+vn_large_cap/time_series/VnLargeRsVnIndexTrendGuard.py,rs_vn_index_trend_guard,time_series,time_series,VN-LARGE-CAP,RelativeStrengthTrend baseline plus a regime guard that flattens all,2-tier long
+vn_large_cap/time_series/VnLargeRsVolSpike.py,rs_vol_spike,time_series,time_series,VN-LARGE-CAP,RelativeStrengthTrend baseline plus a per-stock volatility guard that,2-tier long
+vn_mid_cap/cross_sectional/VnMidCsAntiDilution.py,anti_dilution_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by anti-dilution: firms that restrain share,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsAssetGrowthNeutral.py,asset_growth_neutral_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by asset growth made neutral to persistent,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsAssetGrowthNeutralLoose.py,asset_growth_neutral_loose_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by asset growth made neutral to persistent,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsCashConfirmedPatSurprise.py,cash_confirmed_pat_surprise_cs,cross_sectional,cross_sectional,VN-MID-CAP,"Allocate across mid caps by year-over-year PAT surprise, with a",rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsCashConversionInflection.py,cash_conversion_inflection_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by the year-over-year change in cash,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsCfoSurprise.py,cfo_surprise_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by year-over-year operating-cash-flow,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsEarnedToContributed.py,earned_to_contributed_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by earned-to-contributed capital: retained,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsFcfCoveredDividend.py,fcf_covered_dividend_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by dividend yield gated by free cash flow,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsFcfCoveredDividendWide.py,fcf_covered_dividend_wide_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by dividend yield gated by positive free cash,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsInternallyFundedCapex.py,internally_funded_capex_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by how much capex is funded internally from,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsNetLiquidBuffer.py,net_liquid_buffer_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by net liquid-asset buffer: cash plus,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsNetPayoutPersistence.py,net_payout_persistence_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by persistent net payout yield: dividends,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsNetPayoutPersistenceWide.py,net_payout_persistence_wide_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by persistent net payout yield: dividends,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsShareholderYield.py,shareholder_yield_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by shareholder yield: net payout yield plus,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsShortTermRefinance.py,short_term_refinance_cs,cross_sectional,cross_sectional,VN-MID-CAP,Allocate across mid caps by short-term refinancing pressure:,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsAntiDilution.py,anti_dilution_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by anti-dilution: firms that restrain share,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsAssetGrowthNeutral.py,asset_growth_neutral_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by asset growth made neutral to persistent,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsAssetGrowthNeutralLoose.py,asset_growth_neutral_loose_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by asset growth made neutral to persistent,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsCashConfirmedPatSurprise.py,cash_confirmed_pat_surprise_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,"Allocate across small caps by year-over-year PAT surprise, with a",rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsCashConversionInflection.py,cash_conversion_inflection_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by the year-over-year change in cash,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsCfoSurprise.py,cfo_surprise_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by year-over-year operating-cash-flow,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsEarnedToContributed.py,earned_to_contributed_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by earned-to-contributed capital: retained,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsFcfCoveredDividend.py,fcf_covered_dividend_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by dividend yield gated by free cash flow,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsFcfCoveredDividend2x.py,fcf_covered_dividend2x_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by dividend yield gated by free cash flow,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsInternallyFundedCapex.py,internally_funded_capex_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by how much capex is funded internally from,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsNetLiquidBuffer.py,net_liquid_buffer_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by net liquid-asset buffer: cash plus,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsNetPayoutPersistence.py,net_payout_persistence_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by persistent net payout yield: dividends,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsNetPayoutPersistence25x.py,net_payout_persistence25x_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by persistent net payout yield: dividends,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsShareholderYield.py,shareholder_yield_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by shareholder yield: net payout yield plus,rank_demean_l1
+vn_small_cap/cross_sectional/VnSmallCsShortTermRefinance.py,short_term_refinance_cs,cross_sectional,cross_sectional,VN-SMALL-CAP,Allocate across small caps by short-term refinancing pressure:,rank_demean_l1
