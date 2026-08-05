@@ -291,6 +291,19 @@ vì missing fundamental là unavailable, không phải zero growth.
 | Material deterioration | `< -0.05` | Không dùng cho noisy sign changes |
 | High-noise sector fields | `-0.05 / -0.15` | Insurance/sector-specific only |
 
+Cấu trúc entry 3 tầng (weak → strong → exit) dùng ngay các band này:
+loose guard giữ coverage, positive tier xác nhận, negative band mới exit:
+
+```python
+weak_long = quality & (profit_growth > -0.02)
+strong_long = weak_long & (profit_growth > 0)
+exit_setup = quality_failure | (profit_growth < -0.05)
+
+self.set_positions(exit_setup, position=0)
+self.set_positions(weak_long, position=0.5)
+self.set_positions(strong_long, position=1)
+```
+
 Với EPS/profit có thể âm hoặc đổi dấu, raw `pct_change` có thể đảo nghĩa. Ưu
 tiên positive-level guard hoặc delta được scale bằng assets/equity dương.
 
