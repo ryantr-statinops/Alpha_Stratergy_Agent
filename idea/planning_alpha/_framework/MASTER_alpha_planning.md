@@ -1,10 +1,11 @@
-# Alpha Four-Layer Construction Template
+# MASTER — Alpha Planning & Construction Reference
 
-> Date: 2026-08-05
+> This is the top-level planning document for all alpha research.
+> Date created: 2026-08-05
 > Purpose: Master reference for building cross-sectional alpha strategies from scratch
 > Mode: `cross_sectional` (`_panel`, market-neutral, `set_portfolio_positions`)
-> Predecessor: `2026-08-04_alpha_generation_framework.md` (what to build)
-> Companion: `2026-08-05_alpha_validation_framework.md` (how to judge)
+> Predecessor: `idea/planning_alpha/stage_2/2026-08-04_alpha_generation_framework.md` (what to build)
+> Companion: `idea/planning_alpha/stage_2/2026-08-05_alpha_validation_framework.md` (how to judge)
 
 ## Pipeline Contract
 

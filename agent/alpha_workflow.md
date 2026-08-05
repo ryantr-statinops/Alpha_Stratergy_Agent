@@ -20,7 +20,7 @@
 **Input:** Economic thesis, market observation, or factor research
 **Output:** Idea doc with hypothesis, data groups, expected mechanism
 
-**Template:** `idea/planning_alpha/_framework/2026-08-05_alpha_four_layer_template.md`
+**Template:** `idea/planning_alpha/_framework/MASTER_alpha_planning.md`
 
 **Questions to answer:**
 1. What economic mechanism drives the signal?
