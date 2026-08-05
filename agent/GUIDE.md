@@ -17,14 +17,15 @@
 | 1 | `agent/stage_2_guideline.md` | **Rules chính thức Round 2** (universes, modes, point-in-time, scoring) | **Đầu phiên** |
 | 2 | `agent/framework_build_guide.md` | **Blueprint build framework + gen strategy dễ→khó (Level 1-5, cả 2 mode)** | **Trước khi gen code** |
 | 3 | `template_example/strategy_framework.md` | **Master spec Round 2** — mode contract, templates, compliance checklist | **Trước khi code** |
-| 4 | `syntax/data_syntax.md` | 496 fields (PV/IS/BS/CF) + mode contract | **Khi chọn data** |
-| 5 | `syntax/time_series/feature_syntax.md`, `syntax/cross_sectional/feature_syntax.md` | 36 panel features + time_series family | **Khi cần indicator** |
-| 6 | `syntax/time_series/operations_syntax.md`, `syntax/cross_sectional/operations_syntax.md` | 7 cross-sectional ops + time_series ops | **Khi cần operator** |
-| 7 | `syntax/time_series/parameters.md`, `syntax/cross_sectional/parameters.md` | Parameter chuẩn daily (ratio 1:3) | **Khi cần param** |
-| 8 | `template_example/VN-*/` | 14 examples Round 2 (BANK/INSURANCE/SECURITIES/TOP30) | **Khi tham khảo mẫu** |
-| 9 | `agent/migration_plan_v2.md` | Kế hoạch migration V1→V2 (Phase A done, B done, C pending) | **Khi cần bối cảnh** |
-| 10 | `idea/planning_alpha/stage_2/` | **Idea Round 2** — mỗi alpha ghi 1 file markdown trước khi gen | **Khi bắt đầu gen alpha** |
-| 11 | `agent/system_health_check.md` | **Health check Stage 2** — offline + API read-only + live opt-in | **Khi kiểm tra trạng thái hệ thống** |
+| 4 | `idea/planning_alpha/_framework/MASTER_alpha_planning.md` | **Master planning** — 4-layer construction (data → feat → mask → op → position), data groups, mask layers | **Khi bắt đầu plan alpha** |
+| 5 | `syntax/data_syntax.md` | 496 fields (PV/IS/BS/CF) + mode contract | **Khi chọn data** |
+| 6 | `syntax/time_series/feature_syntax.md`, `syntax/cross_sectional/feature_syntax.md` | 36 panel features + time_series family | **Khi cần indicator** |
+| 7 | `syntax/time_series/operations_syntax.md`, `syntax/cross_sectional/operations_syntax.md` | 7 cross-sectional ops + time_series ops | **Khi cần operator** |
+| 8 | `syntax/time_series/parameters.md`, `syntax/cross_sectional/parameters.md` | Parameter chuẩn daily (ratio 1:3) | **Khi cần param** |
+| 9 | `template_example/VN-*/` | 14 examples Round 2 (BANK/INSURANCE/SECURITIES/TOP30) | **Khi tham khảo mẫu** |
+| 10 | `agent/migration_plan_v2.md` | Kế hoạch migration V1→V2 (Phase A done, B done, C pending) | **Khi cần bối cảnh** |
+| 11 | `idea/planning_alpha/stage_2/` | **Idea Round 2** — mỗi alpha ghi 1 file markdown trước khi gen | **Khi bắt đầu gen alpha** |
+| 12 | `agent/system_health_check.md` | **Health check Stage 2** — offline + API read-only + live opt-in | **Khi kiểm tra trạng thái hệ thống** |
 
 ---
 
@@ -325,6 +326,7 @@ Nguyên tắc: commit nhỏ, commit thường xuyên → dễ rollback, dễ rev
 |------|-------------------|
 | `agent/stage_2_guideline.md` | Every Round-2 session start — official rules |
 | `agent/framework_build_guide.md` | Before generating Round-2 strategies |
+| `idea/planning_alpha/_framework/MASTER_alpha_planning.md` | Master planning — 4-layer construction (data → feat → mask → op → position) |
 | `data/vietnam_market_characteristics.md` | Round 2 — đặc thù 3 cap → chọn feature nhanh |
 | `agent/migration_plan_v2.md` | Understanding V1→V2 migration status |
 | `tools/common.py` | Round 2 — `PASS_THRESHOLDS_BY_UNIVERSE`, `is_pass()` |

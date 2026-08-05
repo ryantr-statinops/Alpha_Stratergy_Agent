@@ -9,8 +9,9 @@
 > 1. `agent/stage_2_guideline.md` — rules chính thức Round 2
 > 2. `agent/framework_build_guide.md` — blueprint gen strategy (Level 1-5)
 > 3. `agent/GUIDE.md` — onboarding + pipeline
-> 4. `template_example/strategy_framework.md` — master spec Round 2
-> 5. `syntax/INDEX.md` — shared data + catalog riêng cho `time_series` va `cross_sectional`
+> 4. `idea/planning_alpha/_framework/MASTER_alpha_planning.md` — **master planning doc** (4-layer construction: data → feat → mask → op → position)
+> 5. `template_example/strategy_framework.md` — master spec Round 2 (class structure, compliance)
+> 6. `syntax/INDEX.md` — shared data + catalog riêng cho `time_series` va `cross_sectional`
 >
 > **Pipeline:** agent viết strategy → `output/stage_2/<cap>/<mode>/` → `tools/validate_framework.py --strict` →
 > `tools/submit_and_check.py --batch --universe VN-...` → `tools/check_results.py`.
@@ -38,6 +39,8 @@ ALPHA_BOT/
 │   └── strategy_framework.md   # **Master specification** — đọc đầu tiên
 ├── idea/                   # Nơi lưu trữ các ý tưởng nghiên cứu (.md)
 │   ├── planning_alpha/
+│   │   ├── _framework/     # Master planning + construction framework docs
+│   │   │   └── MASTER_alpha_planning.md  # **MASTER planning doc** — 4-layer construction
 │   │   ├── stage_1/        # Idea vòng 1 (futures intraday — archived)
 │   │   └── stage_2/        # Idea Round 2 — mỗi alpha ghi 1 file trước khi gen
 │   ├── hypothesis/         # Giả thuyết kiểm thử, tiêu chí chấm điểm, design guidelines
@@ -346,6 +349,7 @@ AI Agent **luôn phải**:
 | Khi bạn cần… | Đọc file này |
 |--------------|-------------|
 | **Hiểu tổng quan dự án, workflow 5 bước** | `README.md` (file này) |
+| **Master planning: 4-layer construction, data groups, feat recipes, mask, ops** | `idea/planning_alpha/_framework/MASTER_alpha_planning.md` |
 | **Onboarding nhanh cho AI Agent** | `agent/GUIDE.md` |
 | **Rules chính thức Round 2** | `agent/stage_2_guideline.md` |
 | **Blueprint gen strategy Round 2** | `agent/framework_build_guide.md` |
