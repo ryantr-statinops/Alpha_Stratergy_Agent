@@ -2,32 +2,33 @@
 
 > Date: 2026-08-05
 > Purpose: End-to-end workflow from idea to validated alpha
+> Architecture: 7-Layer Research Pipeline (see `MASTER_alpha_planning.md`)
 
 ## Pipeline Overview
 
 ```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   IDEA      │ →  │   BUILD     │ →  │  VALIDATE   │ →  │   SELECT    │ →  │   DEPLOY    │
-│             │    │             │    │             │    │             │    │             │
-│ • Thesis    │    │ • 4-Layer   │    │ • Gate 1-3  │    │ • Retention │    │ • Submit    │
-│ • Data list │    │ • Code      │    │ • Yearly    │    │ • Stability │    │ • Monitor   │
-│ • Hypothesis│    │ • Validate  │    │ • Sharpe    │    │ • Corr check│    │ • Rebalance │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
+│  IDEA    │ → │  BUILD   │ → │ DIAGNOSE │ → │ VALIDATE │ → │  SELECT  │ → │  DEPLOY  │
+│          │   │          │   │          │   │          │   │          │   │          │
+│Hypothesis│   │Layer 0-6 │   │IC, IC,   │   │Accounting│   │Retention │   │Submit    │
+│Factor    │   │Code      │   │Coverage, │   │Economic, │   │Stability │   │Monitor   │
+│Evidence  │   │Eligible  │   │Turnover  │   │Statistical│  │Corr check│   │Rebalance │
+└──────────┘   └──────────┘   └──────────┘   └──────────┘   └──────────┘   └──────────┘
 ```
 
 ## Step 1: IDEA
 
 **Input:** Economic thesis, market observation, or factor research
-**Output:** Idea doc with hypothesis, data groups, expected mechanism
+**Output:** Idea doc with hypothesis, factor, expected mechanism
 
-**Template:** `idea/planning_alpha/_framework/MASTER_alpha_planning.md`
+**Template:** `idea/planning_alpha/_framework/HYPOTHESIS_LIBRARY.md`
 
 **Questions to answer:**
-1. What economic mechanism drives the signal?
-2. Which data groups are needed?
-3. Is this a persistent state or report event?
-4. What universe/mode is appropriate?
-5. What's the expected sign convention?
+1. What economic hypothesis drives the signal? (Pick from HYPOTHESIS_LIBRARY or document new)
+2. Which factor does this test? (Value/Quality/Growth/Momentum/Leverage/Liquidity/Efficiency/Capital Allocation/Operating Quality/Risk)
+3. What ratios answer "one unit of X creates how much Y?"
+4. What validation rules apply? (Layer 4)
+5. What universe/mode is appropriate?
 
 **Deliverable:** `idea/planning_alpha/stage_2/YYYY-MM-DD_<name>.md`
 
@@ -39,11 +40,16 @@
 **Output:** Validated strategy file
 
 **Process:**
-1. Follow 4-layer template: DATA → FEAT → MASK → OP → SET_POSITION
-2. Run `python tools/validate_framework.py --strict`
-3. Fix any validation errors
-4. Verify sign conventions for cash-flow fields
-5. Test mask coverage (>40% of universe)
+1. Follow 7-layer architecture: Layer 0→6 (see MASTER_alpha_planning.md)
+2. Layer 0: Load raw fields
+3. Layer 1: Apply primitive transforms (Ratio/Growth/Trend/etc.)
+4. Layer 2: Compute economic factor score
+5. Layer 3: Run diagnostics (coverage, IC, turnover) — STOP if fail
+6. Layer 4: Apply economic validation rules
+7. Layer 5: Apply eligibility filters (L1-L10)
+8. Layer 6: Composite (if multi-factor)
+9. Run `python tools/validate_framework.py --strict`
+10. Fix any validation errors
 
 **Deliverable:** `output/stage_2/{universe}/{mode}/<StrategyName>.py`
 
@@ -57,7 +63,15 @@ python tools/validate_framework.py output/stage_2/{universe}/{mode}/<StrategyNam
 ## Step 3: VALIDATE
 
 **Input:** Strategy file
-**Output:** Gate 1-3 pass/fail
+**Output:** Gate 1-3 pass/fail + Diagnostics report
+
+**Pre-checks (Layer 3 — Diagnostics):**
+Before running backtest, verify:
+- Coverage > 70% of universe
+- IC > 0.02 (or Rank IC > 0.02)
+- Turnover < 80%
+- Factor correlation with existing factors < 0.6
+- If any fail → STOP. Do not backtest.
 
 **Gates:**
 
@@ -68,11 +82,12 @@ python tools/validate_framework.py output/stage_2/{universe}/{mode}/<StrategyNam
 | Gate 3 | Sharpe 2024 ≥ 0 (most recent) | `tools/fetch_yearly_tables.py` |
 
 **Process:**
-1. Fetch yearly tables: `python tools/fetch_yearly_tables.py <strategy> --out backtest/yearly/`
-2. Check Gate 1-3 criteria
-3. Record in `backtest/gate_1_3_scan.csv`
-4. If FAIL → debug or discard
-5. If PASS → proceed to Step 4
+1. Run diagnostics (Layer 3): `python tools/run_diagnostics.py <strategy>` (if available)
+2. If diagnostics PASS → fetch yearly tables
+3. Check Gate 1-3 criteria
+4. Record in `backtest/gate_1_3_scan.csv`
+5. If FAIL → debug or discard
+6. If PASS → proceed to Step 4
 
 **Tools:**
 ```bash
@@ -143,11 +158,11 @@ python tools/retention_audit.py --results backtest/results_stage_2.csv
 ## Quality Gates Summary
 
 ```
-IDEA → BUILD → Gate 1-3 → SELECT → DEPLOY
-         ↓         ↓          ↓
-      validate   yearly    retention
-      syntax     stability  correlation
-                 2022/2024  turnover
+IDEA → BUILD (Layer 0-6) → DIAGNOSE → VALIDATE → SELECT → DEPLOY
+         ↓                      ↓           ↓          ↓
+      validate              IC, coverage  Gate 1-3  retention
+      syntax                turnover      yearly    correlation
+                            exposure      2022/2024 turnover
 ```
 
 **Pass rates (historical):**
