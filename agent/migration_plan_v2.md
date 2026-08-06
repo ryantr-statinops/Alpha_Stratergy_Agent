@@ -60,26 +60,26 @@ output/
 ## 4. Migration Map (bảng ánh xạ cũ → mới)
 
 > ✅ Đã điền đầy đủ tại [`input/templates/migration_map_v2.md`](../input/templates/migration_map_v2.md).
-> Tóm tắt: `pv_*` giữ nguyên (time_series không suffix / cross_sectional `_panel`); DJI & futures & session
-> gates **xoá**; fundamentals `fun_*` **mới**. Chiến lược futures vòng 1 không migrate tự động — viết lại
-> theo `template_example/VN-*/`.
+> Tóm tắt: `pv_*` giữ nguyên (time_series không suffix / cross_sectional `_panel`); DJI giữ nguyên
+> với `_panel` variants; futures & session gates **xoá**; fundamentals `fun_*` **mới**. Chiến lược futures vòng 1
+> không migrate tự động — viết lại theo `template_example/VN-*/`.
 
 | Field/Func cũ | Field/Func mới | Ghi chú |
 |---------------|----------------|---------|
-| `pv_close` | ? | ? |
-| `pv_high` | ? | ? |
-| `pv_low` | ? | ? |
-| `pv_open` | ? | ? |
-| `pv_volume` | ? | ? |
-| `pv_vn30_close` | ? | ? |
-| `pv_dji_close` | ? | ? |
-| `fut_matched_volume_vn30f1m_1d` | ? | ? |
-| `fut_open_interest_vn30f1m_1d` | ? | ? |
-| `self.feat.sma` | ? | ? |
-| `self.feat.adx` | ? | ? |
-| `self.feat.rsi` | ? | ? |
-| `self.op.crossed_above` | ? | ? |
-| `self.op.pct_change` | ? | ? |
+| `pv_close` | `pv_close` / `pv_close_panel` | giữ nguyên |
+| `pv_high` | `pv_high` / `pv_high_panel` | giữ nguyên |
+| `pv_low` | `pv_low` / `pv_low_panel` | giữ nguyên |
+| `pv_open` | `pv_open` / `pv_open_panel` | giữ nguyên |
+| `pv_volume` | `pv_volume` / `pv_volume_panel` | giữ nguyên |
+| `pv_vn30_close` | `pv_vn30_close` / `pv_vn30_close_panel` | giữ nguyên |
+| `pv_dji_close` | `pv_dji_close` / `pv_dji_close_panel` | giữ nguyên — DJI cross-market reference |
+| `fut_matched_volume_vn30f1m_1d` | — | xoá |
+| `fut_open_interest_vn30f1m_1d` | — | xoá |
+| `self.feat.sma` | — | xoá (dùng self.feat.ema_panel) |
+| `self.feat.adx` | — | xoá |
+| `self.feat.rsi` | — | xoá |
+| `self.op.crossed_above` | — | xoá |
+| `self.op.pct_change` | — | xoá |
 | ... | ... | ... |
 
 ---
