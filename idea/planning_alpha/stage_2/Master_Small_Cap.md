@@ -75,6 +75,8 @@ Catalog hiện có 496 field dùng chung cho ba universe: 10 price-volume, 130 i
 
 - `pv_open_panel`, `pv_high_panel`, `pv_low_panel`, `pv_close_panel`, `pv_volume_panel`
 - `pv_vn30_open_panel`, `pv_vn30_high_panel`, `pv_vn30_low_panel`, `pv_vn30_close_panel`, `pv_vn30_volume_panel`
+- `pv_dji_open_panel`, `pv_dji_high_panel`, `pv_dji_low_panel`, `pv_dji_close_panel`, `pv_dji_volume_panel`
+- `in_universe_panel` — boolean: investable universe eligibility gate
 
 ### Earnings
 

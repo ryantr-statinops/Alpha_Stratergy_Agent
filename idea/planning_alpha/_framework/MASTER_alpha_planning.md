@@ -57,6 +57,12 @@ Rules:
 | `pv_vn30_high_panel` | daily |
 | `pv_vn30_low_panel` | daily |
 | `pv_vn30_volume_panel` | daily |
+| `pv_dji_open_panel` | daily |
+| `pv_dji_high_panel` | daily |
+| `pv_dji_low_panel` | daily |
+| `pv_dji_close_panel` | daily |
+| `pv_dji_volume_panel` | daily |
+| `in_universe_panel` | boolean — universe eligibility gate |
 
 ### Group B — Profitability (Income Q/A)
 
@@ -502,6 +508,7 @@ ALL PASS → Proceed to Validation (Layer 4)
 
 | Layer | Filter | Code | Economic Justification |
 |---|---|---|---|
+| L0 | Universe gate | `in_universe_panel == True` | Stock in investable universe (delisting risk, suspended) |
 | L1 | Data availability | `input_sum == input_sum` | NaN = no data |
 | L2 | Population | `financial_flag == False` | Different accounting standards |
 | L3 | Sign/semantic | `dividends < 0`, `equity > 0` | Panel convention + solvency |
@@ -517,8 +524,10 @@ ALL PASS → Proceed to Validation (Layer 4)
 
 ```python
 eligible = (
+    # L0: Universe gate
+    in_universe
     # L1: Data availability
-    (input_sum == input_sum)
+    & (input_sum == input_sum)
     # L2: Non-financial population
     & (financial_flag == False)
     # L3: Sign convention

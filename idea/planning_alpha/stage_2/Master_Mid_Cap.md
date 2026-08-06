@@ -107,6 +107,8 @@ Catalog dùng chung ba universe có 496 field. Master này chỉ dùng field đ�
 
 - `pv_open_panel`, `pv_high_panel`, `pv_low_panel`, `pv_close_panel`, `pv_volume_panel`
 - `pv_vn30_open_panel`, `pv_vn30_high_panel`, `pv_vn30_low_panel`, `pv_vn30_close_panel`, `pv_vn30_volume_panel`
+- `pv_dji_open_panel`, `pv_dji_high_panel`, `pv_dji_low_panel`, `pv_dji_close_panel`, `pv_dji_volume_panel`
+- `in_universe_panel` — boolean: investable universe eligibility gate
 
 ### 4.2. Earnings
 

@@ -22,8 +22,15 @@
 | `pv_vn30_high_panel` | VN30 range |
 | `pv_vn30_low_panel` | VN30 range |
 | `pv_vn30_volume_panel` | Market volume reference |
+| `pv_dji_open_panel` | DJI gap, cross-market relative strength |
+| `pv_dji_high_panel` | DJI range |
+| `pv_dji_low_panel` | DJI range |
+| `pv_dji_close_panel` | Global market context, relative strength |
+| `pv_dji_volume_panel` | Global volume reference |
+| `in_universe_panel` | Boolean: investable universe eligibility gate |
 
 **Role:** Signal + denominator chinh (market_value = close x common_shares). Moi alpha deu can A.
+**Note:** `in_universe_panel` is a standalone eligibility field, not a signal field. Use it as the first gate in eligibility masks.
 
 ---
 
