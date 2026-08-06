@@ -84,18 +84,34 @@ Từ cURL đó lấy:
 Tạo file `.env` ở project root (đã có `.gitignore`, không lo lộ token):
 
 ```env
+# === Legacy single editors (fallback) ===
 XNO_EDITOR_ID_SMALL="<editor-uuid-cho-VN-SMALL-CAP>"
 XNO_EDITOR_ID_MID="<editor-uuid-cho-VN-MID-CAP>"
 XNO_EDITOR_ID_LARGE="<editor-uuid-cho-VN-LARGE-CAP>"
+
+# === Multi-editor pool (10 editors for VN-MID-CAP) ===
+XNO_EDITOR_MID_01="<uuid-01>"
+XNO_EDITOR_MID_02="<uuid-02>"
+XNO_EDITOR_MID_03="<uuid-03>"
+XNO_EDITOR_MID_04="<uuid-04>"
+XNO_EDITOR_MID_05="<uuid-05>"
+XNO_EDITOR_MID_06="<uuid-06>"
+XNO_EDITOR_MID_07="<uuid-07>"
+XNO_EDITOR_MID_08="<uuid-08>"
+XNO_EDITOR_MID_09="<uuid-09>"
+XNO_EDITOR_MID_10="<uuid-10>"
+
 XNO_TOKEN="<paste-bearer-token-here>"
 ```
 
 Hoặc copy từ mẫu: `cp .env.example .env` và điền giá trị.
 
-> **Khuyến nghị: 1 editor / cap** — mỗi editor set cố định đúng universe trên UI
-> (`alpha.xnoquant.io/build`). Tool tự chọn editor theo cap folder, không cần đổi
-> UI giữa các lần submit. Còn lại `XNO_EDITOR_ID` (legacy, 1 editor dùng chung)
-> làm fallback nếu thiếu ID per-universe.
+> **Multi-editor pool (VN-MID-CAP):** Tạo 10 editors trên XNOQuant UI, mỗi editor
+> set universe = VN-MID-CAP. Tool tự động xoay vòng (round-robin) qua 10 editors
+> khi submit batch — phân phối đều load, tránh rate limit.
+>
+> **Fallback:** Nếu `XNO_EDITOR_MID_01..10` chưa được cấu hình, tool fallback về
+> `XNO_EDITOR_ID_MID` (1 editor legacy).
 
 > **Cách lấy EDITOR_ID và TOKEN:** xem mục "Cách lấy EDITOR_ID và TOKEN" bên dưới.
 
@@ -140,7 +156,7 @@ Nhập `y` để submit lại, `N` để bỏ qua.
 
 ### 4. Kết quả
 
-**Round 2:** metrics tự động lưu vào `backtest/results_stage_2.csv` (có cột `universe`, `filepath`, `status`, `strategy_id`). Review:
+**Round 2:** metrics tự động lưu vào `backtest/results_stage_2.csv` (có cột `universe`, `filepath`, `status`, `strategy_id`, `editor_id`). Review:
 
 ```bash
 python tools/check_results.py --detail                    # Full 5-metric table
@@ -148,6 +164,8 @@ python tools/check_results.py --splits                    # Detailed Aggregate/T
 python tools/check_results.py --pass --universe VN-SMALL-CAP   # True split-aware PASS
 python tools/check_results.py --prefix VnTop              # Filter by prefix
 python tools/check_results.py --today                     # Today's submissions
+python tools/check_results.py --editor 03                 # Filter by editor suffix
+python tools/check_results.py --universe VN-MID-CAP --editors  # Summary per editor
 ```
 
 CSV giữ 5 cột aggregate (`cagr`, `sharpe`, `calmar`, `max_drawdown`,
@@ -199,15 +217,16 @@ Cách fix:
 
 ## Workflow tối ưu
 
-**Round 2:**
+**Round 2 (multi-editor pool):**
 ```
-1. Agent viết strategy theo agent/framework_build_guide.md → output/stage_2/<cap>/<mode>/ + index.csv
+1. Agent viết strategy → output/stage_2/vn_mid_cap/cross_sectional/ + index.csv
 2. python tools/validate_framework.py --strict                         # check compliance
-3. python tools/submit_and_check.py --batch --dry-run --universe VN-SMALL-CAP  # xem trước (no HTTP)
-4. Chọn VN-SMALL-CAP trên UI XNOQuant → python tools/submit_and_check.py --batch --test --universe VN-SMALL-CAP
+3. python tools/submit_and_check.py --batch --dry-run --universe VN-MID-CAP  # xem trước (no HTTP)
+4. Chọn VN-MID-CAP trên UI XNOQuant → python tools/submit_and_check.py --batch --test --universe VN-MID-CAP
 5. Kiểm tra metrics trong console + backtest/results_stage_2.csv
-6. python tools/submit_and_check.py --batch --universe VN-SMALL-CAP    # submit full batch (cùng cap)
-7. python tools/check_results.py --detail --universe VN-SMALL-CAP      # review
+6. python tools/submit_and_check.py --batch --universe VN-MID-CAP    # submit full batch (round-robin 10 editors)
+7. python tools/check_results.py --detail --universe VN-MID-CAP      # review all
+8. python tools/check_results.py --universe VN-MID-CAP --editors     # summary per editor
 ```
 
 (vòng 1) Workflow cũ — đã archive:
