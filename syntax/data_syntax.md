@@ -26,6 +26,7 @@ Rules:
 | Group | Jump to |
 |---|---|
 | Price Volume | [Price Volume](#price-volume) |
+| Universe | [Universe](#universe) |
 | Income Statement — Quarterly | [Income Statement (Q)](#income-statement-quarterly) |
 | Income Statement — Annual | [Income Statement (A)](#income-statement-annual) |
 | Balance Sheet — Quarterly | [Balance Sheet (Q)](#balance-sheet-quarterly) |
@@ -37,7 +38,8 @@ Rules:
 
 | Group | Count | Representative fields |
 |---|---|---|
-| Price Volume | 10 | `pv_close_panel`, `pv_volume_panel`, `pv_vn30_close_panel` |
+| Price Volume | 15 | `pv_close_panel`, `pv_volume_panel`, `pv_vn30_close_panel`, `pv_dji_close_panel` |
+| Universe | 1 | `in_universe_panel` |
 | Income Statement | 130 | `fun_is_net_profit_loss_after_tax_*_panel`, `fun_is_eps_basis_*_panel` |
 | Balance Sheet | 271 | `fun_bs_total_assets_*_panel`, `fun_bs_owners_equity_*_panel` |
 | Cash Flow | 85 | `fun_cf_net_cash_inflows_outflows_from_operating_activities_*_panel` |
@@ -67,6 +69,17 @@ Rules:
 | `pv_vn30_low_panel` | `self.data.pv_vn30_low_panel` |
 | `pv_vn30_close_panel` | `self.data.pv_vn30_close_panel` |
 | `pv_vn30_volume_panel` | `self.data.pv_vn30_volume_panel` |
+| `pv_dji_open_panel` | `self.data.pv_dji_open_panel` |
+| `pv_dji_high_panel` | `self.data.pv_dji_high_panel` |
+| `pv_dji_low_panel` | `self.data.pv_dji_low_panel` |
+| `pv_dji_close_panel` | `self.data.pv_dji_close_panel` |
+| `pv_dji_volume_panel` | `self.data.pv_dji_volume_panel` |
+
+## Universe
+
+| Field | Usage (cross_sectional) |
+|---|---|
+| `in_universe_panel` | `self.data.in_universe_panel` — boolean: True if stock is in investable universe (filters delisting risk, suspended stocks, etc.) |
 
 ## Income Statement (Quarterly)
 
