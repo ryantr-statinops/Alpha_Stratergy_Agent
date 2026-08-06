@@ -114,15 +114,21 @@ Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_chara
 | `pv_vn30_close` | VN30 Close |
 | `pv_vn30_volume` | VN30 Volume |
 
-#### Danh sách trường Dow Jones Index (vòng 1 — legacy)
+#### Danh sách trường Dow Jones Index (vòng 2 — active với `_panel` suffix)
 
 | Trường | Ý nghĩa |
 |--------|---------|
-| `pv_dji_open` | DJI Open |
-| `pv_dji_high` | DJI High |
-| `pv_dji_low` | DJI Low |
-| `pv_dji_close` | DJI Close |
-| `pv_dji_volume` | DJI Volume |
+| `pv_dji_open` / `pv_dji_open_panel` | DJI Open |
+| `pv_dji_high` / `pv_dji_high_panel` | DJI High |
+| `pv_dji_low` / `pv_dji_low_panel` | DJI Low |
+| `pv_dji_close` / `pv_dji_close_panel` | DJI Close |
+| `pv_dji_volume` / `pv_dji_volume_panel` | DJI Volume |
+
+#### Danh sách trường Universe
+
+| Trường | Ý nghĩa |
+|--------|---------|
+| `in_universe_panel` | Boolean: stock nằm trong investable universe (lọc delisting risk, suspended) |
 
 ### `syntax/`
 
