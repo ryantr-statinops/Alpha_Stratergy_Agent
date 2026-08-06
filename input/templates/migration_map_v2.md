@@ -33,11 +33,11 @@
 | `pv_vn30_low` | `pv_vn30_low` / `pv_vn30_low_panel` | giữ nguyên | |
 | `pv_vn30_close` | `pv_vn30_close` / `pv_vn30_close_panel` | giữ nguyên | |
 | `pv_vn30_volume` | `pv_vn30_volume` / `pv_vn30_volume_panel` | giữ nguyên | |
-| `pv_dji_open` | — | xoá | không có trong vòng 2 |
-| `pv_dji_high` | — | xoá | |
-| `pv_dji_low` | — | xoá | |
-| `pv_dji_close` | — | xoá | |
-| `pv_dji_volume` | — | xoá | |
+| `pv_dji_open` | `pv_dji_open` / `pv_dji_open_panel` | giữ nguyên | DJI cross-market reference |
+| `pv_dji_high` | `pv_dji_high` / `pv_dji_high_panel` | giữ nguyên | |
+| `pv_dji_low` | `pv_dji_low` / `pv_dji_low_panel` | giữ nguyên | |
+| `pv_dji_close` | `pv_dji_close` / `pv_dji_close_panel` | giữ nguyên | |
+| `pv_dji_volume` | `pv_dji_volume` / `pv_dji_volume_panel` | giữ nguyên | |
 | `fut_matched_volume_vn30f1m_1d` | — | xoá | futures không còn trong vòng 2 |
 | `fut_matched_value_vn30f1m_1d` | — | xoá | |
 | `fut_agreed_volume_vn30f1m_1d` | — | xoá | |
