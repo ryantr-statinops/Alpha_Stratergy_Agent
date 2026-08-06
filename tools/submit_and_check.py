@@ -50,6 +50,7 @@ from common import (
     VALID_METRIC_KEYS, EXTENDED_PERFORMANCE_KEYS, ALL_METRIC_KEYS,
     flatten_stage_metrics, format_metrics, load_previous_results, wait_for_stage_metrics,
 )
+from editor_pool import EditorPool
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
@@ -83,6 +84,7 @@ def stage_extended_columns(prefix):
 
 CSV_FIELDS = [
     "timestamp", "filepath", "filename", "universe", "mode",
+    "editor_id",
     "status", "strategy_id", "cagr", "sharpe", "calmar",
     "max_drawdown", "profit_factor",
     *stage_extended_columns(""),
@@ -272,7 +274,7 @@ def save_to_csv(row: dict, csv_path=CSV_PATH):
 
 
 def make_row(filepath: str, universe: str, status: str, metrics: dict = None,
-             strategy_id: str = "", error: str = "") -> dict:
+             strategy_id: str = "", error: str = "", editor_id: str = "") -> dict:
     metrics = metrics or {}
     row = {
         "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
@@ -280,6 +282,7 @@ def make_row(filepath: str, universe: str, status: str, metrics: dict = None,
         "filename": os.path.basename(filepath),
         "universe": universe,
         "mode": infer_mode_from_path(filepath),
+        "editor_id": editor_id,
         "status": status,
         "strategy_id": strategy_id,
         "cagr": metrics.get("cagr", ""),
@@ -304,9 +307,10 @@ def rel_filepath(filepath: str) -> str:
     return filepath.replace("\\", "/").split("output/stage_2/")[-1]
 
 
-def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, total: int) -> bool:
+def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, total: int,
+                       editor_id: str = "") -> bool:
     """Live PUT -> verify -> simulate -> poll metrics. Returns True if submit attempt ran."""
-    editor_id, token, base = env
+    editor_id_resolved, token, base = env
     session = requests.Session()
     session.headers.update(build_headers(token))
 
@@ -324,7 +328,7 @@ def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, 
                 print(f"  => Rate limit (PUT), retry in 15s (attempt {attempt}/{max_retries})...")
                 time.sleep(15)
                 continue
-            save_to_csv(make_row(filepath, universe, STATUS_UPDATE_FAILED, error=r1.text[:200]))
+            save_to_csv(make_row(filepath, universe, STATUS_UPDATE_FAILED, error=r1.text[:200], editor_id=editor_id))
             print(f"  PUT: {r1.status_code} [FAIL]  {name} {r1.text[:200]}")
             return False
 
@@ -336,7 +340,7 @@ def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, 
                 print(f"  => Rate limit (VERIFY), retry in 15s (attempt {attempt}/{max_retries})...")
                 time.sleep(15)
                 continue
-            save_to_csv(make_row(filepath, universe, STATUS_VERIFY_FAILED, error=r2.text[:200]))
+            save_to_csv(make_row(filepath, universe, STATUS_VERIFY_FAILED, error=r2.text[:200], editor_id=editor_id))
             print(f"  PUT: {r1.status_code} | VERIFY: {r2.status_code} [FAIL]  {name} {r2.text[:200]}")
             return False
 
@@ -347,7 +351,7 @@ def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, 
                 print(f"  => Rate limit (SIMULATE), retry in 15s (attempt {attempt}/{max_retries})...")
                 time.sleep(15)
                 continue
-            save_to_csv(make_row(filepath, universe, STATUS_SIMULATE_FAILED, error=r3.text[:200]))
+            save_to_csv(make_row(filepath, universe, STATUS_SIMULATE_FAILED, error=r3.text[:200], editor_id=editor_id))
             print(f"  PUT: {r1.status_code} | VERIFY: {r2.status_code} | SIMULATE: {r3.status_code} [FAIL]  {name} {r3.text[:200]}")
             return False
 
@@ -357,7 +361,7 @@ def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, 
     print(f"  Poll strategy_id (timeout {STRATEGY_ID_TIMEOUT}s)...")
     strategy_id = wait_for_new_strategy_id(session, base, old_strategy_id)
     if not strategy_id:
-        save_to_csv(make_row(filepath, universe, STATUS_NO_STRATEGY_ID, error="no strategy_id from /info"))
+        save_to_csv(make_row(filepath, universe, STATUS_NO_STRATEGY_ID, error="no strategy_id from /info", editor_id=editor_id))
         print("  => Khong lay duoc strategy_id")
         return True
     if strategy_id == old_strategy_id:
@@ -367,21 +371,24 @@ def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, 
     stages = wait_for_metrics(session, strategy_id)
     if stages:
         metrics = flatten_stage_metrics(stages)
-        save_to_csv(make_row(filepath, universe, STATUS_SIMULATED, metrics, strategy_id))
+        save_to_csv(make_row(filepath, universe, STATUS_SIMULATED, metrics, strategy_id, editor_id=editor_id))
         print(f"  => Aggregate: {format_metrics(stages['simulate'])}")
         print(f"  => Train    : {format_metrics(stages['train'])}")
         print(f"  => Test     : {format_metrics(stages['test'])}")
     else:
         save_to_csv(make_row(filepath, universe, STATUS_METRICS_TIMEOUT, {}, strategy_id,
-                             error="simulate/train/test summaries not all ready within timeout"))
+                             error="simulate/train/test summaries not all ready within timeout", editor_id=editor_id))
         print("  => Metrics: N/A (Aggregate/Train/Test not all ready within timeout)")
 
     return True
 
 
-def confirm_universe(editor_id: str, universe: str, files: list, assume_yes: bool) -> bool:
+def confirm_universe(editor_id: str, universe: str, files: list, assume_yes: bool,
+                     pool_count: int = 1) -> bool:
     print("\n=== CONFIRM BEFORE LIVE SUBMIT ===")
     print(f"  Editor ID      : {editor_id}")
+    if pool_count > 1:
+        print(f"  Editor pool    : {pool_count} editors (round-robin)")
     print(f"  Editor universe: MUST be '{universe}' selected manually in XNOQuant UI")
     print(f"  Files ({len(files)}):")
     for f in files:
@@ -419,8 +426,12 @@ def run_files_mode(files: list, args) -> int:
         previous = load_previous_results(CSV_PATH)
         kept = []
         for fpath in files:
-            key = (rel_filepath(fpath), universe)
-            if key in previous and previous[key]:
+            fp = rel_filepath(fpath)
+            already_passed = any(
+                k[0] == fp and k[1] == universe and v
+                for k, v in previous.items()
+            )
+            if already_passed:
                 print(f"  => '{os.path.basename(fpath)}' da pass cho '{universe}', skip (dung --force de submit lai)")
             else:
                 kept.append(fpath)
@@ -430,10 +441,23 @@ def run_files_mode(files: list, args) -> int:
             return 0
 
     print("=== XNOQuant Submit & Check Tool (Files Mode) ===\n")
-    env = None if args.dry_run else require_env(universe)
-    if not args.dry_run and not env:
-        return 1
-    if not args.dry_run and not confirm_universe(env[0], universe, files, args.yes):
+
+    # Try editor pool first, fall back to single editor
+    pool = None
+    env = None
+    if not args.dry_run:
+        pool = EditorPool(prefix="XNO_EDITOR_MID")
+        if pool.is_configured():
+            print(f"  Editor pool: {pool.count()} editors loaded (round-robin)")
+        else:
+            pool = None
+            env = require_env(universe)
+            if not env:
+                return 1
+
+    editor_id_display = pool.get_all()[0][0] if pool else (env[0] if env else "dry-run")
+    if not args.dry_run and not confirm_universe(editor_id_display, universe, files, args.yes,
+                                                  pool_count=pool.count() if pool else 1):
         print("  => Aborted by user (universe not confirmed).")
         return 1
 
@@ -446,9 +470,24 @@ def run_files_mode(files: list, args) -> int:
             print(f"  (dry-run) would submit to universe '{universe}' — no HTTP call")
             ok_count += 1
             continue
-        if run_http_sequence(env, fpath, name, universe, i, total):
+
+        if pool:
+            editor_id, base_url = pool.get_next()
+            current_env = (editor_id, pool.token, base_url)
+            print(f"  => Editor: {editor_id[:8]}...")
+        else:
+            current_env = env
+            editor_id = env[0]
+
+        if run_http_sequence(current_env, fpath, name, universe, i, total, editor_id=editor_id):
             ok_count += 1
         print()
+
+    if pool:
+        print("  Editor usage:")
+        for eid, count in pool.usage_summary().items():
+            print(f"    {eid[:8]}... => {count} submissions")
+
     print(f"=== Hoan thanh: {ok_count}/{total} submitted OK ===")
     print(f"Ket qua da luu vao {CSV_PATH}")
     return 0
@@ -490,13 +529,18 @@ def run_batch_mode(args) -> int:
         print(f"[!] Khong co file nao trong universe '{universe}'")
         return 1
 
-    # Skip files that already PASSED for this exact (filepath, universe)
+    # Skip files that already PASSED for this universe (any editor)
     if not args.force:
         previous = load_previous_results(CSV_PATH)
         kept, skip_count = [], 0
         for fpath in files:
-            key = (rel_filepath(fpath), universe)
-            if key in previous and previous[key]:
+            fp = rel_filepath(fpath)
+            # Check if this file passed for ANY editor (3-tuple keys with same filepath+universe)
+            already_passed = any(
+                k[0] == fp and k[1] == universe and v
+                for k, v in previous.items()
+            )
+            if already_passed:
                 skip_count += 1
             else:
                 kept.append(fpath)
@@ -509,10 +553,22 @@ def run_batch_mode(args) -> int:
 
     print(f"=== XNOQuant Submit & Check Tool (Batch: {universe}) ===\n")
 
-    env = None if args.dry_run else require_env(universe)
-    if not args.dry_run and not env:
-        return 1
-    if not args.dry_run and not confirm_universe(env[0], universe, files, args.yes):
+    # Try editor pool first, fall back to single editor
+    pool = None
+    env = None
+    if not args.dry_run:
+        pool = EditorPool(prefix="XNO_EDITOR_MID")
+        if pool.is_configured():
+            print(f"  Editor pool: {pool.count()} editors loaded (round-robin)")
+        else:
+            pool = None
+            env = require_env(universe)
+            if not env:
+                return 1
+
+    editor_id_display = pool.get_all()[0][0] if pool else (env[0] if env else "dry-run")
+    if not args.dry_run and not confirm_universe(editor_id_display, universe, files, args.yes,
+                                                  pool_count=pool.count() if pool else 1):
         print("  => Aborted by user (universe not confirmed).")
         return 1
 
@@ -522,12 +578,29 @@ def run_batch_mode(args) -> int:
         name = os.path.basename(fpath)
         print(f"[{i}/{total}] {name}")
         if args.dry_run:
-            print(f"  (dry-run) would submit to universe '{universe}' — no HTTP call")
+            editor_label = f"editor_{(i - 1) % 10 + 1:02d}" if pool else "single-editor"
+            print(f"  (dry-run) would submit to universe '{universe}' via {editor_label} — no HTTP call")
             ok_count += 1
             continue
-        if run_http_sequence(env, fpath, name, universe, i, total):
+
+        # Get editor for this submission
+        if pool:
+            editor_id, base_url = pool.get_next()
+            current_env = (editor_id, pool.token, base_url)
+            print(f"  => Editor: {editor_id[:8]}...")
+        else:
+            current_env = env
+            editor_id = env[0]
+
+        if run_http_sequence(current_env, fpath, name, universe, i, total, editor_id=editor_id):
             ok_count += 1
         print()
+
+    # Print usage summary
+    if pool:
+        print("  Editor usage:")
+        for eid, count in pool.usage_summary().items():
+            print(f"    {eid[:8]}... => {count} submissions")
 
     print(f"=== Hoan thanh: {ok_count}/{total} submitted OK ===")
     print(f"Ket qua da luu vao {CSV_PATH}")

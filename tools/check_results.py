@@ -36,6 +36,10 @@ def parse_args():
     parser.add_argument("--fail", dest="show_fail", action="store_true", help="Show FAIL files only")
     parser.add_argument("--universe", default=None,
                         help="Filter by universe (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP)")
+    parser.add_argument("--editor", default=None,
+                        help="Filter by editor_id (exact match or suffix like '03')")
+    parser.add_argument("--editors", action="store_true",
+                        help="Show summary per editor (count, avg sharpe, pass rate)")
     parser.add_argument("--detail", action="store_true",
                         help="Show aggregate metrics plus Aggregate/Train/Test PASS/FAIL")
     parser.add_argument("--splits", action="store_true",
@@ -60,6 +64,11 @@ def filter_rows(latest, args):
             continue
         if args.universe and row.get("universe") != args.universe:
             continue
+        if args.editor:
+            editor_id = (row.get("editor_id") or "").strip()
+            # Match by exact or suffix (e.g. "03" matches "uuid-...-03")
+            if args.editor != editor_id and not editor_id.endswith(args.editor):
+                continue
         if args.today:
             ts = row.get("timestamp", "")
             if not ts.startswith(today_str):
@@ -79,11 +88,11 @@ def print_results(latest, args):
         return
 
     if args.detail or args.splits:
-        header = f'{"FILEPATH":58s} {"UNIVERSE":14s} {"Sharpe":>8s} {"CAGR":>8s} {"MaxDD":>10s} {"PF":>8s} {"Calmar":>8s}  {"AGG/TRAIN/TEST":16s} STATUS'
+        header = f'{"FILEPATH":58s} {"UNIVERSE":14s} {"EDITOR":12s} {"Sharpe":>8s} {"CAGR":>8s} {"MaxDD":>10s} {"PF":>8s} {"Calmar":>8s}  {"AGG/TRAIN/TEST":16s} STATUS'
         print(header)
         print("-" * (len(header) + 4))
     else:
-        header = f'{"FILEPATH":58s} {"UNIVERSE":14s} {"Sharpe":>8s}  STATUS'
+        header = f'{"FILEPATH":58s} {"UNIVERSE":14s} {"EDITOR":12s} {"Sharpe":>8s}  STATUS'
         print(header)
         print("-" * (len(header) + 4))
 
@@ -110,17 +119,19 @@ def print_results(latest, args):
             m_str = f"{m:.4f}" if m is not None else "N/A"
             p_str = f"{p:.4f}" if p is not None else "N/A"
             ca_str = f"{ca:.4f}" if ca is not None else "N/A"
+            eid = (row.get("editor_id") or "-")[:12]
             try:
                 stage_labels = ["PASS" if stage_pass(row, prefix) else "FAIL"
                                 for prefix in ("", "train_", "test_")]
             except KeyError:
                 stage_labels = ["INVALID"] * 3
             summary = "/".join(stage_labels)
-            print(f'{fname:58s} {universe:14s} {s_str:>8s} {c_str:>8s} {m_str:>10s} {p_str:>8s} {ca_str:>8s}  {summary:16s} {label}')
+            print(f'{fname:58s} {universe:14s} {eid:12s} {s_str:>8s} {c_str:>8s} {m_str:>10s} {p_str:>8s} {ca_str:>8s}  {summary:16s} {label}')
         else:
             s = getf(row, "sharpe")
             s_str = f"{s:.4f}" if s is not None else "N/A"
-            print(f'{fname:58s} {universe:14s} {s_str:>8s}  {label}')
+            eid = (row.get("editor_id") or "-")[:12]
+            print(f'{fname:58s} {universe:14s} {eid:12s} {s_str:>8s}  {label}')
 
     total = len(latest)
     other = total - pass_count - fail_count
@@ -140,6 +151,30 @@ def print_results(latest, args):
         for u in sorted(by_universe):
             p, fl = by_universe[u]
             print(f"  {u:14s} {p}/{fl}")
+
+    # Editor summary
+    if args.editors:
+        by_editor = {}
+        for key, row in latest.items():
+            eid = (row.get("editor_id") or "none").strip() or "none"
+            if eid not in by_editor:
+                by_editor[eid] = {"total": 0, "pass": 0, "fail": 0, "sharpes": []}
+            by_editor[eid]["total"] += 1
+            label = status_label(row)
+            if label == "PASS":
+                by_editor[eid]["pass"] += 1
+            elif label == "FAIL":
+                by_editor[eid]["fail"] += 1
+            s = getf(row, "sharpe")
+            if s is not None:
+                by_editor[eid]["sharpes"].append(s)
+        print("\nBy editor:")
+        print(f"  {'EDITOR':12s} {'TOTAL':>6s} {'PASS':>6s} {'FAIL':>6s} {'AVG_SHARPE':>10s}")
+        print(f"  {'-'*12} {'-'*6} {'-'*6} {'-'*6} {'-'*10}")
+        for eid in sorted(by_editor):
+            stats = by_editor[eid]
+            avg_s = sum(stats["sharpes"]) / len(stats["sharpes"]) if stats["sharpes"] else 0
+            print(f"  {eid:12s} {stats['total']:6d} {stats['pass']:6d} {stats['fail']:6d} {avg_s:10.4f}")
 
     if args.splits:
         print("\nSplit metrics:")

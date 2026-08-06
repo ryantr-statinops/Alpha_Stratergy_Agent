@@ -188,10 +188,16 @@ def load_results_csv(csv_path="backtest/results_stage_2.csv"):
 
 
 def row_key(row):
-    """Identity for a result row: (filepath, universe). Never plain basename."""
+    """Identity for a result row: (filepath, universe, editor_id).
+
+    Including editor_id allows the same file to be submitted to different
+    editors without being deduped. Old rows without editor_id are treated
+    as editor_id="" for backward compatibility.
+    """
     filepath = (row.get("filepath") or "").strip()
     universe = (row.get("universe") or "").strip()
-    return (filepath, universe)
+    editor_id = (row.get("editor_id") or "").strip()
+    return (filepath, universe, editor_id)
 
 
 def load_previous_results(csv_path="backtest/results_stage_2.csv"):
