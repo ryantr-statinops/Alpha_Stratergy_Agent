@@ -37,10 +37,13 @@ Strategies built on any other universe will not be scored.
 Available data may include:
 
 Daily stock OHLCV
+VN30 index OHLCV (pv_vn30_*_panel)
+DJI index OHLCV (pv_dji_*_panel) — cross-market reference
+Universe eligibility (in_universe_panel) — boolean: investable universe gate
 Income statements (quarterly and annual)
 Balance sheets (quarterly and annual)
 Cash-flow statements (quarterly and annual)
-Field IDs use snake_case, for example: pv_close, pv_volume, fun_is_net_profit_loss_after_tax_quarterly, fun_bs_total_assets_quarterly, fun_bs_owners_equity_quarterly, fun_cf_cashflow_operating_section_quarterly. Use the editor data catalog and autocomplete to confirm which fields are exposed for the selected universe.
+Field IDs use snake_case, for example: pv_close, pv_volume, pv_dji_close_panel, in_universe_panel, fun_is_net_profit_loss_after_tax_quarterly, fun_bs_total_assets_quarterly, fun_bs_owners_equity_quarterly, fun_cf_cashflow_operating_section_quarterly. Use the editor data catalog and autocomplete to confirm which fields are exposed for the selected universe.
 
 5. Execution Modes
 Each strategy must use exactly one mode.
@@ -98,6 +101,7 @@ Full scoring criteria are detailed in How to Build Your Strategy on XNOQuant.
 9. Pre-Submit Checklist
 Check	Requirement
 Universe	Uses VN-SMALL-CAP, VN-MID-CAP, or VN-LARGE-CAP
+Universe gate	Uses in_universe_panel as first eligibility filter
 Mode	Uses time_series or cross_sectional, never both
 Fields	Uses only fields exposed for the selected universe and mode
 Timing	Consumes fundamentals only after publication
