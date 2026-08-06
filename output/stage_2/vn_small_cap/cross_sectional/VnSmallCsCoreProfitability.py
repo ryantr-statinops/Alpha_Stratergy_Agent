@@ -43,12 +43,12 @@ class CustomStrategy(SimpleAlgorithm):
         gov_bonds_pay = self.data.fun_bs_government_bonds_purchased_for_resale_payable_quarterly_panel
 
         is_financial = (
-            ((gw_premium >= 0) | (gw_premium < 0))
-            | ((claim_expense >= 0) | (claim_expense < 0))
-            | ((unearned_reserve >= 0) | (unearned_reserve < 0))
-            | ((st_loans_receiv >= 0) | (st_loans_receiv < 0))
-            | ((gov_bonds_recv >= 0) | (gov_bonds_recv < 0))
-            | ((gov_bonds_pay >= 0) | (gov_bonds_pay < 0))
+            (self.feat.safe_divide_panel(gw_premium, total_assets_q) > 0.03)
+            | (self.feat.safe_divide_panel(claim_expense, total_assets_q) > 0.03)
+            | (self.feat.safe_divide_panel(unearned_reserve, total_assets_q) > 0.05)
+            | (self.feat.safe_divide_panel(st_loans_receiv, total_assets_q) > 0.03)
+            | (self.feat.safe_divide_panel(gov_bonds_recv, total_assets_q) > 0.03)
+            | (self.feat.safe_divide_panel(gov_bonds_pay, total_assets_q) > 0.03)
         )
         base_eligible = base_eligible & (~is_financial)
         traded_value = self.feat.rolling_value_panel(close, volume)
