@@ -2,6 +2,7 @@
 
 > **Date:** 2026-08-05
 > **Status:** ACTIVE — là chuẩn bắt buộc trước khi promote bất kỳ alpha nào lên production.
+> **Architecture:** 7-Layer Research Pipeline (see `MASTER_alpha_planning.md`)
 > **Scope:** Cross-sectional + time-series stage-2, 3 universe VN.
 > **Tooling:** `tools/retention_audit.py`, `tools/fetch_yearly_tables.py` (cả hai GET-only / CSV-only, không đụng submit).
 

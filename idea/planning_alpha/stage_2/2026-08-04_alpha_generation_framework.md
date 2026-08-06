@@ -1,6 +1,8 @@
 # Alpha Generation Framework — Systematic Thesis Building
 
 > **Session:** 2026-08-04
+> **Architecture:** 7-Layer Research Pipeline (see `MASTER_alpha_planning.md`)
+> **Hypotheses:** 36 economic hypotheses (see `HYPOTHESIS_LIBRARY.md`)
 > **Mục tiêu:** Phương pháp build alpha theo số lượng lớn (1000+ thesis)
 > **Nguyên tắc:** Edge = Thesis quality (70%) + Structural integrity (20%) + Parameter (10%)
 
