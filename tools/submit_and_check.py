@@ -43,6 +43,7 @@ import argparse
 import tempfile
 from datetime import datetime
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from dotenv import load_dotenv
 
@@ -572,29 +573,34 @@ def run_batch_mode(args) -> int:
         print("  => Aborted by user (universe not confirmed).")
         return 1
 
-    ok_count = 0
-    total = len(files)
-    for i, fpath in enumerate(files, 1):
-        name = os.path.basename(fpath)
-        print(f"[{i}/{total}] {name}")
-        if args.dry_run:
-            editor_label = f"editor_{(i - 1) % 10 + 1:02d}" if pool else "single-editor"
-            print(f"  (dry-run) would submit to universe '{universe}' via {editor_label} — no HTTP call")
-            ok_count += 1
-            continue
+    # Parallel mode
+    if args.parallel and not args.dry_run:
+        print(f"  PARALLEL MODE: {min(args.workers, len(files))} workers")
+        ok_count = run_parallel_batch(files, universe, pool, max_workers=min(args.workers, len(files)))
+    else:
+        ok_count = 0
+        total = len(files)
+        for i, fpath in enumerate(files, 1):
+            name = os.path.basename(fpath)
+            print(f"[{i}/{total}] {name}")
+            if args.dry_run:
+                editor_label = f"editor_{(i - 1) % 10 + 1:02d}" if pool else "single-editor"
+                print(f"  (dry-run) would submit to universe '{universe}' via {editor_label} — no HTTP call")
+                ok_count += 1
+                continue
 
-        # Get editor for this submission
-        if pool:
-            editor_id, base_url = pool.get_next()
-            current_env = (editor_id, pool.token, base_url)
-            print(f"  => Editor: {editor_id[:8]}...")
-        else:
-            current_env = env
-            editor_id = env[0]
+            # Get editor for this submission
+            if pool:
+                editor_id, base_url = pool.get_next()
+                current_env = (editor_id, pool.token, base_url)
+                print(f"  => Editor: {editor_id[:8]}...")
+            else:
+                current_env = env
+                editor_id = env[0]
 
-        if run_http_sequence(current_env, fpath, name, universe, i, total, editor_id=editor_id):
-            ok_count += 1
-        print()
+            if run_http_sequence(current_env, fpath, name, universe, i, total, editor_id=editor_id):
+                ok_count += 1
+            print()
 
     # Print usage summary
     if pool:
@@ -605,6 +611,40 @@ def run_batch_mode(args) -> int:
     print(f"=== Hoan thanh: {ok_count}/{total} submitted OK ===")
     print(f"Ket qua da luu vao {CSV_PATH}")
     return 0
+
+
+def run_single_submit(args_tuple):
+    """Submit a single file. Used for parallel execution."""
+    fpath, universe, total, idx, editor_id, token, base_url = args_tuple
+    name = os.path.basename(fpath)
+
+    current_env = (editor_id, token, base_url)
+    print(f"[{idx}/{total}] {name} => Editor: {editor_id[:8]}...")
+    success = run_http_sequence(current_env, fpath, name, universe, idx, total, editor_id=editor_id)
+    return (idx, name, success)
+
+
+def run_parallel_batch(files, universe, pool, max_workers=10):
+    """Submit files in parallel using ThreadPoolExecutor."""
+    total = len(files)
+    tasks = []
+    for i, fpath in enumerate(files, 1):
+        editor_id, base_url = pool.get_next()
+        tasks.append((fpath, universe, total, i, editor_id, pool.token, base_url))
+
+    ok_count = 0
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(run_single_submit, task): task for task in tasks}
+        for future in as_completed(futures):
+            try:
+                idx, name, success = future.result()
+                if success:
+                    ok_count += 1
+                print(f"  [{idx}/{total}] {name}: {'OK' if success else 'FAIL'}")
+            except Exception as e:
+                print(f"  Error: {e}")
+
+    return ok_count
 
 
 def parse_args():
@@ -619,6 +659,8 @@ def parse_args():
     parser.add_argument("--dry-run", action="store_true", help="No HTTP calls — only print editor/universe/files.")
     parser.add_argument("--yes", action="store_true", help="Auto-confirm the editor universe prompt (no stdin).")
     parser.add_argument("--force", action="store_true", help="Re-submit even if (filepath, universe) already passed.")
+    parser.add_argument("--parallel", action="store_true", help="Submit files in parallel using multiple editors.")
+    parser.add_argument("--workers", type=int, default=10, help="Number of parallel workers (default: 10, one per editor).")
     return parser.parse_args()
 
 
