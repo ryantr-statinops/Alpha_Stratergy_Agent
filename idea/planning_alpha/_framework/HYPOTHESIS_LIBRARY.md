@@ -127,7 +127,7 @@
 **Validation:** total_assets > 0, equity > 0
 **Eligibility:** liquidity rank > 0.30, history >= 4Q, non_financial
 **Diagnostics (expected):** IC 0.03-0.05, turnover 25-35%
-**Vietnam Evidence:** RoaQuality PASS (Sharpe 1.84), RoaImprovement PASS (2.08)
+**Vietnam Evidence:** RoaQuality PASS (Sharpe 1.84), RoaImprovement PASS (2.08). MID-CAP: VnMidCsRoaQualityRank FAIL test (post-retrofit, Agg -0.17, Train 0.70 / Test -2.45)
 
 ---
 
@@ -146,7 +146,7 @@
 **Validation:** owners_equity > 0, total_assets > 0
 **Eligibility:** liquidity rank > 0.30, history >= 4Q, non_financial
 **Diagnostics (expected):** IC 0.03-0.05, turnover 25-35%
-**Vietnam Evidence:** RoeQuality PASS (Sharpe 2.30), RoeImprovement PASS (2.10)
+**Vietnam Evidence:** RoeQuality PASS (Sharpe 2.30), RoeImprovement PASS (2.10). MID-CAP: VnMidCsValueQualityComposite FAIL test (post-retrofit, Agg 0.37, Train 1.11 / Test -1.32)
 
 ---
 
@@ -164,7 +164,7 @@
 **Validation:** net_profit > 0, CFO > 0
 **Eligibility:** liquidity rank > 0.30, history >= 4Q
 **Diagnostics (expected):** IC 0.02-0.04, turnover 25-35%
-**Vietnam Evidence:** NOT TESTED
+**Vietnam Evidence:** NOT TESTED. MID-CAP: VnMidCsCashConversionRank FAIL test (post-retrofit, Agg -0.10, Train 0.99 / Test -2.09)
 
 ---
 
@@ -183,7 +183,7 @@
 **Validation:** total_assets > 0
 **Eligibility:** liquidity rank > 0.30, history >= 4Q
 **Diagnostics (expected):** IC 0.02-0.04, turnover 30-40%
-**Vietnam Evidence:** LowAccruals PASS (Sharpe 1.61)
+**Vietnam Evidence:** LowAccruals PASS (Sharpe 1.61). MID-CAP: VnMidCsAccrualQualityRank FAIL test (post-retrofit, Agg -0.10, Train 0.99 / Test -2.09)
 
 ---
 
@@ -201,7 +201,7 @@
 **Validation:** total_assets > 0, rolling_mean(ROA) != 0
 **Eligibility:** liquidity rank > 0.30, history >= 8Q (need rolling window)
 **Diagnostics (expected):** IC 0.02-0.03, turnover 20-30%
-**Vietnam Evidence:** NOT TESTED
+**Vietnam Evidence:** NOT TESTED. MID-CAP: VnMidCsEarningsStabilityRank FAIL test (post-retrofit, Agg 0.22, Train 1.10 / Test -1.76)
 
 ---
 
@@ -257,7 +257,7 @@
 **Validation:** total_assets(t-4) > 0
 **Eligibility:** liquidity rank > 0.30, history >= 8Q
 **Diagnostics (expected):** IC -0.02 to -0.04 (negative = conservative wins), turnover 30-40%
-**Vietnam Evidence:** ConservativeAssetGrowth PASS (Sharpe 2.09)
+**Vietnam Evidence:** ConservativeAssetGrowth PASS (Sharpe 2.09). MID-CAP: VnMidCsConservativeGrowth FAIL test (post-retrofit, Agg 0.11, Train 1.06 / Test -2.11)
 
 ---
 
@@ -278,7 +278,7 @@
 **Validation:** close > 0, ema > 0
 **Eligibility:** liquidity rank > 0.40, history >= 20 days
 **Diagnostics (expected):** IC 0.04-0.07, turnover 40-60%
-**Vietnam Evidence:** ValueTrendP02-P11 PASS (Sharpe 2.31-2.67, 5/5 years)
+**Vietnam Evidence:** ValueTrendP02-P11 PASS (Sharpe 2.31-2.67, 5/5 years). MID-CAP: VnMidCsMomentumValue FAIL test (post-retrofit, Agg 0.25, Train 0.75 / Test -0.96)
 
 ---
 
@@ -296,7 +296,7 @@
 **Validation:** total_assets > 0, equity > 0
 **Eligibility:** liquidity rank > 0.30, history >= 8Q
 **Diagnostics (expected):** IC 0.02-0.04, turnover 35-45%
-**Vietnam Evidence:** RoeImprovement PASS (Sharpe 2.10), ProfitAcceleration PASS (2.11)
+**Vietnam Evidence:** RoeImprovement PASS (Sharpe 2.10), ProfitAcceleration PASS (2.11). MID-CAP: VnMidCsRoeImprovementRank FAIL test (post-retrofit, Agg 0.06, Train 0.89 / Test -2.07)
 
 ---
 
@@ -335,7 +335,7 @@
 **Validation:** total_assets > 0, owners_equity > 0
 **Eligibility:** liquidity rank > 0.30, history >= 4Q
 **Diagnostics (expected):** IC -0.02 to -0.04 (negative = low leverage wins), turnover 25-35%
-**Vietnam Evidence:** LowLeverage PASS (Sharpe 1.64)
+**Vietnam Evidence:** LowLeverage PASS (Sharpe 1.64). MID-CAP: VnMidCsLowLeverageRank FAIL test (post-retrofit, Agg 0.32, Train 1.38 / Test -2.14)
 
 ---
 
@@ -354,7 +354,7 @@
 **Validation:** total_assets > 0
 **Eligibility:** liquidity rank > 0.30, history >= 4Q
 **Diagnostics (expected):** IC 0.02-0.04, turnover 25-35%
-**Vietnam Evidence:** NetCash PASS (Sharpe 1.90)
+**Vietnam Evidence:** NetCash PASS (Sharpe 1.90). MID-CAP: VnMidCsNetCashRank FAIL test (post-retrofit, Agg 0.16, Train 1.02 / Test -1.69)
 
 ---
 
@@ -392,7 +392,7 @@
 **Validation:** current_liabilities > 0
 **Eligibility:** liquidity rank > 0.30, history >= 4Q
 **Diagnostics (expected):** IC 0.01-0.03, turnover 25-35%
-**Vietnam Evidence:** CurrentLiquidity PASS (Sharpe 1.81)
+**Vietnam Evidence:** CurrentLiquidity PASS (Sharpe 1.81). MID-CAP: VnMidCsCurrentLiquidityRank FAIL test (post-retrofit, Agg -0.37, Train 0.21 / Test -2.11)
 
 ---
 
@@ -746,3 +746,13 @@ Based on Gate 1-3 evidence:
 | P3 | H17: Low Leverage | Leverage | LowLeverage PASS (1.64) |
 | P3 | H09: Accrual Quality | Quality | LowAccruals PASS (1.61) |
 | P4 | H01, H03-H05, H08, H10-H12, H19, H21, H23, H27, H29-H31, H33 | Various | NOT TESTED |
+
+---
+
+## Universe Status (2026-08-07)
+
+> Evidence lines above carry MID-CAP numbers from the 11-file VnMidCs* batch post-retrofit (2026-08-07 16:44-16:48, self-baseline + trend vote + demean_l1).
+
+- **SMALL-CAP:** 4 alphas PASS Gate 1-3 (FinancialNetPayout, NetPayoutPersistence, RoaQuality, ValueTrendP02); blocker = CAGR magnitude.
+- **LARGE-CAP:** 0/40 annual + 0/4 quarterly pass; CS saturated ~0.9, best TS CapexDiscipline 1.13 (Train 1.36 / Test 0.66).
+- **MID-CAP:** 0 PASS across 13 TS + 20 TS + 20 CS + 11 post-retrofit CS; all Test Sharpe negative (common-engine regime failure, no OOS edge).
