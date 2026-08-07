@@ -1,0 +1,4 @@
+"universe","n","pass_agg","pass_train","pass_test","is_pass"
+"VN-SMALL-CAP",84,47,47,0,0
+"VN-MID-CAP",61,11,20,0,0
+"VN-LARGE-CAP",123,0,13,0,0
