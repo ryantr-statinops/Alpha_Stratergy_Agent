@@ -240,3 +240,14 @@ vn_small_cap/cross_sectional/VnSmallCsMomentumOnlyProbe.py,vnsmallcsmomentumonly
 vn_small_cap/cross_sectional/VnSmallCsNetPayoutMomentum.py,vnsmallcsnetpayoutmomentum,cross_sectional,cross_sectional,VN-SMALL-CAP,VnSmallCsNetPayoutMomentum,rank_demean_l1
 vn_small_cap/cross_sectional/VnSmallCsNetPayoutPersistenceNonFin.py,vnsmallcsnetpayoutpersistencenonfin,cross_sectional,cross_sectional,VN-SMALL-CAP,VnSmallCsNetPayoutPersistenceNonFin,rank_demean_l1
 vn_small_cap/cross_sectional/VnSmallCsValueMomentumComposite.py,vnsmallcsvaluemomentumcomposite,cross_sectional,cross_sectional,VN-SMALL-CAP,VnSmallCsValueMomentumComposite,rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsRoaQualityRank.py,roa_quality_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on ROA (market-neutral),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsAccrualQualityRank.py,accrual_quality_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on CFO/Net Profit accrual quality (market-neutral),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsConservativeGrowth.py,conservative_growth_cs,cross_sectional,cross_sectional,VN-MID-CAP,Negative asset growth ranked (short aggressive growers),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsLowLeverageRank.py,low_leverage_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on low Debt/Assets (market-neutral),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsNetCashRank.py,net_cash_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on Cash/Total Assets (market-neutral),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsCurrentLiquidityRank.py,current_liquidity_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on Current Ratio (market-neutral),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsRoeImprovementRank.py,roe_improvement_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on ROE improvement (market-neutral),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsValueQualityComposite.py,value_quality_composite_cs,cross_sectional,cross_sectional,VN-MID-CAP,Composite earnings yield * ROE (market-neutral),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsMomentumValue.py,momentum_value_cs,cross_sectional,cross_sectional,VN-MID-CAP,Trend^2 * Earnings Yield composite (market-neutral),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsCashConversionRank.py,cash_conversion_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on CFO/Net Profit (market-neutral),rank_demean_l1
+vn_mid_cap/cross_sectional/VnMidCsEarningsStabilityRank.py,earnings_stability_rank_cs,cross_sectional,cross_sectional,VN-MID-CAP,Cross-sectional rank on low ROA coefficient of variation (market-neutral),rank_demean_l1
