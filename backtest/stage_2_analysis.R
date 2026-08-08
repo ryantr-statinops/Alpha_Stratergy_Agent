@@ -263,3 +263,88 @@ write.csv(pass_tbl, file.path(OUT_DIR, "pass_summary.csv"), row.names = FALSE)
 cat("\n==============================================================\n")
 cat(sprintf("Đã ghi kết quả vào thư mục: %s\n", OUT_DIR))
 cat("==============================================================\n")
+
+## =====================================================================
+## 8. Biểu đồ kết hợp (1 ảnh duy nhất) — dùng base R, không cần package
+## =====================================================================
+
+make_combined_plot <- function(sim, OUT_DIR) {
+  png(file.path(OUT_DIR, "stage_2_combined_plot.png"),
+      width = 2000, height = 2600, res = 150)
+  par(mfrow = c(3, 2), mar = c(4.2, 4.2, 3, 1), oma = c(0.5, 0.5, 2.5, 0.5))
+
+  uni_col <- c("VN-SMALL-CAP" = "#2e86ab", "VN-MID-CAP" = "#f39c12", "VN-LARGE-CAP" = "#d95f5f")
+
+  ## (1) Train vs Test Sharpe scatter
+  plot(sim$train_sharpe, sim$test_sharpe,
+       col = uni_col[sim$universe], pch = 16, cex = 1.1,
+       xlab = "Train Sharpe (2020-22)", ylab = "Test Sharpe (2023-24)",
+       main = "Train vs Test Sharpe")
+  abline(0, 1, lty = 2, col = "gray50")
+  abline(h = 0, lty = 3, col = "gray70")
+  legend("topright", legend = names(uni_col), col = uni_col, pch = 16, bty = "n", cex = 0.8)
+
+  ## (2) Sharpe agg boxplot theo universe
+  boxplot(sharpe ~ universe, data = sim,
+          col = uni_col[sort(unique(sim$universe))],
+          ylab = "Aggregate Sharpe", main = "Aggregate Sharpe by Universe")
+  abline(h = 1.0, lty = 2, col = "gray50")
+  text(par("usr")[2] * 0.97, 1.05, "SMALL bar 1.0", pos = 2, cex = 0.7, col = "gray40")
+
+  ## (3) Test Sharpe boxplot theo universe
+  boxplot(test_sharpe ~ universe, data = sim,
+          col = uni_col[sort(unique(sim$universe))],
+          ylab = "Test Sharpe", main = "OOS Test Sharpe (2023-24)")
+  abline(h = 0, lty = 3, col = "gray70")
+
+  ## (4) CAGR agg boxplot theo universe
+  boxplot(cagr ~ universe, data = sim,
+          col = uni_col[sort(unique(sim$universe))],
+          ylab = "Aggregate CAGR", main = "Aggregate CAGR by Universe")
+
+  ## (5) Test CAGR theo universe
+  boxplot(test_cagr ~ universe, data = sim,
+          col = uni_col[sort(unique(sim$universe))],
+          ylab = "Test CAGR", main = "OOS Test CAGR (2023-24)")
+  abline(h = 0, lty = 3, col = "gray70")
+
+  ## (6) Top 15 test Sharpe + label
+  o <- order(sim$test_sharpe, decreasing = TRUE)
+  topn <- sim[o[seq_len(min(15, nrow(sim)))], ]
+  topn <- topn[!is.na(topn$test_sharpe), ]
+  if (nrow(topn) > 0) {
+    barplot(rev(topn$test_sharpe), horiz = TRUE, las = 1, cex.names = 0.55,
+            names.arg = rev(gsub("^Vn(Small|Mid|Large)Cs|^Vn", "", topn$filename)),
+            col = uni_col[rev(topn$universe)],
+            xlab = "Test Sharpe", main = "Top 15 by OOS Test Sharpe")
+  }
+
+  mtext("Alpha_bot — Stage 2 Diagnostics (Aggregate / Train 20-22 / Test 23-24)",
+        outer = TRUE, cex = 1.2, font = 2)
+  dev.off()
+
+  ## (7) phụ: train-test gap density theo universe (dùng poly: density)
+  png(file.path(OUT_DIR, "train_test_gap.png"), width = 1400, height = 900, res = 150)
+  gap_u <- split(sim$test_gap, sim$universe)
+  cols <- uni_col[names(gap_u)]
+  rx <- range(unlist(gap_u), na.rm = TRUE)
+  plot(0, 0, type = "n", xlim = rx, ylim = c(0, 1),
+       xlab = "Test Sharpe - Train Sharpe", ylab = "Density",
+       main = "Train-Test Sharpe gap (âm = overfit)")
+  for (u in names(gap_u)) {
+    x <- gap_u[[u]]
+    x <- x[!is.na(x)]
+    if (length(x) < 2) next
+    d <- density(x, na.rm = TRUE)
+    lines(d, col = uni_col[u], lwd = 2)
+    polygon(d, col = adjustcolor(uni_col[u], alpha.f = 0.15))
+  }
+  abline(v = 0, lty = 2, col = "gray50")
+  legend("topright", legend = names(gap_u), col = uni_col[names(gap_u)], lwd = 2, bty = "n")
+  dev.off()
+
+  cat(sprintf("Đã tạo biểu đồ: %s\n", file.path(OUT_DIR, "stage_2_combined_plot.png")))
+  cat(sprintf("               %s\n", file.path(OUT_DIR, "train_test_gap.png")))
+}
+
+if (nrow(sim) > 0) make_combined_plot(sim, OUT_DIR)
