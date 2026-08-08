@@ -37,3 +37,8 @@ output/*
 
 #back_test
 backtest/results.csv
+backtest/out_analysis/*.png
+
+# R scratch
+.Rhistory
+.RData
