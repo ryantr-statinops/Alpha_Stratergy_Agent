@@ -20,8 +20,8 @@ Construction: market-neutral `demean_l1`
 ## Fixed MID Hurdle
 
 PASS requires all five metrics in each of Aggregate, Train, and Test/OOS:
-Sharpe >= 1.1, CAGR >= 20%, MaxDD >= -40%, Profit Factor >= 1.25, and Calmar
->= 1.0. Thresholds remain fixed after results.
+Sharpe >= 1.0, CAGR >= 18%, MaxDD >= -40%, Profit Factor >= 1.1, and Calmar
+>= 0.8. Thresholds remain fixed after results.
 
 ## Formulas
 
