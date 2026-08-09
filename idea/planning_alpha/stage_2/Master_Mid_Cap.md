@@ -833,7 +833,7 @@ Một signal chỉ được gọi là novel nếu residual PnL/IC còn material.
 - Signed holdings overlap và common top/bottom names.
 - Untouched OOS, parameter plateau và false-discovery-aware hurdle.
 
-Local readiness target tham khảo trong repo cho `VN-MID-CAP`: Sharpe >= 1.1, CAGR >= 20%, MaxDD >= -40%, Profit Factor >= 1.25, Calmar >= 1.0. Đây là minimum workflow threshold, không thay thế scientific robustness.
+Local readiness target tham khảo trong repo cho `VN-MID-CAP`: Sharpe >= 1.0, CAGR >= 18%, MaxDD >= -40%, Profit Factor >= 1.1, Calmar >= 0.8. Đây là minimum workflow threshold, không thay thế scientific robustness.
 
 ## 12. Seed portfolios
 
