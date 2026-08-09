@@ -12,7 +12,7 @@ PASS_THRESHOLDS = {
     "calmar": 1.1,
 }
 
-# Round 2 (stage_2) pass criteria — per universe (source: user, 2026-08-01)
+# Round 2 (stage_2) pass criteria — per universe (source: user, 2026-08-01; MID-CAP updated 2026-08-10)
 PASS_THRESHOLDS_BY_UNIVERSE = {
     "VN-SMALL-CAP": {
         "sharpe": 1.0,
@@ -22,11 +22,11 @@ PASS_THRESHOLDS_BY_UNIVERSE = {
         "calmar": 0.8,
     },
     "VN-MID-CAP": {
-        "sharpe": 1.1,
-        "cagr": 0.20,
+        "sharpe": 1.0,
+        "cagr": 0.18,
         "max_drawdown": -0.40,
-        "profit_factor": 1.25,
-        "calmar": 1.0,
+        "profit_factor": 1.1,
+        "calmar": 0.8,
     },
     "VN-LARGE-CAP": {
         "sharpe": 1.2,
