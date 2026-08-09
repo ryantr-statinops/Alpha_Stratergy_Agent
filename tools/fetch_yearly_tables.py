@@ -49,7 +49,7 @@ def parse_args():
     p.add_argument("--from-csv-universe", default="",
                    help="Universe filter when picking from CSV")
     p.add_argument("--scan-pass-train", action="store_true",
-                   help="Scan ALL latest SIMULATED rows with train_sharpe >= 1.2 "
+                   help="Scan ALL latest SIMULATED rows with train_sharpe >= 1.0 "
                         "(Gate 1-3 only, simulate stage). Compact output.")
     p.add_argument("--out", default="",
                    help="CSV output path for scan summary (Gate 1-3 flags)")
@@ -116,7 +116,7 @@ def gate_pass(gate):
 
 
 def scan_pass_train(session, args):
-    """Gate 1-3 scan across every latest SIMULATED row with train_sharpe >= 1.2."""
+    """Gate 1-3 scan across every latest SIMULATED row with train_sharpe >= 1.0."""
     import csv as _csv
     rows = load_results_csv(args.csv)
     latest = build_latest(rows)
@@ -125,7 +125,7 @@ def scan_pass_train(session, args):
         if row_status(r) != "SIMULATED":
             continue
         tr = getf(r, "train_sharpe")
-        if tr is None or tr < 1.2:
+        if tr is None or tr < 1.0:
             continue
         if args.from_csv_universe and r.get("universe") != args.from_csv_universe:
             continue
@@ -133,7 +133,7 @@ def scan_pass_train(session, args):
     cands.sort(key=lambda r: -(getf(r, "train_sharpe") or 0))
 
     print(f"Gate 1-3 scan over {len(cands)} train-pass strategies "
-          f"(train_sharpe >= 1.2) | strict bar: >=4/5 yr+, 2022>=0, 2024>=0\n")
+          f"(train_sharpe >= 1.0) | strict bar: >=4/5 yr+, 2022>=0, 2024>=0\n")
     header = ("FILENAME", "UNIVERSE", "POS/N", "2022", "2024", "GATE")
     print(f"{'filename':<46}{'univ':<14}{'pos/n':>6}{'2022':>8}{'2024':>8}  gate")
     out_rows = []
