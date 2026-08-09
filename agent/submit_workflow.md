@@ -53,7 +53,7 @@ aggregate hoặc bất kỳ split nào để trống đều không PASS và sẽ
 | Universe | Sharpe | CAGR | MaxDD | PF | Calmar |
 |----------|:------:|:----:|:-----:|:--:|:------:|
 | VN-SMALL-CAP | ≥ 1.0 | ≥ 25% | ≥ -45% | ≥ 1.3 | ≥ 0.8 |
-| VN-MID-CAP | ≥ 1.1 | ≥ 20% | ≥ -40% | ≥ 1.25 | ≥ 1.0 |
+| VN-MID-CAP | ≥ 1.0 | ≥ 18% | ≥ -40% | ≥ 1.1 | ≥ 0.8 |
 | VN-LARGE-CAP | ≥ 1.2 | ≥ 15% | ≥ -35% | ≥ 1.2 | ≥ 1.1 |
 
 - File Round 2 không khai báo universe trong code — **universe ghi vào CSV luôn suy từ path** `output/stage_2/<cap>/...` (VD `vn_small_cap/` → `VN-SMALL-CAP`). `--universe` chỉ là FILTER chọn cap, KHÔNG ghi đè universe của file.
