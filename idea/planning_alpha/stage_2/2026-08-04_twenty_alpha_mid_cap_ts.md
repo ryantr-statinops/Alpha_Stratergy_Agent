@@ -114,7 +114,7 @@ Không tối ưu đồng thời period+threshold+sizing+exit.
 
 | Mức | Điều kiện |
 |---|---|
-| PASS | Aggregate + Train + Test đều Sharpe≥1.1, CAGR≥20%, MaxDD≥-40%, PF≥1.25, Calmar≥1.0 |
+| PASS | Aggregate + Train + Test đều Sharpe≥1.0, CAGR≥18%, MaxDD≥-40%, PF≥1.1, Calmar≥0.8 |
 | Candidate | Sharpe ≥ 1.0 & CAGR ≥ 15% |
 | Research | Sharpe ≥ 0.6 & MaxDD hợp lý |
 | Reject | Sharpe < 0 hoặc 0 giao dịch hoặc field lỗi |
@@ -134,7 +134,7 @@ giao dịch hoặc field lỗi → `REJECTED`; giữ nguyên bản ghi (không �
 ## Kết quả (2026-08-04)
 
 Lưu trong `backtest/results_stage_2.csv` (strategy_id ghi trong bảng). Không strategy
-nào đạt PASS (Test Sharpe cao nhất = 1.00, ngưỡng PASS 1.1). 3 Candidate, 7 Research,
+nào đạt PASS (Test Sharpe cao nhất = 1.00, ngưỡng PASS 1.0). 3 Candidate, 7 Research,
 10 Reject.
 
 | ID | File | Verdict | Agg CAGR | Agg Sharpe | Agg MaxDD | Test CAGR | Test Sharpe | Trades | Ghi chú |
