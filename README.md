@@ -71,7 +71,7 @@ ALPHA_BOT/
 ### Competition Context
 
 Dự án hướng tới **Vietnam Quant Challenge 2026** trên nền tảng XNOQuant.  
-**Target (Round 2, per universe):** pass criteria tại `tools/common.py` (`PASS_THRESHOLDS_BY_UNIVERSE`) — SMALL/MID/LARGE có ngưỡng riêng (Sharpe 1.0/1.1/1.2, CAGR 25%/20%/15%, MaxDD -45%/-40%/-35%, PF 1.3/1.25/1.2, Calmar 0.8/1.0/1.1). PASS = đạt cả 5.
+**Target (Round 2, per universe):** pass criteria tại `tools/common.py` (`PASS_THRESHOLDS_BY_UNIVERSE`) — SMALL/MID/LARGE có ngưỡng riêng (Sharpe 1.0/1.0/1.2, CAGR 25%/18%/15%, MaxDD -45%/-40%/-35%, PF 1.3/1.1/1.2, Calmar 0.8/0.8/1.1). PASS = đạt cả 5.
 
 > ⚠️ Ngưỡng Round 1 (Sharpe ≥ 1.2, CAGR ≥ 25%...) trong §2 dưới đây là legacy — xem `idea/hypothesis/hypothesis_framework.md` (ARCHIVED).
 
