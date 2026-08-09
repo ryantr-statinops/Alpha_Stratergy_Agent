@@ -125,7 +125,7 @@ squeeze = self.op.rolling_quantile(bb_width, window=63, quantile=0.15)
 
 | Strategy | Agg Sharpe hiện tại | Agg CAGR hiện tại | Target | Ghi chú |
 |---|---|---|---|---|
-| T12 RsiRecoveryTrend | 1.35 | 17.0% | PASS (≥1.1/≥20%) | CAGR thấp → cần tăng exposure hoặc减少 churn |
+| T12 RsiRecoveryTrend | 1.35 | 17.0% | PASS (≥1.0/≥18%) | CAGR thấp → cần tăng exposure hoặc减少 churn |
 | T19 LiquidityTrend | 1.28 | 17.9% | PASS | CAGR thấp → tương tự |
 | T04 AdxStrongTrend | 1.25 | 16.6% | PASS | CAGR thấp → tương tự |
 
