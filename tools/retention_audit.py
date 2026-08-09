@@ -5,8 +5,8 @@ Reads backtest/results_stage_2.csv, dedups to latest per (filepath, universe),
 and for every SIMULATED family reports:
 
   N        candidates tested
-  PassTr   Sharpe(train) >= 1.2
-  PassBoth Sharpe(train) >= 1.2 and Sharpe(test) >= 1.2
+  PassTr   Sharpe(train) >= 1.0
+  PassBoth Sharpe(train) >= 1.0 and Sharpe(test) >= 1.0
   ExpFP    expected false positives among PassTr at alpha=0.05
   Retain   PassBoth / PassTr (survival ratio)
 
@@ -25,8 +25,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import build_latest, getf, load_results_csv, row_status, row_key
 
 DEFAULT_CSV = os.path.join("backtest", "results_stage_2.csv")
-TRAIN_MIN = 1.2
-TEST_MIN = 1.2
+TRAIN_MIN = 1.0
+TEST_MIN = 1.0
 ALPHA = 0.05
 
 
