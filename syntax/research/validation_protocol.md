@@ -135,7 +135,7 @@ The executable source of truth is `PASS_THRESHOLDS_BY_UNIVERSE` in `tools/common
 | Universe | Sharpe | CAGR | MaxDD | Profit Factor | Calmar |
 |---|---:|---:|---:|---:|---:|
 | `VN-SMALL-CAP` | >= 1.0 | >= 25% | >= -45% | >= 1.30 | >= 0.8 |
-| `VN-MID-CAP` | >= 1.1 | >= 20% | >= -40% | >= 1.25 | >= 1.0 |
+| `VN-MID-CAP` | >= 1.0 | >= 18% | >= -40% | >= 1.10 | >= 0.8 |
 | `VN-LARGE-CAP` | >= 1.2 | >= 15% | >= -35% | >= 1.20 | >= 1.1 |
 
 If this table and `tools/common.py` differ, the code is authoritative and this file must be updated.
