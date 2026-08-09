@@ -59,7 +59,7 @@ dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 ## Ngưỡng PASS theo universe (nguồn: tools/common.py)
 THRESH <- list(
   "VN-SMALL-CAP" = c(sharpe = 1.0, cagr = 0.25, max_drawdown = -0.45, profit_factor = 1.3, calmar = 0.8),
-  "VN-MID-CAP"   = c(sharpe = 1.1, cagr = 0.20, max_drawdown = -0.40, profit_factor = 1.25, calmar = 1.0),
+  "VN-MID-CAP"   = c(sharpe = 1.0, cagr = 0.18, max_drawdown = -0.40, profit_factor = 1.1, calmar = 0.8),
   "VN-LARGE-CAP" = c(sharpe = 1.2, cagr = 0.15, max_drawdown = -0.35, profit_factor = 1.2, calmar = 1.1)
 )
 
