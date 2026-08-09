@@ -88,7 +88,7 @@
 
 1. **Bộ tiêu chí pass Round 2** ✅ — user cung cấp, theo universe (đã ghi vào `tools/common.py` `PASS_THRESHOLDS_BY_UNIVERSE`):
    - **VN-SMALL-CAP:** Sharpe ≥ 1.0, CAGR ≥ 25%, MaxDD ≥ -45%, PF ≥ 1.3, Calmar ≥ 0.8
-   - **VN-MID-CAP:** Sharpe ≥ 1.1, CAGR ≥ 20%, MaxDD ≥ -40%, PF ≥ 1.25, Calmar ≥ 1.0
+   - **VN-MID-CAP:** Sharpe ≥ 1.0, CAGR ≥ 18%, MaxDD ≥ -40%, PF ≥ 1.1, Calmar ≥ 0.8
    - **VN-LARGE-CAP:** Sharpe ≥ 1.2, CAGR ≥ 15%, MaxDD ≥ -35%, PF ≥ 1.2, Calmar ≥ 1.1
    - `check_results.py` + `common.py` dùng `is_pass(row)` theo cột `universe` + `status` của row (PASS chỉ khi `SIMULATED` + đủ 5 metrics). Universe lạ/trống → `KeyError` (fail-closed).
 
