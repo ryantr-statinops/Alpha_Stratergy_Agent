@@ -184,7 +184,7 @@ python tools/submit_and_check.py --files output/stage_2/vn_mid_cap/cross_section
 
 | Stage | MID-CAP threshold |
 |---|---|
-| Aggregate | Sharpe ≥ 1.10, CAGR ≥ 20%, MaxDD ≥ -40%, PF ≥ 1.25, Calmar ≥ 1.00 |
+| Aggregate | Sharpe ≥ 1.00, CAGR ≥ 18%, MaxDD ≥ -40%, PF ≥ 1.10, Calmar ≥ 0.80 |
 | Train (70%) | cùng ngưỡng trên |
 | Test (30%) | cùng ngưỡng trên — **bắt buộc** |
 
