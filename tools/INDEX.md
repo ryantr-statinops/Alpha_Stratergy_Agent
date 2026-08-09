@@ -101,7 +101,7 @@ delay lịch sự giữa strategies. Tool không update/verify/simulate editor.
 
 Multiple-testing / retention math + parameter plateau check — đọc `backtest/results_stage_2.csv`,
 dedup theo `(filepath, universe)`, nhóm SIMULATED theo family (strip suffix `P<digits>`), và báo
-`N / PassTr (Sharpe train ≥ 1.2) / PassBoth / ExpFP (α·PassTr) / Retain`.
+`N / PassTr (Sharpe train ≥ 1.0) / PassBoth / ExpFP (α·PassTr) / Retain`.
 
 - Survival ratio ≈ α = 5% nghĩa là train-pass chủ yếu là may mắn thống kê, không phải edge bền.
 - `--plateau --min-variants 3`: bảng train/test của từng variant trong family → phát hiện tham số
