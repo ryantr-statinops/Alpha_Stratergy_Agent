@@ -10,9 +10,9 @@ Endpoints (read-only):
   /strategies/{id}/stages/{stage}/summary-table  -> data: [ {time, cagr, sharpe, ...} ]
 
 Usage:
-  python tools/fetch_yearly_tables.py --strategy-id DSbhQzWjPi --strategy-id 6hZhskaS1Y
-  python tools/fetch_yearly_tables.py --from-csv-prefix VnSmallCsFinancialNetPayout
-  python tools/fetch_yearly_tables.py --from-csv-universe VN-SMALL-CAP --from-csv-prefix VnSmallCsValueTrend
+  python -m tools.round_2.xnoquant.fetch_yearly_tables --strategy-id DSbhQzWjPi --strategy-id 6hZhskaS1Y
+  python -m tools.round_2.xnoquant.fetch_yearly_tables --from-csv-prefix VnSmallCsFinancialNetPayout
+  python -m tools.round_2.xnoquant.fetch_yearly_tables --from-csv-universe VN-SMALL-CAP --from-csv-prefix VnSmallCsValueTrend
 
 No CSV writes; never mutates an editor.
 """
@@ -27,7 +27,7 @@ from dotenv import load_dotenv
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from tools.shared.common import build_latest, getf, load_results_csv, row_status
-from submit_and_check import BASE_DIR, build_headers
+from tools.round_2.xnoquant.submit_and_check import BASE_DIR, build_headers
 
 TABLE_URL = "https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/{stage}/summary-table"
 STAGES = ("simulate", "train", "test")

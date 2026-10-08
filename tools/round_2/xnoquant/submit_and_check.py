@@ -51,9 +51,9 @@ from tools.shared.common import (
     VALID_METRIC_KEYS, EXTENDED_PERFORMANCE_KEYS, ALL_METRIC_KEYS,
     flatten_stage_metrics, format_metrics, load_previous_results, wait_for_stage_metrics,
 )
-from editor_pool import EditorPool
+from tools.round_2.xnoquant.editor_pool import EditorPool
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 CSV_PATH = os.path.join(BASE_DIR, "research", "round_2", "results", "backtests.csv")

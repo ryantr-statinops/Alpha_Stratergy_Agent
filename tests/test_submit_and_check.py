@@ -8,8 +8,7 @@ import csv
 from unittest import mock
 
 TOOLS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(TOOLS_DIR, "tools"))
-import submit_and_check as sub
+from tools.round_2.xnoquant import submit_and_check as sub
 
 # Avoid hitting the network / requiring .env at import time
 sub.session = mock.MagicMock()
