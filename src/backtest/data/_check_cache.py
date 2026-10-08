@@ -2,7 +2,7 @@
 import pandas as pd
 
 try:
-    d = pd.read_parquet("backtest/data/cache/vn30f_daily.parquet")
+    d = pd.read_parquet("data_local/round_1/cache/vn30f_daily.parquet")
     print(f"Daily: {len(d)} rows")
     print(f"  Range: {d['time'].min()} -> {d['time'].max()}")
     print(f"  Columns: {d.columns.tolist()}")
@@ -12,7 +12,7 @@ except Exception as e:
     print(f"No daily cache: {e}")
 
 try:
-    d = pd.read_parquet("backtest/data/cache/vn30f_5m.parquet")
+    d = pd.read_parquet("data_local/round_1/cache/vn30f_5m.parquet")
     print(f"\n5m: {len(d)} rows")
     print(f"  Range: {d['time'].min()} -> {d['time'].max()}")
     print(f"  Unique days: {d['time'].dt.date.nunique()}")

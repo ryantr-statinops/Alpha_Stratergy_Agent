@@ -34,7 +34,7 @@ if all_data:
     print(f"\nTotal: {len(full)} rows")
     print(f"Range: {full['time'].min()} -> {full['time'].max()}")
     print(f"Unique days: {full['time'].dt.date.nunique()}")
-    full.to_parquet("backtest/data/cache/vn30f2506_5m_test.parquet", index=False)
+    full.to_parquet("data_local/round_1/cache/vn30f2506_5m_test.parquet", index=False)
 else:
     print("No data retrieved")
 

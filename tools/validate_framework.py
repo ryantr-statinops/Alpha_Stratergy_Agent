@@ -1,10 +1,10 @@
 """
 Alpha Bot — Framework Compliance Validator V2 (Round 2: Fundamental Alpha Arena)
-Checks generated strategies in output/stage_2/ for round-2 framework compliance
-per .agents/stage_2_guideline.md + template_example/strategy_framework.md.
+Checks generated strategies in research/round_2/strategies/ for round-2 framework compliance
+per docs/historical_agent_guides/stage_2_guideline.md + references/templates/xnoquant/strategy_framework.md.
 
 V2 additions:
-- Quét output/stage_2/ (không phải toàn bộ output) + manifest output/index.csv (round 2).
+- Quét research/round_2/strategies/ (không phải toàn bộ output) + manifest research/round_2/manifests/strategies.csv (round 2).
 - Detect mode tự động: cross_sectional (set_portfolio_positions) vs time_series (set_positions).
 - Bounds theo mode: time_series long-only [0, +1]; cross_sectional market-neutral.
 - Field suffix theo mode: time_series không _panel, cross_sectional phải _panel.
@@ -29,8 +29,8 @@ import re
 import sys
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUTPUT_DIR = os.path.join(ROOT_DIR, "output", "stage_2")
-INDEX_PATH = os.path.join(ROOT_DIR, "output", "index.csv")
+OUTPUT_DIR = os.path.join(ROOT_DIR, "research", "round_2", "strategies")
+INDEX_PATH = os.path.join(ROOT_DIR, "research", "round_2", "manifests", "strategies.csv")
 
 CAP_TO_UNIVERSE = {
     "vn_small_cap": "VN-SMALL-CAP",
@@ -261,7 +261,7 @@ def validate_file(filepath: str, manifest_universe: str = "", manifest_mode: str
 
 
 def validate_index() -> list:
-    """Check output/index.csv (round-2 manifest) matches files on disk."""
+    """Check research/round_2/manifests/strategies.csv (round-2 manifest) matches files on disk."""
     findings = []
     if not os.path.exists(INDEX_PATH):
         return [("index.csv", 0, "Index file missing (will be created when strategies are written)")]
@@ -357,15 +357,15 @@ def main():
 
     if not os.path.exists(OUTPUT_DIR):
         print(f"Error: Output directory not found: {OUTPUT_DIR}")
-        print("Round-2 strategies live in output/stage_2/.")
+        print("Round-2 strategies live in research/round_2/strategies/.")
         sys.exit(1)
 
     all_findings = []
 
-    print("Checking output/index.csv (round-2 manifest)...")
+    print("Checking research/round_2/manifests/strategies.csv (round-2 manifest)...")
     all_findings.extend(validate_index())
 
-    print("Checking strategy files in output/stage_2/...")
+    print("Checking strategy files in research/round_2/strategies/...")
     py_files = []
     for root, dirs, files in os.walk(OUTPUT_DIR):
         for f in files:

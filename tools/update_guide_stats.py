@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Count Round-2 strategies from output/index.csv manifest and generate STATS.md.
-Stage_2 strategies are tracked in output/index.csv (agent writes directly).
+Count archived Round-2 strategies from the research manifest and generate a stats report.
+Round 2 strategies are indexed in research/round_2/manifests/strategies.csv.
 
 Dimensions reported (separate tables):
   - Total indexed
@@ -19,8 +19,8 @@ import csv
 from datetime import datetime
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-INDEX_PATH = os.path.join(ROOT_DIR, "output", "index.csv")
-STATS_PATH = os.path.join(ROOT_DIR, "output", "STATS.md")
+INDEX_PATH = os.path.join(ROOT_DIR, "research", "round_2", "manifests", "strategies.csv")
+STATS_PATH = os.path.join(ROOT_DIR, "research", "round_2", "manifests", "generated_stats.md")
 
 MODES = ["time_series", "cross_sectional"]
 UNIVERSES = ["VN-SMALL-CAP", "VN-MID-CAP", "VN-LARGE-CAP"]
@@ -92,7 +92,7 @@ def generate_stats(index_rows: list):
 def main():
     if not os.path.isfile(INDEX_PATH):
         print(f"[!] No index found at {INDEX_PATH}")
-        print("    Stage-2 strategies live in output/stage_2/ and are tracked in output/index.csv.")
+        print("    Round 2 strategies are under research/round_2/strategies/. Check the round guide for archive paths.")
         sys.exit(1)
     generate_stats(load_index(INDEX_PATH))
 

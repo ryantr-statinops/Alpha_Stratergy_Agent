@@ -5,7 +5,9 @@ Reads template configs from tools/generate_strategies.py to mirror output/ exact
 import os, sys, time, pandas as pd, numpy as np
 from itertools import product
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(PROJECT_ROOT, "src"))
+sys.path.insert(0, PROJECT_ROOT)
 
 from backtest.data.fetch_data import fetch_5m, fetch_daily, resample
 from backtest.backtest import run_strategy
@@ -229,7 +231,8 @@ def run_all():
     # 3. Export
     print(f"\n[3/4] Exporting {len(results)} results...")
     df_out = pd.DataFrame(results)
-    csv_path = os.path.join(os.path.dirname(__file__), "results.csv")
+    csv_path = os.path.join(PROJECT_ROOT, "research", "round_1", "results", "backtest.csv")
+    os.makedirs(os.path.dirname(csv_path), exist_ok=True)
     df_out.to_csv(csv_path, index=False)
     print(f"  Saved to {csv_path}")
 

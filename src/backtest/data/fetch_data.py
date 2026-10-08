@@ -4,7 +4,7 @@ import time
 import pandas as pd
 from vnstock import Market
 
-CACHE_DIR = os.path.join(os.path.dirname(__file__), "cache")
+CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "data_local", "round_1", "cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
 
 DAILY_PATH = os.path.join(CACHE_DIR, "vn30f_daily.parquet")

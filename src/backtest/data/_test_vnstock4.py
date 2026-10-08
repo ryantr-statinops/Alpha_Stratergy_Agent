@@ -70,5 +70,5 @@ if all_daily:
     print(f"\nTotal daily: {len(full)} rows")
     print(f"Range: {full['time'].min()} -> {full['time'].max()}")
     # Save to CSV
-    full.to_parquet("backtest/data/cache/vn30f1m_daily.parquet", index=False)
-    print("Saved to backtest/data/cache/vn30f1m_daily.parquet")
+    full.to_parquet("data_local/round_1/cache/vn30f1m_daily.parquet", index=False)
+    print("Saved to data_local/round_1/cache/vn30f1m_daily.parquet")

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Layer 3 Factor Diagnostics (static/offline).
 
-Reads every cross-sectional alpha .py under output/stage_2, parses the field set
+Reads every cross-sectional alpha .py under research/round_2/strategies, parses the field set
 (self.data.*_panel), the feature/op set (self.feat.* / self.op.*), and the
 eligibility block, then emits per-alpha diagnostics used as a pre-submit gate.
 
 Data sources (both offline, no API calls):
-  1. strategy .py files under output/stage_2/**/cross_sectional/
-  2. backtest/results_stage_2.csv for the metrics columns (matched by filename)
+  1. strategy .py files under research/round_2/strategies/**/cross_sectional/
+  2. research/round_2/results/backtests.csv for the metrics columns (matched by filename)
 
-The whitelist of valid panel fields is parsed from syntax/data_syntax.md so an
+The whitelist of valid panel fields is parsed from references/syntax/data_syntax.md so an
 alpha using a non-existent or wrong-frequency field is flagged (this class of
 bug is the suspected root cause of the 22 files returning 0.0000).
 """
@@ -23,10 +23,10 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STAGE2 = os.path.join(ROOT, "output", "stage_2")
-SYNTAX = os.path.join(ROOT, "syntax", "data_syntax.md")
-RESULTS = os.path.join(ROOT, "backtest", "results_stage_2.csv")
-DEFAULT_OUT = os.path.join(ROOT, "backtest", "factor_diagnostics.csv")
+STAGE2 = os.path.join(ROOT, "research", "round_2", "strategies")
+SYNTAX = os.path.join(ROOT, "references", "syntax", "data_syntax.md")
+RESULTS = os.path.join(ROOT, "research", "round_2", "results", "backtests.csv")
+DEFAULT_OUT = os.path.join(ROOT, "research", "round_2", "results", "analysis", "factor_diagnostics.csv")
 
 
 # ---------------------------------------------------------------------------

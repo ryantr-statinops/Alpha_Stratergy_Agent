@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Consolidated results checker — Round 2 (results_stage_2.csv).
+Consolidated results checker — Round 2 (Round 2 backtests.csv).
 
 Usage:
     python tools/check_results.py                          # All results (latest per filepath)
@@ -44,7 +44,7 @@ def parse_args():
                         help="Show aggregate metrics plus Aggregate/Train/Test PASS/FAIL")
     parser.add_argument("--splits", action="store_true",
                         help="Show detailed Aggregate/Train/Test metrics table")
-    parser.add_argument("--csv", default="backtest/results_stage_2.csv", help="Path to results CSV")
+    parser.add_argument("--csv", default="research/round_2/results/backtests.csv", help="Path to results CSV")
     return parser.parse_args()
 
 

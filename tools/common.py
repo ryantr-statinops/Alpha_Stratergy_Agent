@@ -12,7 +12,7 @@ PASS_THRESHOLDS = {
     "calmar": 1.1,
 }
 
-# Round 2 (stage_2) pass criteria — per universe (source: user, 2026-08-01; MID-CAP updated 2026-08-10)
+# Round 2 pass criteria — per universe (source: user, 2026-08-01; MID-CAP updated 2026-08-10)
 PASS_THRESHOLDS_BY_UNIVERSE = {
     "VN-SMALL-CAP": {
         "sharpe": 1.0,
@@ -180,7 +180,7 @@ def flatten_stage_metrics(stages):
     return flat
 
 
-def load_results_csv(csv_path="backtest/results_stage_2.csv"):
+def load_results_csv(csv_path="research/round_2/results/backtests.csv"):
     if not os.path.isfile(csv_path):
         return []
     with open(csv_path, encoding="utf-8") as f:
@@ -200,7 +200,7 @@ def row_key(row):
     return (filepath, universe, editor_id)
 
 
-def load_previous_results(csv_path="backtest/results_stage_2.csv"):
+def load_previous_results(csv_path="research/round_2/results/backtests.csv"):
     """Return { (filepath, universe): passed_bool } for SIMULATED passing rows only."""
     rows = load_results_csv(csv_path)
     prev = {}

@@ -5,7 +5,7 @@ Submit strategy files to XNOQuant and fetch backtest metrics automatically.
 Interactive mode: enter one file path at a time, type 'done' to finish.
 Batch mode: submit all discovered strategy files (filtered by universe).
 
-Results are saved to: backtest/results_stage_2.csv
+Results are saved to: research/round_2/results/backtests.csv
 
 Universe handling (one editor per cap, recommended):
   - Configure one editor PER universe in .env:
@@ -19,7 +19,7 @@ Universe handling (one editor per cap, recommended):
     must already be on the matching universe.
   - `--universe` FILTERS which files are submitted (by cap folder), it is NOT
     an override tag. The universe written to CSV is always derived from the
-    file's cap folder (output/stage_2/<cap>/<mode>/<file>.py).
+    file's cap folder (research/round_2/strategies/<cap>/<mode>/<file>.py).
   - Batch mode refuses to submit files from multiple caps in one run.
   - A live batch run requires explicit confirmation of the editor universe.
 
@@ -170,7 +170,7 @@ def wait_for_metrics(session, strategy_id: str, timeout: int = POLL_TIMEOUT) -> 
 
 
 def infer_universe_from_path(fpath: str) -> str:
-    """Derive universe from output/stage_2/<cap>/<mode>/<file>.py layout."""
+    """Derive universe from research/round_2/strategies/<cap>/<mode>/<file>.py layout."""
     norm = fpath.replace("\\", "/")
     parts = norm.split("/")
     for p in parts:
@@ -196,7 +196,7 @@ def resolve_universe(fpath: str, explicit: str) -> str:
 
 
 def load_index() -> list:
-    """Read output/index.csv as the manifest source of truth. Returns list of dict rows."""
+    """Read research/round_2/manifests/strategies.csv as the manifest source of truth. Returns list of dict rows."""
     idx_path = os.path.join(BASE_DIR, "research", "round_2", "manifests", "strategies.csv")
     if not os.path.isfile(idx_path):
         return []
@@ -205,7 +205,7 @@ def load_index() -> list:
 
 
 def discover_batch_files() -> list:
-    """Discover Round-2 strategy files from the manifest (output/index.csv).
+    """Discover Round-2 strategy files from the manifest (research/round_2/manifests/strategies.csv).
     Only .py files that are BOTH in the manifest and on disk are eligible."""
     files = []
     for row in load_index():
@@ -413,7 +413,7 @@ def run_files_mode(files: list, args) -> int:
         if len(inferred) == 1 and "" not in inferred:
             universe = inferred.pop()
         elif "" in inferred:
-            print("[ERROR] Cannot infer universe from path(s) — file outside output/stage_2/<cap>/")
+            print("[ERROR] Cannot infer universe from path(s) — file outside research/round_2/strategies/<cap>/")
             return 1
         else:
             print(f"[ERROR] --files spans multiple universes: {sorted(inferred)}. Use --universe to filter.")
@@ -497,7 +497,7 @@ def run_files_mode(files: list, args) -> int:
 def run_batch_mode(args) -> int:
     files = discover_batch_files()
     if not files:
-        print("[!] Khong tim thay file strategy nao trong output/index.csv + output/stage_2/")
+        print("[!] Khong tim thay file strategy nao trong research/round_2/manifests/strategies.csv + research/round_2/strategies/")
         return 1
 
     if args.universe:
@@ -684,7 +684,7 @@ def main():
             break
         universe = infer_universe_from_path(fpath)
         if not universe:
-            print("  [!] Khong infer duoc universe tu path — file phai nam trong output/stage_2/<cap>/")
+            print("  [!] Khong infer duoc universe tu path — file phai nam trong research/round_2/strategies/<cap>/")
             continue
         env = require_env(universe)
         if not env:

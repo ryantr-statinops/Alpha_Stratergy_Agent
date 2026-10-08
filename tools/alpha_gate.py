@@ -30,7 +30,7 @@ UNIVERSES = ("vn_large_cap", "vn_mid_cap", "vn_small_cap")
 def iter_alpha_files(universe=None):
     us = [universe] if universe else list(UNIVERSES)
     for u in us:
-        base = os.path.join(ROOT, "output", "stage_2", u, "cross_sectional")
+        base = os.path.join(ROOT, "research", "round_2", "strategies", u, "cross_sectional")
         if not os.path.isdir(base):
             continue
         for fn in sorted(os.listdir(base)):

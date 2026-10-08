@@ -3,8 +3,8 @@ import pandas as pd
 import os
 
 # The earlier test saved to this path
-src = "backtest/data/cache/vn30f2506_5m_test.parquet"
-dst = "backtest/data/cache/vn30f_5m.parquet"
+src = "data_local/round_1/cache/vn30f2506_5m_test.parquet"
+dst = "data_local/round_1/cache/vn30f_5m.parquet"
 
 if os.path.exists(src):
     df = pd.read_parquet(src)

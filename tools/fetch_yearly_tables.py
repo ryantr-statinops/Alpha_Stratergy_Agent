@@ -53,7 +53,7 @@ def parse_args():
                         "(Gate 1-3 only, simulate stage). Compact output.")
     p.add_argument("--out", default="",
                    help="CSV output path for scan summary (Gate 1-3 flags)")
-    p.add_argument("--csv", default=os.path.join("backtest", "results_stage_2.csv"))
+    p.add_argument("--csv", default=os.path.join("research", "round_2", "results", "backtests.csv"))
     p.add_argument("--delay", type=float, default=1.0)
     return p.parse_args()
 

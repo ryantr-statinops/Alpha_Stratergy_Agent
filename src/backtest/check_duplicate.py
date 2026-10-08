@@ -12,8 +12,9 @@ import os, re, json, sys
 from pathlib import Path
 from collections import defaultdict
 
-ALPHA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "output", "data_type_alpha")
-INDEX_PATH = os.path.join(os.path.dirname(__file__), "strategy_index.json")
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+ALPHA_DIR = os.path.join(ROOT_DIR, "research", "round_1", "strategies", "by_type", "data_type_alpha")
+INDEX_PATH = os.path.join(ROOT_DIR, "research", "round_1", "manifests", "strategy_index.json")
 
 FEAT_PATTERN = re.compile(r"self\.feat\.(\w+)\(")
 DATA_PATTERN = re.compile(r"self\.data\.(\w+)")

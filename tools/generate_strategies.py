@@ -7,8 +7,8 @@ import os
 import re
 from itertools import product
 
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "output")
-INDEX_PATH = os.path.join(OUTPUT_DIR, "index.csv")
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "research", "round_1", "strategies")
+INDEX_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "research", "round_1", "manifests", "generated_index.csv")
 
 THESIS_FOLDERS = {
     "01": "thesis_01_rolling_mean_quantile",
@@ -2900,7 +2900,7 @@ def generate():
                 summary, idea = TEMPLATE_META.get(base, (descr, descr))
 
                 # Write file into thesis subfolder
-                folder = THESIS_FOLDERS.get(thesis, "other")
+                folder = os.path.join("by_thesis", THESIS_FOLDERS.get(thesis, "other"))
                 os.makedirs(os.path.join(OUTPUT_DIR, folder), exist_ok=True)
                 fname = f"{_safe_name(name)}_{tf}min_{seq:04d}.py"
                 fpath = os.path.join(OUTPUT_DIR, folder, fname)

@@ -2,13 +2,13 @@
 """Layer 4 Economic Validation (static/offline).
 
 Cross-statement consistency checks for every cross-sectional alpha under
-output/stage_2. Unlike Layer 3 (factor quality), Layer 4 validates data truth:
+research/round_2/strategies. Unlike Layer 3 (factor quality), Layer 4 validates data truth:
 does the strategy pair the right statements at the right frequency, and does it
 mix annual into quarterly ratios (suspected root cause of the 22 zero files)?
 
 Data sources (offline, no API calls):
-  1. strategy .py files under output/stage_2/**/cross_sectional/
-  2. backtest/results_stage_2.csv for metrics (matched by filename)
+  1. strategy .py files under research/round_2/strategies/**/cross_sectional/
+  2. research/round_2/results/backtests.csv for metrics (matched by filename)
 """
 
 from __future__ import annotations
@@ -19,9 +19,9 @@ import os
 import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STAGE2 = os.path.join(ROOT, "output", "stage_2")
-RESULTS = os.path.join(ROOT, "backtest", "results_stage_2.csv")
-DEFAULT_OUT = os.path.join(ROOT, "backtest", "economic_validation.csv")
+STAGE2 = os.path.join(ROOT, "research", "round_2", "strategies")
+RESULTS = os.path.join(ROOT, "research", "round_2", "results", "backtests.csv")
+DEFAULT_OUT = os.path.join(ROOT, "research", "round_2", "results", "analysis", "economic_validation.csv")
 
 # Pair definitions used by MASTER Layer 4. Each entry: (check_name, list of
 # regex fragments matching field families on either side of the pair).

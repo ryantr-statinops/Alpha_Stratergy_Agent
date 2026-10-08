@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Retention audit for stage-2 strategies — multiple-testing math + parameter plateau.
 
-Reads backtest/results_stage_2.csv, dedups to latest per (filepath, universe),
+Reads research/round_2/results/backtests.csv, dedups to latest per (filepath, universe),
 and for every SIMULATED family reports:
 
   N        candidates tested
@@ -24,7 +24,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import build_latest, getf, load_results_csv, row_status, row_key
 
-DEFAULT_CSV = os.path.join("backtest", "results_stage_2.csv")
+DEFAULT_CSV = os.path.join("research", "round_2", "results", "backtests.csv")
 TRAIN_MIN = 1.0
 TEST_MIN = 1.0
 ALPHA = 0.05
