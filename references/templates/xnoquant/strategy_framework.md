@@ -103,7 +103,7 @@ class CustomStrategy(SimpleAlgorithm):
 
 ## 2.2 Data Access Patterns
 
-> Catalog đầy đủ tại [`references/syntax/data_syntax.md`](../references/syntax/data_syntax.md).
+> Catalog đầy đủ tại [`references/syntax/data_syntax.md`](../../syntax/data_syntax.md).
 
 ### Price / Volume (time_series — không suffix)
 ```python

@@ -107,7 +107,7 @@ Window sizing convention theo timeframe:
 
 ## 2.2 Data Access Patterns
 
-> Xem chi tiết field tại [`references/syntax/data_syntax.md`](../references/syntax/data_syntax.md).
+> Xem chi tiết field tại [`references/syntax/data_syntax.md`](../../../syntax/data_syntax.md).
 
 ### Core OHLCV
 ```python
