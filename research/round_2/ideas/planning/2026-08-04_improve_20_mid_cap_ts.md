@@ -184,7 +184,7 @@ squeeze = self.op.rolling_quantile(bb_width, window=63, quantile=0.15)
 
 ### Step 4: Validate + Submit
 
-- [ ] `python tools/validate_framework.py --strict` → 0 issues
+- [ ] `python -m tools.round_2.validation.validate_framework --strict` → 0 issues
 - [ ] Dry-run submit batch VN-MID-CAP
 - [ ] Live submit → đo Test metrics
 

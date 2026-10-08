@@ -151,7 +151,7 @@ def apply_drawdown_protection(equity_curve: np.ndarray,
     return frozen
 ```
 
-### 2.3 Sửa tất cả templates trong `tools/generate_strategies.py`
+### 2.3 Sửa tất cả templates trong `tools.round_1.generate_strategies`
 
 **Pattern mới cho mỗi template:**
 

@@ -7,7 +7,7 @@ provides round-robin rotation for distributing alpha submissions across
 multiple XNOQuant editors.
 
 Usage:
-    from editor_pool import EditorPool
+    from tools.round_2.xnoquant.editor_pool import EditorPool
 
     pool = EditorPool(prefix="XNO_EDITOR_MID")
     for filepath in files:

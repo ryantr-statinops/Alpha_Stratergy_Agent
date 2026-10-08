@@ -80,7 +80,7 @@ Dùng Bollinger Bands thay MA20:
 
 | File | Location |
 |------|----------|
-| Template code | `tools/generate_strategies.py` |
+| Template code | `tools.round_1.generate_strategies` |
 | Backtest runner | `backtest/runners/thesis_10.py` |
 | Output files | `output/thesis_10_regime_based_mean_reversion/` |
 

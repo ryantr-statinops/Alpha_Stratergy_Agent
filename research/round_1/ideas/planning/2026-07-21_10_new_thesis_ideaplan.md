@@ -133,7 +133,7 @@ Use the current folder names and keep the `.py` files aligned with the thesis ID
 ### Phase 4 — Re-submit and measure
 
 #### 9. Re-run submit/check on the modified files only
-Use `tools/submit_and_check.py` in interactive mode or a controlled batch so only updated files are re-tested.
+Use `tools.round_2.xnoquant.submit_and_check` in interactive mode or a controlled batch so only updated files are re-tested.
 
 **Target outcome:** compare new metrics to the first pass and identify winners.
 

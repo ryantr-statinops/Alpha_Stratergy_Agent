@@ -1,6 +1,6 @@
 """
 Alpha Bot Backtest Engine — Orchestrator
-Reads template configs from tools/generate_strategies.py to mirror output/ exactly.
+Reads template configs from tools/round_1/generate_strategies.py to mirror output/ exactly.
 """
 import os, sys, time, pandas as pd, numpy as np
 from itertools import product

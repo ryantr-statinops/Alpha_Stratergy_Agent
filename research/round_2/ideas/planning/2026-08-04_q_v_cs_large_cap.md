@@ -90,7 +90,7 @@ regression/lambda/import/shift âm.
 1. ✅ Viết plan.
 2. ✅ Gen 10 file `output/stage_2/vn_large_cap/cross_sectional/`.
 3. ✅ Đăng ký vào `output/index.csv` (thesis_group `cash_quality` / `valuation_residual`).
-4. ✅ `python tools/validate_framework.py --strict` → 0 issues.
+4. ✅ `python -m tools.round_2.validation.validate_framework --strict` → 0 issues.
 5. ✅ Dry-run → live submit 10/10 (dùng `--files`), có rate-limit retry.
 6. ✅ `check_results` → so Train/Test vs `VnLargeCsCashFlowYield`/`VnLargeCsValueMomentum`.
 

@@ -4,7 +4,7 @@
 > **Status:** ACTIVE — là chuẩn bắt buộc trước khi promote bất kỳ alpha nào lên production.
 > **Architecture:** 7-Layer Research Pipeline (see `MASTER_alpha_planning.md`)
 > **Scope:** Cross-sectional + time-series stage-2, 3 universe VN.
-> **Tooling:** `tools/retention_audit.py`, `tools/fetch_yearly_tables.py` (cả hai GET-only / CSV-only, không đụng submit).
+> **Tooling:** `tools.round_2.results.retention_audit`, `tools.round_2.xnoquant.fetch_yearly_tables` (cả hai GET-only / CSV-only, không đụng submit).
 
 ---
 
@@ -70,7 +70,7 @@ Một alpha chỉ được coi là **robust candidate** (đủ điều kiện t�
 ## 4. Kết quả chạy Gate 1–3 (2026-08-05)
 
 ### 4.1 Bốn candidate SMALL — ĐỀU PASS
-`python tools/fetch_yearly_tables.py --strategy-id DSbhQzWjPi ...`
+`python -m tools.round_2.xnoquant.fetch_yearly_tables --strategy-id DSbhQzWjPi ...`
 
 | Candidate | Sharpe 2020 | 2021 | 2022 | 2023 | 2024 | Dương/5 | Gate |
 |-----------|-----|-----|-----|-----|-----|-----|------|
@@ -165,19 +165,19 @@ PASS cả 6 gate → cân nhắc exposure scaling → promote
 
 ```bash
 # Retention math + plateau (CSV-only, không network)
-python tools/retention_audit.py --min-candidates 1
-python tools/retention_audit.py --plateau --min-variants 3
-python tools/retention_audit.py --universe VN-SMALL-CAP
+python -m tools.round_2.results.retention_audit --min-candidates 1
+python -m tools.round_2.results.retention_audit --plateau --min-variants 3
+python -m tools.round_2.results.retention_audit --universe VN-SMALL-CAP
 
 # Yearly summary-table + Gate 1–3 (GET-only, không ghi gì)
-python tools/fetch_yearly_tables.py --strategy-id <id> --strategy-id <id>
-python tools/fetch_yearly_tables.py --from-csv-prefix VnSmallCsFinancialNetPayout
-python tools/fetch_yearly_tables.py --from-csv-universe VN-SMALL-CAP --from-csv-prefix VnSmallCsValueTrend
+python -m tools.round_2.xnoquant.fetch_yearly_tables --strategy-id <id> --strategy-id <id>
+python -m tools.round_2.xnoquant.fetch_yearly_tables --from-csv-prefix VnSmallCsFinancialNetPayout
+python -m tools.round_2.xnoquant.fetch_yearly_tables --from-csv-universe VN-SMALL-CAP --from-csv-prefix VnSmallCsValueTrend
 ```
 
 ## 8. Kết quả Gate 1–3 scan toàn bộ train-pass (2026-08-05)
 
-`python tools/fetch_yearly_tables.py --scan-pass-train --out backtest/gate_1_3_scan.csv`
+`python -m tools.round_2.xnoquant.fetch_yearly_tables --scan-pass-train --out backtest/gate_1_3_scan.csv`
 → **84 train-pass (Sharpe train ≥ 1.2) → 41 PASS / 43 FAIL** (survival 0.49 vs retention train/test 0.05).
 
 **43 file EXCLUDE (chỉ pass train, không dùng):**

@@ -222,7 +222,7 @@ Do not select a mode merely because one produces a better backtest. The mode mus
 - [ ] Missing fundamentals are unavailable, not zero.
 - [ ] No SeriesT helper is assumed to support PanelT without evidence.
 - [ ] Quarterly/annual horizon mixing is economically justified.
-- [ ] The strategy passes `python tools/validate_framework.py --strict`.
+- [ ] The strategy passes `python -m tools.round_2.validation.validate_framework --strict`.
 
 ## 9. Canonical References
 

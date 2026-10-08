@@ -111,7 +111,7 @@ degrade > 15% so với baseline. Variant nào chỉ tăng aggregate nhờ một 
 1. ✅ Viết plan này.
 2. ✅ Gen 10 file vào `output/stage_2/vn_large_cap/time_series/`.
 3. ✅ Thêm 10 dòng vào `output/index.csv`.
-4. ✅ `python tools/validate_framework.py --strict` → 0 issues.
+4. ✅ `python -m tools.round_2.validation.validate_framework --strict` → 0 issues.
 5. ✅ Dry-run submit batch VN-LARGE-CAP (`--dry-run`), xác nhận editor universe.
 6. ✅ Live submit 42/42 OK → `check_results`.
 

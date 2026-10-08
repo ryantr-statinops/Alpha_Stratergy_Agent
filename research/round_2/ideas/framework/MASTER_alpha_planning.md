@@ -708,7 +708,7 @@ Layer 6: Composite: core = earnings_yield * trend_ratio^12
 - [ ] Denominator guards on all ratios
 - [ ] Point-in-time: no backward shift/backfill
 - [ ] Sign conventions verified for cash-flow fields
-- [ ] Passes `python tools/validate_framework.py --strict`
+- [ ] Passes `python -m tools.round_2.validation.validate_framework --strict`
 
 ---
 

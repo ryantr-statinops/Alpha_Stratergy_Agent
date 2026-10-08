@@ -104,7 +104,7 @@ Daily fields constant intraday → all entries effective at first bar after dail
 
 | File | Location | Purpose |
 |------|----------|---------|
-| Template code | `tools/generate_strategies.py` | 3 code templates (T09-A/B/C) |
+| Template code | `tools.round_1.generate_strategies` | 3 code templates (T09-A/B/C) |
 | Backtest runner | `backtest/runners/thesis_09.py` | 3 numpy/pandas implementations |
 | Output files | `output/thesis_09_institutional_flow_arbitrage/` | 3 XNOQuant strategy files |
 | Tuning guide | `output/thesis_09_institutional_flow_arbitrage/README.md` | Vietnamese usage guide |

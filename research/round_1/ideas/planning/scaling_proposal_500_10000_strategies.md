@@ -64,7 +64,7 @@ Có thể mở bằng Excel, Google Sheets, hoặc filter bằng `grep`.
 Chỉ 1 script duy nhất, đọc alpha doc → tự sinh 10,000 files + index.csv:
 
 ```
-tools/generate_strategies.py
+tools.round_1.generate_strategies
 ```
 
 ```python

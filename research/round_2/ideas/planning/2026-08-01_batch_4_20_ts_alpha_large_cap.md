@@ -124,7 +124,7 @@ class CustomStrategy(SimpleAlgorithm):
 2. Viết plan này.
 3. Gen 20 file vào `output/stage_2/vn_large_cap/time_series/`.
 4. Thêm 20 dòng `time_series` vào `output/index.csv`.
-5. `python tools/validate_framework.py --strict` → 0 issues.
+5. `python -m tools.round_2.validation.validate_framework --strict` → 0 issues.
 6. Dry-run đúng 20 file → submit live qua editor LARGE.
 7. Tổng hợp PASS/FAIL, xếp hạng Sharpe/CAGR, phân tích theo nhóm A-D.
 

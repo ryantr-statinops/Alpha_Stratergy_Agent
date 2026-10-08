@@ -61,7 +61,7 @@ Xem kế hoạch đầy đủ: [`.agents/migration_plan_v2.md`](../.agents/migra
 2. Tôi viết lại references/syntax/*.md theo dữ liệu bạn điền
 3. Tôi viết tools/migrate_stage2.py (đọc migration_map + chuẩn hoá form)
 4. Chạy migrate: input/*.py → research/round_2/strategies/ + ghi research/round_2/manifests/strategies.csv
-5. Validate bằng tools/validate_framework.py (mở rộng rule mới)
+5. Validate bằng tools.round_2.validation.validate_framework (mở rộng rule mới)
 ```
 
 > **Lưu ý:** Thư mục này chỉ là tạm — file ở đây chưa được validate. Sau khi migrate xong, file nguồn có thể được xoá hoặc archive.

@@ -1,30 +1,39 @@
 # Tools
 
-Các round đã hoàn tất. Script được giữ để tra cứu hoặc tái lập nghiên cứu; script submission có thể gọi XNOQuant API khi chạy chế độ live.
+The research rounds are complete. Run package entry points from the repository root with `python -m ...`.
 
-## Round 2 — Vietnamese equities
+## Round 1 — generators
 
-| Script | Tác dụng | Mặc định |
-|---|---|---|
-| `validate_framework.py` | Kiểm tra strategy theo framework | `research/round_2/strategies/` và manifest mới |
-| `alpha_gate.py` | Chạy các bước kiểm tra offline trước submit | Round 2 cross-sectional strategies |
-| `factor_diagnostics.py` | Chẩn đoán feature/field | Backtests và analysis trong `research/round_2/results/` |
-| `economic_validation.py` | Kiểm tra nhất quán dữ liệu tài chính | Round 2 cross-sectional strategies |
-| `submit_and_check.py` | Gửi strategy, lấy metrics | Live API; cần cấu hình `.env` |
-| `check_results.py` | Lọc và xem kết quả | `research/round_2/results/backtests.csv` |
-| `backfill_split_metrics.py` | Lấy bổ sung train/test metrics | Chế độ chỉ đọc nếu không dùng `--write` |
-| `retention_audit.py` | Phân tích retention và parameter plateau | Round 2 backtests CSV |
-| `fetch_yearly_tables.py` | Lấy bảng kết quả theo năm | API read-only; cần token |
-| `update_guide_stats.py` | Tạo thống kê từ manifest | `research/round_2/manifests/strategies.csv` |
-
-## Round 1 — VN30F futures
-
-| Script | Tác dụng |
+| Utility | Command |
 |---|---|
-| `generate_strategies.py` | Generator strategy cũ; ghi vào `research/round_1/strategies/by_thesis/` |
-| `gen_single_feat.py` | Generator single-feature cũ; ghi vào `research/round_1/strategies/by_type/single_feat_alpha/` |
-| `src/backtest/run.py` | Chạy local backtest; cache trong `data_local/round_1/cache/` |
+| Strategy generator | `python -m tools.round_1.generate_strategies` |
+| Single-feature generator | `python -m tools.round_1.gen_single_feat <indicator> <feature-call> <threshold>` |
 
-## Dùng chung
+The local backtest engine is in `src/backtest/` and is documented in `src/backtest/README.md`.
 
-`common.py`, `editor_pool.py` và các helper hỗ trợ CLI Round 2. Xem `--help` của từng script để biết tùy chọn. Các hướng dẫn workflow lịch sử được lưu tại `docs/historical_agent_guides/`.
+## Round 2 — validation
+
+| Utility | Command |
+|---|---|
+| Framework validator | `python -m tools.round_2.validation.validate_framework [--strict]` |
+| Offline validation pipeline | `python -m tools.round_2.validation.alpha_gate` |
+| Factor diagnostics | `python -m tools.round_2.validation.factor_diagnostics` |
+| Economic validation | `python -m tools.round_2.validation.economic_validation` |
+
+## Round 2 — results
+
+| Utility | Command |
+|---|---|
+| Results report | `python -m tools.round_2.results.check_results` |
+| Retention audit | `python -m tools.round_2.results.retention_audit` |
+| Regenerate strategy stats | `python -m tools.round_2.results.update_guide_stats` |
+
+## Round 2 — XNOQuant
+
+| Utility | Command | Network behavior |
+|---|---|---|
+| Submit and fetch metrics | `python -m tools.round_2.xnoquant.submit_and_check` | Live submission can mutate an external editor and call the API |
+| Backfill split metrics | `python -m tools.round_2.xnoquant.backfill_split_metrics` | Read-only unless `--write` is supplied |
+| Fetch yearly tables | `python -m tools.round_2.xnoquant.fetch_yearly_tables` | GET-only API calls |
+
+Shared result parsing and pass criteria live in `tools/shared/common.py`. XNOQuant settings continue to load from the root `.env`.

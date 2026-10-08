@@ -127,7 +127,7 @@ giao dịch hoặc field lỗi → `REJECTED`; giữ nguyên bản ghi (không �
 1. ✅ Preregister plan này (trước khi test).
 2. ✅ Gen 20 file vào `output/stage_2/vn_mid_cap/time_series/`.
 3. ✅ Thêm 20 dòng vào `output/index.csv`.
-4. ✅ `python tools/validate_framework.py --strict` → 0 issues (119 files).
+4. ✅ `python -m tools.round_2.validation.validate_framework --strict` → 0 issues (119 files).
 5. ✅ Dry-run submit batch VN-MID-CAP (`--dry-run`) → 33/33 OK.
 6. ✅ Live submit 20/20 (1 file VERIFY_FAIL, 19 SIMULATED), ghi kết quả ở dưới.
 

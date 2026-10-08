@@ -102,7 +102,7 @@ Cross-sectional operators: `rank_cs_panel`, `zscore_cs_panel`, `winsorize_cs_pan
 2. **Chọn fields theo segment** (§2 bảng trên) → viết code trực tiếp vào `research/round_2/strategies/`.
 3. **Mode contract**: time_series (long-only `[0,+1]`, field không suffix) / cross_sectional (market-neutral, field `_panel`).
 4. **Point-in-time**: report chỉ dùng sau ngày publish; missing = `.notna()`; cấm global aggregation/backfill.
-5. **Validate** `python tools/validate_framework.py` → **Submit** `python tools/submit_and_check.py --batch --universe <CAP>`.
+5. **Validate** `python -m tools.round_2.validation.validate_framework` → **Submit** `python -m tools.round_2.xnoquant.submit_and_check --batch --universe <CAP>`.
 
 ---
 

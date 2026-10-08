@@ -172,7 +172,7 @@ long_setup = slowk > 50
 exit_setup = self.op.crossed_above_value(slowk, 50) | self.op.crossed_below_value(slowk, 50)
 ```
 
-> ⚠️ `tools/gen_single_feat.py` chỉ hoạt động cho function trả về 1 Series. 
+> ⚠️ `tools.round_1.gen_single_feat` chỉ hoạt động cho function trả về 1 Series. 
 > Với tuple functions, phải manual viết code — dùng mẫu trên.
 
 ---
@@ -184,7 +184,7 @@ exit_setup = self.op.crossed_above_value(slowk, 50) | self.op.crossed_below_valu
 3. **Session gating**: Luôn thêm `position_open_ranges`, `position_close_ranges`, `position_close_after_n_candles` cho VNFuture
 4. **Không cần class attributes**: Threshold hardcode trực tiếp trong logic
 5. **Không cần ATR / stop-loss**: Pattern đơn giản, exit duy nhất bằng crossed
-6. **Sinh file mới**: Dùng `python tools/gen_single_feat.py <indicator> <feat_call> <threshold> [--data <vars>]`
+6. **Sinh file mới**: Dùng `python -m tools.round_1.gen_single_feat <indicator> <feat_call> <threshold> [--data <vars>]`
 7. **`crossed_above_value`/`crossed_below_value` chỉ nhận `float`**, không nhận Series. Dùng `crossed_above`/`crossed_below` cho Series.
 8. **Tuple functions** (macd, bbands, mama, stoch, ...) dùng tuple unpacking, không dùng dict access.
 

@@ -130,7 +130,7 @@ Do not optimize period, threshold, factor composition, mask, sizing, and exit in
 
 ## 7. Universe Pass Thresholds
 
-The executable source of truth is `PASS_THRESHOLDS_BY_UNIVERSE` in `tools/common.py`. Current documented targets are:
+The executable source of truth is `PASS_THRESHOLDS_BY_UNIVERSE` in `tools/shared/common.py`. Current documented targets are:
 
 | Universe | Sharpe | CAGR | MaxDD | Profit Factor | Calmar |
 |---|---:|---:|---:|---:|---:|
@@ -138,7 +138,7 @@ The executable source of truth is `PASS_THRESHOLDS_BY_UNIVERSE` in `tools/common
 | `VN-MID-CAP` | >= 1.0 | >= 18% | >= -40% | >= 1.10 | >= 0.8 |
 | `VN-LARGE-CAP` | >= 1.2 | >= 15% | >= -35% | >= 1.20 | >= 1.1 |
 
-If this table and `tools/common.py` differ, the code is authoritative and this file must be updated.
+If this table and `tools/shared/common.py` differ, the code is authoritative and this file must be updated.
 
 Final OOS PASS requires all five test metrics to pass. Aggregate PASS cannot override Test FAIL.
 
@@ -294,9 +294,9 @@ validation_status: OOS_FAIL
 ## 15. Operational Checks
 
 ```bash
-python tools/validate_framework.py --strict
-python tools/submit_and_check.py --batch --dry-run --universe VN-<CAP>
-python tools/check_results.py --splits --universe VN-<CAP>
+python -m tools.round_2.validation.validate_framework --strict
+python -m tools.round_2.xnoquant.submit_and_check --batch --dry-run --universe VN-<CAP>
+python -m tools.round_2.results.check_results --splits --universe VN-<CAP>
 ```
 
 `--dry-run` does not call the API. Universe must still be selected manually on the XNOQuant editor before a live submit.

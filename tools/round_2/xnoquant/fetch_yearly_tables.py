@@ -25,7 +25,6 @@ import time
 import requests
 from dotenv import load_dotenv
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from tools.shared.common import build_latest, getf, load_results_csv, row_status
 from tools.round_2.xnoquant.submit_and_check import BASE_DIR, build_headers
 

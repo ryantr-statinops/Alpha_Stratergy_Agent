@@ -153,6 +153,6 @@ class CustomStrategy(SimpleAlgorithm):
 
 - [ ] Cập nhật `HYPOTHESIS_LIBRARY.md` (Vietnam Evidence cho từng hypothesis mới)
 - [ ] Cặp phủ khớp script scan (không dùng field ngoài cặp)
-- [ ] `python tools/validate_framework.py --strict` pass 0 issue
-- [ ] Submit song song: `tools/submit_and_check.py --parallel --workers <n> --force --yes`
+- [ ] `python -m tools.round_2.validation.validate_framework --strict` pass 0 issue
+- [ ] Submit song song: `tools.round_2.xnoquant.submit_and_check --parallel --workers <n> --force --yes`
 - [ ] Ghi kết quả vào `backtest/results_stage_2.csv` (tự động) + cập nhật evidence trong library

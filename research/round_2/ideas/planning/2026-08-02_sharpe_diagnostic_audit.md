@@ -182,7 +182,7 @@ common-regime loss thay vì tăng exposure trong 2020–2021.
 
 ## Confirmed OOS status (audit refresh)
 
-Kiểm lại ngày 2026-08-04 với `tools/check_results.py --pass --universe ...` trên
+Kiểm lại ngày 2026-08-04 với `tools.round_2.results.check_results --pass --universe ...` trên
 `backtest/results_stage_2.csv` (split-metric):
 
 - **VN-MID-CAP: 0/13 PASS** — `No matching results found`.
