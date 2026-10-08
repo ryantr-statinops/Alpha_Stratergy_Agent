@@ -24,7 +24,7 @@ class CustomStrategy(SimpleAlgorithm):
 
 def make_tree():
     tmp = tempfile.mkdtemp()
-    base = os.path.join(tmp, "output", "stage_2")
+    base = os.path.join(tmp, "research", "round_2", "strategies")
     files = {
         "vn_small_cap/time_series/A.py": CODE,
         "vn_small_cap/cross_sectional/B.py": CODE,
@@ -36,7 +36,7 @@ def make_tree():
         os.makedirs(os.path.dirname(abspath), exist_ok=True)
         with open(abspath, "w", encoding="utf-8") as f:
             f.write(content)
-    index = os.path.join(tmp, "output", "index.csv")
+    index = os.path.join(tmp, "research", "round_2", "manifests", "strategies.csv")
     header = "filepath,thesis_group,template,mode,universe,description,params"
     rows = []
     for rel in files:
@@ -53,8 +53,8 @@ class TestPathInference(unittest.TestCase):
     def test_infer_universe(self):
         cases = [
             (r"output\stage_2\vn_small_cap\time_series\A.py", "VN-SMALL-CAP"),
-            ("output/stage_2/vn_mid_cap/time_series/C.py", "VN-MID-CAP"),
-            ("output/stage_2/vn_large_cap/cross_sectional/D.py", "VN-LARGE-CAP"),
+            ("research/round_2/strategies/vn_mid_cap/time_series/C.py", "VN-MID-CAP"),
+            ("research/round_2/strategies/vn_large_cap/cross_sectional/D.py", "VN-LARGE-CAP"),
             ("/somewhere/else.py", ""),
         ]
         for path, expected in cases:
@@ -62,7 +62,7 @@ class TestPathInference(unittest.TestCase):
 
     def test_resolve_universe_ignores_explicit(self):
         # explicit --universe is a FILTER, never overrides the cap-derived value
-        f = "output/stage_2/vn_small_cap/time_series/A.py"
+        f = "research/round_2/strategies/vn_small_cap/time_series/A.py"
         self.assertEqual(sub.resolve_universe(f, "VN-MID-CAP"), "VN-SMALL-CAP")
 
 
@@ -70,8 +70,8 @@ class TestFilterByUniverse(unittest.TestCase):
 
     def test_filter_small_cap(self):
         tmp = make_tree()
-        files = [os.path.join(tmp, "output", "stage_2", "vn_small_cap", "time_series", "A.py"),
-                 os.path.join(tmp, "output", "stage_2", "vn_mid_cap", "time_series", "C.py")]
+        files = [os.path.join(tmp, "research", "round_2", "strategies", "vn_small_cap", "time_series", "A.py"),
+                 os.path.join(tmp, "research", "round_2", "strategies", "vn_mid_cap", "time_series", "C.py")]
         matching, skipped = sub.filter_files_by_universe(files, "VN-SMALL-CAP")
         self.assertEqual(len(matching), 1)
         self.assertIn("A.py", matching[0])
@@ -79,7 +79,7 @@ class TestFilterByUniverse(unittest.TestCase):
 
     def test_invalid_universe_returns_empty(self):
         tmp = make_tree()
-        files = [os.path.join(tmp, "output", "stage_2", "vn_small_cap", "time_series", "A.py")]
+        files = [os.path.join(tmp, "research", "round_2", "strategies", "vn_small_cap", "time_series", "A.py")]
         matching, skipped = sub.filter_files_by_universe(files, "VN-NOPE")
         self.assertEqual(matching, [])
         self.assertEqual(skipped, files)
@@ -89,7 +89,7 @@ class TestDiscoverBatchFiles(unittest.TestCase):
 
     def test_discover_uses_manifest_not_raw_walk(self):
         tmp = make_tree()
-        base = os.path.join(tmp, "output", "stage_2")
+        base = os.path.join(tmp, "research", "round_2", "strategies")
         # add an orphan file NOT in the manifest
         orphan = os.path.join(base, "vn_small_cap", "time_series", "Orphan.py")
         os.makedirs(os.path.dirname(orphan), exist_ok=True)
@@ -115,7 +115,7 @@ class TestRunBatchMode(unittest.TestCase):
         tmp = make_tree()
         with mock.patch.object(sub, "BASE_DIR", tmp), \
              mock.patch.object(sub, "discover_batch_files") as mdisc:
-            mdisc.return_value = [os.path.join(tmp, "output", "stage_2", "vn_small_cap", "time_series", "A.py")]
+            mdisc.return_value = [os.path.join(tmp, "research", "round_2", "strategies", "vn_small_cap", "time_series", "A.py")]
             with mock.patch.object(sub, "run_http_sequence") as mrun:
                 rc = sub.run_batch_mode(self._args(dry_run=True, universe="VN-SMALL-CAP"))
                 self.assertEqual(rc, 0)

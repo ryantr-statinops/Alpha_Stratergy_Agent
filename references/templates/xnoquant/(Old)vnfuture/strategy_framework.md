@@ -107,7 +107,7 @@ Window sizing convention theo timeframe:
 
 ## 2.2 Data Access Patterns
 
-> Xem chi tiết field tại [`syntax/data_syntax.md`](../syntax/data_syntax.md).
+> Xem chi tiết field tại [`references/syntax/data_syntax.md`](../references/syntax/data_syntax.md).
 
 ### Core OHLCV
 ```python
@@ -369,7 +369,7 @@ op_price = ...
 
 ## 5.2 Remove Documentation Type Hints
 
-Các tài liệu trong `syntax/` có thể chứa:
+Các tài liệu trong `references/syntax/` có thể chứa:
 
 ```python
 SeriesT = None
@@ -562,9 +562,9 @@ z_exit = 2.0        # thoát khi |z| < 2.0 — SÁT entry
 
 ---
 
-## 5.10 Tham số phải tuân theo `syntax/parameters.md`
+## 5.10 Tham số phải tuân theo `references/syntax/parameters.md`
 
-Mọi indicator parameter (timeperiod, window, fastperiod, ...) phải khớp với giá trị chuẩn trong `syntax/parameters.md` cho timeframe tương ứng.
+Mọi indicator parameter (timeperiod, window, fastperiod, ...) phải khớp với giá trị chuẩn trong `references/syntax/parameters.md` cho timeframe tương ứng.
 
 ### Đúng
 ```python
@@ -638,10 +638,10 @@ long_setup = (close > sma) & (adx > 22)
 Trước khi sinh bất kỳ file `.py` nào, AI Agent phải xác nhận đã đáp ứng đầy đủ các điều kiện sau:
 
 - [ ] Đã đọc toàn bộ tài liệu trong `data/`
-- [ ] Đã đọc `syntax/data_syntax.md`
-- [ ] Đã đọc `syntax/syntax_guide.md`
-- [ ] Đã đọc các catalog trong `syntax/`
-- [ ] Đã tham khảo `template_example/`
+- [ ] Đã đọc `references/syntax/data_syntax.md`
+- [ ] Đã đọc `references/syntax/syntax_guide.md`
+- [ ] Đã đọc các catalog trong `references/syntax/`
+- [ ] Đã tham khảo `references/templates/xnoquant/`
 - [ ] Chỉ sử dụng API chính thức của XNOQuant
 - [ ] Không sử dụng thư viện hoặc framework ngoài nếu không được yêu cầu
 - [ ] Không giữ lại các type hint từ tài liệu (`SeriesT`, `-> SeriesT`, ...)
@@ -652,7 +652,7 @@ Trước khi sinh bất kỳ file `.py` nào, AI Agent phải xác nhận đã �
 - [ ] Có guard mutual exclusion giữa long và short (`assert not (long_signal & short_signal).any()`)
 - [ ] Có neutral zone giữa entry và exit threshold (`z_exit < z_entry`, `adx_exit < adx_entry`, ...)
 - [ ] `long_setup`/`short_setup` gốc được giữ nguyên, signal masked lưu vào biến riêng (`long_signal`, `short_signal`)
-- [ ] Tham số indicator phải khớp với `syntax/parameters.md` (Rule 5.10)
+- [ ] Tham số indicator phải khớp với `references/syntax/parameters.md` (Rule 5.10)
 - [ ] Exit_setup chỉ có **1 condition** duy nhất (Rule 5.11)
 - [ ] Entry_setup có **3-4 conditions** (Rule 5.12)
 - [ ] Mã nguồn có thể chạy trực tiếp trên nền tảng XNOQuant mà không cần chỉnh sửa thêm.

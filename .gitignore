@@ -29,8 +29,8 @@ venv/
 # Output: track everything (stage_1, stage_2, manifests)
 
 #back_test
-backtest/results.csv
-backtest/out_analysis/*.png
+research/round_1/results/backtest.csv
+research/round_2/results/analysis/out_analysis/*.png
 
 # R scratch
 .Rhistory

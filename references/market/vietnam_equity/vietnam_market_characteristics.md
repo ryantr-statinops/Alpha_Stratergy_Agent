@@ -2,8 +2,8 @@
 
 > Tài liệu tham chiếu đặc thù thị trường cổ phiếu Việt Nam → chọn nhanh
 > **features/fields** phù hợp khi thiết kế strategy Round 2 (equity fundamental,
-> daily, 3 cap segments). Đọc trước khi code, cùng `syntax/data_syntax.md`,
-> `syntax/time_series/feature_syntax.md`, `syntax/time_series/operations_syntax.md`, `syntax/cross_sectional/feature_syntax.md`, `syntax/cross_sectional/operations_syntax.md`.
+> daily, 3 cap segments). Đọc trước khi code, cùng `references/syntax/data_syntax.md`,
+> `references/syntax/time_series/feature_syntax.md`, `references/syntax/time_series/operations_syntax.md`, `references/syntax/cross_sectional/feature_syntax.md`, `references/syntax/cross_sectional/operations_syntax.md`.
 >
 > Bản v1 (VN30F1M futures intraday) đã chuyển sang `vietnam_market_characteristics_v1.md`.
 >
@@ -45,7 +45,7 @@ Bảng này là **core reference** cho quyết định "dùng field/feature nào
 
 ## 3. Thư viện fields thực dụng (đã verify trong catalog)
 
-> Danh sách đầy đủ: `syntax/data_syntax.md` (496 fields). Dưới đây là các field
+> Danh sách đầy đủ: `references/syntax/data_syntax.md` (496 fields). Dưới đây là các field
 > **đã verify tồn tại trong catalog** — ưu tiên dùng để tránh lỗi submit.
 
 ### 3.1. Price / Volume (cả 2 mode)
@@ -99,7 +99,7 @@ Cross-sectional operators: `rank_cs_panel`, `zscore_cs_panel`, `winsorize_cs_pan
 ## 5. Pipeline Round 2 (nhắc lại)
 
 1. **Khai báo batch** (rule GUIDE.md): mỗi lần gen `n` alpha phải nêu alpha → cap → mode → level trước.
-2. **Chọn fields theo segment** (§2 bảng trên) → viết code trực tiếp vào `output/stage_2/`.
+2. **Chọn fields theo segment** (§2 bảng trên) → viết code trực tiếp vào `research/round_2/strategies/`.
 3. **Mode contract**: time_series (long-only `[0,+1]`, field không suffix) / cross_sectional (market-neutral, field `_panel`).
 4. **Point-in-time**: report chỉ dùng sau ngày publish; missing = `.notna()`; cấm global aggregation/backfill.
 5. **Validate** `python tools/validate_framework.py` → **Submit** `python tools/submit_and_check.py --batch --universe <CAP>`.
@@ -113,7 +113,7 @@ Cross-sectional operators: `rank_cs_panel`, `zscore_cs_panel`, `winsorize_cs_pan
 | Sharpe < ngưỡng cap | Signal nhiễu / không có trend filter / threshold quá chặt | Thêm price trend filter (close > ema), nới threshold, kết hợp 2-3 feature |
 | MaxDD quá sâu | Exit quá chậm / thiếu chất lượng lọc | Thêm exit khi trend break (ema), quality floor (ROE/margin) |
 | Cross_sectional lỗi "bounds" | Trộn mode / dùng `set_positions` trong panel | Dùng `set_portfolio_positions` + `portfolio_weights_panel` |
-| Lỗi field khi submit | Dùng field không có trong catalog | Chỉ dùng field verified (§3) hoặc tra `syntax/data_syntax.md` |
+| Lỗi field khi submit | Dùng field không có trong catalog | Chỉ dùng field verified (§3) hoặc tra `references/syntax/data_syntax.md` |
 | Kết quả không ổn định theo thời gian | Phụ thuộc 1 feature, phạm point-in-time | Diversify feature, tôn trọng report date |
 
 ---

@@ -6,7 +6,7 @@
 > equity fundamental daily, 3 cap segments).
 
 > Tài liệu tham chiếu về đặc thù thị trường Việt Nam và cách ánh xạ thành thiết kế chiến lược định lượng trên XNOQuant.
-> Đọc sau `README.md` và `template_example/strategy_framework.md`, trước khi code.
+> Đọc sau `README.md` và `references/templates/xnoquant/strategy_framework.md`, trước khi code.
 
 ---
 

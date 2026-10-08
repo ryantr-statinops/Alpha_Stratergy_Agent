@@ -4,7 +4,7 @@ Tài liệu này định nghĩa **Framework Specification** chuẩn cho mọi ch
 trên nền tảng **XNOQuant** trong **Round 2 — Fundamental Alpha Arena** (daily equity research).
 
 > **Nguồn tham chiếu chính thức:** `.agents/stage_2_guideline.md` (round rules).
-> **Nguồn parameter canonical:** `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md` (profiles + evidence status).
+> **Nguồn parameter canonical:** `references/syntax/time_series/parameters.md` + `references/syntax/cross_sectional/parameters.md` (profiles + evidence status).
 > Mọi AI Agent khi tạo mã nguồn (`.py`) trong thư mục `output/` **phải tuân thủ tuyệt đối**
 > các quy ước và ràng buộc kỹ thuật được mô tả trong tài liệu này.
 
@@ -103,7 +103,7 @@ class CustomStrategy(SimpleAlgorithm):
 
 ## 2.2 Data Access Patterns
 
-> Catalog đầy đủ tại [`syntax/data_syntax.md`](../syntax/data_syntax.md).
+> Catalog đầy đủ tại [`references/syntax/data_syntax.md`](../references/syntax/data_syntax.md).
 
 ### Price / Volume (time_series — không suffix)
 ```python
@@ -123,7 +123,7 @@ total_assets = self.data.fun_bs_total_assets_quarterly
 operating_cash_flow = self.data.fun_cf_net_cash_inflows_outflows_from_operating_activities_annual
 ```
 
-> Chỉ dùng field có trong `syntax/data_syntax.md`. Không dùng
+> Chỉ dùng field có trong `references/syntax/data_syntax.md`. Không dùng
 > `fun_is_total_operating_income_*` hoặc `fun_bs_shareholders_equity_*` vì hai
 > tên này không tồn tại trong catalog Round 2.
 
@@ -289,7 +289,7 @@ Không bao giờ đặt biến `open`. Dùng `open_price` hoặc `op_price`.
 
 ## 7.2 Bỏ Documentation Type Hints
 
-Các tài liệu trong `syntax/` có thể chứa `SeriesT`, `PanelT`, `-> SeriesT` — các ký hiệu này
+Các tài liệu trong `references/syntax/` có thể chứa `SeriesT`, `PanelT`, `-> SeriesT` — các ký hiệu này
 **chỉ dùng cho tài liệu**, không được xuất hiện trong mã nguồn sinh ra.
 
 Ví dụ: `self.feat.ema(close, timeperiod=8)` — không viết `ema(source: SeriesT = None)`.
@@ -334,7 +334,7 @@ report_trigger = report_known & (net_profit > 0) & (profit_growth > 0)
 
 ## 7.6 Parameter profiles
 
-`syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md` là nguồn canonical duy nhất cho period, threshold và
+`references/syntax/time_series/parameters.md` + `references/syntax/cross_sectional/parameters.md` là nguồn canonical duy nhất cho period, threshold và
 sizing parameter. Tài liệu này không duy trì một danh sách parameter song song.
 
 Quy tắc:
@@ -344,7 +344,7 @@ Quy tắc:
 - Luôn truyền explicit `timeperiod=`, `window=`, `fastperiod=`, `slowperiod=` và
   `signalperiod=`; không dựa vào implementation default.
 - Equity examples là bằng chứng tham khảo, không tự động biến parameter thành
-  `PASS`. Dùng evidence labels trong `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md`.
+  `PASS`. Dùng evidence labels trong `references/syntax/time_series/parameters.md` + `references/syntax/cross_sectional/parameters.md`.
 - MACD time-series phải unpack đủ ba outputs theo contract canonical.
 - Mỗi ablation chỉ thay một dimension: period, threshold, sizing hoặc exit.
 
@@ -462,7 +462,7 @@ riêng theo accounting archetype.
 3. Chạy ablation: baseline → +ROA → +cash conversion → +volume sizing.
 4. So sánh CAGR, Sharpe, Calmar, MaxDD, Profit Factor và turnover nếu có.
 5. Chỉ giữ component nếu cải thiện risk-adjusted metrics ổn định.
-6. Chọn canonical profile và robustness range từ `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md`; không
+6. Chọn canonical profile và robustness range từ `references/syntax/time_series/parameters.md` + `references/syntax/cross_sectional/parameters.md`; không
    copy một parameter family sang archetype khác nếu chưa có ablation.
 7. Không tối ưu đồng thời period, threshold, sizing và exit.
 8. Không đảo chiều hoặc thêm điều kiện chỉ để cứu một backtest.
@@ -498,9 +498,9 @@ riêng theo accounting archetype.
 Trước khi sinh bất kỳ file `.py` nào, AI Agent phải xác nhận:
 
 - [ ] Đã đọc `.agents/stage_2_guideline.md`
-- [ ] Đã đọc `syntax/data_syntax.md`, `syntax/time_series/feature_syntax.md`, `syntax/time_series/operations_syntax.md`, `syntax/cross_sectional/feature_syntax.md`, `syntax/cross_sectional/operations_syntax.md`
-- [ ] Đã đọc `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md` và chọn đúng canonical profile cho archetype
-- [ ] Đã tham khảo `template_example/VN-*/`
+- [ ] Đã đọc `references/syntax/data_syntax.md`, `references/syntax/time_series/feature_syntax.md`, `references/syntax/time_series/operations_syntax.md`, `references/syntax/cross_sectional/feature_syntax.md`, `references/syntax/cross_sectional/operations_syntax.md`
+- [ ] Đã đọc `references/syntax/time_series/parameters.md` + `references/syntax/cross_sectional/parameters.md` và chọn đúng canonical profile cho archetype
+- [ ] Đã tham khảo `references/templates/xnoquant/VN-*/`
 - [ ] Chỉ dùng 1 mode: `time_series` hoặc `cross_sectional` — không trộn
 - [ ] Field đúng mode: time_series không suffix / cross_sectional có `_panel`
 - [ ] Universe hợp lệ: VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP
