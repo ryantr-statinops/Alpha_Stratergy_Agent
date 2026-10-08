@@ -27,13 +27,7 @@ venv/
 # Git
 *.orig
 
-# Output
-output/*
-
-# Round 2 strategy sources: track generated .py (stage_2), ignore the rest of output/
-!output/stage_2/
-!output/stage_2/**/
-!output/stage_2/**/*.py
+# Output: track everything (stage_1, stage_2, manifests)
 
 #back_test
 backtest/results.csv
