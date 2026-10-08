@@ -14,7 +14,7 @@ from backtest.backtest import run_strategy
 from backtest.regime import detect_regime, strategy_allowed, regime_label
 
 # Import generator configs for exact parameter mirroring
-from tools.generate_strategies import TEMPLATES as GEN_TEMPLATES, TF_WINDOWS, ADX_ENTRY, ADX_EXIT, ADX_ENTRY_WEAK
+from tools.round_1.generate_strategies import TEMPLATES as GEN_TEMPLATES, TF_WINDOWS, ADX_ENTRY, ADX_EXIT, ADX_ENTRY_WEAK
 
 # Import all thesis runners
 from backtest.runners import thesis_01 as th01

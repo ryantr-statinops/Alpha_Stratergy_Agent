@@ -7,8 +7,9 @@ import os
 import re
 from itertools import product
 
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "research", "round_1", "strategies")
-INDEX_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "research", "round_1", "manifests", "generated_index.csv")
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+OUTPUT_DIR = os.path.join(ROOT_DIR, "research", "round_1", "strategies")
+INDEX_PATH = os.path.join(ROOT_DIR, "research", "round_1", "manifests", "generated_index.csv")
 
 THESIS_FOLDERS = {
     "01": "thesis_01_rolling_mean_quantile",

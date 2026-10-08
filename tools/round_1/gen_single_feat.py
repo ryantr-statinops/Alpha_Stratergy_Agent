@@ -2,23 +2,23 @@
 """
 Generate a single-feat alpha strategy file following the trend-following pattern.
 
-Parameters are read from syntax/parameters.md for 15min VNFuture.
+Parameters are read from the archived time-series catalog.
 
 Usage:
-    python tools/gen_single_feat.py <indicator> <feat_call> <threshold> [--data <vars>]
+    python -m tools.round_1.gen_single_feat <indicator> <feat_call> <threshold> [--data <vars>]
 
 Examples:
-    python tools/gen_single_feat.py rsi "rsi(close, timeperiod=14)" 50
-    python tools/gen_single_feat.py cci "cci(high, low, close, timeperiod=20)" 0 --data "high, low"
-    python tools/gen_single_feat.py cmo "cmo(close, timeperiod=14)" 0
-    python tools/gen_single_feat.py willr "willr(high, low, close, timeperiod=14)" -50 --data "high, low"
+    python -m tools.round_1.gen_single_feat rsi "rsi(close, timeperiod=14)" 50
+    python -m tools.round_1.gen_single_feat cci "cci(high, low, close, timeperiod=20)" 0 --data "high, low"
+    python -m tools.round_1.gen_single_feat cmo "cmo(close, timeperiod=14)" 0
+    python -m tools.round_1.gen_single_feat willr "willr(high, low, close, timeperiod=14)" -50 --data "high, low"
 """
 
 import os
 import sys
 import re
 
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PARAMETERS_FILE = os.path.join(ROOT_DIR, "references", "syntax", "time_series", "parameters.md")
 
 
