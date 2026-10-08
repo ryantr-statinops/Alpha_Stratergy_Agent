@@ -1,3 +1,5 @@
+> **Historical snapshot:** Preserved from the former `.agents/GUIDE.md`. Its paths and procedures describe the pre-reorganization repository and are not current instructions.
+
 # AI Agent Onboarding Guide — Alpha Bot
 
 > **Đọc file này đầu tiên khi bắt đầu phiên làm việc mới.**
@@ -14,8 +16,8 @@
 
 | # | File | Purpose | Đọc khi nào |
 |:-:|------|---------|-------------|
-| 1 | `.agents/stage_2_guideline.md` | **Rules chính thức Round 2** (universes, modes, point-in-time, scoring) | **Đầu phiên** |
-| 2 | `.agents/framework_build_guide.md` | **Blueprint build framework + gen strategy dễ→khó (Level 1-5, cả 2 mode)** | **Trước khi gen code** |
+| 1 | `.agents/skills/stage-2-guideline/SKILL.md` | **Rules chính thức Round 2** (universes, modes, point-in-time, scoring) | **Đầu phiên** |
+| 2 | `.agents/skills/framework-build-guide/SKILL.md` | **Blueprint build framework + gen strategy dễ→khó (Level 1-5, cả 2 mode)** | **Trước khi gen code** |
 | 3 | `template_example/strategy_framework.md` | **Master spec Round 2** — mode contract, templates, compliance checklist | **Trước khi code** |
 | 4 | `idea/planning_alpha/_framework/MASTER_alpha_planning.md` | **Master planning** — 4-layer construction (data → feat → mask → op → position), data groups, mask layers | **Khi bắt đầu plan alpha** |
 | 5 | `syntax/data_syntax.md` | 496 fields (PV/IS/BS/CF) + mode contract | **Khi chọn data** |
@@ -23,9 +25,9 @@
 | 7 | `syntax/time_series/operations_syntax.md`, `syntax/cross_sectional/operations_syntax.md` | 7 cross-sectional ops + time_series ops | **Khi cần operator** |
 | 8 | `syntax/time_series/parameters.md`, `syntax/cross_sectional/parameters.md` | Parameter chuẩn daily (ratio 1:3) | **Khi cần param** |
 | 9 | `template_example/VN-*/` | 14 examples Round 2 (BANK/INSURANCE/SECURITIES/TOP30) | **Khi tham khảo mẫu** |
-| 10 | `.agents/migration_plan_v2.md` | Kế hoạch migration V1→V2 (Phase A done, B done, C pending) | **Khi cần bối cảnh** |
+| 10 | `.agents/skills/migration-plan-v2/SKILL.md` | Kế hoạch migration V1→V2 (Phase A done, B done, C pending) | **Khi cần bối cảnh** |
 | 11 | `idea/planning_alpha/stage_2/` | **Idea Round 2** — mỗi alpha ghi 1 file markdown trước khi gen | **Khi bắt đầu gen alpha** |
-| 12 | `.agents/system_health_check.md` | **Health check Stage 2** — offline + API read-only + live opt-in | **Khi kiểm tra trạng thái hệ thống** |
+| 12 | `.agents/skills/system-health-check/SKILL.md` | **Health check Stage 2** — offline + API read-only + live opt-in | **Khi kiểm tra trạng thái hệ thống** |
 
 ---
 
@@ -154,7 +156,7 @@ Quy trình vận hành Round 2 (không có tool sinh code — agent viết trự
 #    Mỗi alpha phải có file markdown trong idea/planning_alpha/stage_2/ trước khi gen code.
 
 # 1. VIẾT STRATEGY theo blueprint → tạo file output/stage_2/ + ghi index.csv
-#    (theo .agents/framework_build_guide.md, Level 1-5, 1 trong 2 mode)
+#    (theo .agents/skills/framework-build-guide/SKILL.md, Level 1-5, 1 trong 2 mode)
 
 # 2. VALIDATE compliance (mode contract, point-in-time, bounds) — strict bắt cả warning
 python tools/validate_framework.py --strict
@@ -233,8 +235,8 @@ Khi gặp vấn đề, tra theo triệu chứng:
 
 | Triệu chứng | File cần đọc | Fix |
 |-------------|-------------|-----|
-| **Không biết bắt đầu gen strategy Round 2** | `.agents/framework_build_guide.md` | Blueprint Level 1-5 + 2 mode |
-| **Round 2 rules không rõ** | `.agents/stage_2_guideline.md` | Universes, modes, point-in-time, scoring |
+| **Không biết bắt đầu gen strategy Round 2** | `.agents/skills/framework-build-guide/SKILL.md` | Blueprint Level 1-5 + 2 mode |
+| **Round 2 rules không rõ** | `.agents/skills/stage-2-guideline/SKILL.md` | Universes, modes, point-in-time, scoring |
 | **Không biết field nào dùng được** | `syntax/data_syntax.md` | 496 fields + mode contract |
 | **Trộn series/panel bị lỗi** | `template_example/strategy_framework.md` §Mode Contract | Chọn 1 mode, đúng suffix |
 | **Fundamentals bị look-ahead** | `template_example/strategy_framework.md` §5 | Chỉ dùng sau ngày công bố, `.notna()` |
@@ -243,7 +245,7 @@ Khi gặp vấn đề, tra theo triệu chứng:
 | **Strategy không publish được** | `template_example/strategy_framework.md` §Checklist | Docstring thiếu thesis, position bounds sai |
 | **Look-ahead bias** | `template_example/strategy_framework.md` §Data Access | Dùng `pv_close` thay vì `pv_open` |
 | **Generator ra code sai** | `tools/generate_strategies.py` search `inject_filters` | Fix generator, regenerate |
-| **Không biết tham số nào cho TF nào** | `syntax/time_series/parameters.md` (Round 2) / `.agents/GUIDE.md` §Window Sizing (vòng 1) | Bảng tham số đầy đủ |
+| **Không biết tham số nào cho TF nào** | `syntax/time_series/parameters.md` (Round 2) / `.agents/AGENTS.md` §Window Sizing (vòng 1) | Bảng tham số đầy đủ |
 | **Cần thêm template mới** | `tools/generate_strategies.py` search `TEMPLATES` | Thêm vào TEMPLATES dict |
 | **Cần validate output** | `python tools/validate_framework.py --strict` | Run validator (strict bắt warning) |
 | **Cần hiểu VN market behavior** | `data/vietnam_market_characteristics.md` | Full analysis + mapping table |
@@ -324,11 +326,11 @@ Nguyên tắc: commit nhỏ, commit thường xuyên → dễ rollback, dễ rev
 
 | File | When to reference | 
 |------|-------------------|
-| `.agents/stage_2_guideline.md` | Every Round-2 session start — official rules |
-| `.agents/framework_build_guide.md` | Before generating Round-2 strategies |
+| `.agents/skills/stage-2-guideline/SKILL.md` | Every Round-2 session start — official rules |
+| `.agents/skills/framework-build-guide/SKILL.md` | Before generating Round-2 strategies |
 | `idea/planning_alpha/_framework/MASTER_alpha_planning.md` | Master planning — 4-layer construction (data → feat → mask → op → position) |
 | `data/vietnam_market_characteristics.md` | Round 2 — đặc thù 3 cap → chọn feature nhanh |
-| `.agents/migration_plan_v2.md` | Understanding V1→V2 migration status |
+| `.agents/skills/migration-plan-v2/SKILL.md` | Understanding V1→V2 migration status |
 | `tools/common.py` | Round 2 — `PASS_THRESHOLDS_BY_UNIVERSE`, `is_pass()` |
 | `tools/submit_and_check.py` | Round 2 — submit `output/stage_2/` → `backtest/results_stage_2.csv` |
 | `tools/check_results.py` | Round 2 — review results theo universe |

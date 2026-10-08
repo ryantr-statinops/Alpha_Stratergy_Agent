@@ -71,7 +71,7 @@ Nguồn: [HOSE VNMIDCAP Factsheet 30-01-2026](https://staticfile.hsx.vn/Uploads/
 
 `data/vietnam_market_characteristics.md` mô tả `VN-MID-CAP` là nhóm tăng trưởng chu kỳ, nhạy với ROE và leverage; ưu tiên ROE, capital ratio, profit growth cộng medium-term trend, tránh static cheapness đơn thuần. Đây là local prior quan trọng nhưng vẫn phải falsify bằng data.
 
-Round 2 yêu cầu daily equity, point-in-time, một strategy chỉ dùng `time_series` hoặc `cross_sectional`; fundamental chỉ được dùng sau publication date, missing không được zero-fill. Source of truth: `.agents/stage_2_guideline.md` và [XNOQuant VQC 2026](https://xnoquant.io/vqc2026).
+Round 2 yêu cầu daily equity, point-in-time, một strategy chỉ dùng `time_series` hoặc `cross_sectional`; fundamental chỉ được dùng sau publication date, missing không được zero-fill. Source of truth: `.agents/skills/stage-2-guideline/SKILL.md` và [XNOQuant VQC 2026](https://xnoquant.io/vqc2026).
 
 ### 2.2. Bằng chứng Việt Nam
 

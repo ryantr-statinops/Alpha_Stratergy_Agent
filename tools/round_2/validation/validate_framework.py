@@ -1,7 +1,7 @@
 """
 Alpha Bot — Framework Compliance Validator V2 (Round 2: Fundamental Alpha Arena)
 Checks generated strategies in research/round_2/strategies/ for round-2 framework compliance
-per .agents/stage_2_guideline.md + references/templates/xnoquant/strategy_framework.md.
+per .agents/skills/stage-2-guideline/SKILL.md + references/templates/xnoquant/strategy_framework.md.
 
 V2 additions:
 - Quét research/round_2/strategies/ (không phải toàn bộ output) + manifest research/round_2/manifests/strategies.csv (round 2).

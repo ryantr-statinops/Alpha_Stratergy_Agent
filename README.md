@@ -4,6 +4,8 @@ Kho nghiên cứu chiến lược định lượng cho hai round đã hoàn tấ
 
 ## Bắt đầu tra cứu
 
+- [Hướng dẫn agent](.agents/AGENTS.md)
+- [Bộ skill dự án](.agents/skills/)
 - [Tình trạng dự án](docs/project_status.md)
 - [Round 1 — VN30F futures intraday](docs/rounds/round_1/README.md)
 - [Round 2 — Vietnamese equities](docs/rounds/round_2/README.md)
@@ -16,7 +18,7 @@ Kho nghiên cứu chiến lược định lượng cho hai round đã hoàn tấ
 ```text
 .
 ├── .env                          # Cấu hình riêng hiện có, giữ ở root
-├── .agents/                      # Hướng dẫn agent/workflow lịch sử, được giữ nguyên
+├── .agents/                      # AGENTS.md và bộ skill/reference nghiệp vụ
 ├── docs/                         # Trạng thái dự án và hướng dẫn từng round
 ├── research/
 │   ├── round_1/

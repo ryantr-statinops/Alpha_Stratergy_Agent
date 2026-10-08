@@ -98,7 +98,7 @@ Cross-sectional operators: `rank_cs_panel`, `zscore_cs_panel`, `winsorize_cs_pan
 
 ## 5. Pipeline Round 2 (nhắc lại)
 
-1. **Khai báo batch** (rule GUIDE.md): mỗi lần gen `n` alpha phải nêu alpha → cap → mode → level trước.
+1. **Khai báo batch** (quy tắc trong `.agents/AGENTS.md` và skill `stage-2-guideline`): mỗi lần gen `n` alpha phải nêu alpha → cap → mode → level trước.
 2. **Chọn fields theo segment** (§2 bảng trên) → viết code trực tiếp vào `research/round_2/strategies/`.
 3. **Mode contract**: time_series (long-only `[0,+1]`, field không suffix) / cross_sectional (market-neutral, field `_panel`).
 4. **Point-in-time**: report chỉ dùng sau ngày publish; missing = `.notna()`; cấm global aggregation/backfill.

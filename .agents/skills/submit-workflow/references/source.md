@@ -1,6 +1,6 @@
 # Submit Workflow — Paste Code lên XNOQuant
 
-> Xem thêm: [`tools/INDEX.md`](../tools/INDEX.md) để biết tổng quan tất cả tools.
+> Xem thêm: [`tools/INDEX.md`](../../../../tools/INDEX.md) để biết tổng quan tất cả tools.
 >
 > **Round 2 (ACTIVE):** API giống vòng 1 nhưng script quét `output/stage_2/`, kết quả
 > ghi vào `backtest/results_stage_2.csv`, và pass criteria **theo universe** (xem §2 Round 2 bên dưới).

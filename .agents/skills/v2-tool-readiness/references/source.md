@@ -11,7 +11,7 @@
 | Nhóm | File | Phân loại cho V2 |
 |------|------|------------------|
 | **Đã sửa xong** | `tools/submit_and_check.py`, `tools/common.py`, `tools/check_results.py`, `tools/update_guide_stats.py` | stage_2 + universe + CSV tách |
-| **Đã làm xong** | `tools/validate_framework.py` (V2), `.agents/GUIDE.md` (round-2 first), `.agents/framework_build_guide.md`, `.agents/migration_plan_v2.md` | ✅ |
+| **Đã làm xong** | `tools/validate_framework.py` (V2), `.agents/AGENTS.md` (round-2 first), `.agents/skills/framework-build-guide/SKILL.md`, `.agents/skills/migration-plan-v2/SKILL.md` | ✅ |
 | **Vòng 1 (archived, không dùng V2)** | `tools/generate_strategies.py`, `tools/gen_single_feat.py`, `backtest/*` (toàn bộ), `data/*`, `idea/*` | Giữ nguyên, không chạm |
 
 ---
@@ -52,9 +52,9 @@
 ## 3. Tool ĐÃ XONG (không cần chạm)
 
 - `tools/validate_framework.py` — **V2 hoàn tất**: quét `stage_2/`, detect mode, bounds, point-in-time, `index.csv` mới. ✅
-- `.agents/GUIDE.md` — round-2 reading order đầu, vòng 1 archived. ✅ (phần Generator Usage dòng 199-224 là vòng 1, đã nằm dưới mục archived)
-- `.agents/framework_build_guide.md` — blueprint + roadmap đã đổi đúng (agent viết code trực tiếp). ✅
-- `.agents/migration_plan_v2.md` — Phase A/B done, C mô tả đúng. ✅
+- `.agents/AGENTS.md` — round-2 reading order đầu, vòng 1 archived. ✅ (phần Generator Usage dòng 199-224 là vòng 1, đã nằm dưới mục archived)
+- `.agents/skills/framework-build-guide/SKILL.md` — blueprint + roadmap đã đổi đúng (agent viết code trực tiếp). ✅
+- `.agents/skills/migration-plan-v2/SKILL.md` — Phase A/B done, C mô tả đúng. ✅
 
 ---
 
@@ -79,7 +79,7 @@
 |------|--------|------|
 | `README.md` | Dòng 15-55 (structure 8 thesis, VN30/DJI fields), 285-366 (batch submission vòng 1) | Thêm banner "vòng 1 archived", chỉ thêm phần V2 — không xoá phần vòng 1 (làm reference) |
 | `tools/INDEX.md` | Bảng quick reference + pipeline | Đã cập nhật validate_framework; cập nhật thêm `submit --stage`, `check_results` v2 csv |
-| `.agents/submit_workflow.md` | Dòng 73-114 (5 tiêu chí pass), 141-149 (workflow vòng 1) | Ghi rõ "vòng 1", thêm section Round 2 khi có tiêu chí chính thức |
+| `.agents/skills/submit-workflow/SKILL.md` | Dòng 73-114 (5 tiêu chí pass), 141-149 (workflow vòng 1) | Ghi rõ "vòng 1", thêm section Round 2 khi có tiêu chí chính thức |
 | `backtest/INDEX.md` | Toàn bộ | Đã ghi rõ "VN30F futures engine" — thêm dòng "Round 2 không dùng local backtest" |
 
 ---
@@ -108,7 +108,7 @@
 | 2 | Cập nhật stats cho stage_2 (Total / By Universe / Matrix universe×mode) | `update_guide_stats.py` | ✅ DONE |
 | 3 | Siết validator: manifest + mode contract + `--strict` + forbidden mới (import/comprehension/print/eval/exec/open), CS bắt buộc weights/mask, fundamental guard | `validate_framework.py` | ✅ DONE |
 | 4 | Unittest 46 cases (validate/submit/results) | `tests/` | ✅ DONE |
-| 5 | Cập nhật docs (README banner, tools/INDEX, submit_workflow, GUIDE tree) | `README.md`, `tools/INDEX.md`, `.agents/submit_workflow.md`, `.agents/GUIDE.md` | ✅ DONE |
+| 5 | Cập nhật docs (README banner, tools/INDEX, submit_workflow, GUIDE tree) | `README.md`, `tools/INDEX.md`, `.agents/skills/submit-workflow/SKILL.md`, `.agents/AGENTS.md` | ✅ DONE |
 | 6 | Xác định PASS criteria V2 (theo universe, fail-closed) | `common.py`, `check_results.py` | ✅ DONE (user cung cấp) |
 | 7 | Agent viết strategy Level 1-5 → `output/stage_2/` | code mới | ✅ 6 alpha Batch 1 |
 | 8 | Preflight + dry-run 3 cap + live smoke (cần user chọn universe trên UI) | `submit_and_check.py`, `check_results.py` | ⏳ NEXT |

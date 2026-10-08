@@ -1,7 +1,7 @@
 # syntax_parameters_v2 — Bộ tham số chuẩn Round 2 (daily equity)
 
 > **Mục đích:** Bộ tham số chuẩn cho **daily equity** (thay cho khung 15m/futures vòng 1).
-> **Nguồn:** phân tích 14 examples `references/templates/xnoquant/VN-*/` + `.agents/stage_2_guideline.md`.
+> **Nguồn:** phân tích 14 examples `references/templates/xnoquant/VN-*/` + `.agents/skills/stage-2-guideline/SKILL.md`.
 > **Quy ước khung:** Round 2 là **daily** — 1 ngày giao dịch = 1 bar. Không còn khái niệm
 > "1 session ≈ 10 bars" như vòng 1.
 

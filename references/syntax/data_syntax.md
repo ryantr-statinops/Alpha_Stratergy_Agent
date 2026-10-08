@@ -4,7 +4,7 @@ Use this file as the canonical catalog for `self.data.*` on the Round 2 equity m
 
 ## Mode Contract
 
-Every strategy uses **exactly one mode** (see `.agents/stage_2_guideline.md`).
+Every strategy uses **exactly one mode** (see `.agents/skills/stage-2-guideline/SKILL.md`).
 
 | Mode | Field suffix | Data shape | Position API | Bounds |
 |---|---|---|---|---|

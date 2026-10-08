@@ -9,4 +9,4 @@
 
 - `stage_1/` giữ nguyên trạng vòng 1 để rollback/đối chiếu — **không sửa**.
 - File mới cho Round 2 đi qua `input/` → `tools/migrate_stage2.py` → `stage_2/`.
-- Tham chiếu: `.agents/migration_plan_v2.md`.
+- Tham chiếu: `.agents/skills/migration-plan-v2/SKILL.md`.

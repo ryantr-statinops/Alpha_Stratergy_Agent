@@ -11,7 +11,7 @@
 - **Vòng 2 (active):** **Round 2 — Fundamental Alpha Arena**, daily equity research trên 3 universe
   (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP). Data mới: 496 fields (PV 10 + IS 130 + BS 271 + CF 85),
   36 panel features, 6 cross-sectional ops.
-- **Nguồn chuẩn:** `.agents/stage_2_guideline.md` (round rules) — **khác hẳn vòng 1** (daily, long-only,
+- **Nguồn chuẩn:** `.agents/skills/stage-2-guideline/SKILL.md` (round rules) — **khác hẳn vòng 1** (daily, long-only,
   fundamentals point-in-time).
 - **Yêu cầu:** chuẩn bị toàn bộ pipeline cho vòng thi mới.
 
@@ -46,20 +46,20 @@ output/
   - `template_example/strategy_framework.md` — master spec Round 2 (viết lại hoàn toàn).
 
 ### Phase C — Sinh strategy Round 2 ⏳ PENDING
-- Code strategy Round 2 do **AI agent viết trực tiếp** theo `.agents/framework_build_guide.md` — KHÔNG có tool sinh code kiểu vòng 1.
+- Code strategy Round 2 do **AI agent viết trực tiếp** theo `.agents/skills/framework-build-guide/SKILL.md` — KHÔNG có tool sinh code kiểu vòng 1.
 - File viết mới hoàn toàn (không migrate), đẩy thẳng vào `output/stage_2/` + cập nhật `index.csv` (không cần bước `input/` trung gian, không cần `migrate_stage2.py`).
 - Cập nhật `tools/validate_framework.py` V2 theo rule mới (mode contract, point-in-time, long-only, bounds).
-- **Audit đầy đủ các vị trí cần sửa:** xem [`.agents/v2_tool_readiness.md`](v2_tool_readiness.md) — từng file + dòng.
+- **Audit đầy đủ các vị trí cần sửa:** xem [`.agents/skills/v2-tool-readiness/SKILL.md`](../../v2-tool-readiness/SKILL.md) — từng file + dòng.
 
 ### Phase D — Documentation
-- Cập nhật `.agents/GUIDE.md`, `README.md`, `tools/INDEX.md`.
+- Cập nhật `.agents/AGENTS.md`, `README.md`, `tools/INDEX.md`.
 - File này là nguồn tham chiếu chính.
 
 ---
 
 ## 4. Migration Map (bảng ánh xạ cũ → mới)
 
-> ✅ Đã điền đầy đủ tại [`input/templates/migration_map_v2.md`](../input/templates/migration_map_v2.md).
+> ✅ Đã điền đầy đủ tại [`input/templates/migration_map_v2.md`](../../../../research/round_2/input_materials/templates/migration_map_v2.md).
 > Tóm tắt: `pv_*` giữ nguyên (time_series không suffix / cross_sectional `_panel`); DJI giữ nguyên
 > với `_panel` variants; futures & session gates **xoá**; fundamentals `fun_*` **mới**. Chiến lược futures vòng 1
 > không migrate tự động — viết lại theo `template_example/VN-*/`.
@@ -93,8 +93,8 @@ output/
 
 ## 6. Rủi ro & Lưu ý
 
-- Vòng 2 là **sản phẩm khác hoàn toàn** (futures intraday → equity daily): file vòng 1 **không dùng lại được**, code Round 2 viết mới hoàn toàn theo `.agents/framework_build_guide.md`.
+- Vòng 2 là **sản phẩm khác hoàn toàn** (futures intraday → equity daily): file vòng 1 **không dùng lại được**, code Round 2 viết mới hoàn toàn theo `.agents/skills/framework-build-guide/SKILL.md`.
 - `output/stage_1/index.csv` vòng 1 đang stale (chỉ 428/1,705 rows khớp file) — archive nguyên trạng, không sửa.
 - Không xoá dữ liệu vòng 1 cho đến khi vòng 2 chạy ổn định.
 - Mọi thay đổi framework tuân theo `template_example/strategy_framework.md` (đã viết lại cho Round 2) và
-  `.agents/stage_2_guideline.md`.
+  `.agents/skills/stage-2-guideline/SKILL.md`.

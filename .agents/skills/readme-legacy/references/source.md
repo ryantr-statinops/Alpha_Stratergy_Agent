@@ -6,9 +6,9 @@
 > (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP), 2 mode (time_series / cross_sectional).
 >
 > **Bắt đầu ở đây (đọc theo thứ tự):**
-> 1. `.agents/stage_2_guideline.md` — rules chính thức Round 2
-> 2. `.agents/framework_build_guide.md` — blueprint gen strategy (Level 1-5)
-> 3. `.agents/GUIDE.md` — onboarding + pipeline
+> 1. `.agents/skills/stage-2-guideline/SKILL.md` — rules chính thức Round 2
+> 2. `.agents/skills/framework-build-guide/SKILL.md` — blueprint gen strategy (Level 1-5)
+> 3. `.agents/AGENTS.md` — onboarding + pipeline
 > 4. `idea/planning_alpha/_framework/MASTER_alpha_planning.md` — **master planning doc** (4-layer construction: data → feat → mask → op → position)
 > 5. `template_example/strategy_framework.md` — master spec Round 2 (class structure, compliance)
 > 6. `syntax/INDEX.md` — shared data + catalog riêng cho `time_series` va `cross_sectional`
@@ -90,19 +90,19 @@ Trước khi thực hiện bất kỳ yêu cầu nào từ người dùng, AI Ag
   - ✅ `open_price`
   - ❌ `open`
 
-Chi tiết xem tại [`syntax/data_syntax.md`](syntax/data_syntax.md).
+Chi tiết xem tại [`syntax/data_syntax.md`](../../../../references/syntax/data_syntax.md).
 
 #### Đặc thù thị trường Việt Nam (Round 2 — equity fundamental)
 
-Tài liệu [`data/vietnam_market_characteristics.md`](data/vietnam_market_characteristics.md) (bản Round 2) phân tích chi tiết:
+Tài liệu [`data/vietnam_market_characteristics.md`](../../../../references/market/vietnam_equity/vietnam_market_characteristics.md) (bản Round 2) phân tích chi tiết:
 - Retail 80-90% → fundamental mispricing tồn tại lâu, growth-momentum/rank có edge
 - Tin nội tại chi phối → biến động quanh ngày công bố BCTC, gap risk
 - Thanh khoản tập trung → large/mid cap khả thi, small cap thận trọng
 - BCTC công bố chậm → **bắt buộc point-in-time**, `.notna()`, không backfill
 - **Feature Selection per cap**: SMALL → growth/earnings; MID → quality/ROE; LARGE → cashflow/value
 - **Fields verified theo catalog**: ưu tiên dùng tránh lỗi submit
-- **Bản v1 (futures VN30F1M intraday) đã chuyển sang** [`data/vietnam_market_characteristics_v1.md`](data/vietnam_market_characteristics_v1.md)
-- **Hồ sơ chi tiết từng universe:** [`data/VN-SMALL-CAP.md`](data/VN-SMALL-CAP.md), [`data/VN-MID-CAP.md`](data/VN-MID-CAP.md), [`data/VN-LARGE-CAP.md`](data/VN-LARGE-CAP.md)
+- **Bản v1 (futures VN30F1M intraday) đã chuyển sang** [`data/vietnam_market_characteristics_v1.md`](../../../../references/market/vn30f_futures/vietnam_market_characteristics_v1.md)
+- **Hồ sơ chi tiết từng universe:** [`data/VN-SMALL-CAP.md`](../../../../references/market/vietnam_equity/VN-SMALL-CAP.md), [`data/VN-MID-CAP.md`](../../../../references/market/vietnam_equity/VN-MID-CAP.md), [`data/VN-LARGE-CAP.md`](../../../../references/market/vietnam_equity/VN-LARGE-CAP.md)
 
 #### Danh sách trường VN30 Index (vòng 1 — legacy)
 
@@ -157,7 +157,7 @@ EMA(source)
 
 Đây là framework chuẩn của XNOQuant.
 
-**File quan trọng nhất:** [`template_example/strategy_framework.md`](template_example/strategy_framework.md) — định nghĩa toàn bộ cấu trúc, quy ước, guardrails mà AI Agent phải tuân thủ khi sinh strategy.
+**File quan trọng nhất:** [`template_example/strategy_framework.md`](../../../../references/templates/xnoquant/strategy_framework.md) — định nghĩa toàn bộ cấu trúc, quy ước, guardrails mà AI Agent phải tuân thủ khi sinh strategy.
 
 Mọi chiến lược được sinh ra phải:
 
@@ -176,7 +176,7 @@ Tham khảo thêm các file mẫu `.py` trong thư mục này.
 ## 4. Operational Workflow (Vòng 1 — ARCHIVED)
 
 > Quy trình 5 bước dưới đây thuộc vòng 1 (idea/hypothesis loop + generator).
-> **Round 2** dùng pipeline ở §5 + `.agents/GUIDE.md` §Round 2 (viết trực tiếp → validate → submit → check).
+> **Round 2** dùng pipeline ở §5 + `.agents/AGENTS.md` §Round 2 (viết trực tiếp → validate → submit → check).
 
 AI Agent phải tuân thủ nghiêm ngặt quy trình gồm **5 bước** dưới đây.
 
@@ -206,7 +206,7 @@ idea/planning_alpha/stage_1/
 
 #### Hypothesis Loop
 
-Sử dụng framework kiểm thử tại [`idea/hypothesis/hypothesis_framework.md`](idea/hypothesis/hypothesis_framework.md) — tài liệu này định nghĩa:
+Sử dụng framework kiểm thử tại [`idea/hypothesis/hypothesis_framework.md`](../../../../research/round_1/ideas/hypotheses/hypothesis_framework.md) — tài liệu này định nghĩa:
 
 - **Acceptance Criteria:** Sharpe ≥ 1.2, CAGR ≥ 25%, Sortino ≥ 1.5, PF ≥ 1.7, Calmar ≥ 0.9, Max DD ≥ -40%, VaR ≥ -5%, CVaR ≥ -6%, Ulcer Index ≤ 12, Cost ≤ 1%, Correlation ≤ 0.8
 - **Multi-Stage Validation:** Train 70% → Test 30% (bắt buộc)
@@ -264,7 +264,7 @@ Sau khi được phê duyệt:
   - các field trong `syntax/data_syntax.md`
   - các hàm trong `syntax/time_series/feature_syntax.md, syntax/cross_sectional/feature_syntax.md`
   - các hàm trong `syntax/time_series/operations_syntax.md, syntax/cross_sectional/operations_syntax.md`
-- Tuân thủ tuyệt đối cấu trúc trong [`template_example/strategy_framework.md`](template_example/strategy_framework.md):
+- Tuân thủ tuyệt đối cấu trúc trong [`template_example/strategy_framework.md`](../../../../references/templates/xnoquant/strategy_framework.md):
   - Class `CustomStrategy(SimpleAlgorithm)`, method `__algorithm__`
   - Exit → Long → Short order
   - Không `import pandas`, không `SeriesT`, không biến `open`
@@ -356,9 +356,9 @@ AI Agent **luôn phải**:
 |--------------|-------------|
 | **Hiểu tổng quan dự án, workflow 5 bước** | `README.md` (file này) |
 | **Master planning: 4-layer construction, data groups, feat recipes, mask, ops** | `idea/planning_alpha/_framework/MASTER_alpha_planning.md` |
-| **Onboarding nhanh cho AI Agent** | `.agents/GUIDE.md` |
-| **Rules chính thức Round 2** | `.agents/stage_2_guideline.md` |
-| **Blueprint gen strategy Round 2** | `.agents/framework_build_guide.md` |
+| **Onboarding nhanh cho AI Agent** | `.agents/AGENTS.md` |
+| **Rules chính thức Round 2** | `.agents/skills/stage-2-guideline/SKILL.md` |
+| **Blueprint gen strategy Round 2** | `.agents/skills/framework-build-guide/SKILL.md` |
 | **Master spec: class structure, compliance checklist** | `template_example/strategy_framework.md` |
 | **Đặc thù thị trường VN Round 2 → chọn feature** | `data/vietnam_market_characteristics.md` |
 | **Data fields (PV/IS/BS/CF, 496 fields)** | `syntax/data_syntax.md` |
