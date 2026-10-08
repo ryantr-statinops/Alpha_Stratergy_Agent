@@ -18,7 +18,8 @@ import os
 import sys
 import re
 
-PARAMETERS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "references", "syntax", "time_series", "parameters.md")
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PARAMETERS_FILE = os.path.join(ROOT_DIR, "references", "syntax", "time_series", "parameters.md")
 
 
 def load_parameters():
@@ -106,7 +107,7 @@ def generate(indicator: str, feat_call: str, threshold: str, data_vars: list[str
     )
 
     filename = f"SF_{indicator.upper()}_15min.py"
-    filepath = os.path.join("research", "round_1", "strategies", "by_type", "single_feat_alpha", filename)
+    filepath = os.path.join(ROOT_DIR, "research", "round_1", "strategies", "by_type", "single_feat_alpha", filename)
 
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     with open(filepath, "w", encoding="utf-8") as f:

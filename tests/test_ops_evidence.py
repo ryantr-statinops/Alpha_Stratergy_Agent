@@ -4,13 +4,13 @@ import re
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 EXAMPLE_GLOBS = [
-    "template_example/VN-*/*.py",
-    "output/stage_2/*/*/*.py",
+    "references/templates/xnoquant/VN-*/*.py",
+    "research/round_2/strategies/*/*/*.py",
 ]
 
 CATALOGS = {
-    "time_series": ROOT / "syntax/time_series/operations_syntax.md",
-    "cross_sectional": ROOT / "syntax/cross_sectional/operations_syntax.md",
+    "time_series": ROOT / "references/syntax/time_series/operations_syntax.md",
+    "cross_sectional": ROOT / "references/syntax/cross_sectional/operations_syntax.md",
 }
 
 OP_PATTERN = re.compile(r"self\.op\.([A-Za-z_][A-Za-z0-9_]*)")

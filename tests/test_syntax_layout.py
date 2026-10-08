@@ -3,7 +3,7 @@ import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SYNTAX = ROOT / "syntax"
+SYNTAX = ROOT / "references/syntax"
 
 
 def test_mode_specific_syntax_layout_exists():
