@@ -37,6 +37,7 @@ def make_tree():
         with open(abspath, "w", encoding="utf-8") as f:
             f.write(content)
     index = os.path.join(tmp, "research", "round_2", "manifests", "strategies.csv")
+    os.makedirs(os.path.dirname(index), exist_ok=True)
     header = "filepath,thesis_group,template,mode,universe,description,params"
     rows = []
     for rel in files:

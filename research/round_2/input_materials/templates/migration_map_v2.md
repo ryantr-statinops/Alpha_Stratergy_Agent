@@ -2,7 +2,7 @@
 
 > **Mục đích:** Bảng ánh xạ giữa data model vòng 1 (cũ, intraday futures VNFuture) và vòng 2
 > (mới, daily equity fundamentals). Dùng để tự động hoá migrate file cũ.
-> **Nguồn:** `.agents/stage_2_guideline.md` + `template_example/VN-*/` + `syntax/*_v2.md`.
+> **Nguồn:** `.agents/stage_2_guideline.md` + `references/templates/xnoquant/VN-*/` + `references/syntax/*_v2.md`.
 > **Mode contract:** `time_series` field không suffix (`pv_close`); `cross_sectional` field
 > luôn có `_panel` suffix (`pv_close_panel`). Không trộn 2 mode trong 1 strategy.
 
@@ -78,13 +78,13 @@
 | `fun_cf_net_cash_inflows_outflows_from_operating_activities_annual(_panel)` | CF | dòng tiền HĐKD (năm) — dùng trong example |
 | `fun_cf_depreciation_and_amortisation_quarterly(_panel)` | CF | khấu hao |
 
-> Danh sách đầy đủ 496 fields (10 PV + 130 IS + 271 BS + 85 CF) tại `syntax/data_syntax.md`.
+> Danh sách đầy đủ 496 fields (10 PV + 130 IS + 271 BS + 85 CF) tại `references/syntax/data_syntax.md`.
 
 ---
 
 ## 2. Feature Functions (`self.feat.*`)
 
-> Vòng 1 có 183 features; vòng 2 có 36 panel features (`syntax/cross_sectional/feature_syntax.md`) + giữ nguyên
+> Vòng 1 có 183 features; vòng 2 có 36 panel features (`references/syntax/cross_sectional/feature_syntax.md`) + giữ nguyên
 > bản time-series (không `_panel`, có `timeperiod`). Cột "Function mới" ghi cả 2 dạng.
 
 | Function cũ (vòng 1) | Function mới (vòng 2) | Trạng thái | Ghi chú |
@@ -206,7 +206,7 @@
 
 - **Chiến lược futures vòng 1 không migrate tự động được** — sản phẩm khác (VN30 futures → equity),
   khung khác (intraday → daily), direction khác (long/short → long-only). Cần viết lại từ đầu theo
-  `template_example/VN-*/`.
+  `references/templates/xnoquant/VN-*/`.
 - **`self.set_positions()` giữ nguyên** cho time_series mode (bounds `[0, +1]`).
 - **`self.set_portfolio_positions()` là API mới** cho cross_sectional mode.
 - **Fundamental fields (`fun_*`) chưa từng tồn tại ở vòng 1** — migrate phải thêm tầng dữ liệu này.
