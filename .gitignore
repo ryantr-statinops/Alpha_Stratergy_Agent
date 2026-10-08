@@ -42,3 +42,8 @@ backtest/out_analysis/*.png
 # R scratch
 .Rhistory
 .RData
+
+# Agent scratch
+.hermes/
+.freebuff/
+.opencode
