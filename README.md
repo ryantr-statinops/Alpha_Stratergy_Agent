@@ -16,7 +16,8 @@ Kho nghiên cứu chiến lược định lượng cho hai round đã hoàn tấ
 ```text
 .
 ├── .env                          # Cấu hình riêng hiện có, giữ ở root
-├── docs/                         # Trạng thái dự án, hướng dẫn round, tài liệu lịch sử
+├── .agents/                      # Hướng dẫn agent/workflow lịch sử, được giữ nguyên
+├── docs/                         # Trạng thái dự án và hướng dẫn từng round
 ├── research/
 │   ├── round_1/
 │   │   ├── ideas/                # Hypotheses, plans, session notes
