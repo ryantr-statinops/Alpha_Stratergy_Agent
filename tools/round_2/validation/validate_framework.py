@@ -28,7 +28,7 @@ import os
 import re
 import sys
 
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUTPUT_DIR = os.path.join(ROOT_DIR, "research", "round_2", "strategies")
 INDEX_PATH = os.path.join(ROOT_DIR, "research", "round_2", "manifests", "strategies.csv")
 

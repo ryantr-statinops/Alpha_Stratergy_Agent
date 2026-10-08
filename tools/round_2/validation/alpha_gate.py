@@ -22,8 +22,7 @@ import re
 import subprocess
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TOOLS = os.path.join(ROOT, "tools")
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 UNIVERSES = ("vn_large_cap", "vn_mid_cap", "vn_small_cap")
 
 
@@ -50,7 +49,8 @@ def check_bad_gates(src: str) -> list[str]:
 
 def run_python(name, args=()):
     try:
-        p = subprocess.run([sys.executable, os.path.join(TOOLS, name), *args],
+        module = "tools.round_2.validation." + name.removesuffix(".py")
+        p = subprocess.run([sys.executable, "-m", module, *args],
                            cwd=ROOT, capture_output=True, text=True)
         return p.returncode, p.stdout + p.stderr
     except Exception as e:  # noqa: BLE001

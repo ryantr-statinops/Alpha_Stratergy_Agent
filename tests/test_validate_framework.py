@@ -6,9 +6,7 @@ import tempfile
 import unittest
 
 TOOLS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(TOOLS_DIR, "tools"))
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import validate_framework as vf
+from tools.round_2.validation import validate_framework as vf
 
 VALID_TS = """
 class CustomStrategy(SimpleAlgorithm):

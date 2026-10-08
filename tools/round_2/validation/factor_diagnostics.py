@@ -22,7 +22,7 @@ import os
 import re
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 STAGE2 = os.path.join(ROOT, "research", "round_2", "strategies")
 SYNTAX = os.path.join(ROOT, "references", "syntax", "data_syntax.md")
 RESULTS = os.path.join(ROOT, "research", "round_2", "results", "backtests.csv")

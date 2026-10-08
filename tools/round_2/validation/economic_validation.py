@@ -18,7 +18,7 @@ import csv
 import os
 import re
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 STAGE2 = os.path.join(ROOT, "research", "round_2", "strategies")
 RESULTS = os.path.join(ROOT, "research", "round_2", "results", "backtests.csv")
 DEFAULT_OUT = os.path.join(ROOT, "research", "round_2", "results", "analysis", "economic_validation.csv")
