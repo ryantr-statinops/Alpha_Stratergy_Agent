@@ -3,17 +3,17 @@
 Consolidated results checker — Round 2 (Round 2 backtests.csv).
 
 Usage:
-    python tools/check_results.py                          # All results (latest per filepath)
-    python tools/check_results.py --pattern MF_*.py        # Filter by glob
-    python tools/check_results.py --today                  # Today only
-    python tools/check_results.py --prefix MF              # Filter by prefix
-    python tools/check_results.py --pass                   # PASS only
-    python tools/check_results.py --fail                   # FAIL only
-    python tools/check_results.py --detail                 # Aggregate metrics + split status
-    python tools/check_results.py --splits                 # Detailed Aggregate/Train/Test table
-    python tools/check_results.py --detail --pass          # Detail + PASS only
-    python tools/check_results.py --universe VN-SMALL-CAP  # Filter by universe
-    python tools/check_results.py --csv path/to/file.csv
+    python -m tools.round_2.results.check_results                          # All results (latest per filepath)
+    python -m tools.round_2.results.check_results --pattern MF_*.py        # Filter by glob
+    python -m tools.round_2.results.check_results --today                  # Today only
+    python -m tools.round_2.results.check_results --prefix MF              # Filter by prefix
+    python -m tools.round_2.results.check_results --pass                   # PASS only
+    python -m tools.round_2.results.check_results --fail                   # FAIL only
+    python -m tools.round_2.results.check_results --detail                 # Aggregate metrics + split status
+    python -m tools.round_2.results.check_results --splits                 # Detailed Aggregate/Train/Test table
+    python -m tools.round_2.results.check_results --detail --pass          # Detail + PASS only
+    python -m tools.round_2.results.check_results --universe VN-SMALL-CAP  # Filter by universe
+    python -m tools.round_2.results.check_results --csv path/to/file.csv
 """
 
 import argparse

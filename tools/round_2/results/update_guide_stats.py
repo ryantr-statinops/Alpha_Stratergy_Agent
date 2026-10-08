@@ -10,7 +10,7 @@ Dimensions reported (separate tables):
   - By universe x mode matrix
 
 Usage:
-    python tools/update_guide_stats.py
+    python -m tools.round_2.results.update_guide_stats
 """
 
 import os
@@ -18,7 +18,7 @@ import sys
 import csv
 from datetime import datetime
 
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 INDEX_PATH = os.path.join(ROOT_DIR, "research", "round_2", "manifests", "strategies.csv")
 STATS_PATH = os.path.join(ROOT_DIR, "research", "round_2", "manifests", "generated_stats.md")
 
