@@ -39,4 +39,4 @@ backtest/out_analysis/*.png
 # Agent scratch
 .hermes/
 .freebuff/
-.opencode
+.opencode/
