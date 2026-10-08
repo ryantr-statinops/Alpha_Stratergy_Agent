@@ -5,7 +5,7 @@ Thư mục này là nơi bạn (user) cung cấp **toàn bộ nguyên liệu** c
 1. **Syntax/data model mới** → điền vào `templates/`
 2. **File strategy new-data** → đặt trực tiếp vào `input/`
 
-Xem kế hoạch đầy đủ: [`agent/migration_plan_v2.md`](../agent/migration_plan_v2.md)
+Xem kế hoạch đầy đủ: [`.agents/migration_plan_v2.md`](../.agents/migration_plan_v2.md)
 
 ---
 

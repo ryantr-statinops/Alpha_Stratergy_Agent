@@ -2,7 +2,7 @@
 
 > **Mục đích:** Bảng ánh xạ giữa data model vòng 1 (cũ, intraday futures VNFuture) và vòng 2
 > (mới, daily equity fundamentals). Dùng để tự động hoá migrate file cũ.
-> **Nguồn:** `agent/stage_2_guideline.md` + `template_example/VN-*/` + `syntax/*_v2.md`.
+> **Nguồn:** `.agents/stage_2_guideline.md` + `template_example/VN-*/` + `syntax/*_v2.md`.
 > **Mode contract:** `time_series` field không suffix (`pv_close`); `cross_sectional` field
 > luôn có `_panel` suffix (`pv_close_panel`). Không trộn 2 mode trong 1 strategy.
 

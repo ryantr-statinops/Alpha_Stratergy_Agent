@@ -3,7 +3,7 @@
 Tài liệu này định nghĩa **Framework Specification** chuẩn cho mọi chiến lược giao dịch định lượng
 trên nền tảng **XNOQuant** trong **Round 2 — Fundamental Alpha Arena** (daily equity research).
 
-> **Nguồn tham chiếu chính thức:** `agent/stage_2_guideline.md` (round rules).
+> **Nguồn tham chiếu chính thức:** `.agents/stage_2_guideline.md` (round rules).
 > **Nguồn parameter canonical:** `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md` (profiles + evidence status).
 > Mọi AI Agent khi tạo mã nguồn (`.py`) trong thư mục `output/` **phải tuân thủ tuyệt đối**
 > các quy ước và ràng buộc kỹ thuật được mô tả trong tài liệu này.
@@ -497,7 +497,7 @@ riêng theo accounting archetype.
 
 Trước khi sinh bất kỳ file `.py` nào, AI Agent phải xác nhận:
 
-- [ ] Đã đọc `agent/stage_2_guideline.md`
+- [ ] Đã đọc `.agents/stage_2_guideline.md`
 - [ ] Đã đọc `syntax/data_syntax.md`, `syntax/time_series/feature_syntax.md`, `syntax/time_series/operations_syntax.md`, `syntax/cross_sectional/feature_syntax.md`, `syntax/cross_sectional/operations_syntax.md`
 - [ ] Đã đọc `syntax/time_series/parameters.md` + `syntax/cross_sectional/parameters.md` và chọn đúng canonical profile cho archetype
 - [ ] Đã tham khảo `template_example/VN-*/`

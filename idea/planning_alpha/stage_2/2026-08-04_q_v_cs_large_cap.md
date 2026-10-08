@@ -12,7 +12,7 @@
 Master_Large_Cap xếp 9/10 idea này là `Ready`/`Probe`, mode `CS`. Đây là lần đầu
 hiện thực Q/V ở chế độ cross-sectional cho LARGE. Phải tôn trọng 2 ràng buộc nền tảng:
 
-1. **Feature khả dụng** (persist theo `agent/stage_2_guideline.md` §5): chỉ
+1. **Feature khả dụng** (persist theo `.agents/stage_2_guideline.md` §5): chỉ
    `safe_divide_panel`, `ema_panel`, `sma_panel`, `rolling_zscore_panel`.
    → Các prototype dùng `rolling_mean/rolling_std` (Q02 stable, Q05 multi-year) phải
    **chuyển thành EMA persistence** (EMA khoảng 1 năm) thay vì std. Đây là

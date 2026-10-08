@@ -148,5 +148,5 @@ liquidity/capacity, turnover/cost và correlation với alpha đang giữ
 ## Status
 
 20 idea sẵn sàng thiết kế chi tiết. Chưa code — chờ duyệt batch declaration
-(theo rule `agent/GUIDE.md` §Round 2) trước khi gen vào
+(theo rule `.agents/GUIDE.md` §Round 2) trước khi gen vào
 `output/stage_2/vn_small_cap/cross_sectional/`.

@@ -6,9 +6,9 @@
 > (VN-SMALL-CAP / VN-MID-CAP / VN-LARGE-CAP), 2 mode (time_series / cross_sectional).
 >
 > **Bắt đầu ở đây (đọc theo thứ tự):**
-> 1. `agent/stage_2_guideline.md` — rules chính thức Round 2
-> 2. `agent/framework_build_guide.md` — blueprint gen strategy (Level 1-5)
-> 3. `agent/GUIDE.md` — onboarding + pipeline
+> 1. `.agents/stage_2_guideline.md` — rules chính thức Round 2
+> 2. `.agents/framework_build_guide.md` — blueprint gen strategy (Level 1-5)
+> 3. `.agents/GUIDE.md` — onboarding + pipeline
 > 4. `idea/planning_alpha/_framework/MASTER_alpha_planning.md` — **master planning doc** (4-layer construction: data → feat → mask → op → position)
 > 5. `template_example/strategy_framework.md` — master spec Round 2 (class structure, compliance)
 > 6. `syntax/INDEX.md` — shared data + catalog riêng cho `time_series` va `cross_sectional`
@@ -176,7 +176,7 @@ Tham khảo thêm các file mẫu `.py` trong thư mục này.
 ## 4. Operational Workflow (Vòng 1 — ARCHIVED)
 
 > Quy trình 5 bước dưới đây thuộc vòng 1 (idea/hypothesis loop + generator).
-> **Round 2** dùng pipeline ở §5 + `agent/GUIDE.md` §Round 2 (viết trực tiếp → validate → submit → check).
+> **Round 2** dùng pipeline ở §5 + `.agents/GUIDE.md` §Round 2 (viết trực tiếp → validate → submit → check).
 
 AI Agent phải tuân thủ nghiêm ngặt quy trình gồm **5 bước** dưới đây.
 
@@ -356,9 +356,9 @@ AI Agent **luôn phải**:
 |--------------|-------------|
 | **Hiểu tổng quan dự án, workflow 5 bước** | `README.md` (file này) |
 | **Master planning: 4-layer construction, data groups, feat recipes, mask, ops** | `idea/planning_alpha/_framework/MASTER_alpha_planning.md` |
-| **Onboarding nhanh cho AI Agent** | `agent/GUIDE.md` |
-| **Rules chính thức Round 2** | `agent/stage_2_guideline.md` |
-| **Blueprint gen strategy Round 2** | `agent/framework_build_guide.md` |
+| **Onboarding nhanh cho AI Agent** | `.agents/GUIDE.md` |
+| **Rules chính thức Round 2** | `.agents/stage_2_guideline.md` |
+| **Blueprint gen strategy Round 2** | `.agents/framework_build_guide.md` |
 | **Master spec: class structure, compliance checklist** | `template_example/strategy_framework.md` |
 | **Đặc thù thị trường VN Round 2 → chọn feature** | `data/vietnam_market_characteristics.md` |
 | **Data fields (PV/IS/BS/CF, 496 fields)** | `syntax/data_syntax.md` |

@@ -129,7 +129,7 @@ python tools/retention_audit.py --results backtest/results_stage_2.csv
 **Output:** Live strategy
 
 **Process:**
-1. Submit to platform via `agent/submit_workflow.md`
+1. Submit to platform via `.agents/submit_workflow.md`
 2. Monitor daily performance
 3. Rebalance on schedule
 4. Track drawdown and risk metrics

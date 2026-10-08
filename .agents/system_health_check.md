@@ -139,7 +139,7 @@ Trước khi live submit, agent phải:
 4. Chỉ chạy **một file** (`--test`), không tự `--force` / `--yes`.
 5. Sau khi chạy: xác nhận strategy_id mới (không phải ID cũ), kiểm tra CSV + aggregate.
 
-Quy trình chuẩn (xem chi tiết `agent/submit_workflow.md`):
+Quy trình chuẩn (xem chi tiết `.agents/submit_workflow.md`):
 ```bash
 python tools/validate_framework.py --strict
 python tools/submit_and_check.py --batch --dry-run --universe VN-<CAP>
@@ -191,9 +191,9 @@ Blocking
 ## 7. Files tham chiếu
 
 Đọc khi cần context chi tiết:
-- `agent/stage_2_guideline.md` — rules Round 2
-- `agent/submit_workflow.md` — workflow submit + API
-- `agent/GUIDE.md` — tổng quan pipeline
+- `.agents/stage_2_guideline.md` — rules Round 2
+- `.agents/submit_workflow.md` — workflow submit + API
+- `.agents/GUIDE.md` — tổng quan pipeline
 - `tools/submit_and_check.py` — editor mapping, status, CSV schema
 - `tools/validate_framework.py` — strict validator
 - `tools/check_results.py` — review results
