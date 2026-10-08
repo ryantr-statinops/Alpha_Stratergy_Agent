@@ -6,8 +6,7 @@ import tempfile
 import unittest
 
 TOOLS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(TOOLS_DIR, "tools"))
-import common
+from tools.shared import common
 
 
 def sim_row(filepath, universe, metrics, status="SIMULATED"):

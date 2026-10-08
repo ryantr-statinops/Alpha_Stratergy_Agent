@@ -21,7 +21,7 @@ import fnmatch
 import os
 import sys
 
-from common import (
+from tools.shared.common import (
     VALID_UNIVERSES, getf, load_results_csv, build_latest,
     stage_pass, timestamp_today, status_label,
 )

@@ -47,7 +47,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from dotenv import load_dotenv
 
-from common import (
+from tools.shared.common import (
     VALID_METRIC_KEYS, EXTENDED_PERFORMANCE_KEYS, ALL_METRIC_KEYS,
     flatten_stage_metrics, format_metrics, load_previous_results, wait_for_stage_metrics,
 )

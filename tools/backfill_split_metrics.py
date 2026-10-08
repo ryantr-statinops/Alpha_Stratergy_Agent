@@ -9,7 +9,7 @@ import time
 import requests
 from dotenv import load_dotenv
 
-from common import build_latest, flatten_stage_metrics, format_metrics, load_results_csv
+from tools.shared.common import build_latest, flatten_stage_metrics, format_metrics, load_results_csv
 from submit_and_check import (
     BASE_DIR, CSV_PATH, POLL_TIMEOUT, STATUS_SIMULATED, build_headers, make_row,
     save_to_csv, wait_for_metrics,

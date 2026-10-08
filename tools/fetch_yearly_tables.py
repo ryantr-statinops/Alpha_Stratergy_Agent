@@ -26,7 +26,7 @@ import requests
 from dotenv import load_dotenv
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import build_latest, getf, load_results_csv, row_status
+from tools.shared.common import build_latest, getf, load_results_csv, row_status
 from submit_and_check import BASE_DIR, build_headers
 
 TABLE_URL = "https://api.xnoquant.io/xalpha-api/v1/strategies/{strategy_id}/stages/{stage}/summary-table"

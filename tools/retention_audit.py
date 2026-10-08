@@ -22,7 +22,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import build_latest, getf, load_results_csv, row_status, row_key
+from tools.shared.common import build_latest, getf, load_results_csv, row_status, row_key
 
 DEFAULT_CSV = os.path.join("research", "round_2", "results", "backtests.csv")
 TRAIN_MIN = 1.0
