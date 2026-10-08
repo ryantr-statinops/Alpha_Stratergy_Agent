@@ -1,10 +1,10 @@
 ## stage_2_analysis.R
-## Phân tích thống kê các alpha Stage 2 từ backtest/results_stage_2.csv
+## Phân tích thống kê các alpha Stage 2 từ research/round_2/results/backtests.csv
 ## + Layer 3 diagnostics (factor_diagnostics.csv) + Layer 4 validation (economic_validation.csv)
 ##
 ## Yêu cầu: R >= 4.0 (chỉ dùng base R, không cần package ngoài)
-## Chạy:   Rscript backtest/stage_2_analysis.R
-## Kết quả: in ra console + ghi các CSV vào backtest/out_analysis/
+## Chạy:   Rscript research/round_2/results/analysis/stage_2_analysis.R
+## Kết quả: in ra console + ghi các CSV vào research/round_2/results/analysis/out_analysis/
 
 ## =====================================================================
 ## 0. Config
@@ -16,9 +16,8 @@
 ##   2) thư mục của file khi dùng source() trong R console (sys.frame()$ofile)
 ##   3) thư mục làm việc hiện tại (getwd())
 ## Sau đó dò ngược lên các cấp cha (dirname) tối đa 8 tầng để tìm
-## backtest/results_stage_2.csv — luôn dùng scalar, không tạo vector.
+## research/round_2/results/backtests.csv — luôn dùng scalar, không tạo vector.
 
-(setwd('D:/01_Workspace/02_Finance_Trading/Alpha_bot'))
 find_base <- function() {
   candidates <- character(0)
 
@@ -36,22 +35,22 @@ find_base <- function() {
                                    error = function(e) NA_character_))
     if (is.na(d)) next
     for (i in 0:8) {
-      if (file.exists(file.path(d, "results_stage_2.csv"))) return(d)
-      if (file.exists(file.path(d, "backtest", "results_stage_2.csv"))) return(file.path(d, "backtest"))
+      if (file.exists(file.path(d, "backtests.csv"))) return(d)
+      parent <- dirname(d)
+      if (file.exists(file.path(parent, "backtests.csv"))) return(parent)
       parent <- dirname(d)
       if (identical(parent, d)) break
       d <- parent
     }
   }
-  stop("Không tìm thấy results_stage_2.csv. Hãy chạy từ thư mục dự án Alpha_bot ",
-       "(setwd('D:/01_Workspace/02_Finance_Trading/Alpha_bot')) rồi chạy lại.")
+  stop("Không tìm thấy research/round_2/results/backtests.csv. Hãy chạy script từ checkout dự án.")
 }
 BASE <- find_base()
 
-RESULT_CSV   <- file.path(BASE, "results_stage_2.csv")
-DIAG_CSV     <- file.path(BASE, "factor_diagnostics.csv")
-ECON_CSV     <- file.path(BASE, "economic_validation.csv")
-OUT_DIR      <- file.path(BASE, "out_analysis")
+RESULT_CSV   <- file.path(BASE, "backtests.csv")
+DIAG_CSV     <- file.path(BASE, "analysis", "factor_diagnostics.csv")
+ECON_CSV     <- file.path(BASE, "analysis", "economic_validation.csv")
+OUT_DIR      <- file.path(BASE, "analysis", "out_analysis")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 
 `%||%` <- function(a, b) if (is.null(a) || is.na(a)) b else a

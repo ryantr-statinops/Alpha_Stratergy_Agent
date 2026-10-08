@@ -56,7 +56,7 @@ from editor_pool import EditorPool
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
-CSV_PATH = os.path.join("backtest", "results_stage_2.csv")
+CSV_PATH = os.path.join(BASE_DIR, "research", "round_2", "results", "backtests.csv")
 WAIT_SECONDS = 10
 POLL_TIMEOUT = 240
 STRATEGY_ID_TIMEOUT = 30
@@ -173,9 +173,9 @@ def infer_universe_from_path(fpath: str) -> str:
     """Derive universe from output/stage_2/<cap>/<mode>/<file>.py layout."""
     norm = fpath.replace("\\", "/")
     parts = norm.split("/")
-    for i, p in enumerate(parts):
-        if p == "stage_2" and i + 1 < len(parts):
-            return CAP_TO_UNIVERSE.get(parts[i + 1].lower(), "")
+    for p in parts:
+        if p.lower() in CAP_TO_UNIVERSE:
+            return CAP_TO_UNIVERSE[p.lower()]
     return ""
 
 
@@ -183,9 +183,9 @@ def infer_mode_from_path(fpath: str) -> str:
     norm = fpath.replace("\\", "/")
     parts = norm.split("/")
     for i, p in enumerate(parts):
-        if p == "stage_2" and i + 1 < len(parts) and i + 2 < len(parts):
-            if parts[i + 2] in VALID_MODES:
-                return parts[i + 2]
+        if p.lower() in CAP_TO_UNIVERSE and i + 1 < len(parts):
+            if parts[i + 1] in VALID_MODES:
+                return parts[i + 1]
     return ""
 
 
@@ -197,7 +197,7 @@ def resolve_universe(fpath: str, explicit: str) -> str:
 
 def load_index() -> list:
     """Read output/index.csv as the manifest source of truth. Returns list of dict rows."""
-    idx_path = os.path.join(BASE_DIR, "output", "index.csv")
+    idx_path = os.path.join(BASE_DIR, "research", "round_2", "manifests", "strategies.csv")
     if not os.path.isfile(idx_path):
         return []
     with open(idx_path, encoding="utf-8") as f:
@@ -212,7 +212,7 @@ def discover_batch_files() -> list:
         fp = (row.get("filepath") or "").strip()
         if not fp:
             continue
-        rel = os.path.join(BASE_DIR, "output", "stage_2", *fp.split("/"))
+        rel = os.path.join(BASE_DIR, "research", "round_2", "strategies", *fp.split("/"))
         if fp.endswith(".py") and os.path.isfile(rel):
             files.append(rel)
     return sorted(set(files))
@@ -279,7 +279,7 @@ def make_row(filepath: str, universe: str, status: str, metrics: dict = None,
     metrics = metrics or {}
     row = {
         "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "filepath": filepath.replace("\\", "/").split("output/stage_2/")[-1],
+        "filepath": filepath.replace("\\", "/").split("research/round_2/strategies/")[-1],
         "filename": os.path.basename(filepath),
         "universe": universe,
         "mode": infer_mode_from_path(filepath),
@@ -305,7 +305,7 @@ def make_row(filepath: str, universe: str, status: str, metrics: dict = None,
 
 def rel_filepath(filepath: str) -> str:
     """Relative manifest-style filepath (vn_small_cap/time_series/File.py)."""
-    return filepath.replace("\\", "/").split("output/stage_2/")[-1]
+    return filepath.replace("\\", "/").split("research/round_2/strategies/")[-1]
 
 
 def run_http_sequence(env, filepath: str, name: str, universe: str, index: int, total: int,
