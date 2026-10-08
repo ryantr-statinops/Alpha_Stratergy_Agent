@@ -20,7 +20,6 @@ Thumbs.db
 .DS_Store
 
 # Environment
-.env
 venv/
 .env.local
 
